@@ -23,12 +23,12 @@ jobs:
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --select=E9,F63,F7,F82,F4,W291 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude=*/tests/pyfrc*
     - name: Robotpy tests
       run: |
-        python3 roby.py test
+        python3 robot.py test
     - name: Force docstrings
       run: |
         python3 robot.py test

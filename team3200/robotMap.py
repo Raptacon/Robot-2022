@@ -13,11 +13,11 @@ class CANMap():
     """
     holds the mappins to all the motors in the robot. Both CAN and PWM
     """
-    def __init__(self): 
-        """ 
+    def __init__(self):
+        """
         Creates default mappings
         """
-        pid = None 
+        pid = None
         rampRate = .2
         driveMotors = {}
         driveMotors['rightFollower'] = {'channel':2, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
