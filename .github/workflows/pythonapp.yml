@@ -17,8 +17,6 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        dir
-        pwd
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Lint with flake8
@@ -28,10 +26,10 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        pip install pytest
-        pytest
-    - name: Test with robotpy
+    - name: Force docstrings
       run: |
         python3 robot test
+      env:
+              DOC_STRING_CHECK: True
+
+

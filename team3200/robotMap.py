@@ -10,9 +10,12 @@ class RobotMap():
 
 
 class CANMap():
+    """
+    holds the mappins to all the motors in the robot. Both CAN and PWM
+    """
     def __init__(self): 
         """ 
-        holds mappings to all the motors in the robot 
+        Creates default mappings
         """
         pid = None 
         rampRate = .2
