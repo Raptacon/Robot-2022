@@ -19,13 +19,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Lint with flake8
-      run: |
-        pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F6,F7,F8,F4,W291 --show-source --statistics --exclude */tests/pyfrc*
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude */tests/pyfrc*
     - name: Robotpy tests
       run: |
         python3 robot.py test
@@ -34,5 +27,12 @@ jobs:
         python3 robot.py test
       env:
               DOC_STRING_CHECK: True
-
-
+    - name: Lint with flake8 critical
+      run: |
+        pip install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F6,F7,F8,F4,W291,W1,W2,W4,W5,W6,E11 --show-source --statistics --exclude */tests/pyfrc*
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+    - name: Lint with flake8 extra
+      run: |
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude */tests/pyfrc*
