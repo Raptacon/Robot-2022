@@ -29,4 +29,5 @@ jobs:
         pip install pytest
         pytest
     - name: Test with robotpy
+      run: |
         python3 robot test
