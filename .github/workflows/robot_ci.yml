@@ -1,0 +1,114 @@
+name: Raptacon (Team 3200) CI Pipeline
+
+on: [push]
+
+jobs:
+  RobotUnitTestLinux:
+    name: Unit / Integration Tests (Linux)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python 3.7
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install dependencies
+      timeout-minutes: 5
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ci_requirements.txt
+        
+    - name: Robotpy tests
+      timeout-minutes: 1
+      run: |
+        python3 robot.py test
+
+  RobotUnitTestWindows:
+    name: Unit / Integration Tests (Windows)
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python 3.7
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install dependencies
+      timeout-minutes: 5
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ci_requirements.txt
+        
+    - name: Robotpy tests
+      timeout-minutes: 1
+      run: |
+        python robot.py test
+    
+  DocStringStatic:
+    name: Doc String Verification
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python 3.7
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install dependencies
+      timeout-minutes: 5
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ci_requirements.txt
+    
+    - name: Force docstrings
+      timeout-minutes: 1
+      run: |
+        python3 robot.py test
+      env:
+              DOC_STRING_CHECK: True
+      
+  StaticCritical:
+    name: Critical Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      
+    - name: Set up Python 3.7
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    
+    - name: Lint with flake8 critical
+      timeout-minutes: 1
+      run: |
+        pip install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F6,F7,F8,F4,W291,W1,W2,W4,W5,W6,E11 --show-source --statistics --exclude */tests/pyfrc*
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+
+
+  ExtraStaticAnalysis:
+    name: Extra Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python 3.7
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    
+    - name: Lint with flake8 extra
+      timeout-minutes: 1
+      run: |
+        pip install flake8
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude */tests/pyfrc*
