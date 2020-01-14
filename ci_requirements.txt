@@ -3,4 +3,4 @@ pyfrc
 robotpy-ctre
 robotpy-navx
 robotpy-rev
-
+pynetworktables==2019.0.2
