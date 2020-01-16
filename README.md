@@ -5,4 +5,4 @@ Please take a look at the [wiki](https://github.com/Raptacon/Robot-2020/wiki) fo
 Also make sure to check out the [Kanban board](https://github.com/Raptacon/Robot-2020/projects/1)
 
 
-Hi, this should not work. This shouldn't work, for a second time.
+Hi, this should not work. This shouldn't work, for a second time. Third time's the charm!
