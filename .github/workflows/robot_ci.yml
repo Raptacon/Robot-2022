@@ -1,7 +1,10 @@
 name: Raptacon (Team 3200) CI Pipeline
 
-on: [push]
-
+on: 
+  push:
+  schedule:
+    - cron: '0 2 * * *'
+    
 jobs:
   RobotUnitTestLinux:
     name: Unit / Integration Tests (Linux)
