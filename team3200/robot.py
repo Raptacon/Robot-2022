@@ -9,6 +9,7 @@ log.setLevel(logging.DEBUG)
 
 class Robot(commandbased.CommandBasedRobot):
 
+
     def robotInit(self):
         '''This is where the robot code starts.'''
         self.controller = wpilib.Joystick(0)
