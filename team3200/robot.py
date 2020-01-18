@@ -1,30 +1,50 @@
-#import team3200
-import commandbased
+#!/usr/bin/env python3
+
 import wpilib
-import ctre
-import logging
+from magicbot import MagicRobot
 
-log = logging.getLogger("console")
-log.setLevel(logging.DEBUG)
-
-class Robot(commandbased.CommandBasedRobot):
+from components.component1 import Component1
+from components.component2 import Component2
 
 
-    def robotInit(self):
-        '''This is where the robot code starts.'''
-        self.controller = wpilib.Joystick(0)
-        self.motor = ctre.WPI_TalonSRX(0)
-        self.pwMotor = wpilib.PWMSpeedController(0)
-        log.info("robot initialized")
+class MyRobot(MagicRobot):
 
-    def autonomousInit(self):
-        log.info("autonmous robot initialized")
+    #
+    # Define components here
+    #
+
+    component1: Component1
+    component2: Component2
+
+    # You can even pass constants to components
+    SOME_CONSTANT = 1
+
+    def createObjects(self):
+        """Initialize all wpilib motors & sensors"""
+
+        # TODO: create button example here
+
+        self.component1_motor = wpilib.Talon(1)
+        self.some_motor = wpilib.Talon(2)
+
+        self.joystick = wpilib.Joystick(0)
+
+    #
+    # No autonomous routine boilerplate required here, anything in the
+    # autonomous folder will automatically get added to a list
+    #
+
+    def teleopPeriodic(self):
+        """Place code here that does things as a result of operator
+           actions"""
+
+        try:
+            if self.joystick.getTrigger():
+                self.component2.do_something()
+        except:
+            self.onException()
 
 
-    def operatorControl(self):
-        log.info("operator control")
-        while self.isOperatorControl and self.isEnabled:
-            log.debug("joystick is %f y %f x", self.controller.getY(), self.controller.getX())
-            wpilib.Timer.delay(.1)
-            self.motor.set(self.controller.getY())
-            self.pwMotor.set(self.controller.getX())
+if __name__ == "__main__":
+    wpilib.run(MyRobot)
+
