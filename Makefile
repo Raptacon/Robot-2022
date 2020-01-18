@@ -21,6 +21,7 @@ setup: venv
 	touch setup
 
 clean:
+	rm -f setup
 
 realclean:
 	rm -fr venv setup
