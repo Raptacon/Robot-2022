@@ -17,6 +17,10 @@ class Robot(commandbased.CommandBasedRobot):
         self.pwMotor = wpilib.PWMSpeedController(0)
         log.info("robot initialized")
 
+    def autonomousInit(self):
+        log.info("autonmous robot initialized")
+
+
     def operatorControl(self):
         log.info("operator control")
         while self.isOperatorControl and self.isEnabled:

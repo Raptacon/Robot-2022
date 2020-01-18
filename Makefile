@@ -2,23 +2,25 @@
 
 VENV=./venv
 
-venv:
-	python3 -m venv ${VENV}
 
-sim: venv
+sim: setup
 	${VENV}/bin/python3 robot.py coverage sim
 	${VENV}/bin/python3 robot.py sim
 
-test: venv
+venv:
+	python3 -m venv ${VENV}
+
+test: setup
 	${VENV}/bin/python3 robot.py test
 
-coverage: venv test
+coverage: setup test
 	${VENV}/bin/python3 robot.py coverage test
 
 setup: venv
 	${VENV}/bin/pip3 install -r requirements.txt
+	touch setup
 
 clean:
 
 realclean:
-	rm -fr venv
+	rm -fr venv setup

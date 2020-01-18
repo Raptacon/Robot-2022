@@ -1,5 +1,9 @@
 pyflakes
-pygame
+py2app
+macholib
+modulegraph
+# If installed on OSX (joystick support) it seems to fail?
+#pygame
 coverage
 pyfrc<2020
 robotpy-ctre<2020
