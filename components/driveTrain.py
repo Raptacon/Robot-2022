@@ -1,10 +1,7 @@
 import wpilib
 
 class driveTrain:
-    leftMotors: leftMotorsList
-    rightMotors: rightMotorsList
-
-    def __init__(self):            
+    MotorsList: driveTrainMotors
     
     def getLeft():
         pass
