@@ -15,5 +15,8 @@ class ConfigMapper(object):
     def makeDict(self, base, motors):
         #base: a string as a base for creating motors.
         #motors: a dictionary of motors to add this dictionary to. Should not contain motors, this is to populate this dictionary.
-        motors[base] = {'channel': int(self.values[base+'Channel']), 'type': int(self.values[base+'Type']), 'inverted': bool(self.values[base+'Inverted'])}
+        bases = {}
+        for name, value in self.values.items():
+            if base in value:
+                bases[name] = value
         return motors

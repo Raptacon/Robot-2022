@@ -3,18 +3,18 @@
 # Same goes for left followers
 # for ramp rate, "use ramprate" or "rotramprate" for rotation
 theme: jekyll-theme-hacker
-rightMotorChannel: 1
-rightMotorInverted: True
-rightMotorType: CANTalon
+rightMotorchannel: 1
+rightMotorinverted: True
+rightMotortype: CANTalon
 
-rightFollower0Channel: 3
-rightFollower0Inverted: False
-rightFollower0Type: CANTalonFollower
+rightFollower0channel: 3
+rightFollower0inverted: False
+rightFollower0type: CANTalonFollower
 
-leftMotorChannel: 0
-leftMotorInverted: False
-leftMotorType: CANTalon
+leftMotorchannel: 0
+leftMotorinverted: False
+leftMotortype: CANTalon
 
-leftFollower0Channel: 2
-leftFollower0Inverted: True
-leftFollower0Type: CANTalonFollower
+leftFollower0channel: 2
+leftFollower0inverted: True
+leftFollower0type: CANTalonFollower

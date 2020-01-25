@@ -4,6 +4,7 @@ import rev
 import ctre 
 import wpilib
 import logging
+import robotMap
 log = logging.getLogger("console") #These logs were set up for testing, should not be persistent, please delete if you see these and I forgot
 log.setLevel(logging.DEBUG)
 
