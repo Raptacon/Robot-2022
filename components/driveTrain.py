@@ -1,7 +1,10 @@
 import wpilib
 
-class driveTrain:
-    
+class driveTrain: #Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
+    drive_motors: DriveMotors    
+
+    def enable():
+
     def getLeft():
         pass
 
@@ -24,4 +27,6 @@ class driveTrain:
         pass
 
     def execute():
-        pass
+        print("{}".format(drive_motor['left'])
+        print("{}".format(drive_motor['right']))
+    

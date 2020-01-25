@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
+import team3200
 
 import wpilib
 from magicbot import MagicRobot
 
+from collections import namedtuple
+
 from components.component1 import Component1
 from components.component2 import Component2
 from components.driveTrain import driveTrain
+
+DriveMotors['right'] = {'channel':2, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
+DriveMotors['left'] = {'channel':3, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
 
 
 class MyRobot(MagicRobot):
@@ -31,7 +37,7 @@ class MyRobot(MagicRobot):
 
         self.joystick = wpilib.Joystick(0)
 
-        self.driveTrain_motors = dict(self.robotMap.motorsMap.driveMotors) #this won't work; we haven't implemented robotMap in robot.py yet
+        self.driveTrain_motors = dict(team3200.robotMap.motorsMap.driveMotors)
 
     #
     # No autonomous routine boilerplate required here, anything in the
