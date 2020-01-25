@@ -1,7 +1,6 @@
 import wpilib
 
 class driveTrain:
-    MotorsList: driveTrainMotors
     
     def getLeft():
         pass

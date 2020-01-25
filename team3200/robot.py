@@ -5,6 +5,7 @@ from magicbot import MagicRobot
 
 from components.component1 import Component1
 from components.component2 import Component2
+from components.driveTrain import driveTrain
 
 
 class MyRobot(MagicRobot):
@@ -15,6 +16,7 @@ class MyRobot(MagicRobot):
 
     component1: Component1
     component2: Component2
+    driveTrain: DriveTrain
 
     # You can even pass constants to components
     SOME_CONSTANT = 1
@@ -28,6 +30,8 @@ class MyRobot(MagicRobot):
         self.some_motor = wpilib.Talon(2)
 
         self.joystick = wpilib.Joystick(0)
+
+        self.driveTrain_motors = dict(self.robotMap.motorsMap.driveMotors) #this won't work; we haven't implemented robotMap in robot.py yet
 
     #
     # No autonomous routine boilerplate required here, anything in the
