@@ -13,4 +13,5 @@ robotpy-hal-base<2020
 #robotpy-hal
 robotpy-halsim-gui<2020
 pynetworktables==2019.0.2
-
+# Need to wait until we have 2020 pynetworktables
+#pyntcore
