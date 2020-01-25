@@ -4,6 +4,17 @@
 # for ramp rate, "use ramprate" or "rotramprate" for rotation
 theme: jekyll-theme-hacker
 rightMotorChannel: 1
+rightMotorInverted: True
+rightMotorType: CANTalon
+
 rightFollower0Channel: 3
+rightFollower0Inverted: False
+rightFollower0Type: CANTalonFollower
+
 leftMotorChannel: 0
+leftMotorInverted: False
+leftMotorType: CANTalon
+
 leftFollower0Channel: 2
+leftFollower0Inverted: True
+leftFollower0Type: CANTalonFollower
