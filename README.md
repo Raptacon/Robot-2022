@@ -7,3 +7,5 @@ test
 
 # OSX Users
 If you're using OSX you probably want to install python from python.org. Brew python has problems with Tk (simulator) where the widgets wont' render correctly 
+
+# Windows Users
