@@ -1,5 +1,5 @@
 # Import the base classes to use anywhere in team3200
-from .robot import Robot as Robot
+from .robot_int import Team3200Robot as Team3200Robot
 from .robotMap import RobotMap as RobotMap
 
 # import submodules
