@@ -8,10 +8,7 @@ from collections import namedtuple
 
 from components.component1 import Component1
 from components.component2 import Component2
-from components.driveTrain import driveTrain
-
-DriveMotors['right'] = {'channel':2, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
-DriveMotors['left'] = {'channel':3, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
+from components.driveTrain import DriveTrain
 
 
 class MyRobot(MagicRobot):
