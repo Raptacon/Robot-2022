@@ -3,11 +3,7 @@ Base file that setups basic robot. Actual robot is in team3200 module.
 This file should not need to be edited.
 """
 import wpilib
-import team3200
-
-class Robot(team3200.Team3200Robot):
-    pass
-
+from team3200 import Robot as Robot
 
 if __name__ == '__main__':
     try:
