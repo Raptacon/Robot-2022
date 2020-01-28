@@ -6,9 +6,6 @@ import wpilib
 import team3200
 
 class Robot(team3200.Team3200Robot):
-    """
-    Shim class to make Robot code happy. Please do not edit
-    """
     pass
 
 

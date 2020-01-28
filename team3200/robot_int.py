@@ -10,9 +10,6 @@ class Team3200Robot(wpilib.IterativeRobot):
         pass
 
     def testInit(self):
-        """
-        Function called when testInit is called. Crashes on 2nd call right now
-        """
         self.left = ctre.WPI_TalonFX(30)
         self.left.setInverted(True)
         self.leftf = ctre.WPI_TalonFX(31)
@@ -25,9 +22,6 @@ class Team3200Robot(wpilib.IterativeRobot):
         print("Stick %s, left %s, right %s", self.stick, self.left, self.right)
 
     def testPeriodic(self):
-        """
-        Called during test mode alot
-        """
         left = self.stick.getRawAxis(1)
         right = self.stick.getRawAxis(5)
         #self.logger.info("Left %f Right %f", left, right)
