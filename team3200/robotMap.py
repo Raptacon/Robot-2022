@@ -23,4 +23,3 @@ class CANMap():
         driveMotors = config.makeDict("rightMotor", driveMotors)
         driveMotors = config.makeDict("leftMotor", driveMotors)
         self.driveMotor = driveMotors
-
