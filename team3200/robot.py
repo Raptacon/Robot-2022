@@ -6,8 +6,6 @@ from magicbot import MagicRobot
 
 from collections import namedtuple
 
-from components.component1 import Component1
-from components.component2 import Component2
 from components.driveTrain import DriveTrain
 
 
@@ -17,8 +15,6 @@ class MyRobot(MagicRobot):
     # Define components here
     #
 
-    component1: Component1
-    component2: Component2
     driveTrain: DriveTrain
 
     # You can even pass constants to components
@@ -44,12 +40,7 @@ class MyRobot(MagicRobot):
     def teleopPeriodic(self):
         """Place code here that does things as a result of operator
            actions"""
-
-        try:
-            if self.joystick.getTrigger():
-                self.component2.do_something()
-        except:
-            self.onException()
+        pass
 
 
 if __name__ == "__main__":
