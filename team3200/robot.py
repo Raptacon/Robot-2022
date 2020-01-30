@@ -34,7 +34,7 @@ class MyRobot(MagicRobot):
 
         self.joystick = wpilib.Joystick(0)
 
-        self.driveTrain_motors = dict(team3200.robotMap.motorsMap.driveMotors)
+        self.driveTrain_motorsList = dict(team3200.robotMap.motorsMap.driveMotors)
 
     #
     # No autonomous routine boilerplate required here, anything in the
