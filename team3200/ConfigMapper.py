@@ -18,5 +18,7 @@ class ConfigMapper(object):
         bases = {}
         for name, value in self.values.items():
             if base in value:
-                bases[name] = value
+                bases[name[name.index(base):]] = value
+            else:
+                print("Base not in value. Please change.")
         return motors

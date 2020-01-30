@@ -6,6 +6,7 @@ theme: jekyll-theme-hacker
 rightMotorchannel: 1
 rightMotorinverted: True
 rightMotortype: CANTalon
+rightMotorpid: None
 
 rightFollower0channel: 3
 rightFollower0inverted: False
@@ -14,6 +15,7 @@ rightFollower0type: CANTalonFollower
 leftMotorchannel: 0
 leftMotorinverted: False
 leftMotortype: CANTalon
+leftMotorpid: None
 
 leftFollower0channel: 2
 leftFollower0inverted: True

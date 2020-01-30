@@ -19,10 +19,8 @@ class CANMap():
         """
         Creates default mappings
         """
-        pid = None
-        rampRate = .2
         driveMotors = {}
-        
-        driveMotors['rightFollower'] = {'channel':2, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
+        driveMotors = config.makeDict("rightMotor", driveMotors)
+        driveMotors = config.makeDict("leftMotor", driveMotors)
         self.driveMotor = driveMotors
 
