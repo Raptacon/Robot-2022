@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
+import team3200
 
 import wpilib
 from magicbot import MagicRobot
-from team3200 import robotMap
+
+from collections import namedtuple
 
 from components.component1 import Component1
 from components.component2 import Component2
+from components.driveTrain import DriveTrain
 
 
 class MyRobot(MagicRobot):
@@ -16,6 +19,7 @@ class MyRobot(MagicRobot):
 
     component1: Component1
     component2: Component2
+    driveTrain: DriveTrain
 
     # You can even pass constants to components
     SOME_CONSTANT = 1
@@ -24,11 +28,13 @@ class MyRobot(MagicRobot):
         """Initialize all wpilib motors & sensors"""
 
         # TODO: create button example here
-        self.robotMap = robotMap.RobotMap()
+
         self.component1_motor = wpilib.Talon(1)
         self.some_motor = wpilib.Talon(2)
 
         self.joystick = wpilib.Joystick(0)
+
+        self.driveTrain_motors = dict(team3200.robotMap.motorsMap.driveMotors)
 
     #
     # No autonomous routine boilerplate required here, anything in the
