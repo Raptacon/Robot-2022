@@ -18,13 +18,16 @@ class Robot(commandbased.CommandBasedRobot):
         log.info("robot initialized")
 
     def autonomousInit(self):
+        '''This is where we pretend we do autonomous'''
         log.info("autonmous robot initialized")
 
 
     def operatorControl(self):
+        '''This is where we take control'''
         log.info("operator control")
         while self.isOperatorControl and self.isEnabled:
             log.debug("joystick is %f y %f x", self.controller.getY(), self.controller.getX())
             wpilib.Timer.delay(.1)
             self.motor.set(self.controller.getY())
             self.pwMotor.set(self.controller.getX())
+
