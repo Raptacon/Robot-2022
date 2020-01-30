@@ -1,10 +1,9 @@
     # -*- coding: utf-8 -*-
 
 import rev
-import ctre
-import wpilib
+import ctre 
+
 import logging
-import robotMap
 log = logging.getLogger("console") #These logs were set up for testing, should not be persistent, please delete if you see these and I forgot
 log.setLevel(logging.DEBUG)
 
@@ -42,7 +41,7 @@ def createMotor(motorDescp, motors = {}):
     else:
         print("Unknown Motor")
     
-    if 'inverted' in motorDescp and motor !=None: 
+    if 'inverted' in motorDescp: 
         motor.setInverted(motorDescp['inverted'])
     
     if 'currentLimits' in motorDescp:
@@ -85,6 +84,7 @@ class WPI_TalonFeedback(ctre.wpi_talonsrx.WPI_TalonSRX):
         self.configNominalOutputReverse(0, 10)
         self.configPeakOutputForward(1, 10)
         self.configPeakOutputReverse(-1, 10)
+        
         
         self.configVelocityMeasurementPeriod(self.VelocityMeasPeriod.Period_1Ms,10) 
         #/* set closed loop gains in slot0 */
