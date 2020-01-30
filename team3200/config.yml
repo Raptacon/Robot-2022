@@ -1,0 +1,20 @@
+# for motors, use "rightMotorChannel" for right motor leader, "leftMotorChannel" for left motor leader
+# "rightFollower(number of follower starting at 0)Channel" such as rightFollower0Channel and then rightFollower1Channel
+# Same goes for left followers
+# for ramp rate, "use ramprate" or "rotramprate" for rotation
+theme: jekyll-theme-hacker
+rightMotorchannel: 1
+rightMotorinverted: True
+rightMotortype: CANTalon
+
+rightFollower0channel: 3
+rightFollower0inverted: False
+rightFollower0type: CANTalonFollower
+
+leftMotorchannel: 0
+leftMotorinverted: False
+leftMotortype: CANTalon
+
+leftFollower0channel: 2
+leftFollower0inverted: True
+leftFollower0type: CANTalonFollower

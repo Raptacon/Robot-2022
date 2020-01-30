@@ -2,6 +2,7 @@
 
 import wpilib
 from magicbot import MagicRobot
+from team3200 import robotMap
 
 from components.component1 import Component1
 from components.component2 import Component2
@@ -23,7 +24,7 @@ class MyRobot(MagicRobot):
         """Initialize all wpilib motors & sensors"""
 
         # TODO: create button example here
-
+        self.robotMap = robotMap.RobotMap()
         self.component1_motor = wpilib.Talon(1)
         self.some_motor = wpilib.Talon(2)
 
