@@ -1,4 +1,3 @@
-from team3200 import ConfigMapper as mapper
 
 class RobotMap():
     """
@@ -7,15 +6,14 @@ class RobotMap():
     """
     def __init__(self):
         """intilize the robot map"""
-        config = mapper.ConfigMapper("team3200/config.yml")
-        self.motorsMap = CANMap(config)
+        self.motorsMap = CANMap()
 
 
 class CANMap():
     """
-    holds the mappings to all the motors in the robot. Both CAN and PWM
+    holds the mappins to all the motors in the robot. Both CAN and PWM
     """
-    def __init__(self, config):
+    def __init__(self):
         """
         Creates default mappings
         """
@@ -25,3 +23,4 @@ class CANMap():
         driveMotors['right'] = {'channel':2, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
         driveMotors['left'] = {'channel':3, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
         self.driveMotors = driveMotors
+
