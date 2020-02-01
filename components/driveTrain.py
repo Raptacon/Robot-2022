@@ -5,6 +5,13 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
     driveTrain_motorsList: dict
 
     def on_enable(self):
+        self.tankLeftSpeed = 0
+        self.tankRightSpeed = 0
+        self.arcadeSpeed = 0
+        self.arcadeRotation = 0
+        self.controllingOverArcade = False
+        self.controllingOverTank = False
+
         leftMotorDescs = self.driveTrain_motorsList['left']
         rightMotorDescs = self.driveTrain_motorsList['right']
 
@@ -28,16 +35,26 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
         pass
 
     def setTank(self, leftSpeed, rightSpeed):
-        self.driveTrain.tankDrive(leftSpeed, rightSpeed, False)
+        self.controllingOverTank = True
+        self.tankLeftSpeed = leftSpeed
+        self.tankRightSpeed = rightSpeed
 
     def setArcade(self, speed, rotation):
-        self.driveTrain.arcadeDrive(speed, rotation, False)
+        self.controllingOverArcade = True
+        self.arcadeSpeed = speed
+        self.arcadeRotation = rotation
 
     def stop(self, coast = False):
-        pass
+        self.controllingOverTank = False
+        self.controllingOverArcade = False
 
     def getMeasuredSpeed(self):
         pass
 
     def execute(self):
-        self.setTank(1,1)
+        if self.controllingOverTank:
+            self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
+            self.controllingOverTank = False
+        else if self.controllingOverArcade:
+            self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
+            self.controllingOverArcade = False
