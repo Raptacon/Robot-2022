@@ -55,6 +55,6 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
         if self.controllingOverTank:
             self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
             self.controllingOverTank = False
-        else if self.controllingOverArcade:
+        elif self.controllingOverArcade:
             self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
             self.controllingOverArcade = False
