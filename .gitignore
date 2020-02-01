@@ -51,7 +51,7 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
+# Django stuff: not in gitignore.io
 *.log
 local_settings.py
 db.sqlite3
@@ -69,7 +69,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# Jupyter Notebook
+# Jupyter Notebook not in gitignore.io
 .ipynb_checkpoints
 
 # pyenv
@@ -81,7 +81,7 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# Environments not in gitignore.io
 .env
 .venv
 env/
@@ -102,3 +102,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# VSCode
+.vscode/*
+
+setup
+
+# vim
+*.sw[op]
