@@ -9,4 +9,4 @@ from . import commands
 # create instance of robotMap for use everywhere
 robotMap = RobotMap()
 
-__all__ = ["Robot", "RobotMap", "subsystems", "commands", "RobotMap", "Team3200Robot"]
+__all__ = ["Robot", "RobotMap", "subsystems", "commands", "robotMap"]

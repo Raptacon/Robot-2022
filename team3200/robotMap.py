@@ -1,4 +1,6 @@
 
+from team3200 import ConfigMapper as mapper
+
 class RobotMap():
     """
     Robot map gathers all the hard coded values needed to interface with
@@ -20,6 +22,7 @@ class CANMap():
         pid = None
         rampRate = .2
         driveMotors = {}
-        driveMotors['rightFollower'] = {'channel':2, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
-        self.driveMotor = driveMotors
-
+        driveMotors = config.makeDict("rightMotor", driveMotors)
+        driveMotors = config.makeDict("leftMotor", driveMotors)
+        print("DRIVEMOTORS: {}".format(driveMotors))
+        self.driveMotors = driveMotors
