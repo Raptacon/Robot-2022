@@ -4,8 +4,6 @@ import team3200
 import wpilib
 from magicbot import MagicRobot
 
-from collections import namedtuple
-
 from components.driveTrain import DriveTrain
 
 
