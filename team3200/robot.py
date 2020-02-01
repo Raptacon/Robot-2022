@@ -23,9 +23,6 @@ class MyRobot(MagicRobot):
 
         # TODO: create button example here
 
-        self.component1_motor = wpilib.Talon(1)
-        self.some_motor = wpilib.Talon(2)
-
         self.joystick = wpilib.Joystick(0)
 
         self.driveTrain_motorsList = dict(team3200.robotMap.motorsMap.driveMotors)
@@ -38,7 +35,7 @@ class MyRobot(MagicRobot):
     def teleopPeriodic(self):
         """Place code here that does things as a result of operator
            actions"""
-        pass
+        self.driveTrain.setTank(1,1)
 
 
 if __name__ == "__main__":

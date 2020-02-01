@@ -15,7 +15,7 @@ def createMotor(motorDescp, motors = {}):
             motor = WPI_TalonFeedback(motorDescp)
             motor.setupPid()
         else:
-            motor = ctre.wpi_talonsrx.WPI_TalonSRX(motorDescp['channel'])
+            motor = ctre.WPI_TalonSRX(motorDescp['channel'])
         motors[str(motorDescp['channel'])] = motor
 
     elif motorDescp['type'] == 'CANTalonFollower':
@@ -59,7 +59,7 @@ def createMotor(motorDescp, motors = {}):
 
     return motor
 
-class WPI_TalonFeedback(ctre.wpi_talonsrx.WPI_TalonSRX):
+class WPI_TalonFeedback(ctre.WPI_TalonSRX):
     def __init__(self, motorDescription):
         ctre.wpi_talonsrx.WPI_TalonSRX.__init__(self,motorDescription['channel'])
         self.motorDescription = motorDescription
