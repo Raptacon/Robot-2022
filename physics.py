@@ -24,7 +24,7 @@ class PhysicsEngine(object):
         '''
             Called when the simulation parameters for the program need to be
             updated.
-            
+
             :param now: The current time as a float
             :param tm_diff: The amount of time that has passed since the last
                             time that this function was called
@@ -33,7 +33,7 @@ class PhysicsEngine(object):
         # Simulate the drivetrain
         # -> Remember, in the constructor we inverted the left motors, so
         #    invert the motor values here too!
-        try: 
+        try:
 
             if hal_data['CAN'][1]['inverted']:
                 l_motor = -hal_data['CAN'][1]['value']
