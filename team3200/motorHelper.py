@@ -1,7 +1,7 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import rev
-import ctre 
+import ctre
 
 import logging
 log = logging.getLogger("console") #These logs were set up for testing, should not be persistent, please delete if you see these and I forgot
@@ -22,7 +22,7 @@ def createMotor(motorDescp, motors = {}):
         motor =ctre.wpi_talonsrx.WPI_TalonSRX(motorDescp['channel'])
         motor.set(mode = ctre.wpi_talonsrx.ControlMode.Follower, demand0 = motorDescp['masterChannel'])
         motors[str(motorDescp['channel'])] = motor
-        
+
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
         if 'pid' in motorDescp and motorDescp['pid'] != None:
@@ -37,13 +37,13 @@ def createMotor(motorDescp, motors = {}):
         For masterChannel, use a motor object. MASTER MUST BE A "CANSparkMax"  '''
         motor = SparkMaxFeedback(motorDescp, motors)
         motor.follow(motors.get(str(motorDescp['masterChannel'])), motorDescp['inverted'])
-    
+
     else:
         print("Unknown Motor")
-    
-    if 'inverted' in motorDescp: 
+
+    if 'inverted' in motorDescp:
         motor.setInverted(motorDescp['inverted'])
-    
+
     if 'currentLimits' in motorDescp:
         currentLimits = motorDescp['currentLimits']
         absMax = currentLimits['absMax']
@@ -55,16 +55,16 @@ def createMotor(motorDescp, motors = {}):
         motor.enableCurrentLimit(True)
 
     if 'rampRate' in motorDescp:
-        motor.configOpenLoopRamp(motorDescp['rampRate'],10)    
-    
-    return motor 
+        motor.configOpenLoopRamp(motorDescp['rampRate'],10)
+
+    return motor
 
 class WPI_TalonFeedback(ctre.wpi_talonsrx.WPI_TalonSRX):
     def __init__(self, motorDescription):
         ctre.wpi_talonsrx.WPI_TalonSRX.__init__(self,motorDescription['channel'])
         self.motorDescription = motorDescription
         self.pid = None
-        
+
     def setupPid(self,motorDescription = None):
         if not motorDescription:
             motorDescription = self.motorDescription
@@ -76,29 +76,29 @@ class WPI_TalonFeedback(ctre.wpi_talonsrx.WPI_TalonSRX):
         self.configSelectedFeedbackSensor(self.pid['feedbackDevice'], 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
         self.pidControlType = self.pid['controlType']
-        
+
         self.kPreScale = self.pid['kPreScale']
-        
+
         #/* set the peak, nominal outputs, and deadband */
         self.configNominalOutputForward(0, 10)
         self.configNominalOutputReverse(0, 10)
         self.configPeakOutputForward(1, 10)
         self.configPeakOutputReverse(-1, 10)
-        
-        
-        self.configVelocityMeasurementPeriod(self.VelocityMeasPeriod.Period_1Ms,10) 
+
+
+        self.configVelocityMeasurementPeriod(self.VelocityMeasPeriod.Period_1Ms,10)
         #/* set closed loop gains in slot0 */
         self.config_kF(0, self.pid['kF'], 10)
         self.config_kP(0, self.pid['kP'], 10)
         self.config_kI(0, self.pid['kI'], 10)
         self.config_kD(0, self.pid['kD'], 10)
-        
+
     def set(self, speed):
         if self.pid != None:
             return ctre.wpi_talonsrx.WPI_TalonSRX.set(self, self.controlType, speed * self.kPreScale)
         else:
             return self.set(speed)
-            
+
 class SparkMaxFeedback(rev.CANSparkMax):
     def __init__(self, motorDescription, motors):
         self.motorDescription = motorDescription
@@ -115,7 +115,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
         pid = self.pid
         self.pidControlType = rev.ControlType(pid['controlType'])
         self.encoder = self.getEncoder()
-        
+
         self.kPreScale = pid['kPreScale']
         self.PIDController = self.getPIDController() #creates pid controller
 
@@ -126,14 +126,14 @@ class SparkMaxFeedback(rev.CANSparkMax):
 
         self.PIDController.setOutputRange(-1, 1, pid['feedbackDevice'])
         self.PIDController.setReference(0 , self.pidControlType, pid['feedbackDevice']) #Sets the control type to velocity on the pid slot we passed in
-    
+
     def setControlType(self, type):
         '''Use the rev.ControlType.k(control type) as arg'''
         if isinstance(type, rev.ControlType):
             self.pidControlType = type
         else:
             log.debug("Wrong type. Use the rev.ControlType.k(control type)")
-    
+
     def set(self, speed):
         if self.motorDescription['type'] != "SparkMaxFollower":
             log.debug("error = %f", (speed*self.pid['kPreScale'])-self.encoder.getVelocity())

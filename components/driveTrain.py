@@ -29,9 +29,9 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
 
     def setTank(self, leftSpeed, rightSpeed):
         self.driveTrain.tankDrive(leftSpeed, rightSpeed, False)
-    
+
     def setArcade(self, speed, rotation):
-        self.driveTrain.arcadeDrive(speed, rot, False)
+        self.driveTrain.arcadeDrive(speed, rotation, False)
 
     def stop(self, coast = False):
         pass
@@ -41,4 +41,3 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
 
     def execute(self):
         self.setTank(1,1)
-    
