@@ -20,8 +20,6 @@ class CANMap():
         """
         Creates default mappings
         """
-        driveMotors = {}
-        driveMotors = config.makeDict("rightMotor", driveMotors)
-        driveMotors = config.makeDict("leftMotor", driveMotors)
-        print("DRIVEMOTORS: {}".format(driveMotors))
+        driveMotors = config.getDicts()
+        print("DRIVEMOTORS: {}".format(driveMotors['leftMotor']))
         self.driveMotors = driveMotors
