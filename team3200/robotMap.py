@@ -1,3 +1,4 @@
+
 from team3200 import ConfigMapper as mapper
 
 class RobotMap():
