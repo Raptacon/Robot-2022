@@ -15,11 +15,11 @@ def createMotor(motorDescp, motors = {}):
             motor = WPI_TalonFeedback(motorDescp)
             motor.setupPid()
         else:
-            motor = ctre.wpi_talonsrx.WPI_TalonSRX(motorDescp['channel'])
+            motor = ctre.WPI_TalonSRX(motorDescp['channel'])
         motors[str(motorDescp['channel'])] = motor
 
     elif motorDescp['type'] == 'CANTalonFollower':
-        motor =ctre.wpi_talonsrx.WPI_TalonSRX(motorDescp['channel'])
+        motor = ctre.WPI_TalonSRX(motorDescp['channel'])
         motor.set(mode = ctre.wpi_talonsrx.ControlMode.Follower, demand0 = motorDescp['masterChannel'])
         motors[str(motorDescp['channel'])] = motor
 
@@ -54,12 +54,12 @@ def createMotor(motorDescp, motors = {}):
         motor.configContinuousCurrentLimit(nominalMaxCurrent,10)
         motor.enableCurrentLimit(True)
 
-    if 'rampRate' in motorDescp:
-        motor.configOpenLoopRamp(motorDescp['rampRate'],10)
+    #if 'rampRate' in motorDescp:
+    #    motor.configOpenLoopRamp(motorDescp['rampRate'],10)
 
     return motor
 
-class WPI_TalonFeedback(ctre.wpi_talonsrx.WPI_TalonSRX):
+class WPI_TalonFeedback(ctre.WPI_TalonSRX):#ctre.wpi_talonsrx.WPI_TalonSRX
     def __init__(self, motorDescription):
         ctre.wpi_talonsrx.WPI_TalonSRX.__init__(self,motorDescription['channel'])
         self.motorDescription = motorDescription

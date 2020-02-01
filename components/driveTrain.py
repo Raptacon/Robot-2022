@@ -54,7 +54,7 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
     def execute(self):
         if self.controllingOverTank:
             self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
-            self.controllingOverTank = False
+            #self.controllingOverTank = False
         elif self.controllingOverArcade:
             self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
-            self.controllingOverArcade = False
+            #self.controllingOverArcade = False
