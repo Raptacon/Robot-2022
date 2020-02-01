@@ -1,10 +1,10 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state
-
+import math
 from components.component2 import Component2
 
-
+"""Creats the autonomous code"""
 class TwoSteps(AutonomousStateMachine):
-
+    time = 5
     MODE_NAME = "Two Steps"
     DEFAULT = True
 
@@ -17,7 +17,11 @@ class TwoSteps(AutonomousStateMachine):
         """This happens first"""
         pass
 
-    @timed_state(duration=5)
-    def do_something(self):
+    @timed_state(duration=time)
+    def do_something(self, state_tm):
         """This happens second"""
-        self.component2.do_something()
+        
+        speed = math.sin(2*math.pi*(1/self.time)*state_tm)
+        """First integer is # of times to run through program, second is time. combined creates value."""
+        print('{}  {}'.format(state_tm, speed))
+        self.component2.do_something(speed)
