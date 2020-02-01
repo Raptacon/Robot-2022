@@ -1,17 +1,50 @@
 """
-Base file that setups basic robot. Actual robot is in team3200 module.
-This file should not need to be edited.
+Team 3200 Robot base class
 """
+from wpilib import XboxController
 import wpilib
-import team3200
+from magicbot import MagicRobot
 
-class Robot(team3200.Team3200Robot):
+import components.dtFxTest
+
+class MyRobot(MagicRobot):
     """
-    Shim class to make Robot code happy. Please do not edit
+    Base robot class of Magic Bot Type
     """
-    pass
+
+    dtFxTest: components.dtFxTest.DtFxTest
+
+    def createObjects(self):
+        """
+        Robot-wide initialization code should go here. Replaces robotInit
+        """
+        self.left = 0
+        self.right = 0
+        self.stick = XboxController(0)
+
+
+    def teleopPeriodic(self):
+        """
+        Must include. Called ruing teleop.
+        """
+        self.left = self.stick.getRawAxis(1)
+        self.right = self.stick.getRawAxis(5)
+        self.dtFxTest.move(self.left, self.right)
+        self.dtFxTest.execute()
+
+    def testInit(self):
+        """
+        Function called when testInit is called. Crashes on 2nd call right now
+        """
+        pass
+        #print("Stick %s, left %s, right %s", self.stick, self.left, self.right)
+
+    def testPeriodic(self):
+        """
+        Called during test mode alot
+        """
+        pass
 
 
 if __name__ == '__main__':
-    wpilib.run(Robot, physics_enabled=True)
-
+    wpilib.run(MyRobot)
