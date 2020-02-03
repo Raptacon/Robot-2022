@@ -4,8 +4,10 @@ Team 3200 Robot base class
 from wpilib import XboxController
 import wpilib
 from magicbot import MagicRobot
+import robotMap
 
 import components.dtFxTest
+import components.driveTrain
 
 class MyRobot(MagicRobot):
     """
@@ -21,7 +23,8 @@ class MyRobot(MagicRobot):
         self.left = 0
         self.right = 0
         self.stick = XboxController(0)
-
+        self.map = robotMap.RobotMap()
+        driveTrain_motorsList = self.map.motorsMap
 
     def teleopPeriodic(self):
         """
