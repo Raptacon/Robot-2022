@@ -29,6 +29,9 @@ def createMotor(motorDescp, motors = {}):
             motor.setupPid()
         else:
             motor = ctre.WPI_TalonFX(motorDescp['channel'])
+    
+    if motorDescp['type'] == 'CANTalonFXFollower':
+        motor = ctre.WPI_TalonFXFeedback(motorDescp['channel'])
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
@@ -114,6 +117,10 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         ctre.WPI_TalonFX.__init__(self,motorDescription['channel'])
         self.motorDescription = motorDescription
         self.pid = None
+        if self.motorDescription['type'] == "CANTalonFXFollower":
+            self.controlType == ctre.TalonFXControlMode.Follower
+        else:
+            self.controlType == ctre.TalonFXControlMode.PercentOutput
 
     def setupPid(self,motorDescription = None):
         if not motorDescription:
@@ -150,7 +157,7 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         if self.pid != None:
             return ctre.WPI_TalonFX.set(self, self.controlType, speed * self.kPreScale)
         else:
-            return self.set(speed)
+            return ctre.WPI_TalonFX.set(self, self.controlType, speed)
 
 class SparkMaxFeedback(rev.CANSparkMax):
     def __init__(self, motorDescription, motors):

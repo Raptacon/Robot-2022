@@ -1,7 +1,5 @@
-# for motors, use "rightMotorChannel" for right motor leader, "leftMotorChannel" for left motor leader
-# "rightFollower(number of follower starting at 0)Channel" such as rightFollower0Channel and then rightFollower1Channel
-# Same goes for left followers
-# for ramp rate, "use ramprate" or "rotramprate" for rotation
+#Right motor must always be called rightMotor, left motor must always be leftMotor. Look through motorHelper to see what values are necessary,
+#it varies by motor.
 driveMotors:
   rightMotor:
     channel: 1
@@ -16,6 +14,13 @@ driveMotors:
       kD: 0
       kF: 0
       sensorPhase: True
+
+  rightFollower:
+    channel: 3
+    masterChannel: 1
+    type: "CANTalonFXFollower"
+    inverted: False
+
   leftMotor:
     channel: 0
     type: "CANTalonFX"
@@ -29,4 +34,9 @@ driveMotors:
       kI: .0000001
       kF: 0
       sensorPhase: True
-    
+
+  leftFollower:
+    channel: 2
+    masterChannel: 0
+    type: "CANTalonFXFollower"
+    inverted: False

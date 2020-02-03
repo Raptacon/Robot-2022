@@ -15,6 +15,7 @@ class MyRobot(MagicRobot):
     """
 
     dtFxTest: components.dtFxTest.DtFxTest
+    driveTrain: components.driveTrain.DriveTrain
 
     def createObjects(self):
         """
@@ -24,7 +25,7 @@ class MyRobot(MagicRobot):
         self.right = 0
         self.stick = XboxController(0)
         self.map = robotMap.RobotMap()
-        driveTrain_motorsList = self.map.motorsMap
+        motorsList = self.map.motorsMap
 
     def teleopPeriodic(self):
         """
@@ -32,8 +33,7 @@ class MyRobot(MagicRobot):
         """
         self.left = self.stick.getRawAxis(1)
         self.right = self.stick.getRawAxis(5)
-        self.dtFxTest.move(self.left, self.right)
-        self.dtFxTest.execute()
+        self.driveTrain.setTank(self.left, self.right)
 
     def testInit(self):
         """
