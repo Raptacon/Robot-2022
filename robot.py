@@ -1,42 +1,50 @@
-#!/usr/bin/env python3
-import robotMap
+"""
+Team 3200 Robot base class
+"""
+from wpilib import XboxController
 import wpilib
 from magicbot import MagicRobot
 
-from components.driveTrain import DriveTrain
-
+import components.dtFxTest
 
 class MyRobot(MagicRobot):
+    """
+    Base robot class of Magic Bot Type
+    """
 
-    #
-    # Define components here
-    #
-
-    driveTrain: DriveTrain
-
-    # You can even pass constants to components
-    SOME_CONSTANT = 1
+    dtFxTest: components.dtFxTest.DtFxTest
 
     def createObjects(self):
-        """Initialize all wpilib motors & sensors"""
+        """
+        Robot-wide initialization code should go here. Replaces robotInit
+        """
+        self.left = 0
+        self.right = 0
+        self.stick = XboxController(0)
 
-        # TODO: create button example here
-        self.map = robotMap.RobotMap()
-        self.joystick = wpilib.Joystick(0)
-
-        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
-
-    #
-    # No autonomous routine boilerplate required here, anything in the
-    # autonomous folder will automatically get added to a list
-    #
 
     def teleopPeriodic(self):
-        """Place code here that does things as a result of operator
-           actions"""
-        self.driveTrain.setTank(1,1)
+        """
+        Must include. Called ruing teleop.
+        """
+        self.left = self.stick.getRawAxis(1)
+        self.right = self.stick.getRawAxis(5)
+        self.dtFxTest.move(self.left, self.right)
+        self.dtFxTest.execute()
+
+    def testInit(self):
+        """
+        Function called when testInit is called. Crashes on 2nd call right now
+        """
+        pass
+        #print("Stick %s, left %s, right %s", self.stick, self.left, self.right)
+
+    def testPeriodic(self):
+        """
+        Called during test mode alot
+        """
+        pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     wpilib.run(MyRobot)
-
