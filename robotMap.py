@@ -13,7 +13,7 @@ class RobotMap():
 
 class CANMap():
     """
-    holds the mappings to all the motors in the robot. Both CAN and PWM
+    Holds the mappings to all the motors in the robot. Both CAN and PWM
     """
     def __init__(self, config):
         """

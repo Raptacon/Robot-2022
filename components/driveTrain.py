@@ -1,9 +1,8 @@
 import wpilib.drive
 import motorHelper as motorHelper
 
-
 class DriveTrain: #Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
-    motorsList: dict
+    driveTrain_motorsList: dict
 
     def on_enable(self):
         self.tankLeftSpeed = 0
@@ -12,14 +11,15 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
         self.arcadeRotation = 0
         self.controllingOverArcade = False
         self.controllingOverTank = False
-        print("{}".format(self.motorsList))
-        
-        self.driveMotors = {}
-        for key in self.motorsList:
-            self.driveMotors[key] = motorHelper.createMotor(self.motorsList.get(key))
-        
-        self.leftMotor = self.driveMotors['leftMotor']
-        self.rightMotor = self.driveMotors['rightMotor']
+        self.motors = {}
+
+        for motorDescKey in self.driveTrain_motorsList:
+            currentMotor = self.driveTrain_motorsList[motorDescKey]
+            print("{}".format(currentMotor))
+            self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
+
+        self.leftMotor = self.motors["left"]
+        self.rightMotor = self.motors["right"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
 
         print("DriveTrain component Enabled")
@@ -53,7 +53,5 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
     def execute(self):
         if self.controllingOverTank:
             self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
-            self.controllingOverTank = False
         elif self.controllingOverArcade:
             self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
-            self.controllingOverArcade = False
