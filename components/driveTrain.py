@@ -18,8 +18,8 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
             print("{}".format(currentMotor))
             self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
 
-        self.leftMotor = self.motors["left"]
-        self.rightMotor = self.motors["right"]
+        self.leftMotor = self.motors["leftMotor"]
+        self.rightMotor = self.motors["rightMotor"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
 
         print("DriveTrain component Enabled")

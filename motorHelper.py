@@ -164,9 +164,9 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         Overrides the default set() to allow for controll using the pid loop
         """
         if self.pid != None:
-            return ctre.wpi_talonsrx.WPI_TalonSRX.set(self, self.controlType, speed * self.kPreScale)
+            return ctre.WPI_TalonFX.set(self, self.controlType, speed * self.kPreScale)
         else:
-            return self.set(speed)
+            return ctre.WPI_TalonFX.set(self, speed)
 
 class SparkMaxFeedback(rev.CANSparkMax):
     """
@@ -208,7 +208,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
         if self.ControlType == "Position":
             self.ControlType = rev.ControlType.kPosition
         elif self.ControlType == "Velocity":
-            self.ControlType == rev.ControlType.
+            self.ControlType == rev.ControlType.kVelocity
 
     def set(self, speed):
         """
