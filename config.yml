@@ -2,7 +2,7 @@
 #it varies by motor.
 driveMotors:
   rightMotor:
-    channel: 1
+    channel: 30
     type: "CANTalonFX"
     inverted: True
     pid:
@@ -16,13 +16,13 @@ driveMotors:
       sensorPhase: True
 
   rightFollower:
-    channel: 3
+    channel: 31
     masterChannel: 1
     type: "CANTalonFXFollower"
     inverted: False
 
   leftMotor:
-    channel: 0
+    channel: 40
     type: "CANTalonFX"
     inverted: True
     pid:
@@ -36,7 +36,7 @@ driveMotors:
       sensorPhase: True
 
   leftFollower:
-    channel: 2
+    channel: 41
     masterChannel: 0
     type: "CANTalonFXFollower"
     inverted: False

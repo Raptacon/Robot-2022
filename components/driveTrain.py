@@ -15,8 +15,8 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
         print("{}".format(self.motorsList))
         
         self.driveMotors = {}
-        for key, items in self.motorsList:
-            self.driveMotors[key] = motorHelper.createMotor(items)
+        for key in self.motorsList:
+            self.driveMotors[key] = motorHelper.createMotor(self.motorsList.get(key))
         
         self.leftMotor = self.driveMotors['leftMotor']
         self.rightMotor = self.driveMotors['rightMotor']

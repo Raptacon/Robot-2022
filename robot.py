@@ -14,7 +14,6 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
-    dtFxTest: components.dtFxTest.DtFxTest
     driveTrain: components.driveTrain.DriveTrain
 
     def createObjects(self):
@@ -25,15 +24,15 @@ class MyRobot(MagicRobot):
         self.right = 0
         self.stick = XboxController(0)
         self.map = robotMap.RobotMap()
-        motorsList = self.map.motorsMap
+        self.driveTrain_motorsList = self.map.motorsMap.driveMotors
 
     def teleopPeriodic(self):
         """
         Must include. Called ruing teleop.
         """
         self.left = self.stick.getRawAxis(1)
-        self.right = self.stick.getRawAxis(5)
-        self.driveTrain.setTank(self.left, self.right)
+        self.rot = self.stick.getRawAxis(0)
+        self.driveTrain.setArcade(self.left, self.rot)
 
     def testInit(self):
         """

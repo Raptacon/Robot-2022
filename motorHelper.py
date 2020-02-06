@@ -3,12 +3,10 @@
 import rev
 import ctre
 
-import logging
-log = logging.getLogger("console") #These logs were set up for testing, should not be persistent, please delete if you see these and I forgot
-log.setLevel(logging.DEBUG)
-
 def createMotor(motorDescp, motors = {}):
-    '''This is where all motors are set up'''
+    '''This is where all motors are set up.
+    Motors include CAN Talons, CAN Talon Followers, CAN Talon FX, CAN Talon FX Followers, and SparkMax and its follower.
+    Not all are functional, it's up to you to find out. Good luck!'''
     if motorDescp['type'] == 'CANTalon':
         #if we want to use the built in encoder set it here
         if('pid' in motorDescp) and motorDescp['pid'] != None:
@@ -31,7 +29,8 @@ def createMotor(motorDescp, motors = {}):
             motor = ctre.WPI_TalonFX(motorDescp['channel'])
     
     if motorDescp['type'] == 'CANTalonFXFollower':
-        motor = ctre.WPI_TalonFXFeedback(motorDescp['channel'])
+        motor = WPI_TalonFXFeedback(motorDescp)
+        motor.set(0.1)
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
@@ -71,11 +70,14 @@ def createMotor(motorDescp, motors = {}):
 
 class WPI_TalonSRXFeedback(ctre.WPI_TalonSRX):
     def __init__(self, motorDescription):
+        '''Sets up a basic Talon SRX based on motorDescription. Does not set up PID.'''
         ctre.WPI_TalonSRX.__init__(self,motorDescription['channel'])
         self.motorDescription = motorDescription
         self.pid = None
 
     def setupPid(self,motorDescription = None):
+        '''Sets up PID based on dictionary motorDescription['pid'].
+        This dictionary must contain controlType, sensorPhase, kPreScale, and P, I, D and F.'''
         if not motorDescription:
             motorDescription = self.motorDescription
         if not 'pid' in self.motorDescription:
@@ -114,15 +116,18 @@ class WPI_TalonSRXFeedback(ctre.WPI_TalonSRX):
 
 class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
     def __init__(self, motorDescription):
-        ctre.WPI_TalonFX.__init__(self,motorDescription['channel'])
+        '''Sets up the basic Talon FX with channel of motorDescription['channel']. Doesn't set up pid.'''
+        ctre.WPI_TalonFX.__init__(self, motorDescription['channel'])
         self.motorDescription = motorDescription
         self.pid = None
         if self.motorDescription['type'] == "CANTalonFXFollower":
-            self.controlType == ctre.TalonFXControlMode.Follower
+            self.controlType = ctre.TalonFXControlMode.Follower
         else:
-            self.controlType == ctre.TalonFXControlMode.PercentOutput
+            self.controlType = ctre.TalonFXControlMode.PercentOutput
 
     def setupPid(self,motorDescription = None):
+        '''Sets up pid based on the dictionary motorDescription['pid'] 
+        (Must contain channel, P, I, D, F, control type, sensorPhase (boolean), kPreScale)'''
         if not motorDescription:
             motorDescription = self.motorDescription
         if not 'pid' in self.motorDescription:
@@ -154,13 +159,18 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         self.config_kD(0, self.pid['kD'], 10)
 
     def set(self, speed):
+        '''Sets the motor to a certain output based on if it is a follower or if it has an encoder and pid set up.
+        If not, just sets the motor.'''
         if self.pid != None:
             return ctre.WPI_TalonFX.set(self, self.controlType, speed * self.kPreScale)
+        elif self.motorDescription['type'] == 'CANTalonFXFollower':
+            return ctre.WPI_TalonFX.set(self, self.controlType, self.motorDescription['masterChannel'])
         else:
             return ctre.WPI_TalonFX.set(self, self.controlType, speed)
 
 class SparkMaxFeedback(rev.CANSparkMax):
     def __init__(self, motorDescription, motors):
+        '''Sets up a basic SparkMax using motorDescription. Does not set up pid.'''
         self.motorDescription = motorDescription
         rev.CANSparkMax.__init__(self, self.motorDescription['channel'], self.motorDescription['motorType'])
         self.setInverted(self.motorDescription['inverted'])
@@ -189,19 +199,19 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.PIDController.setFF(pid['kF'], pid['feedbackDevice'])
 
         self.PIDController.setOutputRange(-1, 1, pid['feedbackDevice'])
-        self.PIDController.setReference(0 , self.pidControlType, pid['feedbackDevice']) #Sets the control type to velocity on the pid slot we passed in
+        self.PIDController.setReference(0 , self.ControlType, pid['feedbackDevice']) #Sets the control type to velocity on the pid slot we passed in
 
     def setControlType(self, type):
         '''Use the rev.ControlType.k(control type) as arg'''
         if self.ControlType == "Position":
             self.ControlType = rev.ControlType.kPosition
         elif self.ControlType == "Velocity":
-            self.ControlType == rev.ControlType.kVelocity
-        else:
-            log.debug("Wrong type. Use either Position or Velocity")
+            self.ControlType == rev.ControlType.
 
     def set(self, speed):
+        '''Sets output of motor based on whether it is a follower or has an encoder.'''
         if self.motorDescription['type'] != "SparkMaxFollower":
-            log.debug("error = %f", (speed*self.pid['kPreScale'])-self.encoder.getVelocity())
-            return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType)
+            return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType, self.pid['feedbackDevice'])
+        else:
+            return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType, self.pid['feedbackDevice'])
         return

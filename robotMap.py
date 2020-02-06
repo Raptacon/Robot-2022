@@ -1,4 +1,3 @@
-
 import ConfigMapper as mapper
 
 class RobotMap():
