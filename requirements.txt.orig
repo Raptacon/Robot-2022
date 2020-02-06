@@ -1,0 +1,26 @@
+<<<<<<< HEAD
+pyflakes
+py2app
+macholib
+modulegraph
+# If installed on OSX (joystick support) it seems to fail?
+#pygame
+coverage
+pyfrc<2020
+robotpy-ctre<2020
+robotpy-navx<2020
+robotpy-rev<2020
+robotpy-hal-base<2020
+#robotpy-hal
+robotpy-halsim-gui<2020
+pynetworktables==2019.0.2
+# Need to wait until we have 2020 pynetworktables
+#pyntcore
+=======
+pyfrc
+robotpy-ctre
+robotpy-navx
+robotpy-rev
+pynetworktables
+
+>>>>>>> basic-drivetrain

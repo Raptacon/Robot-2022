@@ -3,18 +3,14 @@ import team3200
 
 import wpilib
 from magicbot import MagicRobot
-
 from components.driveTrain import DriveTrain
+
 
 
 class MyRobot(MagicRobot):
 
-    #
-    # Define components here
-    #
-
     driveTrain: DriveTrain
-
+    SOME_CONSTANT = 1
     def createObjects(self):
         """Initialize all wpilib motors & sensors"""
 
@@ -31,7 +27,7 @@ class MyRobot(MagicRobot):
 
     def teleopPeriodic(self):
         """Place code here that does things as a result of operator
-           actions"""
+        actions"""
         self.driveTrain.setTank(1,1)
 
 
