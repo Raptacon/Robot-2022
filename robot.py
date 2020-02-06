@@ -1,62 +1,52 @@
-#!/usr/bin/env python3
-import team3200
-
+"""
+Team 3200 Robot base class
+"""
+from wpilib import XboxController
 import wpilib
 from magicbot import MagicRobot
+import robotMap
 
-from components.driveTrain import DriveTrain
-
+import components.dtFxTest
+import components.driveTrain
 
 class MyRobot(MagicRobot):
+    """
+    Base robot class of Magic Bot Type
+    """
 
-    #
-    # Define components here
-    #
-
-    driveTrain: DriveTrain
+    driveTrain: components.driveTrain.DriveTrain
 
     def createObjects(self):
-        """Initialize all wpilib motors & sensors"""
-
-        # TODO: create button example here
-        
-        self.joystick = wpilib.Joystick(0)
-
-        self.driveTrain_motorsList = dict(team3200.robotMap.motorsMap.driveMotors)
-
-    #
-    # No autonomous routine boilerplate required here, anything in the
-    # autonomous folder will automatically get added to a list
-    #
+        """
+        Robot-wide initialization code should go here. Replaces robotInit
+        """
+        self.left = 0
+        self.right = 0
+        self.stick = XboxController(0)
+        self.map = robotMap.RobotMap()
+        self.driveTrain_motorsList = self.map.motorsMap.driveMotors
 
     def teleopPeriodic(self):
-        """Place code here that does things as a result of operator
-           actions"""
-        self.driveTrain.setTank(1,1)
+        """
+        Must include. Called ruing teleop.
+        """
+        self.left = self.stick.getRawAxis(1)
+        self.rot = self.stick.getRawAxis(0)
+        self.driveTrain.setArcade(self.left, self.rot)
 
+    def testInit(self):
+        """
+        Function called when testInit is called. Crashes on 2nd call right now
+        """
+        pass
+        #print("Stick %s, left %s, right %s", self.stick, self.left, self.right)
 
-if __name__ == "__main__":
-    wpilib.run(MyRobot)
-"""
-Base file that setups basic robot. Actual robot is in team3200 module.
-This file should not need to be edited.
-"""
-import wpilib
-from team3200 import Robot as Robot
+    def testPeriodic(self):
+        """
+        Called during test mode alot
+        """
+        pass
+
 
 if __name__ == '__main__':
-    try:
-        # patch no exit error if not running on robot
-        try:
-            print(wpilib._impl.main.exit)
-        except Exception:
-            wpilib._impl.main.exit = exit
-
-        # fixes simulation rerun errors.
-        # todo verify this causes no issues on robot
-        wpilib.DriverStation._reset()
-
-    except Exception as err:
-        print("Failed to do extra setup. Error", err)
-
-    wpilib.run(Robot, physics_enabled=True)
+    wpilib.run(MyRobot)
