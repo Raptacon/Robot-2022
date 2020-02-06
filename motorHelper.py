@@ -126,7 +126,7 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
             self.controlType = ctre.TalonFXControlMode.PercentOutput
 
     def setupPid(self,motorDescription = None):
-        '''Sets up pid based on the dictionary motorDescription['pid'] 
+        '''Sets up pid based on the dictionary motorDescription['pid']
         (Must contain channel, P, I, D, F, control type, sensorPhase (boolean), kPreScale)'''
         if not motorDescription:
             motorDescription = self.motorDescription
