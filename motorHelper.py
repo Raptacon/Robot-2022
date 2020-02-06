@@ -63,15 +63,17 @@ def createMotor(motorDescp, motors = {}):
         motor.configContinuousCurrentLimit(nominalMaxCurrent,10)
         motor.enableCurrentLimit(True)
 
-    if 'rampRate' in motorDescp:
-        motor.configOpenLoopRamp(motorDescp['rampRate'],10)
+    #if 'rampRate' in motorDescp:
+    #    motor.configOpenLoopRamp(motorDescp['rampRate'],10)
 
     return motor
 
-class WPI_TalonSRXFeedback(ctre.WPI_TalonSRX):
+class WPI_TalonFeedback(ctre.WPI_TalonSRX):#ctre.wpi_talonsrx.WPI_TalonSRX
+    """
+    Class used to setup TalonSRX motors if there are PID setting for it
+    """
     def __init__(self, motorDescription):
-        '''Sets up a basic Talon SRX based on motorDescription. Does not set up PID.'''
-        ctre.WPI_TalonSRX.__init__(self,motorDescription['channel'])
+        ctre.wpi_talonsrx.WPI_TalonSRX.__init__(self,motorDescription['channel'])
         self.motorDescription = motorDescription
         self.pid = None
 
@@ -150,7 +152,6 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         self.configNominalOutputReverse(0, 10)
         self.configPeakOutputForward(1, 10)
         self.configPeakOutputReverse(-1, 10)
-
         self.configVelocityMeasurementPeriod(ctre.VelocityMeasPeriod(1), 10)
         #/* set closed loop gains in slot0 */
         self.config_kF(0, self.pid['kF'], 10)
@@ -159,18 +160,19 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         self.config_kD(0, self.pid['kD'], 10)
 
     def set(self, speed):
-        '''Sets the motor to a certain output based on if it is a follower or if it has an encoder and pid set up.
-        If not, just sets the motor.'''
+        """
+        Overrides the default set() to allow for controll using the pid loop
+        """
         if self.pid != None:
-            return ctre.WPI_TalonFX.set(self, self.controlType, speed * self.kPreScale)
-        elif self.motorDescription['type'] == 'CANTalonFXFollower':
-            return ctre.WPI_TalonFX.set(self, self.controlType, self.motorDescription['masterChannel'])
+            return ctre.wpi_talonsrx.WPI_TalonSRX.set(self, self.controlType, speed * self.kPreScale)
         else:
-            return ctre.WPI_TalonFX.set(self, self.controlType, speed)
+            return self.set(speed)
 
 class SparkMaxFeedback(rev.CANSparkMax):
+    """
+    Class used to setup SparkMax motor if there are PID settings for it
+    """
     def __init__(self, motorDescription, motors):
-        '''Sets up a basic SparkMax using motorDescription. Does not set up pid.'''
         self.motorDescription = motorDescription
         rev.CANSparkMax.__init__(self, self.motorDescription['channel'], self.motorDescription['motorType'])
         self.setInverted(self.motorDescription['inverted'])
@@ -209,7 +211,9 @@ class SparkMaxFeedback(rev.CANSparkMax):
             self.ControlType == rev.ControlType.
 
     def set(self, speed):
-        '''Sets output of motor based on whether it is a follower or has an encoder.'''
+        """
+        Overrides the default set() to allow for controll using the pid loop
+        """
         if self.motorDescription['type'] != "SparkMaxFollower":
             return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType, self.pid['feedbackDevice'])
         else:
