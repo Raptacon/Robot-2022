@@ -29,8 +29,9 @@ def createMotor(motorDescp, motors = {}):
             motor = ctre.WPI_TalonFX(motorDescp['channel'])
     
     if motorDescp['type'] == 'CANTalonFXFollower':
-        motor = WPI_TalonFXFeedback(motorDescp)
-        motor.set(0.1)
+        motor =ctre.WPI_TalonFX(motorDescp['channel'])
+        motor.set(mode = ctre.TalonFXControlMode.Follower, value = motorDescp['masterChannel'])
+        motors[str(motorDescp['channel'])] = motor
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''

@@ -3,7 +3,7 @@
 driveMotors:
   rightMotor:
     channel: 30
-    type: "CANTalon"
+    type: "CANTalonFX"
     inverted: True
     pid:
       controlType: "Position"
@@ -18,12 +18,12 @@ driveMotors:
   rightFollower:
     channel: 31
     masterChannel: 1
-    type: "CANTalonFollower"
+    type: "CANTalonFXFollower"
     inverted: False
 
   leftMotor:
     channel: 40
-    type: "CANTalon"
+    type: "CANTalonFX"
     inverted: True
     pid:
       controlType: "Velocity"
@@ -38,5 +38,5 @@ driveMotors:
   leftFollower:
     channel: 41
     masterChannel: 0
-    type: "CANTalonFollower"
+    type: "CANTalonFXFollower"
     inverted: False
