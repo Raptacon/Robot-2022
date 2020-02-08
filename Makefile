@@ -11,7 +11,10 @@ sim: setup
 venv:
 	python3 -m venv ${VENV}
 
-test: setup
+codecheck:
+	${VENVBIN}flake8 --exclude venv,tests
+
+test: setup codecheck
 	${VENVBIN}python3 robot.py test
 
 coverage: setup test
