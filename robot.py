@@ -1,50 +1,61 @@
-#!/usr/bin/env python3
 
+"""
+Team 3200 Robot base class
+"""
+from wpilib import XboxController
 import wpilib
 from magicbot import MagicRobot
 
-from components.component1 import Component1
-from components.component2 import Component2
-
+from robotMap import RobotMap
+from components.driveTrain import DriveTrain
 
 class MyRobot(MagicRobot):
+    """
+    Base robot class of Magic Bot Type
+    """
 
-    #
-    # Define components here
-    #
-
-    component1: Component1
-    component2: Component2
-
-    # You can even pass constants to components
-    SOME_CONSTANT = 1
+    driveTrain: DriveTrain
 
     def createObjects(self):
-        """Initialize all wpilib motors & sensors"""
+        """
+        Robot-wide initialization code should go here. Replaces robotInit
+        """
+        self.map = RobotMap()
+        self.left = 0
+        self.right = 0
+        self.stick = XboxController(0)
 
-        # TODO: create button example here
-
-        self.component1_motor = wpilib.Talon(1)
-        self.some_motor = wpilib.Talon(2)
-
-        self.joystick = wpilib.Joystick(0)
-
-    #
-    # No autonomous routine boilerplate required here, anything in the
-    # autonomous folder will automatically get added to a list
-    #
+        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
 
     def teleopPeriodic(self):
-        """Place code here that does things as a result of operator
-           actions"""
+        """
+        Must include. Called ruing teleop.
+        """
+        self.controllerInput()
+        self.driveTrain.setArcade(self.left/2, -self.rightHoriz/2)
 
-        try:
-            if self.joystick.getTrigger():
-                self.component2.do_something()
-        except:
-            self.onException()
+    def testInit(self):
+        """
+        Function called when testInit is called. Crashes on 2nd call right now
+        """
+        pass
+        
+
+    def testPeriodic(self):
+        """
+        Called during test mode alot
+        """
+        pass
+
+    def controllerInput(self):
+        """
+        Collects all controller values and puts them in an easily readable format
+        """
+        self.left = self.stick.getRawAxis(1)
+        self.right = self.stick.getRawAxis(5)
+        self.leftHoriz = self.stick.getRawAxis(0)
+        self.rightHoriz = self.stick.getRawAxis(4)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     wpilib.run(MyRobot)
-
