@@ -2,6 +2,7 @@ name: Raptacon (Team 3200) CI Pipeline
 
 on: 
   push:
+  pull_request:
   schedule:
     - cron: '0 2 * * *'
     
