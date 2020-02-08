@@ -39,7 +39,7 @@ def createMotor(motorDescp, motors = {}):
         motor.follow(motors.get(str(motorDescp['masterChannel'])), motorDescp['inverted'])
 
     else:
-        print("Unknown Motor")
+        log.error("Unknown Motor")
 
     if 'inverted' in motorDescp:
         motor.setInverted(motorDescp['inverted'])
@@ -60,16 +60,22 @@ def createMotor(motorDescp, motors = {}):
     return motor
 
 class WPI_TalonFeedback(ctre.WPI_TalonSRX):#ctre.wpi_talonsrx.WPI_TalonSRX
+    """
+    Class used to setup TalonSRX motors if there are PID setting for it
+    """
     def __init__(self, motorDescription):
         ctre.wpi_talonsrx.WPI_TalonSRX.__init__(self,motorDescription['channel'])
         self.motorDescription = motorDescription
         self.pid = None
 
     def setupPid(self,motorDescription = None):
+        """
+        Allows for the PID to be changed after its creation
+        """
         if not motorDescription:
             motorDescription = self.motorDescription
         if not 'pid' in self.motorDescription:
-            print("Motor channel %d has no PID"%(self.motorDescription['channel']))
+            log.warning("Motor channel %d has no PID"%(self.motorDescription['channel']))
             return
         self.pid = self.motorDescription['pid']
         self.controlType = self.pid['controlType']
@@ -94,12 +100,18 @@ class WPI_TalonFeedback(ctre.WPI_TalonSRX):#ctre.wpi_talonsrx.WPI_TalonSRX
         self.config_kD(0, self.pid['kD'], 10)
 
     def set(self, speed):
+        """
+        Overrides the default set() to allow for controll using the pid loop
+        """
         if self.pid != None:
             return ctre.wpi_talonsrx.WPI_TalonSRX.set(self, self.controlType, speed * self.kPreScale)
         else:
             return self.set(speed)
 
 class SparkMaxFeedback(rev.CANSparkMax):
+    """
+    Class used to setup SparkMax motor if there are PID settings for it
+    """
     def __init__(self, motorDescription, motors):
         self.motorDescription = motorDescription
         rev.CANSparkMax.__init__(self, self.motorDescription['channel'], self.motorDescription['motorType'])
@@ -109,7 +121,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
     def setupPid(self):
         '''Sets up the PIDF values and a pidcontroller to use to control the motor using pid.'''
         if not 'pid' in self.motorDescription:
-            print("Motor channel %f has no PID", (self.motorDescription['channel']))
+            log.warning("Motor channel %f has no PID", (self.motorDescription['channel']))
             return
         self.pid = self.motorDescription['pid']
         pid = self.pid
@@ -135,6 +147,9 @@ class SparkMaxFeedback(rev.CANSparkMax):
             log.debug("Wrong type. Use the rev.ControlType.k(control type)")
 
     def set(self, speed):
+        """
+        Overrides the default set() to allow for controll using the pid loop
+        """
         if self.motorDescription['type'] != "SparkMaxFollower":
             log.debug("error = %f", (speed*self.pid['kPreScale'])-self.encoder.getVelocity())
             return self.PIDController.setReference(speed*self.pid['kPreScale'], self.pidControlType)

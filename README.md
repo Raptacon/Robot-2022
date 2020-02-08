@@ -1,3 +1,4 @@
+
 ## Welcome to Robot 2020
 
 Please take a look at the [wiki](https://github.com/Raptacon/Robot-2020/wiki) for the most up to date documenation
@@ -10,3 +11,6 @@ If you're using OSX you probably want to install python from python.org. Brew py
 
 # Windows Users
 ![Raptacon (Team 3200) CI Pipeline](https://github.com/Raptacon/Robot-2020/workflows/Raptacon%20(Team%203200)%20CI%20Pipeline/badge.svg)
+
+
+
