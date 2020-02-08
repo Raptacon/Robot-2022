@@ -7,7 +7,7 @@ def createMotor(motorDescp, motors = {}):
     '''This is where all motors are set up.
     Motors include CAN Talons, CAN Talon Followers, CAN Talon FX, CAN Talon FX Followers, and SparkMax and its follower.
     Not all are functional, it's up to you to find out. Good luck!'''
-    if motorDescp['type'] == 'CANTalon':
+    if motorDescp['type'] == 'CANTalonSRX':
         #if we want to use the built in encoder set it here
         if('pid' in motorDescp) and motorDescp['pid'] != None:
             motor = WPI_TalonSRXFeedback(motorDescp)
@@ -16,7 +16,7 @@ def createMotor(motorDescp, motors = {}):
             motor = ctre.WPI_TalonSRX(motorDescp['channel'])
         motors[str(motorDescp['channel'])] = motor
 
-    elif motorDescp['type'] == 'CANTalonFollower':
+    elif motorDescp['type'] == 'CANTalonSRXFollower':
         motor =ctre.WPI_TalonSRX(motorDescp['channel'])
         motor.set(mode = ctre.ControlMode.Follower, demand0 = motorDescp['masterChannel'])
         motors[str(motorDescp['channel'])] = motor
@@ -92,7 +92,7 @@ class WPI_TalonSRXFeedback(ctre.WPI_TalonSRX):
         
         self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
-        self.pidControlType = self.pid['controlType']
+        self.ControlType = self.pid['controlType']
         self.kPreScale = self.pid['kPreScale']
 
         #/* set the peak, nominal outputs, and deadband */
@@ -142,7 +142,7 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         
         self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
-        self.pidControlType = self.pid['controlType']
+        self.controlType = self.pid['controlType']
         self.kPreScale = self.pid['kPreScale']
 
         #/* set the peak, nominal outputs, and deadband */
@@ -206,7 +206,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
         if self.ControlType == "Position":
             self.ControlType = rev.ControlType.kPosition
         elif self.ControlType == "Velocity":
-            self.ControlType == rev.ControlType.
+            self.ControlType == rev.ControlType.kVelocity
 
     def set(self, speed):
         '''Sets output of motor based on whether it is a follower or has an encoder.'''
