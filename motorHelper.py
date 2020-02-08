@@ -151,6 +151,6 @@ class SparkMaxFeedback(rev.CANSparkMax):
         Overrides the default set() to allow for controll using the pid loop
         """
         if self.motorDescription['type'] != "SparkMaxFollower":
-            log.debug("error = %f", (speed*self.pid['kPreScale'])-self.encoder.getVelocity())
+            log.debug("error = %f", (speed*self.pid['kPreScale']) - self.encoder.getVelocity())
             return self.PIDController.setReference(speed*self.pid['kPreScale'], self.pidControlType)
         return

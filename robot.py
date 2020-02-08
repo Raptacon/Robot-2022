@@ -9,6 +9,7 @@ from magicbot import MagicRobot
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
 
+
 class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
@@ -32,7 +33,7 @@ class MyRobot(MagicRobot):
         Must include. Called ruing teleop.
         """
         self.controllerInput()
-        self.driveTrain.setArcade(self.left/2, -self.rightHoriz/2)
+        self.driveTrain.setArcade(self.left / 2, -self.rightHoriz / 2)
 
     def testInit(self):
         """
@@ -40,7 +41,6 @@ class MyRobot(MagicRobot):
         """
         pass
         
-
     def testPeriodic(self):
         """
         Called during test mode alot

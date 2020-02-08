@@ -20,6 +20,6 @@ class CANMap():
         pid = None
         rampRate = .2
         driveMotors = {}
-        driveMotors['right'] = {'channel':0, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
-        driveMotors['left'] = {'channel':1, 'inverted':False, 'type':'CANTalon', 'pid':pid, "rampRate":rampRate}
+        driveMotors['right'] = {'channel': 0, 'inverted': False, 'type': 'CANTalon', 'pid': pid, "rampRate": rampRate}
+        driveMotors['left'] = {'channel': 1, 'inverted': False, 'type': 'CANTalon', 'pid': pid, "rampRate": rampRate}
         self.driveMotors = driveMotors

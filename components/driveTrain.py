@@ -3,7 +3,8 @@ import wpilib.drive
 import motorHelper
 
 
-class DriveTrain: #Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
+class DriveTrain:
+    # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     driveTrain_motorsList: dict
 
     def on_enable(self):
@@ -47,7 +48,7 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation
 
-    def stop(self, coast = False):
+    def stop(self, coast=False):
         self.controllingOverTank = False
         self.controllingOverArcade = False
 
@@ -60,4 +61,3 @@ class DriveTrain: #Note - The way we will want to do this will be to give this c
 
         elif self.controllingOverArcade:
             self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
-

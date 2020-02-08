@@ -11,10 +11,12 @@ sim: setup
 venv:
 	python3 -m venv ${VENV}
 
-codecheck:
-	${VENVBIN}flake8 --exclude venv,tests
+lint:
+	# From CI pipeline. We are more strict in our local check
+	# --select=E9,F6,F7,F8,F4,W1,W2,W4,W5,W6,E11 --ignore W293 
+	${VENVBIN}flake8 . --count --ignore W293,E501 --show-source --statistics --exclude venv,*/tests/pyfrc*
 
-test: setup codecheck
+test: setup lint
 	${VENVBIN}python3 robot.py test
 
 coverage: setup test
