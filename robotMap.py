@@ -1,3 +1,4 @@
+import ConfigMapper as mapper
 
 class RobotMap():
     """
@@ -6,20 +7,18 @@ class RobotMap():
     """
     def __init__(self):
         """intilize the robot map"""
-        self.motorsMap = CANMap()
+        config = mapper.ConfigMapper("config.yml") #Put filename for config here, should be in the same directory as robotMap.py
+        self.motorsMap = CANMap(config)
 
 
 class CANMap():
     """
-    holds the mappins to all the motors in the robot. Both CAN and PWM
+    Holds the mappings to all the motors in the robot. Both CAN and PWM
     """
-    def __init__(self):
+    def __init__(self, config):
         """
         Creates default mappings
         """
-        pid = None
-        rampRate = .2
-        driveMotors = {}
-        driveMotors['right'] = {'channel': 0, 'inverted': False, 'type': 'CANTalon', 'pid': pid, "rampRate": rampRate}
-        driveMotors['left'] = {'channel': 1, 'inverted': False, 'type': 'CANTalon', 'pid': pid, "rampRate": rampRate}
+        driveMotors = config.getDicts()
+        print("DRIVEMOTORS: {}".format(driveMotors['leftMotor']))
         self.driveMotors = driveMotors

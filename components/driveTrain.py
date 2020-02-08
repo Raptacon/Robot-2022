@@ -22,9 +22,8 @@ class DriveTrain:
             print("{}".format(currentMotor))
             self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
 
-        self.leftMotor = self.motors["left"]
-        self.rightMotor = self.motors["right"]
-
+        self.leftMotor = self.motors["leftMotor"]
+        self.rightMotor = self.motors["rightMotor"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
 
         print("DriveTrain component Enabled")

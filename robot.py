@@ -5,7 +5,6 @@ Team 3200 Robot base class
 from wpilib import XboxController
 import wpilib
 from magicbot import MagicRobot
-
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
 
@@ -14,6 +13,7 @@ class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
     """
+
 
     driveTrain: DriveTrain
 
@@ -25,12 +25,11 @@ class MyRobot(MagicRobot):
         self.left = 0
         self.right = 0
         self.stick = XboxController(0)
-
         self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
 
     def teleopPeriodic(self):
         """
-        Must include. Called ruing teleop.
+        Must include. Called running teleop.
         """
         self.controllerInput()
         self.driveTrain.setArcade(self.left / 2, -self.rightHoriz / 2)
