@@ -110,3 +110,4 @@ setup
 
 # vim
 *.sw[op]
+imgui.ini
