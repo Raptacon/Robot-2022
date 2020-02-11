@@ -1,3 +1,4 @@
+
 """
 Team 3200 Robot base class
 """
@@ -8,6 +9,7 @@ import ctre
 
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
+
 
 class MyRobot(MagicRobot):
     """
@@ -29,7 +31,7 @@ class MyRobot(MagicRobot):
 
     def teleopPeriodic(self):
         """
-        Must include. Called ruing teleop.
+        Must include. Called running teleop.
         """
         self.controllerInput()
         #self.driveTrain.setArcade(self.left/2, -self.rightHoriz/2)

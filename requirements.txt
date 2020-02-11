@@ -1,3 +1,13 @@
+pyflakes
+py2app
+macholib
+modulegraph
+flake8
+coverage
+
+
+# If installed on OSX (joystick support) it seems to fail?
+pygame
 pyfrc
 robotpy-ctre
 robotpy-navx
