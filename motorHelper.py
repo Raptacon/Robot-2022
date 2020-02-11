@@ -21,14 +21,14 @@ def createMotor(motorDescp, motors = {}):
         motor.set(mode = ctre.ControlMode.Follower, value = motorDescp['masterChannel'])
         motors[str(motorDescp['channel'])] = motor
 
-    if motorDescp['type'] == 'CANTalonFX':
+    elif motorDescp['type'] == 'CANTalonFX':
         if('pid' in motorDescp) and motorDescp['pid'] != None:
             motor = WPI_TalonFXFeedback(motorDescp)
             motor.setupPid()
         else:
             motor = ctre.WPI_TalonFX(motorDescp['channel'])
     
-    if motorDescp['type'] == 'CANTalonFXFollower':
+    elif motorDescp['type'] == 'CANTalonFXFollower':
         motor =ctre.WPI_TalonFX(motorDescp['channel'])
         motor.set(mode = ctre.TalonFXControlMode.Follower, value = motorDescp['masterChannel'])
         motors[str(motorDescp['channel'])] = motor
