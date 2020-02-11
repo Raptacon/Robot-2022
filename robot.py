@@ -1,3 +1,4 @@
+
 """
 Team 3200 Robot base class
 """
@@ -6,6 +7,7 @@ import wpilib
 from magicbot import MagicRobot
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
+
 
 class MyRobot(MagicRobot):
     """
@@ -39,7 +41,6 @@ class MyRobot(MagicRobot):
         """
         pass
         
-
     def testPeriodic(self):
         """
         Called during test mode alot
