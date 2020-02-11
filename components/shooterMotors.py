@@ -1,12 +1,14 @@
 # git stage -p
 # git commit
 # git push
+# Change
+# Change
 
 import wpilib
 import motorHelper
 from components.sensor import SensorClass
 
-class ShooterMotorClass:
+class ShooterMotorCreation:
 
     shooter_MotorsList: dict
 
