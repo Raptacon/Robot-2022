@@ -7,9 +7,6 @@ import wpilib
 from magicbot import MagicRobot
 import ctre
 
-# Platform imported here just to test functionality
-import platform
-
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
 
@@ -19,7 +16,7 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
-    #driveTrain: DriveTrain
+    driveTrain: DriveTrain
 
     def createObjects(self):
         """
@@ -30,26 +27,19 @@ class MyRobot(MagicRobot):
         self.right = 0
         self.stick = XboxController(0)
 
-        #self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
+        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
 
     def teleopPeriodic(self):
         """
         Must include. Called running teleop.
         """
         self.controllerInput()
-        #self.driveTrain.setArcade(self.left/2, -self.rightHoriz/2)
-
-        # Platform.system() is here to find the system of the running machine to calibrate robotMap.py later - set the correct path
-        print(platform.system())
+        self.driveTrain.setArcade(self.left/2, -self.rightHoriz/2)
 
     def testInit(self):
         """
         Function called when testInit is called. Crashes on 2nd call right now
         """
-        motor = ctre.WPI_TalonFX(30)
-        ctre.Orchestra.addInstrument(motor)
-        ctre.Orchestra.loadMusic("/home/lvuser/py/fsd.chirp")
-        ctre.Orchestra.play()
         pass
         
 
