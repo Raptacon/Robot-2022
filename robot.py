@@ -9,7 +9,7 @@ from robotMap import RobotMap
 from components.driveTrain import DriveTrain
 # from components.shooterMotors import ShooterMotorCreation
 from components.sensor import SensorClass
-# from components.loader import LoaderClass
+from components.loader import LoaderClass
 
 dio = wpilib.DigitalInput
 
@@ -21,7 +21,7 @@ class MyRobot(MagicRobot):
     driveTrain: DriveTrain
     # ShooterMotors: ShooterMotorCreation
     Sensors: SensorClass
-    # Loader: LoaderClass
+    Loader: LoaderClass
 
     def createObjects(self):
         """
@@ -55,13 +55,13 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called. Crashes on 2nd call right now
         """
-        pass
+        print("testInit was Successful")
         
     def testPeriodic(self):
         """
         Called during test mode alot
         """
-        pass
+        self.Sensors.setCurrentSensorProperties()
 
     def controllerInput(self):
         """

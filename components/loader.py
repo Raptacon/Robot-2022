@@ -13,6 +13,7 @@ class LoaderClass:
     def run(self):
         self.isAcivated = True
         # print("Is activated successful. Activated: ", self.isAcivated)
+        print("worked")
 
     def stop(self):
         self.isAcivated = False
