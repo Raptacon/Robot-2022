@@ -1,32 +1,33 @@
+from time import sleep
 import wpilib
-import logging
 from components.loader import LoaderClass
 
 # NOTE: This code is written on the basis that 'True' means that the sensor is broken. REFACTOR IF NECESSARY!!!
+
+dio = wpilib.DigitalInput
 
 class SensorClass:
 
     Loader: LoaderClass
 
-    entrySensor: wpilib.DigitalInput
-    exitSensor: wpilib.DigitalInput
+    sensor1: dio
+    sensor2: dio
+    sensor3: dio
+    sensor4: dio
 
-    sensor1: wpilib.DigitalInput
-    sensor2: wpilib.DigitalInput
-    sensor3: wpilib.DigitalInput
-    sensor4: wpilib.DigitalInput
+    def on_enable(self):
 
-    def __init__(self):
-        self.CurrentSensor = None
-        self.sensorX = 0
-        self.isCurrentSensorActivated = False
-        self.isLoaderSensor = True
+        # Basic init
+        self.isCurrentSensorActivated = False # Checks if 'self.Sensors[self.sensorX]' is 'True'
+        self.isCurrentLoaderController = False # Checks if 'self.Sensors[self.sensorX]' controls the loader
 
-        # self.EntrySensorStatus = False
-        self.EntryLoaderStatus = False
-        self.ExitSensorStatus = False
-        # self.ExitLoaderStatus = False
+        # Sensor creation
+        self.sensor1 = dio(1).get()
+        self.sensor2 = dio(2).get()
+        self.sensor3 = dio(3).get()
+        self.sensor4 = dio(4).get()
 
+        # Sensor array
         self.Sensors = [
             self.sensor1, 
             self.sensor2, 
@@ -34,59 +35,52 @@ class SensorClass:
             self.sensor4
         ]
 
-    def setSensor(self):
-        assert(
-            self.sensorX >= 0 and
-            self.sensorX <= 3,
-            'Sensor not in array range.' 
-        )
+        # Key for sensors in 'self.Sensors' array
+        self.sensorX = 0
+
+        # Sets the current sensor
         self.CurrentSensor = self.Sensors[self.sensorX]
 
     def setCurrentSensorProperties(self):
         try:
-            if self.CurrentSensor.get() == False:
-                self.isLoaderSensor = True
+            if self.CurrentSensor == False:
+                self.isCurrentLoaderController = True
                 self.isCurrentSensorActivated = False
 
             elif self.CurrentSensor.get():
-                self.isLoaderSensor = False
+                self.isCurrentLoaderController = False
                 self.isCurrentSensorActivated = True
 
         except Exception as err:
             print("Failed to assign a sensor.", err)
 
-    def LoaderLogic(self):
-        if self.entrySensor.get():
-            if self.entrySensor.get() == False:
-                self.EntryLoaderStatus = True
-
-        elif self.isCurrentSensorActivated:
-            self.EntryLoaderStatus = False
-
-        if self.exitSensor.get():
-            if self.exitSensor.get() == False:
-                self.ExitSensorStatus = True
-
-                if self.ExitSensorStatus == True:
-                    self.ExitSensorStatus = False
-
-    def getSensorShooterStatus(self):
-        return self.Sensors[self.sensor1].get()
-
-    def getSensorStatus(self):
-        return self.CurrentSensor.get()
-
     def execute(self):
+
+        # Runs loader if:
+            # Sensor controls the loader
+            # Sensor is NOT activated (meaning it has yet to recieve a ball)
+            # Any other sensors are activated, FIXME: Configure for other sensors, not just sensor1
         if (
-            self.isLoaderSensor and
+            self.isCurrentLoaderController and
             self.isCurrentSensorActivated == False and
-            self.EntryLoaderStatus
+            any(self.Sensors)
         ):
             self.Loader.run()
 
+        # Stops loader and shifts sensor responsibility if:
+            # Current sensor is activated (recieved a ball)
         elif self.isCurrentSensorActivated:
             self.Loader.stop()
             self.sensorX += 1
 
-        elif self.ExitSensorStatus:
+        # Shifts sensor responsibility if:
+            # Sensor behind the current sensor doesn't have a ball
+        elif self.Sensors[(self.sensorX - 1)] == False:
             self.sensorX -= 1
+
+        # Assertion that array keys called exist
+        assert(
+            self.sensorX >= 0 and
+            self.sensorX <= 3,
+            'Sensor not in array range.' 
+        )
