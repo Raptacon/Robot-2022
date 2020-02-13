@@ -7,7 +7,9 @@ import wpilib
 from magicbot import MagicRobot
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
-from components.shooterMotors import ShooterMotorClass
+# from components.shooterMotors import ShooterMotorCreation
+# from components.sensor import SensorClass
+# from components.loader import LoaderClass
 
 
 class MyRobot(MagicRobot):
@@ -16,33 +18,43 @@ class MyRobot(MagicRobot):
     """
 
     driveTrain: DriveTrain
-    ShooterMotors: ShooterMotorClass
+    # ShooterMotors: ShooterMotorCreation
+    # Sensors: SensorClass
+    # Loader: LoaderClass
 
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
-        # Drive Train
         self.map = RobotMap()
+
+        # Drive Train
         self.left = 0
         self.right = 0
         self.stick = XboxController(0)
         self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
 
         # Shooter
-        self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
+        # self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
 
+        """
         self.loaderMotor = 0
         self.shooterMotor = 0
         self.intakeMotor = 0
-
+        """
+        """
         self.entrySensor = wpilib.DigitalInput(0)
         self.exitSensor = wpilib.DigitalInput(5)
+        """
 
+        """
         self.sensor1 = wpilib.DigitalInput(1) # Array: 0
         self.sensor2 = wpilib.DigitalInput(2) # Array: 1
         self.sensor3 = wpilib.DigitalInput(3) # Array: 2
         self.sensor4 = wpilib.DigitalInput(4) # Array: 3
+        """
+
+        # self.sensorSelected = wpilib.DigitalInput(0)
 
     def teleopPeriodic(self):
         """
@@ -51,21 +63,18 @@ class MyRobot(MagicRobot):
         self.controllerInput()
         self.driveTrain.setArcade(self.left / 2, -self.rightHoriz / 2)
 
-        if self.controller.getTriggerAxis(1):
-            self.ShooterMotors.setLoaderSpeed(self.controller.getTriggerAxis(1))
-
-        print(self.ShooterMotors.getLoaderMotor())
-
     def testInit(self):
         """
         Function called when testInit is called. Crashes on 2nd call right now
         """
+        # print("testInitSuccessful")
         pass
         
     def testPeriodic(self):
         """
         Called during test mode alot
         """
+        # self.Loader.run()
         pass
 
     def controllerInput(self):

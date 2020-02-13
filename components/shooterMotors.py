@@ -1,8 +1,6 @@
 # git stage -p
 # git commit
 # git push
-# Change
-# Change
 
 import wpilib
 import motorHelper
