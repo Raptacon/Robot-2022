@@ -5,7 +5,6 @@ Team 3200 Robot base class
 from wpilib import XboxController
 import wpilib
 from magicbot import MagicRobot
-import ctre
 
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
