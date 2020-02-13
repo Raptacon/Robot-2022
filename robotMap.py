@@ -1,4 +1,5 @@
 import ConfigMapper as mapper
+import os
 
 class RobotMap():
     """
@@ -7,8 +8,9 @@ class RobotMap():
     """
     def __init__(self):
         """intilize the robot map"""
-        config = mapper.ConfigMapper("/home/lvuser/py/config.yml") #Put filename for config here, should be in the same directory as robotMap.py
-        #config = mapper.ConfigMapper("config.yml")
+        #config = mapper.ConfigMapper("/home/lvuser/py/config.yml") #Put filename for config here, should be in the same directory as robotMap.py
+        configFile = os.path.dirname(__file__) + os.path.sep +"config.yml"
+        config = mapper.ConfigMapper(configFile)
         self.motorsMap = CANMap(config)
 
 

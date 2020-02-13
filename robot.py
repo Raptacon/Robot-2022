@@ -27,7 +27,6 @@ class MyRobot(MagicRobot):
         self.stick = XboxController(0)
         self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
-        self.auto = MagicRobot.autonomous()
 
     def teleopPeriodic(self):
         """
