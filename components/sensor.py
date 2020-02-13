@@ -14,8 +14,9 @@ class SensorClass:
     sensor2: dio
     sensor3: dio
     sensor4: dio
+    sensor5: dio
 
-    def on_enable(self):
+    def __init__(self):
 
         # Basic init
         self.isCurrentSensorActivated = False # Checks if 'self.Sensors[self.sensorX]' is 'True'
@@ -26,13 +27,15 @@ class SensorClass:
         self.sensor2 = dio(2).get()
         self.sensor3 = dio(3).get()
         self.sensor4 = dio(4).get()
+        self.sensor5 = dio(5).get()
 
         # Sensor array
         self.Sensors = [
             self.sensor1, 
             self.sensor2, 
             self.sensor3, 
-            self.sensor4
+            self.sensor4,
+            self.sensor5
         ]
 
         # Key for sensors in 'self.Sensors' array
@@ -40,6 +43,10 @@ class SensorClass:
 
         # Sets the current sensor
         self.CurrentSensor = self.Sensors[self.sensorX]
+
+        # Creates the basis for the logic regarding when the loader is run.
+        for sensorKey in range((self.sensorX + 1), 5):
+            self.loaderlogicSensors = self.Sensors[sensorKey]
 
     def setCurrentSensorProperties(self):
         try:
@@ -58,12 +65,12 @@ class SensorClass:
 
         # Runs loader if:
             # Sensor controls the loader
-            # Sensor is NOT activated (meaning it has yet to recieve a ball)
-            # Any other sensors are activated, FIXME: Configure for other sensors, not just sensor1
+            # Sensor is NOT activated (has yet to recieve a ball)
+            # Any other sensors are activated
         if (
             self.isCurrentLoaderController and
             self.isCurrentSensorActivated == False and
-            any(self.Sensors)
+            any(self.loaderlogicSensors)
         ):
             self.Loader.run()
 
@@ -81,6 +88,6 @@ class SensorClass:
         # Assertion that array keys called exist
         assert(
             self.sensorX >= 0 and
-            self.sensorX <= 3,
+            self.sensorX <= 4,
             'Sensor not in array range.' 
         )
