@@ -38,11 +38,15 @@ class MyRobot(MagicRobot):
         # Shooter
         # self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
 
+        """
         self.sensor1 = dio(1) # Array: 0
         self.sensor2 = dio(2) # Array: 1
         self.sensor3 = dio(3) # Array: 2
         self.sensor4 = dio(4) # Array: 3
         self.sensor5 = dio(5) # Array: 4
+        """
+
+        self.sensorObjects = dio
 
     def teleopPeriodic(self):
         """
