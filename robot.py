@@ -18,10 +18,11 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
-    driveTrain: DriveTrain
-    # ShooterMotors: ShooterMotorCreation
     Sensors: SensorClass
     Loader: LoaderClass
+
+    driveTrain: DriveTrain
+    # ShooterMotors: ShooterMotorCreation
 
     def createObjects(self):
         """
@@ -38,15 +39,8 @@ class MyRobot(MagicRobot):
         # Shooter
         # self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
 
-        """
-        self.sensor1 = dio(1) # Array: 0
-        self.sensor2 = dio(2) # Array: 1
-        self.sensor3 = dio(3) # Array: 2
-        self.sensor4 = dio(4) # Array: 3
-        self.sensor5 = dio(5) # Array: 4
-        """
-
         self.sensorObjects = dio
+        # self.loaderlogicSensors = dio
 
     def teleopPeriodic(self):
         """
@@ -60,12 +54,14 @@ class MyRobot(MagicRobot):
         Function called when testInit is called. Crashes on 2nd call right now
         """
         print("testInit was Successful")
-        
+
     def testPeriodic(self):
         """
         Called during test mode alot
         """
+        # print("testPeriodic is called")
         self.Sensors.setCurrentSensorProperties()
+        self.Sensors.execute()
 
     def controllerInput(self):
         """

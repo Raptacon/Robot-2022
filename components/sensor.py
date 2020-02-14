@@ -11,16 +11,8 @@ class SensorClass:
 
     Loader: LoaderClass
 
-    """
-    sensor1: dio
-    sensor2: dio
-    sensor3: dio
-    sensor4: dio
-    sensor5: dio
-    """
     sensorObjects: dio
-
-    # sensorObjects: dio
+    # loaderlogicSensors: dio
 
     def __init__(self):
 
@@ -28,82 +20,88 @@ class SensorClass:
         self.isCurrentSensorActivated = False # Checks if 'self.SensorArray[self.sensorX]' is 'True'
         self.isCurrentLoaderController = False # Checks if 'self.SensorArray[self.sensorX]' controls the loader
         self.CurrentSensor = None
+        self.logicSensors = None
 
-        """
-        # Sensor array
-        self.SensorArray = [
-            self.sensor1,
-            self.sensor2,
-            self.sensor3,
-            self.sensor4,
-            self.sensor5
-        ]
-        """
+        self.logicArray = []
 
         self.SensorArray = []
-
-        for x in range(1, 6):
-            sensorObjects = dio(x)
-            self.SensorArray.append(sensorObjects)
 
         # Key for sensors in 'self.Sensors' array
         self.sensorX = 0
 
-        """
-        # Creates all 5 sensors and allocates them to an array, NOTE: Needs testing
-        for senseCreation in range(1, 6):
-            self.SensorArray.append(self.sensorObjects(senseCreation))
-        """
+        for x in range(1, 6):
+            self.sensorObjects = dio(x)
+            self.SensorArray.append(self.sensorObjects)
 
     def setCurrentSensorProperties(self):
 
         # Sets the current sensor
         self.CurrentSensor = self.SensorArray[self.sensorX]
+        print("Sensor key:", self.sensorX)
+        print("Current sensor status:", self.CurrentSensor.get())
 
         try:
             if self.CurrentSensor.get():
                 self.isCurrentLoaderController = True
                 self.isCurrentSensorActivated = False
-                print("current sense unbroken")
+                # print("current sense unbroken")
+                print("IsCurrentLoaderController?:", self.isCurrentLoaderController)
 
             elif self.CurrentSensor.get() == False:
                 self.isCurrentLoaderController = False
                 self.isCurrentSensorActivated = True
-                print("current sense broken")
+                # print("current sense broken")
 
         except Exception as err:
             print("Failed to assign a sensor:", err)
 
     def execute(self):
+        """
+        try:
+            assert(self.sensorX >= 0)
+        except AssertionError as err:
+            print("Sensor key assertion failed:", err)
+        """
 
         # Creates the basis for the logic regarding when the loader is run.
-        for sensorKey in range((self.sensorX + 1), 6):
-            self.loaderlogicSensors = self.SensorArray[sensorKey].get()
+        for x in range((self.sensorX + 1), 5):
+            self.logicSensors = self.SensorArray[x].get()
+            self.logicArray.append(self.logicSensors)
+
+        print("Logic Array:", self.logicArray)
 
         # Runs loader if:
             # Sensor controls the loader
             # Any other sensors are activated
         if (
             self.isCurrentLoaderController and
-            not any(self.loaderlogicSensors)
+            not any(self.logicArray)
+            # all(self.loaderlogicSensors) == False
         ):
             # self.Loader.run()
             print("loader running")
+            print(" ")
+            self.logicArray = []
 
         # Stops loader and shifts sensor responsibility if:
             # ONLY the loader sensor is activated
-        elif any(self.loaderlogicSensors):
-            self.Loader.stop()
+        elif all(self.logicArray) and self.CurrentSensor.get() == False:
+            # self.Loader.stop()
             self.sensorX += 1
+            print("loader stopping")
+            print(" ")
+            self.logicArray = []
 
         # Shifts sensor responsibility if:
             # Sensor behind the current sensor doesn't have a ball FIXME: Incorrect pseudocode
-        elif self.SensorArray[(self.sensorX - 1)].get() == False:
+        elif self.SensorArray[(self.sensorX - 1)].get():
             self.sensorX -= 1
+            print("shift sensor up")
+            print(" ")
+            self.logicArray = []
 
-        # Assertion that array keys called exist
-        assert(
-            self.sensorX >= 0 and
-            self.sensorX <= 4,
-            'Sensor not in array range.' 
-        )
+        else:
+            self.logicArray = []
+            print("all else failed to pass")
+            print(" ")
+
