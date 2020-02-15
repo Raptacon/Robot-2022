@@ -182,7 +182,11 @@ class SparkMaxFeedback(rev.CANSparkMax):
     """
     def __init__(self, motorDescription, motors):
         self.motorDescription = motorDescription
-        rev.CANSparkMax.__init__(self, self.motorDescription['channel'], self.motorDescription['motorType'])
+        if self.motorDescription['motorType'] == "Brushless":
+            self.motorType = 1
+        else:
+            self.motorType = 0
+        rev.CANSparkMax.__init__(self, self.motorDescription['channel'], self.motorType)
         self.setInverted(self.motorDescription['inverted'])
         self.motors = motors
 

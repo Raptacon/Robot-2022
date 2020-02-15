@@ -5,19 +5,30 @@ Team 3200 Robot base class
 from wpilib import XboxController
 import wpilib
 from magicbot import MagicRobot
+
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
+# from components.shooterMotors import ShooterMotorCreation
+from components.sensor import SensorClass
+from components.loader import LoaderClass
 
+dio = wpilib.DigitalInput
 
 class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
     """
 
-
     driveTrain: DriveTrain
     lifter: Lifter
+
+    Sensors: SensorClass
+    Loader: LoaderClass
+
+    #driveTrain: DriveTrain
+    # ShooterMotors: ShooterMotorCreation
+
 
     def createObjects(self):
         """
@@ -29,7 +40,21 @@ class MyRobot(MagicRobot):
         self.driveController = wpilib.XboxController(0)
         self.mechController = wpilib.XboxController(1)
         self.motorsList = dict(self.map.motorsMap.driveMotors)
+
+        # Drive Train
+        self.left = 0
+        self.right = 0
+        self.stick = XboxController(0)
+
+        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
+
         self.mult = 1 #Multiplier for values. Should not be over 1.
+
+        # Shooter
+        # self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
+
+        self.sensorObjects = dio
+        # self.loaderlogicSensors = dio
 
     def teleopPeriodic(self):
         """
@@ -42,18 +67,22 @@ class MyRobot(MagicRobot):
         else:
             self.lifter.setSpeed(0)
 
+        self.driveTrain.setArcade(self.left, -self.leftHoriz)
 
     def testInit(self):
         """
         Function called when testInit is called. Crashes on 2nd call right now
         """
-        pass
-        
+       
+        print("testInit was Successful")
+
     def testPeriodic(self):
         """
         Called during test mode alot
         """
-        pass
+        # print("testPeriodic is called")
+        self.Sensors.setCurrentSensorProperties()
+        #self.Sensors.execute()
 
     def controllerInput(self):
         """
