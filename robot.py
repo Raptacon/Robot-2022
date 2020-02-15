@@ -27,6 +27,7 @@ class MyRobot(MagicRobot):
         self.driveLeft = 0
         self.driveRight = 0
         self.driveController = wpilib.XboxController(0)
+        self.mechController = wpilib.XboxController(1)
         self.motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
@@ -36,7 +37,10 @@ class MyRobot(MagicRobot):
         """
         self.controllerInput()
         self.driveTrain.setArcade(self.driveLeft, -self.driveLeftHoriz)
-        self.lifter.setSpeed(1)
+        if self.mechA:
+            self.lifter.setSpeed(1)
+        else:
+            self.lifter.setSpeed(0)
 
 
     def testInit(self):
@@ -59,6 +63,7 @@ class MyRobot(MagicRobot):
         self.driveRight = self.driveController.getRawAxis(5) *self.mult
         self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
         self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
+        self.mechA = self.mechController.getAButtonPressed()
 
 
 if __name__ == '__main__':
