@@ -63,7 +63,7 @@ class MyRobot(MagicRobot):
         self.driveRight = self.driveController.getRawAxis(5) *self.mult
         self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
         self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
-        self.mechA = self.mechController.getAButtonPressed()
+        self.mechA = self.mechController.getAButton()
 
 
 if __name__ == '__main__':
