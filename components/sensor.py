@@ -1,5 +1,5 @@
-from time import sleep
 import wpilib
+from time import sleep
 from components.loader import LoaderClass
 
 # NOTE: This code is written on the basis that 'True' means that the sensor is broken. REFACTOR IF NECESSARY!!!
@@ -7,7 +7,7 @@ from components.loader import LoaderClass
 
 dio = wpilib.DigitalInput
 
-class SensorClass:
+class sensors:
 
     Loader: LoaderClass
 
@@ -33,7 +33,7 @@ class SensorClass:
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
-    def setCurrentSensorProperties(self):
+    def detectSensorPresence(self):
 
         # Sets the current sensor
         self.CurrentSensor = self.SensorArray[self.sensorX]
@@ -56,53 +56,50 @@ class SensorClass:
             print("Failed to assign a sensor:", err)
 
     def execute(self):
-        """
         try:
             assert(self.sensorX >= 0)
         except AssertionError as err:
             print("Sensor key assertion failed:", err)
-        """
 
         # Creates the basis for the logic regarding when the loader is run.
-        print("test")
         for x in range((self.sensorX + 1), 5):
             self.logicSensors = self.SensorArray[x].get()
             self.logicArray.append(self.logicSensors)
 
         print("Logic Array:", self.logicArray)
 
-        # Runs loader if:
-            # Sensor controls the loader
-            # Any other sensors are activated
+        # Runs loader if any other sensor (aside from the loader controller) is broken and the loader controller
+        # is NOT activated
         if (
             self.isCurrentLoaderController and
-            not any(self.logicArray)
-            # all(self.loaderlogicSensors) == False
+            not any(self.logicArray) == False and 
+            all(self.logicArray) == False
         ):
-            # self.Loader.run()
-            print("loader running")
+            self.Loader.run()
+            # print("loader running")
             print(" ")
             self.logicArray = []
 
-        # Stops loader and shifts sensor responsibility if:
-            # ONLY the loader sensor is activated
+        # Stops loader and shifts loader controller
         elif all(self.logicArray) and self.CurrentSensor.get() == False:
-            # self.Loader.stop()
+            self.Loader.stop()
             self.sensorX += 1
-            print("loader stopping")
+            # print("loader stopping")
             print(" ")
             self.logicArray = []
 
-        # Shifts sensor responsibility if:
-            # Sensor behind the current sensor doesn't have a ball FIXME: Incorrect pseudocode
-        elif self.SensorArray[(self.sensorX - 1)].get():
-            self.sensorX -= 1
-            print("shift sensor up")
-            print(" ")
-            self.logicArray = []
-
+        # Loader has no ball
         else:
             self.logicArray = []
-            print("all else failed to pass")
+            print("all else failed")
             print(" ")
 
+        if self.sensorX > 0:
+            if self.SensorArray[(self.sensorX - 1)].get():
+                self.sensorX -= 1
+                print("shift sensor up")
+                print(" ")
+                self.logicArray = []
+
+            else:
+                pass #FIXME
