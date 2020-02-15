@@ -13,16 +13,22 @@ class autonomous(AutonomousStateMachine):
 
     drive_speed = tunable(-1)
 
+
+        
+
+
     @timed_state(duration=2, next_state="do_something", first=True)
     def dont_do_something(self):
         """This happens first"""
-        pass
+        print("dont do something")
+        self.driveTrain.setTank(0, 0)
+        
 
     @timed_state(duration=time)
     def do_something(self, state_tm):
         """This happens second"""
         
-        speed = math.sin(2 * math.pi * (1 / self.time) * state_tm)
+        speed = (math.sin(2 * math.pi * (1 / self.time) * state_tm))*.25
         """First integer is # of times to run through program, second is time. combined creates value."""
         print('{}  {}'.format(state_tm, speed))
         #self.driveTrain.setTank(speed, speed)

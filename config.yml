@@ -4,7 +4,7 @@ driveMotors:
   rightMotor:
     channel: 30
     type: "CANTalonFX"
-    inverted: True
+    inverted: False
     pid:
       controlType: "Position"
       feedbackDevice: 0
@@ -17,12 +17,12 @@ driveMotors:
 
   rightFollower:
     channel: 31
-    masterChannel: 1
+    masterChannel: 30
     type: "CANTalonFXFollower"
-    inverted: False
+    inverted: True
 
   leftMotor:
-    channel: 40
+    channel: 20
     type: "CANTalonFX"
     inverted: True
     pid:
@@ -36,8 +36,8 @@ driveMotors:
       sensorPhase: True
 
   leftFollower:
-    channel: 41
-    masterChannel: 0
+    channel: 21
+    masterChannel: 20
     type: "CANTalonFXFollower"
     inverted: False
 
