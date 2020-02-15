@@ -64,6 +64,7 @@ class SensorClass:
         """
 
         # Creates the basis for the logic regarding when the loader is run.
+        print("test")
         for x in range((self.sensorX + 1), 5):
             self.logicSensors = self.SensorArray[x].get()
             self.logicArray.append(self.logicSensors)

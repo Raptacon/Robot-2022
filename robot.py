@@ -21,7 +21,7 @@ class MyRobot(MagicRobot):
     Sensors: SensorClass
     Loader: LoaderClass
 
-    driveTrain: DriveTrain
+    #driveTrain: DriveTrain
     # ShooterMotors: ShooterMotorCreation
 
     def createObjects(self):
@@ -47,7 +47,7 @@ class MyRobot(MagicRobot):
         Must include. Called running teleop.
         """
         self.controllerInput()
-        self.driveTrain.setArcade(self.left / 2, -self.rightHoriz / 2)
+        #self.driveTrain.setArcade(self.left / 2, -self.rightHoriz / 2)
 
     def testInit(self):
         """
@@ -61,7 +61,7 @@ class MyRobot(MagicRobot):
         """
         # print("testPeriodic is called")
         self.Sensors.setCurrentSensorProperties()
-        self.Sensors.execute()
+        #self.Sensors.execute()
 
     def controllerInput(self):
         """
