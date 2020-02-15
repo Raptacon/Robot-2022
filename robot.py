@@ -8,6 +8,7 @@ from magicbot import MagicRobot
 
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
+from components.lifter import Lifter
 # from components.shooterMotors import ShooterMotorCreation
 from components.sensor import SensorClass
 from components.loader import LoaderClass
@@ -20,6 +21,7 @@ class MyRobot(MagicRobot):
     """
 
     driveTrain: DriveTrain
+    lifter: Lifter
 
     Sensors: SensorClass
     Loader: LoaderClass
@@ -33,6 +35,11 @@ class MyRobot(MagicRobot):
         Robot-wide initialization code should go here. Replaces robotInit
         """
         self.map = RobotMap()
+        self.driveLeft = 0
+        self.driveRight = 0
+        self.driveController = wpilib.XboxController(0)
+        self.mechController = wpilib.XboxController(1)
+        self.motorsList = dict(self.map.motorsMap.driveMotors)
 
         # Drive Train
         self.left = 0
@@ -40,6 +47,7 @@ class MyRobot(MagicRobot):
         self.stick = XboxController(0)
 
         self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
+
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
         # Shooter
@@ -53,6 +61,11 @@ class MyRobot(MagicRobot):
         Must include. Called running teleop.
         """
         self.controllerInput()
+        self.driveTrain.setArcade(self.driveLeft, -self.driveLeftHoriz)
+        if self.mechA:
+            self.lifter.setSpeed(1)
+        else:
+            self.lifter.setSpeed(0)
 
         self.driveTrain.setArcade(self.left, -self.leftHoriz)
 
@@ -75,10 +88,11 @@ class MyRobot(MagicRobot):
         """
         Collects all controller values and puts them in an easily readable format
         """
-        self.left = self.stick.getRawAxis(1) *self.mult
-        self.right = self.stick.getRawAxis(5) *self.mult
-        self.leftHoriz = self.stick.getRawAxis(0)  *self.mult
-        self.rightHoriz = self.stick.getRawAxis(4) *self.mult
+        self.driveLeft = self.driveController.getRawAxis(1) *self.mult
+        self.driveRight = self.driveController.getRawAxis(5) *self.mult
+        self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
+        self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
+        self.mechA = self.mechController.getAButton()
 
 
 if __name__ == '__main__':
