@@ -1,6 +1,6 @@
 #Right motor must always be called rightMotor, left motor must always be leftMotor. Look through motorHelper to see what values are necessary,
 #it varies by motor.
-driveMotors:
+motors:
   rightMotor:
     channel: 30
     type: "CANTalonFX"
@@ -39,4 +39,26 @@ driveMotors:
     channel: 21
     masterChannel: 20
     type: "CANTalonFXFollower"
+    inverted: True
+
+  winchMotor:
+    channel: 40 #PLACEHOLDER
+    type: "SparkMax"
+    inverted: False
+    motorType: "Brushless"
+    pid:
+      controlType: "Velocity"
+      feedbackDevice: 2
+      kPreScale: 6
+      kP: .01
+      kD: 0
+      kI: .0000001
+      kF: 0
+      sensorPhase: True
+  
+  winchFollower:
+    channel: 41 #PLACEHOLDER
+    masterChannel: 40
+    type: "SparkMaxFollower"
+    motorType: "Brushless"
     inverted: True

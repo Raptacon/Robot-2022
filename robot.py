@@ -7,6 +7,7 @@ import wpilib
 from magicbot import MagicRobot
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
+from components.lifter import Lifter
 
 
 class MyRobot(MagicRobot):
@@ -16,16 +17,17 @@ class MyRobot(MagicRobot):
 
 
     driveTrain: DriveTrain
+    lifter: Lifter
 
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
         self.map = RobotMap()
-        self.left = 0
-        self.right = 0
-        self.stick = XboxController(0)
-        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
+        self.driveLeft = 0
+        self.driveRight = 0
+        self.driveController = wpilib.XboxController(0)
+        self.motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
     def teleopPeriodic(self):
@@ -33,7 +35,9 @@ class MyRobot(MagicRobot):
         Must include. Called running teleop.
         """
         self.controllerInput()
-        self.driveTrain.setArcade(self.left, -self.leftHoriz)
+        self.driveTrain.setArcade(self.driveLeft, -self.driveLeftHoriz)
+        self.lifter.setSpeed(1)
+
 
     def testInit(self):
         """
@@ -51,10 +55,10 @@ class MyRobot(MagicRobot):
         """
         Collects all controller values and puts them in an easily readable format
         """
-        self.left = self.stick.getRawAxis(1) *self.mult
-        self.right = self.stick.getRawAxis(5) *self.mult
-        self.leftHoriz = self.stick.getRawAxis(0)  *self.mult
-        self.rightHoriz = self.stick.getRawAxis(4) *self.mult
+        self.driveLeft = self.driveController.getRawAxis(1) *self.mult
+        self.driveRight = self.driveController.getRawAxis(5) *self.mult
+        self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
+        self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
 
 
 if __name__ == '__main__':

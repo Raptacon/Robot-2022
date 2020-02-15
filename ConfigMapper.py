@@ -6,4 +6,4 @@ class ConfigMapper(object):
             print(yaml.dump(self.values))
     def getDicts(self):
         #gives the values.
-        return self.values['driveMotors']
+        return self.values['motors']

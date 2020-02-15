@@ -35,6 +35,10 @@ def createMotor(motorDescp, motors = {}):
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
+        if motorDescp['motorType'] == "Brushless":
+            motorDescp['motorType'] = rev.MotorType.kBrushless
+        else:
+            motorDescp['motorType'] == rev.MotorType.kBrushed
         if 'pid' in motorDescp and motorDescp['pid'] != None:
             motor = SparkMaxFeedback(motorDescp, motors)
             motor.setupPid()
@@ -45,6 +49,10 @@ def createMotor(motorDescp, motors = {}):
     elif motorDescp['type'] == 'SparkMaxFollower':
         '''This is where SparkMax followers are set up
         For masterChannel, use a motor object. MASTER MUST BE A "CANSparkMax"  '''
+        if motorDescp['motorType'] == "Brushless":
+            motorDescp['motorType'] = rev.MotorType.kBrushless
+        else:
+            motorDescp['motorType'] == rev.MotorType.kBrushed
         motor = SparkMaxFeedback(motorDescp, motors)
         motor.follow(motors.get(str(motorDescp['masterChannel'])), motorDescp['inverted'])
 
@@ -145,7 +153,6 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         
         self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
-        self.controlType = self.pid['controlType']
         self.kPreScale = self.pid['kPreScale']
 
         #/* set the peak, nominal outputs, and deadband */
@@ -190,9 +197,10 @@ class SparkMaxFeedback(rev.CANSparkMax):
         if self.ControlType == "Position":
             self.ControlType = rev.ControlType.kPosition
         elif self.ControlType == "Velocity":
-            self.ControlType == rev.ControlType.kVelocity
+            self.ControlType = rev.ControlType.kVelocity
+        else:
+            print("Unrecognized control type: ",self.ControlType)
         self.encoder = self.getEncoder()
-
         self.kPreScale = pid['kPreScale']
         self.PIDController = self.getPIDController() #creates pid controller
 
@@ -202,7 +210,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.PIDController.setFF(pid['kF'], pid['feedbackDevice'])
 
         self.PIDController.setOutputRange(-1, 1, pid['feedbackDevice'])
-        self.PIDController.setReference(0 , self.ControlType, pid['feedbackDevice']) #Sets the control type to velocity on the pid slot we passed in
+        self.PIDController.setReference(0 , self.ControlType, pid['feedbackDevice'])
 
     def setControlType(self, type):
         '''Use the rev.ControlType.k(control type) as arg'''
@@ -213,10 +221,6 @@ class SparkMaxFeedback(rev.CANSparkMax):
 
     def set(self, speed):
         """
-        Overrides the default set() to allow for controll using the pid loop
+        Overrides the default set() to allow for control using the pid loop
         """
-        if self.motorDescription['type'] != "SparkMaxFollower":
-            return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType, self.pid['feedbackDevice'])
-        else:
-            return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType, self.pid['feedbackDevice'])
-        return
+        return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType, self.pid['feedbackDevice'])
