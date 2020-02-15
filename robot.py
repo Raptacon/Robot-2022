@@ -8,6 +8,8 @@ from magicbot import MagicRobot
 
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
+from components.buttonManager import ButtonManager, ButtonEvent
+from examples.buttonManagerCallback import exampleCallback, simpleCallback, crashCallback
 
 class MyRobot(MagicRobot):
     """
@@ -15,6 +17,7 @@ class MyRobot(MagicRobot):
     """
 
     driveTrain: DriveTrain
+    buttonManager: ButtonManager
 
     def createObjects(self):
         """
@@ -29,6 +32,12 @@ class MyRobot(MagicRobot):
 
         self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
+
+    def teleopInit(self):
+        #register button events
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
 
     def teleopPeriodic(self):
         """
