@@ -8,7 +8,11 @@ from magicbot import MagicRobot
 
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
+# from components.shooterMotors import ShooterMotorCreation
+from components.sensor import SensorClass
+from components.loader import LoaderClass
 
+dio = wpilib.DigitalInput
 
 class MyRobot(MagicRobot):
     """
@@ -17,17 +21,32 @@ class MyRobot(MagicRobot):
 
     driveTrain: DriveTrain
 
+    Sensors: SensorClass
+    Loader: LoaderClass
+
+    #driveTrain: DriveTrain
+    # ShooterMotors: ShooterMotorCreation
+
+
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
         self.map = RobotMap()
+
+        # Drive Train
         self.left = 0
         self.right = 0
         self.stick = XboxController(0)
 
         self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
+
+        # Shooter
+        # self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
+
+        self.sensorObjects = dio
+        # self.loaderlogicSensors = dio
 
     def teleopPeriodic(self):
         """
@@ -41,14 +60,16 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called. Crashes on 2nd call right now
         """
-        pass
-        
+       
+        print("testInit was Successful")
 
     def testPeriodic(self):
         """
         Called during test mode alot
         """
-        pass
+        # print("testPeriodic is called")
+        self.Sensors.setCurrentSensorProperties()
+        #self.Sensors.execute()
 
     def controllerInput(self):
         """
