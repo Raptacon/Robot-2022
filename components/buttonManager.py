@@ -105,6 +105,10 @@ class ButtonManager:
         Private: Process all entrys when action occurs
         """
         for entry in entrys:
+            #Check if entry is valid for action
+            if not (action & entry["eventTypes"]):
+                #if not enabled for this action, do not process
+                continue
             
             #track metrics
             if not action in entry["triggerCount"]:
