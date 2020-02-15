@@ -14,6 +14,8 @@ from components.sensor import SensorClass
 from components.loader import LoaderClass
 
 dio = wpilib.DigitalInput
+from components.buttonManager import ButtonManager, ButtonEvent
+from examples.buttonManagerCallback import exampleCallback, simpleCallback, crashCallback
 
 class MyRobot(MagicRobot):
     """
@@ -29,6 +31,7 @@ class MyRobot(MagicRobot):
     #driveTrain: DriveTrain
     # ShooterMotors: ShooterMotorCreation
 
+    buttonManager: ButtonManager
 
     def createObjects(self):
         """
@@ -47,6 +50,13 @@ class MyRobot(MagicRobot):
         self.stick = XboxController(0)
 
         self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
+        self.mult = 1 #Multiplier for values. Should not be over 1.
+
+    def teleopInit(self):
+        #register button events
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
 
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
@@ -73,7 +83,6 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called. Crashes on 2nd call right now
         """
-       
         print("testInit was Successful")
 
     def testPeriodic(self):
@@ -88,11 +97,10 @@ class MyRobot(MagicRobot):
         """
         Collects all controller values and puts them in an easily readable format
         """
-        self.driveLeft = self.driveController.getRawAxis(1) *self.mult
-        self.driveRight = self.driveController.getRawAxis(5) *self.mult
-        self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
-        self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
-        self.mechA = self.mechController.getAButton()
+        self.left = self.stick.getRawAxis(1) *self.mult
+        self.right = self.stick.getRawAxis(5) *self.mult
+        self.leftHoriz = self.stick.getRawAxis(0)  *self.mult
+        self.rightHoriz = self.stick.getRawAxis(4) *self.mult
 
 
 if __name__ == '__main__':

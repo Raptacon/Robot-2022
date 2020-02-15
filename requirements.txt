@@ -13,3 +13,4 @@ robotpy-ctre
 robotpy-navx
 robotpy-rev
 pynetworktables
+pyyaml

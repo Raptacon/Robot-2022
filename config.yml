@@ -39,6 +39,7 @@ motors:
     channel: 21
     masterChannel: 20
     type: "CANTalonFXFollower"
+<<<<<<< HEAD
     inverted: True
 
   winchMotor:
@@ -62,6 +63,9 @@ motors:
     type: "SparkMaxFollower"
     motorType: "Brushless"
     inverted: True
+=======
+    inverted: False
+>>>>>>> master
 
   loaderMotor:
     channel: 11
