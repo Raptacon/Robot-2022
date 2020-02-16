@@ -99,6 +99,7 @@ class sensors:
             sleep(.1)
             self.Motors.runLoader(-1)
             if self.SensorArray[0].get():
+                self.Motors.stopLoader()
                 self.Motors.runShooter(1)
                 sleep(.3) # Add encoder logic to towerMotors.py
                 self.Motors.runLoader(1)
