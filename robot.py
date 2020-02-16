@@ -76,10 +76,9 @@ class MyRobot(MagicRobot):
             self.lifter.setSpeed(0)
 
         self.driveTrain.setArcade(self.left, -self.driveLeftHoriz)
-        self.Sensors.detectSensorPresence()
 
         if self.shootExec:
-            self.Sensors.executeShooter()
+            self.Sensors.fireShooter()
 
     def testInit(self):
         """
