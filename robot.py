@@ -45,7 +45,6 @@ class MyRobot(MagicRobot):
         self.right = 0
         self.stick = XboxController(0)
 
-        # self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
         self.sensorObjects = dio
@@ -57,11 +56,6 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
 
         self.mult = 1 #Multiplier for values. Should not be over 1.
-
-        # Shooter
-        # self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
-
-        # self.loaderlogicSensors = dio
 
     def teleopPeriodic(self):
         """

@@ -14,11 +14,11 @@ class sensors:
         self.logicSensors = None
         self.shooterActivated = False
 
+        # Arrays for sensors/logic-based sensors:
         self.logicArray = []
-
         self.SensorArray = []
 
-        # Key for sensors in 'self.Sensors' array:
+        # Key for sensors in 'self.SensorArray' array:
         self.sensorX = 0
 
         # Creates sensors:
@@ -47,7 +47,8 @@ class sensors:
 
         '''
         Creates the basis for the logic regarding when the loader is run.
-        Checks boolean values all sensors aside from current sensor.
+        Checks boolean values all sensors aside from current sensor, and
+        runs loader appropriately in if-elif-else chain:
         '''
         for x in range((self.sensorX + 1), 5):
             self.logicSensors = self.SensorArray[x].get()
