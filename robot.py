@@ -12,7 +12,6 @@ from components.driveTrain import DriveTrain
 from components.lifter import Lifter
 from components.towerMotors import ShooterMotorCreation
 from components.sensor import sensors
-# from components.loader import initloader
 from components.buttonManager import ButtonManager, ButtonEvent
 from examples.buttonManagerCallback import exampleCallback, simpleCallback, crashCallback
 
@@ -22,12 +21,11 @@ class MyRobot(MagicRobot):
     """
 
     Sensors: sensors
-    # Loader: initloader
 
     driveTrain: DriveTrain
     lifter: Lifter
 
-    ShooterMotors: ShooterMotorCreation
+    Motors: ShooterMotorCreation
 
     buttonManager: ButtonManager
 
@@ -80,6 +78,9 @@ class MyRobot(MagicRobot):
         self.driveTrain.setArcade(self.left, -self.driveLeftHoriz)
         self.Sensors.detectSensorPresence()
 
+        if self.shootExec:
+            self.Sensors.executeShooter()
+
     def testInit(self):
         """
         Function called when testInit is called. Crashes on 2nd call right now
@@ -100,6 +101,7 @@ class MyRobot(MagicRobot):
         self.driveRight = self.driveController.getRawAxis(5) *self.mult
         self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
         self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
+        self.shootExec = self.driveController.getBButton()
         self.mechA = self.mechController.getAButton()
 
 

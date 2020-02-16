@@ -1,6 +1,5 @@
 import wpilib
 import motorHelper
-from components.sensor import sensors
 
 class ShooterMotorCreation:
 

@@ -8,7 +8,6 @@ class sensors:
     Motors: ShooterMotorCreation
 
     sensorObjects: dio
-    # loaderlogicSensors: dio
 
     def __init__(self):
 
@@ -17,6 +16,7 @@ class sensors:
         self.isCurrentLoaderController = False # Checks if 'self.SensorArray[self.sensorX]' controls the loader
         self.CurrentSensor = None
         self.logicSensors = None
+        self.shooterActivated = False
 
         self.logicArray = []
 
@@ -34,22 +34,25 @@ class sensors:
         # Sets the current sensor
         self.CurrentSensor = self.SensorArray[self.sensorX]
         print("Sensor key:", self.sensorX)
-        print("Current sensor status:", self.CurrentSensor.get())
 
         try:
             if self.CurrentSensor.get():
                 self.isCurrentLoaderController = True
                 self.isCurrentSensorActivated = False
-                # print("current sense unbroken")
                 print("IsCurrentLoaderController?:", self.isCurrentLoaderController)
 
             elif self.CurrentSensor.get() == False:
                 self.isCurrentLoaderController = False
                 self.isCurrentSensorActivated = True
-                # print("current sense broken")
 
         except Exception as err:
             print("Failed to assign a sensor:", err)
+
+    def executeShooter(self):
+        if self.SensorArray[0].get() == False:
+            self.shooterActivated = True
+        else:
+            self.shooterActivated = False
 
     def execute(self):
         try:
@@ -64,38 +67,46 @@ class sensors:
 
         print("Logic Array:", self.logicArray)
 
-        # Runs loader if any other sensor (aside from the loader controller) is broken and the loader controller
-        # is NOT activated
         if (
             self.isCurrentLoaderController and
-            not any(self.logicArray) == False and 
+            # not any(self.logicArray) == False and 
             all(self.logicArray) == False
         ):
             self.Motors.runLoader(1)
-            # print("loader running")
-            print(" ")
             self.logicArray = []
 
         # Stops loader and shifts loader controller
-        elif all(self.logicArray) and self.CurrentSensor.get() == False:
+        elif self.CurrentSensor.get() == False and all(self.logicArray):
             self.Motors.stopLoader()
             self.sensorX += 1
-            # print("loader stopping")
-            print(" ")
             self.logicArray = []
 
-        # Loader has no ball
+        elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
+            self.Motors.runLoader(1)
+            self.sensorX += 1
+            self.logicArray = []
+
+        # Intake has no ball
         else:
             self.logicArray = []
-            print("all else failed")
-            print(" ")
 
         if self.sensorX > 0:
             if self.SensorArray[(self.sensorX - 1)].get():
                 self.sensorX -= 1
-                print("shift sensor up")
-                print(" ")
                 self.logicArray = []
 
             else:
                 pass
+
+        if self.shooterActivated:
+            self.Motors.stopLoader()
+            sleep(.1)
+            self.Motors.runLoader(-1)
+            if self.SensorArray[0].get():
+                self.Motors.runShooter(1)
+                sleep(.2) # Add encoder logic to towerMotors.py
+                self.Motors.runLoader(1)
+                if all(self.logicArray) and self.SensorArray[0].get():
+                    sleep(.5)
+                    self.Motors.stopLoader()
+
