@@ -22,7 +22,7 @@ class MyRobot(MagicRobot):
     """
 
     Sensors: sensors
-    Loader: initloader
+    # Loader: initloader
 
     driveTrain: DriveTrain
     lifter: Lifter
