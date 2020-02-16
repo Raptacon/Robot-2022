@@ -1,15 +1,11 @@
-import wpilib
+from wpilib import DigitalInput as dio
 from time import sleep
-from components.loader import LoaderClass
-
-# NOTE: This code is written on the basis that 'True' means that the sensor is broken. REFACTOR IF NECESSARY!!!
-# FIXME: Sensors read 'False' when BROKEN, so REFACTOR THIS ASAP!!!!!!!!!
-
-dio = wpilib.DigitalInput
+# from components.loader import initloader
+from components.towerMotors import ShooterMotorCreation
 
 class sensors:
 
-    Loader: LoaderClass
+    Motors: ShooterMotorCreation
 
     sensorObjects: dio
     # loaderlogicSensors: dio
@@ -75,14 +71,14 @@ class sensors:
             not any(self.logicArray) == False and 
             all(self.logicArray) == False
         ):
-            self.Loader.run()
+            self.Motors.runLoader(1)
             # print("loader running")
             print(" ")
             self.logicArray = []
 
         # Stops loader and shifts loader controller
         elif all(self.logicArray) and self.CurrentSensor.get() == False:
-            self.Loader.stop()
+            self.Motors.stopLoader()
             self.sensorX += 1
             # print("loader stopping")
             print(" ")
@@ -102,4 +98,4 @@ class sensors:
                 self.logicArray = []
 
             else:
-                pass #FIXME
+                pass

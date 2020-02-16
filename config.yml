@@ -65,22 +65,22 @@ motors:
 
   intakeMotor:
     channel: 50
-    type: "SparkMax"
+    type: "CANTalonSRX"
     inverted: True
     pid: Null
     motorType: "Brushed"
 
-  intakeMotor:
+  loaderMotor:
     channel: 51
-    type: "SparkMax"
+    type: "CANTalonSRX"
     inverted: True
     pid: Null
-    motorType: "Brushed"
 
   shooterMotor:
     channel: 52
-    type: "CANTalonFX"
+    type: "SparkMax"
     inverted: True
+    motorType: "Brushed"
     pid:
       controlType: "Velocity"
       feedbackDevice: 0

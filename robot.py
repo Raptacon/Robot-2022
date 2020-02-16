@@ -6,14 +6,13 @@ from wpilib import XboxController
 from wpilib import DigitalInput as dio
 import wpilib
 from magicbot import MagicRobot
-
 from robotMap import RobotMap
+
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
-# from components.shooterMotors import ShooterMotorCreation
+from components.towerMotors import ShooterMotorCreation
 from components.sensor import sensors
-from components.loader import LoaderClass
-
+# from components.loader import initloader
 from components.buttonManager import ButtonManager, ButtonEvent
 from examples.buttonManagerCallback import exampleCallback, simpleCallback, crashCallback
 
@@ -22,14 +21,13 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
+    Sensors: sensors
+    Loader: initloader
+
     driveTrain: DriveTrain
     lifter: Lifter
 
-    Sensors: sensors
-    Loader: LoaderClass
-
-    #driveTrain: DriveTrain
-    # ShooterMotors: ShooterMotorCreation
+    ShooterMotors: ShooterMotorCreation
 
     buttonManager: ButtonManager
 
@@ -49,8 +47,10 @@ class MyRobot(MagicRobot):
         self.right = 0
         self.stick = XboxController(0)
 
-        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
+        # self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
+
+        self.sensorObjects = dio
 
     def teleopInit(self):
         #register button events
@@ -63,7 +63,6 @@ class MyRobot(MagicRobot):
         # Shooter
         # self.shooter_MotorsList = dict(self.map.motorsMap.driveMotors)
 
-        self.sensorObjects = dio
         # self.loaderlogicSensors = dio
 
     def teleopPeriodic(self):
@@ -72,6 +71,7 @@ class MyRobot(MagicRobot):
         """
         self.controllerInput()
         self.driveTrain.setArcade(self.driveLeft, -self.driveLeftHoriz)
+
         if self.mechA:
             self.lifter.setSpeed(1)
         else:
