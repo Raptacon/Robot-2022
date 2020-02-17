@@ -1,5 +1,4 @@
 from wpilib import DigitalInput as dio
-from time import sleep
 from components.towerMotors import ShooterMotorCreation
 
 class sensors:
@@ -86,9 +85,6 @@ class sensors:
                 self.sensorX -= 1
                 self.logicArray = []
 
-            else:
-                pass
-
         # Fires shooter:
         if (
             self.shooterActivated and 
@@ -96,13 +92,15 @@ class sensors:
             self.CurrentSensor.get()
         ):
             self.Motors.stopLoader()
-            sleep(.1)
             self.Motors.runLoader(-1)
+
             if self.SensorArray[0].get():
                 self.Motors.stopLoader()
                 self.Motors.runShooter(1)
-                sleep(.3) # Add encoder logic to towerMotors.py
-                self.Motors.runLoader(1)
-                if all(self.logicArray) and self.SensorArray[0].get():
-                    sleep(.5)
-                    self.Motors.stopLoader()
+
+                if self.Motors.isShooterAtSpeed() == 1:
+                    self.Motors.runLoader(1)
+
+                    if all(self.logicArray) and self.SensorArray[0].get():
+                        self.Motors.stopLoader()
+                        self.Motors.stopShooter()

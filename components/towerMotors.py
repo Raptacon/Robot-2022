@@ -9,6 +9,7 @@ class ShooterMotorCreation:
         self.intakeSpeed = 0
         self.loaderSpeed = 0
         self.shooterSpeed = 0
+        self.shooterEncoder = 0
         self.intake = False
         self.loader = False
         self.shooter = False
@@ -41,6 +42,9 @@ class ShooterMotorCreation:
 
     def stopShooter(self):
         self.shooter = False
+
+    def isShooterAtSpeed(self):
+        self.shooterEncoder = 1
 
     def execute(self):
         if self.intakeSpeed > 0:
