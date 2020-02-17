@@ -82,7 +82,7 @@ class ButtonManager:
         assert isinstance(eventTypes, ButtonEvent), f"{eventTypes} is not an eventTypes"
         assert callable(callback), f"{str(callback)} must be callable"
         
-        entry = self.__createCallbackEntry(self, hidDevice, buttonId, eventTypes, callback)
+        entry = self.__createCallbackEntry(hidDevice, buttonId, eventTypes, callback)
         self.logger.info(f"Registering event [{self.__entryStr(entry)}]")
 
     def getregisteredEvent(self, hidDevice, buttonId, callback):
