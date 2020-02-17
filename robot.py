@@ -53,6 +53,7 @@ class MyRobot(MagicRobot):
         #register button events
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kB, ButtonEvent.kOnPress, exampleCallback)
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, exampleCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
 
@@ -75,6 +76,11 @@ class MyRobot(MagicRobot):
         if self.shootExec:
             self.Sensors.fireShooter()
 
+        if self.RunIntake > 0:
+            self.Motors.runIntake(self.RunIntake)
+        else:
+            self.Motors.runIntake(0)
+
     def testInit(self):
         """
         Function called when testInit is called. Crashes on 2nd call right now
@@ -96,8 +102,8 @@ class MyRobot(MagicRobot):
         self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
         self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
         self.shootExec = self.driveController.getBButton()
+        self.RunIntake = self.driveController.getTriggerAxis(1)
         self.mechA = self.mechController.getAButton()
-
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)
