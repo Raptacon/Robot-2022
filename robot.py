@@ -32,13 +32,18 @@ class MyRobot(MagicRobot):
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
     def teleopInit(self):
-        pass
+        """
+        Controller map is here for now
+        """
+        ButtonManager.registerButtonEvent(ButtonManager, self.XboxMap.getDriveController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.DriveTrain.stop)
+        ButtonManager.registerButtonEvent(ButtonManager, self.XboxMap.getMechController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.DriveTrain.stop)
 
     def teleopPeriodic(self):
         """
         Must include. Called running teleop.
         """
         self.XboxMap.controllerInput()
+        self.driveTrain.setArcade(self.XboxMap.getLeft, -self.XboxMap.getRightHorizontal)
 
     def testInit(self):
         """

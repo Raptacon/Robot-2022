@@ -1,7 +1,6 @@
 import ConfigMapper as mapper
 import os
 from wpilib import XboxController
-from components.buttonManager import ButtonManager, ButtonEvent
 
 class RobotMap():
     """
@@ -10,7 +9,7 @@ class RobotMap():
     """
     def __init__(self):
         """intilize the robot map"""
-        configFile = os.path.dirname(__file__) + os.path.sep + "config.yml" #Put filename for config here, should be in the same directory as robot.py
+        configFile = os.path.dirname(__file__) + os.path.sep + "config.yml" #Put filename for config here, base directory is robot.py's
         config = mapper.ConfigMapper(configFile)
         self.motorsMap = CANMap(config)
 
@@ -31,11 +30,9 @@ class XboxMap():
     Holds the mappings to TWO Xbox controllers, one for driving, one for mechanisms
     """
     def __init__(self, Xbox1: XboxController, Xbox2: XboxController):
-        
         self.drive = Xbox1
         self.mech = Xbox2
         #Button mappings
-        
 
     def controllerInput(self):
         """
@@ -56,6 +53,12 @@ class XboxMap():
         self.mechRightHoriz = self.mech.getRawAxis(4)
         self.mechRightTrig = self.mech.getRawAxis(3)
         self.mechLeftTrig = self.mech.getRawAxis(2)
+
+    def getDriveController(self):
+        return drive
+
+    def getMechController(self):
+        return mech
 
     def getDriveLeft(self):
         return driveLeft
