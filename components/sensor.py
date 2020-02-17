@@ -21,7 +21,7 @@ class sensors:
         self.sensorX = 0
 
         # Creates sensors:
-        for x in range(1, 6):
+        for x in range(0, 5):
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
