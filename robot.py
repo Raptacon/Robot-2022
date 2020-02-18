@@ -44,6 +44,7 @@ class MyRobot(MagicRobot):
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
         self.sensorObjects = dio
+        self.sensor = dio(0)
 
     def teleopInit(self):
         """
@@ -61,8 +62,7 @@ class MyRobot(MagicRobot):
         """
         self.XboxMap.controllerInput()
         self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
-
-        self.ShooterMotors.runIntake(self.XboxMap.getDriveRightTrig())
+        self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
 
         # Comment out if needed
         self.ManualShooter.RunLoader(self.XboxMap.getDriveRightTrig())
@@ -72,6 +72,7 @@ class MyRobot(MagicRobot):
         '''
         self.SensorShooter.fireShooter(self.XboxMap.getMechAButton())
         '''
+        print(self.sensor.get())
 
     def testInit(self):
         """
