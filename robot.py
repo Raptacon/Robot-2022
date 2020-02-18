@@ -41,41 +41,35 @@ class MyRobot(MagicRobot):
         self.motorsList = dict(self.map.motorsMap.driveMotors)
 
         # Drive Train
-        self.left = 0
-        self.right = 0
-        self.stick = XboxController(0)
-
-        self.mult = 1 #Multiplier for values. Should not be over 1.
 
         self.sensorObjects = dio
 
     def teleopInit(self):
         #register button events
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
-        # self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kB, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
-
-        self.mult = 1 #Multiplier for values. Should not be over 1.
+        self.createObjects()
+        self.mult = .5 #Multiplier for values. Should not be over 1.
 
     def teleopPeriodic(self):
         """
         Must include. Called running teleop.
         """
         self.controllerInput()
-        self.driveTrain.setArcade(self.driveLeft, -self.driveLeftHoriz)
 
-        if self.mechA:
-            self.lifter.setSpeed(1)
+        if self.driveA:
+            self.Sensors.Motors.runLoader(.1)
         else:
-            self.lifter.setSpeed(0)
+            self.Sensors.Motors.runLoader(0)
 
-        self.driveTrain.setArcade(self.left, -self.driveLeftHoriz)
+        if self.driveB:
+            self.Sensors.Motors.runLoader(-.1)
+
+        self.driveTrain.setArcade(self.driveLeft, self.driveRightHoriz)
 
         if self.shootExec:
             self.Sensors.fireShooter()
             print("Shooting:", self.shootExec)
+        else:
+            self.Motors.stopShooter()
 
         if self.RunIntake > 0:
             self.Motors.runIntake(self.RunIntake)
@@ -105,7 +99,8 @@ class MyRobot(MagicRobot):
         self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
         self.shootExec = self.driveController.getRawButton(self.driveController.Button.kBumperRight)
         self.RunIntake = self.driveController.getRawAxis(self.driveController.Axis.kRightTrigger)
-        self.mechA = self.mechController.getAButton()
+        self.driveA = self.driveController.getAButton()
+        self.driveB = self.driveController.getBButton()
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)

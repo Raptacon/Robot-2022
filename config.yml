@@ -5,35 +5,19 @@ motors:
     channel: 30
     type: "CANTalonFX"
     inverted: False
-    pid:
-      controlType: "Position"
-      feedbackDevice: 0
-      kPreScale: 4096
-      kP: 0
-      kI: 0
-      kD: 0
-      kF: 0
-      sensorPhase: True
+    pid: Null
 
   rightFollower:
     channel: 31
     masterChannel: 30
     type: "CANTalonFXFollower"
-    inverted: True
+    inverted: False
 
   leftMotor:
     channel: 20
     type: "CANTalonFX"
-    inverted: True
-    pid:
-      controlType: "Velocity"
-      feedbackDevice: 1
-      kPreScale: 4096
-      kP: .01
-      kD: 0
-      kI: .0000001
-      kF: 0
-      sensorPhase: True
+    inverted: False
+    pid: Null
 
   leftFollower:
     channel: 21
@@ -42,7 +26,7 @@ motors:
     inverted: False
 
   winchMotor:
-    channel: 40 #PLACEHOLDER
+    channel: 40
     type: "SparkMax"
     inverted: False
     motorType: "Brushless"
@@ -50,14 +34,14 @@ motors:
       controlType: "Velocity"
       feedbackDevice: 2
       kPreScale: 6
-      kP: .01
+      kP: .1
       kD: 0
       kI: .0000001
       kF: 0
       sensorPhase: True
   
   winchFollower:
-    channel: 41 #PLACEHOLDER
+    channel: 41
     masterChannel: 40
     type: "SparkMaxFollower"
     motorType: "Brushless"
@@ -66,28 +50,18 @@ motors:
   intakeMotor:
     channel: 50
     type: "CANTalonSRX"
-    inverted: True
+    inverted: False
     pid: Null
-    motorType: "Brushed"
 
   loaderMotor:
     channel: 51
     type: "CANTalonSRX"
-    inverted: True
+    inverted: False
     pid: Null
 
   shooterMotor:
     channel: 52
     type: "SparkMax"
     inverted: True
-    motorType: "Brushed"
-    pid:
-      controlType: "Velocity"
-      feedbackDevice: 0
-      kPreScale: 6
-      kP: 0.0001
-      kI: 0
-      kD: 0
-      kF: 0
-      sensorPhase: True
     motorType: "Brushless"
+    pid: Null
