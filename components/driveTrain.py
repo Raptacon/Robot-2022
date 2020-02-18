@@ -38,11 +38,13 @@ class DriveTrain:
         pass
 
     def setTank(self, leftSpeed, rightSpeed):
+        self.controllingOverArcade = False
         self.controllingOverTank = True
         self.tankLeftSpeed = leftSpeed
         self.tankRightSpeed = rightSpeed
 
     def setArcade(self, speed, rotation):
+        self.controllingOverTank = False
         self.controllingOverArcade = True
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation

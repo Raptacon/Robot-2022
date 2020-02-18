@@ -111,3 +111,11 @@ setup
 # vim
 *.sw[op]
 imgui.ini
+
+#robotpy cache
+opkg_cache/
+pip_cache/
+
+#robotpy installer
+.deploy_cfg
+.installer_config
