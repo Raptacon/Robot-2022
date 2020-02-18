@@ -35,15 +35,15 @@ class MyRobot(MagicRobot):
         """
         Controller map is here for now
         """
-        ButtonManager.registerButtonEvent(self.XboxMap.getDriveController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.DriveTrain.stop)
-        ButtonManager.registerButtonEvent(self.XboxMap.getMechController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.DriveTrain.stop)
+        self.buttonManager.registerButtonEvent(self.XboxMap.getDriveController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.driveTrain.stop)
+        self.buttonManager.registerButtonEvent(self.XboxMap.getMechController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.driveTrain.stop)
 
     def teleopPeriodic(self):
         """
         Must include. Called running teleop.
         """
         self.XboxMap.controllerInput()
-        self.driveTrain.setArcade(self.XboxMap.getLeft() * self.mult, -self.XboxMap.getRightHorizontal() * self.mult)
+        self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
 
     def testInit(self):
         """

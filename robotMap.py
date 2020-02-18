@@ -40,58 +40,58 @@ class XboxMap():
         (Should only be used for axes while buttonManager has no equal for axes)
         """
         #Drive Controller inputs
-        self.driveLeft = self.drive.getRawAxis(1)
-        self.driveRight = self.drive.getRawAxis(5)
-        self.driveLeftHoriz = self.drive.getRawAxis(0)
-        self.driveRightHoriz = self.drive.getRawAxis(4)
-        self.driveRightTrig = self.drive.getRawAxis(3)
-        self.driveLeftTrig = self.drive.getRawAxis(2)
+        self.driveLeft = self.drive.getRawAxis(XboxController.Axis.kLeftY)
+        self.driveRight = self.drive.getRawAxis(XboxController.Axis.kRightY)
+        self.driveLeftHoriz = self.drive.getRawAxis(XboxController.Axis.kLeftX)
+        self.driveRightHoriz = self.drive.getRawAxis(XboxController.Axis.kRightX)
+        self.driveRightTrig = self.drive.getRawAxis(XboxController.Axis.kRightTrigger)
+        self.driveLeftTrig = self.drive.getRawAxis(XboxController.Axis.kLeftTrigger)
         #Mechanism controller inputs
-        self.mechLeft = self.mech.getRawAxis(1)
-        self.mechRight = self.mech.getRawAxis(5)
-        self.mechLeftHoriz = self.mech.getRawAxis(0)
-        self.mechRightHoriz = self.mech.getRawAxis(4)
-        self.mechRightTrig = self.mech.getRawAxis(3)
-        self.mechLeftTrig = self.mech.getRawAxis(2)
+        self.mechLeft = self.mech.getRawAxis(XboxController.Axis.kLeftY)
+        self.mechRight = self.mech.getRawAxis(XboxController.Axis.kRightY)
+        self.mechLeftHoriz = self.mech.getRawAxis(XboxController.Axis.kLeftX)
+        self.mechRightHoriz = self.mech.getRawAxis(XboxController.Axis.kRightX)
+        self.mechRightTrig = self.mech.getRawAxis(XboxController.Axis.kRightTrigger)
+        self.mechLeftTrig = self.mech.getRawAxis(XboxController.Axis.kLeftTrigger)
 
     def getDriveController(self):
-        return drive
+        return self.drive
 
     def getMechController(self):
-        return mech
+        return self.mech
 
     def getDriveLeft(self):
-        return driveLeft
+        return self.driveLeft
 
     def getDriveRight(self):
-        return driveRight
+        return self.driveRight
 
     def getDriveLeftHoriz(self):
-        return driveLeftHoriz
+        return self.driveLeftHoriz
 
     def getDriveRightHoriz(self):
-        return driveRightHoriz
+        return self.driveRightHoriz
 
     def getDriveRightTrig(self):
-        return driveRightTrig
+        return self.driveRightTrig
 
     def getDriveLeftTrig(self):
-        return driveLeftTrig
+        return self.driveLeftTrig
     
     def getMechLeft(self):
-        return mechLeft
+        return self.mechLeft
 
     def getMechRight(self):
-        return mechRight
+        return self.mechRight
 
     def getMechLeftHoriz(self):
-        return mechLeftHoriz
+        return self.mechLeftHoriz
 
     def getMechRightHoriz(self):
-        return mechRightHoriz
+        return self.mechRightHoriz
 
     def getMechRightTrig(self):
-        return mechRightTrig
+        return self.mechRightTrig
 
     def getMechLeftTrig(self):
-        return mechLeftTrig
+        return self.mechLeftTrig
