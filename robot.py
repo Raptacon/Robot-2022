@@ -6,8 +6,7 @@ from wpilib import XboxController
 from wpilib import DigitalInput as dio
 import wpilib
 from magicbot import MagicRobot
-from robotMap import RobotMap
-
+from robotMap import RobotMap, XboxMap
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
 from components.towerMotors import ShooterMotorCreation
@@ -34,28 +33,22 @@ class MyRobot(MagicRobot):
         Robot-wide initialization code should go here. Replaces robotInit
         """
         self.map = RobotMap()
-        self.driveLeft = 0
-        self.driveRight = 0
-        self.driveController = wpilib.XboxController(0)
-        self.mechController = wpilib.XboxController(1)
-        self.motorsList = dict(self.map.motorsMap.driveMotors)
-
+        self.XboxMap = XboxMap(XboxController(0), XboxController(1))
         # Drive Train
         self.left = 0
         self.right = 0
-        self.stick = XboxController(0)
-
+        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
         self.sensorObjects = dio
 
     def teleopInit(self):
-        #register button events
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
-        # self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kB, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
+        """
+        Controller map is here for now
+        """
+        self.buttonManager.registerButtonEvent(self.XboxMap.getDriveController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.driveTrain.stop)
+        self.buttonManager.registerButtonEvent(self.XboxMap.getMechController(), XboxController.Button.kStart, ButtonEvent.kOnPress, self.driveTrain.stop)
+        self.buttonManager.registerButtonEvent(self.XboxMap.getMechController(), XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
 
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
@@ -63,8 +56,8 @@ class MyRobot(MagicRobot):
         """
         Must include. Called running teleop.
         """
-        self.controllerInput()
-        self.driveTrain.setArcade(self.driveLeft, -self.driveLeftHoriz)
+        self.XboxMap.controllerInput()
+        self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
 
         if self.mechA:
             self.lifter.setSpeed(1)
@@ -94,7 +87,7 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         pass
-
+      
     def controllerInput(self):
         """
         Collects all controller values and puts them in an easily readable format
