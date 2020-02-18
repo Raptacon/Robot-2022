@@ -19,7 +19,7 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
-    SensorShooter: sensors
+    # SensorShooter: sensors
 
     # Comment out if needed
     ManualShooter: ManualControl
