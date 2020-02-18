@@ -5,7 +5,7 @@ import motorHelper
 
 class DriveTrain:
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
-    driveTrain_motorsList: dict
+    motorsList: dict
 
     def setup(self):
         self.tankLeftSpeed = 0
@@ -17,8 +17,8 @@ class DriveTrain:
 
         self.motors = {}
 
-        for motorDescKey in self.driveTrain_motorsList:
-            currentMotor = self.driveTrain_motorsList[motorDescKey]
+        for motorDescKey in self.motorsList:
+            currentMotor = self.motorsList[motorDescKey]
             print("{}".format(currentMotor))
             self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
 
@@ -38,11 +38,13 @@ class DriveTrain:
         pass
 
     def setTank(self, leftSpeed, rightSpeed):
+        self.controllingOverArcade = False
         self.controllingOverTank = True
         self.tankLeftSpeed = leftSpeed
         self.tankRightSpeed = rightSpeed
 
     def setArcade(self, speed, rotation):
+        self.controllingOverTank = False
         self.controllingOverArcade = True
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation

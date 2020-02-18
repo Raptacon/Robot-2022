@@ -8,7 +8,7 @@ class autonomous(AutonomousStateMachine):
     time = 5
     MODE_NAME = "Two Steps"
     DEFAULT = True
-    driveTrain: DriveTrain
+    #driveTrain: DriveTrain
 
     drive_speed = tunable(-1)
 
@@ -30,4 +30,4 @@ class autonomous(AutonomousStateMachine):
         speed = (math.sin(2 * math.pi * (1 / self.time) * state_tm))*.25
         """First integer is # of times to run through program, second is time. combined creates value."""
         print('{}  {}'.format(state_tm, speed))
-        self.driveTrain.setTank(speed, speed)
+        #self.driveTrain.setTank(speed, speed)
