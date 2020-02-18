@@ -52,8 +52,6 @@ class sensors:
             self.logicSensors = self.SensorArray[x].get()
             self.logicArray.append(self.logicSensors)
 
-        # print("Logic array:", self.logicArray)
-
         # NOTE: After every control loop, the logicArray MUST be reset
 
         # If one ball is loaded:
@@ -109,3 +107,6 @@ class sensors:
                         self.ShooterMotors.stopLoader()
                         self.ShooterMotors.stopShooter()
                         self.initShooter = False
+                        self.startShooter = False
+
+# TODO: Add manual loading class if sensors don't work

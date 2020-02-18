@@ -37,7 +37,7 @@ class MyRobot(MagicRobot):
         # Drive Train
         self.left = 0
         self.right = 0
-        self.driveTrain_motorsList = dict(self.map.motorsMap.driveMotors)
+        self.motorsList = dict(self.map.motorsMap.driveMotors)
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
         self.sensorObjects = dio
@@ -59,20 +59,13 @@ class MyRobot(MagicRobot):
         self.XboxMap.controllerInput()
         self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
 
-        if self.mechA:
-            self.lifter.setSpeed(1)
-        else:
-            self.lifter.setSpeed(0)
-
-        self.driveTrain.setArcade(self.left, -self.driveLeftHoriz)
-
-        if self.shootExec:
+        if self.XboxMap.getMechAButton():
             self.Sensors.fireShooter()
-            print("Shooting:", self.shootExec)
 
-        if self.RunIntake > 0:
-            self.ShooterMotors.runIntake(self.RunIntake)
-            print("Intake running:", self.RunIntake)
+        if self.XboxMap.getMechRightTrig() > 0:
+            self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
+            print("Intake running:", self.XboxMap.getMechRightTrig())
+
         else:
             self.ShooterMotors.runIntake(0)
 
@@ -87,18 +80,12 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         pass
-      
+
     def controllerInput(self):
         """
         Collects all controller values and puts them in an easily readable format
         """
-        self.driveLeft = self.driveController.getRawAxis(1) *self.mult
-        self.driveRight = self.driveController.getRawAxis(5) *self.mult
-        self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
-        self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
-        self.shootExec = self.driveController.getRawButton(self.driveController.Button.kBumperRight)
-        self.RunIntake = self.driveController.getRawAxis(self.driveController.Axis.kRightTrigger)
-        self.mechA = self.mechController.getAButton()
+        pass
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)
