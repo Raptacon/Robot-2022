@@ -26,11 +26,15 @@ class sensors:
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
-    def fireShooter(self, contInput):
+    def fireShooter(self):
 
-        # Executes shooter if ball is at the shooter:
-        if self.SensorArray[0].get() == False:
-            self.initShooter = contInput
+        self.ShooterMotors.runLoader(-0.2)
+        if self.SensorArray[0].get():
+            self.ShooterMotors.runShooter(.9)
+            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 3500:
+                self.ShooterMotors.runLoader(0.2)
+                if all(self.SensorArray[self.sensorX].get()):
+                    self.ShooterMotors.stopLoader()
 
     def execute(self):
 
@@ -84,6 +88,7 @@ class sensors:
                 self.sensorX -= 1
                 self.logicArray = []
 
+        """
         # Fires shooter:
         if (
             self.initShooter and 
@@ -94,13 +99,13 @@ class sensors:
 
         if self.startShooter:
             self.ShooterMotors.stopLoader()
-            self.ShooterMotors.runLoader(-1)
+            self.ShooterMotors.runLoader(-0.2)
 
             if self.SensorArray[0].get():
                 self.ShooterMotors.stopLoader()
-                self.ShooterMotors.runShooter(1)
+                self.ShooterMotors.runShooter()
 
-                if self.ShooterMotors.isShooterAtSpeed() == 1:
+                if self.ShooterMotors.isShooterAtSpeed():
                     self.ShooterMotors.runLoader(1)
 
                     if all(self.logicArray) and self.SensorArray[0].get():
@@ -108,6 +113,7 @@ class sensors:
                         self.ShooterMotors.stopShooter()
                         self.initShooter = False
                         self.startShooter = False
+        """
 
 # TODO: Add manual loading class if sensors don't work
 

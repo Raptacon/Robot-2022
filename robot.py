@@ -19,10 +19,10 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
-    # SensorShooter: sensors
+    SensorShooter: sensors
 
     # Comment out if needed
-    ManualShooter: ManualControl
+    # ManualShooter: ManualControl
 
     driveTrain: DriveTrain
     lifter: Lifter
@@ -44,7 +44,7 @@ class MyRobot(MagicRobot):
         self.mult = 1 #Multiplier for values. Should not be over 1.
 
         self.sensorObjects = dio
-        self.sensor = dio(0)
+        # self.sensor = dio(0)
 
     def teleopInit(self):
         """
@@ -65,14 +65,15 @@ class MyRobot(MagicRobot):
         self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
 
         # Comment out if needed
+        """
         self.ManualShooter.RunLoader(self.XboxMap.getDriveRightTrig())
         self.ManualShooter.reverseLoader(self.XboxMap.getDriveLeftTrig())
         self.ManualShooter.runShooter(self.XboxMap.getDriveRightBump())
+        """
 
-        '''
-        self.SensorShooter.fireShooter(self.XboxMap.getMechAButton())
-        '''
-        print(self.sensor.get())
+        if self.XboxMap.getMechAButton():
+            self.SensorShooter.fireShooter()
+        # print(self.sensor.get())
 
     def testInit(self):
         """
