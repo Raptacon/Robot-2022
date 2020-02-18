@@ -25,7 +25,7 @@ class MyRobot(MagicRobot):
     driveTrain: DriveTrain
     lifter: Lifter
 
-    Motors: ShooterMotorCreation
+    ShooterMotors: ShooterMotorCreation
 
     buttonManager: ButtonManager
 
@@ -78,10 +78,10 @@ class MyRobot(MagicRobot):
             print("Shooting:", self.shootExec)
 
         if self.RunIntake > 0:
-            self.Motors.runIntake(self.RunIntake)
+            self.ShooterMotors.runIntake(self.RunIntake)
             print("Intake running:", self.RunIntake)
         else:
-            self.Motors.runIntake(0)
+            self.ShooterMotors.runIntake(0)
 
     def testInit(self):
         """

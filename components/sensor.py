@@ -3,7 +3,7 @@ from components.towerMotors import ShooterMotorCreation
 
 class sensors:
 
-    Motors: ShooterMotorCreation
+    ShooterMotors: ShooterMotorCreation
     sensorObjects: dio
 
     def __init__(self):
@@ -11,7 +11,8 @@ class sensors:
         # Basic init:
         self.CurrentSensor = None
         self.logicSensors = None
-        self.shooterActivated = False
+        self.initShooter = False
+        self.startShooter = False
 
         # Arrays for sensors/logic-based sensors:
         self.logicArray = []
@@ -29,7 +30,7 @@ class sensors:
 
         # Executes shooter if ball is at the shooter:
         if self.SensorArray[0].get() == False:
-            self.shooterActivated = True
+            self.initShooter = True
 
     def execute(self):
 
@@ -60,18 +61,18 @@ class sensors:
             self.CurrentSensor.get() and
             all(self.logicArray) == False
         ):
-            self.Motors.runLoader(1)
+            self.ShooterMotors.runLoader(1)
             self.logicArray = []
 
         # If one ball has reached loader sensor:
         elif self.CurrentSensor.get() == False and all(self.logicArray):
-            self.Motors.stopLoader()
+            self.ShooterMotors.stopLoader()
             self.sensorX += 1
             self.logicArray = []
 
         # If more than one ball is loaded:
         elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
-            self.Motors.runLoader(1)
+            self.ShooterMotors.runLoader(1)
             self.sensorX += 1
             self.logicArray = []
 
@@ -87,21 +88,24 @@ class sensors:
 
         # Fires shooter:
         if (
-            self.shooterActivated and 
+            self.initShooter and 
             all(self.logicArray) and 
             self.CurrentSensor.get()
         ):
-            self.Motors.stopLoader()
-            self.Motors.runLoader(-1)
+            self.startShooter = True
+
+        if self.startShooter:
+            self.ShooterMotors.stopLoader()
+            self.ShooterMotors.runLoader(-1)
 
             if self.SensorArray[0].get():
-                self.Motors.stopLoader()
-                self.Motors.runShooter(1)
+                self.ShooterMotors.stopLoader()
+                self.ShooterMotors.runShooter(1)
 
-                if self.Motors.isShooterAtSpeed() == 1:
-                    self.Motors.runLoader(1)
+                if self.ShooterMotors.isShooterAtSpeed() == 1:
+                    self.ShooterMotors.runLoader(1)
 
                     if all(self.logicArray) and self.SensorArray[0].get():
-                        self.Motors.stopLoader()
-                        self.Motors.stopShooter()
-                        self.shooterActivated = False
+                        self.ShooterMotors.stopLoader()
+                        self.ShooterMotors.stopShooter()
+                        self.initShooter = False
