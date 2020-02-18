@@ -16,17 +16,17 @@ class ButtonEvent(Flag):
     kWhileReleased = auto()
     kNone = 0
 
-class ButtonManager:
+class ButtonManager(object):
     """
     Class manages the buttons on a HID device. If a HID device is registered users should not
     use any registered buttons directley.
     """
 
-    #def __init__():
-    #    """
-    #    Initilizer for class
-    #    """
-    #    self.entrys = {}
+    def __init__(self):
+        """
+        Initilizer for class
+        """
+        self.entrys = {}
 
     def __createCallbackEntry(self, hidDevice, buttonId, eventTypes, callback):
         """

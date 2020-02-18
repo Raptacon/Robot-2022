@@ -3,7 +3,7 @@ from components.towerMotors import ShooterMotorCreation
 
 class sensors:
 
-    Motors: ShooterMotorCreation
+    ShooterMotors: ShooterMotorCreation
     sensorObjects: dio
 
     def __init__(self):
@@ -11,7 +11,8 @@ class sensors:
         # Basic init:
         self.CurrentSensor = None
         self.logicSensors = None
-        self.shooterActivated = False
+        self.initShooter = False
+        self.startShooter = False
 
         # Arrays for sensors/logic-based sensors:
         self.logicArray = []
@@ -25,15 +26,20 @@ class sensors:
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
-    def fireShooter(self):
+    def fireShooter(self, contInput):
 
         # Executes shooter if ball is at the shooter:
+<<<<<<< HEAD
         # if self.SensorArray[0].get() == False:
         #     self.shooterActivated = True
         self.Motors.runShooter(.9)
         print("Velocity: ",self.Motors.shooterMotor.getEncoder().getVelocity()>=3500)
         if self.Motors.shooterMotor.getEncoder().getVelocity()>=3500:
             self.Motors.runLoader(.2)
+=======
+        if self.SensorArray[0].get() == False:
+            self.initShooter = contInput
+>>>>>>> f0e6b46dd53c459eb7cb02c9b6a767e9e49eadb3
 
     def execute(self):
 
@@ -54,11 +60,10 @@ class sensors:
             self.logicSensors = self.SensorArray[x].get()
             self.logicArray.append(self.logicSensors)
 
-        # print("Logic array:", self.logicArray)
-
         # NOTE: After every control loop, the logicArray MUST be reset
 
         # If one ball is loaded:
+<<<<<<< HEAD
         # if (
         #     self.CurrentSensor.get() and
         #     all(self.logicArray) == False
@@ -77,6 +82,26 @@ class sensors:
         #     self.Motors.runLoader(1)
         #     self.sensorX += 1
         #     self.logicArray = []
+=======
+        if (
+            self.CurrentSensor.get() and
+            all(self.logicArray) == False
+        ):
+            self.ShooterMotors.runLoader(1)
+            self.logicArray = []
+
+        # If one ball has reached loader sensor:
+        elif self.CurrentSensor.get() == False and all(self.logicArray):
+            self.ShooterMotors.stopLoader()
+            self.sensorX += 1
+            self.logicArray = []
+
+        # If more than one ball is loaded:
+        elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
+            self.ShooterMotors.runLoader(1)
+            self.sensorX += 1
+            self.logicArray = []
+>>>>>>> f0e6b46dd53c459eb7cb02c9b6a767e9e49eadb3
 
         # Intake has no ball:
         else:
@@ -88,6 +113,7 @@ class sensors:
                 self.sensorX -= 1
                 self.logicArray = []
         # Fires shooter:
+<<<<<<< HEAD
         # if (
         #     self.shooterActivated and 
         #     all(self.logicArray) and 
@@ -107,3 +133,50 @@ class sensors:
         #                 self.Motors.stopLoader()
         #                 self.Motors.stopShooter()
         #                 self.shooterActivated = False
+=======
+        if (
+            self.initShooter and 
+            all(self.logicArray) and 
+            self.CurrentSensor.get()
+        ):
+            self.startShooter = True
+
+        if self.startShooter:
+            self.ShooterMotors.stopLoader()
+            self.ShooterMotors.runLoader(-1)
+
+            if self.SensorArray[0].get():
+                self.ShooterMotors.stopLoader()
+                self.ShooterMotors.runShooter(1)
+
+                if self.ShooterMotors.isShooterAtSpeed() == 1:
+                    self.ShooterMotors.runLoader(1)
+
+                    if all(self.logicArray) and self.SensorArray[0].get():
+                        self.ShooterMotors.stopLoader()
+                        self.ShooterMotors.stopShooter()
+                        self.initShooter = False
+                        self.startShooter = False
+
+# TODO: Add manual loading class if sensors don't work
+
+class ManualControl:
+
+    ShooterMotors: ShooterMotorCreation
+
+    def __init__(self):
+        self.shootSpeed = 0
+
+    def RunLoader(self, loaderSpeed): # Intake handled by robot.py
+        self.ShooterMotors.runLoader(loaderSpeed)
+
+    def reverseLoader(self, reverseLoaderSpeed):
+        self.ShooterMotors.runLoader(-reverseLoaderSpeed)
+
+    def runShooter(self, shootActive):
+        if shootActive:
+            self.shootSpeed = 1
+
+    def execute(self):
+        self.ShooterMotors.runShooter(self.shootSpeed)
+>>>>>>> f0e6b46dd53c459eb7cb02c9b6a767e9e49eadb3

@@ -31,7 +31,7 @@ class ShooterMotorCreation:
         self.loader = True
 
     def runIntake(self, iSpeed):
-        self.intakeSpeed = iSpeed
+        self.intakeSpeed = iSpeed * .4
 
     def runShooter(self, sSpeed):
         self.shooterSpeed = sSpeed

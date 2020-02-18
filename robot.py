@@ -39,7 +39,7 @@ class MyRobot(MagicRobot):
         self.driveController = wpilib.XboxController(0)
         self.mechController = wpilib.XboxController(1)
         self.motorsList = dict(self.map.motorsMap.driveMotors)
-
+        
         # Drive Train
 
         self.sensorObjects = dio
