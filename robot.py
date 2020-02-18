@@ -10,7 +10,7 @@ from robotMap import RobotMap, XboxMap
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
 from components.towerMotors import ShooterMotorCreation
-from components.sensor import sensors
+from components.sensor import sensors, ManualControl
 from components.buttonManager import ButtonManager, ButtonEvent
 from examples.buttonManagerCallback import exampleCallback, simpleCallback, crashCallback
 
@@ -19,7 +19,10 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
-    Sensors: sensors
+    SensorShooter: sensors
+
+    # Comment out if needed
+    ManualShooter: ManualControl
 
     driveTrain: DriveTrain
     lifter: Lifter
@@ -59,15 +62,14 @@ class MyRobot(MagicRobot):
         self.XboxMap.controllerInput()
         self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
 
-        if self.XboxMap.getMechAButton():
-            self.Sensors.fireShooter()
+        self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
 
-        if self.XboxMap.getMechRightTrig() > 0:
-            self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
-            print("Intake running:", self.XboxMap.getMechRightTrig())
+        # Comment out if needed
+        self.ManualShooter.RunLoader(self.XboxMap.getMechRightTrig())
+        self.ManualShooter.reverseLoader(self.XboxMap.getDriveLeftTrig())
+        self.ManualShooter.runShooter(self.XboxMap.getDriveRightTrig())
 
-        else:
-            self.ShooterMotors.runIntake(0)
+        self.SensorShooter.fireShooter(self.XboxMap.getMechAButton())
 
     def testInit(self):
         """

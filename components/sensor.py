@@ -26,11 +26,11 @@ class sensors:
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
-    def fireShooter(self):
+    def fireShooter(self, contInput):
 
         # Executes shooter if ball is at the shooter:
         if self.SensorArray[0].get() == False:
-            self.initShooter = True
+            self.initShooter = contInput
 
     def execute(self):
 
@@ -110,3 +110,22 @@ class sensors:
                         self.startShooter = False
 
 # TODO: Add manual loading class if sensors don't work
+
+class ManualControl:
+
+    ShooterMotors: ShooterMotorCreation
+
+    def __init__(self):
+        pass
+
+    def RunLoader(self, loaderSpeed): # Intake handled by robot.py
+        self.ShooterMotors.runLoader(loaderSpeed)
+
+    def reverseLoader(self, reverseLoaderSpeed):
+        self.ShooterMotors.runLoader(-reverseLoaderSpeed)
+
+    def runShooter(self, shootSpeed):
+        self.ShooterMotors.runShooter(shootSpeed)
+
+    def execute(self):
+        pass
