@@ -62,7 +62,7 @@ class MyRobot(MagicRobot):
         self.XboxMap.controllerInput()
         self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
 
-        self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
+        self.ShooterMotors.runIntake(self.XboxMap.getDriveRightTrig())
 
         # Comment out if needed
         self.ManualShooter.RunLoader(self.XboxMap.getDriveRightTrig())
