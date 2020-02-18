@@ -52,7 +52,7 @@ class MyRobot(MagicRobot):
     def teleopInit(self):
         #register button events
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kB, ButtonEvent.kOnPress, exampleCallback)
+        # self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kB, ButtonEvent.kOnPress, exampleCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, exampleCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
@@ -75,9 +75,11 @@ class MyRobot(MagicRobot):
 
         if self.shootExec:
             self.Sensors.fireShooter()
+            print("Shooting:", self.shootExec)
 
         if self.RunIntake > 0:
             self.Motors.runIntake(self.RunIntake)
+            print("Intake running:", self.RunIntake)
         else:
             self.Motors.runIntake(0)
 
@@ -101,8 +103,8 @@ class MyRobot(MagicRobot):
         self.driveRight = self.driveController.getRawAxis(5) *self.mult
         self.driveLeftHoriz = self.driveController.getRawAxis(0)  *self.mult
         self.driveRightHoriz = self.driveController.getRawAxis(4) *self.mult
-        self.shootExec = self.driveController.getBButton()
-        self.RunIntake = self.driveController.getTriggerAxis(1)
+        self.shootExec = self.driveController.getRawButton(self.driveController.Button.kBumperRight)
+        self.RunIntake = self.driveController.getRawAxis(self.driveController.Axis.kRightTrigger)
         self.mechA = self.mechController.getAButton()
 
 if __name__ == '__main__':

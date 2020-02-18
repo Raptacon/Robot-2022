@@ -21,7 +21,7 @@ class sensors:
         self.sensorX = 0
 
         # Creates sensors:
-        for x in range(0, 5):
+        for x in range(1, 6):
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
@@ -30,8 +30,6 @@ class sensors:
         # Executes shooter if ball is at the shooter:
         if self.SensorArray[0].get() == False:
             self.shooterActivated = True
-        else:
-            self.shooterActivated = False
 
     def execute(self):
 
@@ -53,7 +51,7 @@ class sensors:
             self.logicSensors = self.SensorArray[x].get()
             self.logicArray.append(self.logicSensors)
 
-        print("Logic array:", self.logicArray)
+        # print("Logic array:", self.logicArray)
 
         # NOTE: After every control loop, the logicArray MUST be reset
 
@@ -106,3 +104,4 @@ class sensors:
                     if all(self.logicArray) and self.SensorArray[0].get():
                         self.Motors.stopLoader()
                         self.Motors.stopShooter()
+                        self.shooterActivated = False
