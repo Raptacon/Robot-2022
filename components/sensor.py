@@ -38,15 +38,14 @@ class sensors:
 
     def execute(self):
 
-        # Assert that sensor called exists:
-        try:
-            assert(self.sensorX >= 0 and self.sensorX <= 4)
-        except AssertionError as err:
-            print("Sensor key assertion failed:", err)
+        # Assert that sensor called exists: (For some reason this doesn't work)
+        if self.sensorX<0:
+            self.sensorX = 0
+        elif self.sensorX>4:
+            self.sensorX = 4
 
         # Sets the current sensor:
         self.CurrentSensor = self.SensorArray[self.sensorX]
-
         '''
         Creates the basis for the logic regarding when the loader is run.
         Checks boolean values all sensors aside from current sensor, and
@@ -89,7 +88,6 @@ class sensors:
                 self.logicArray = []
 
         """
-        # Fires shooter:
         if (
             self.initShooter and 
             all(self.logicArray) and 
