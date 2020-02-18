@@ -46,6 +46,7 @@ class XboxMap():
         self.driveRightHoriz = self.drive.getRawAxis(XboxController.Axis.kRightX)
         self.driveRightTrig = self.drive.getRawAxis(XboxController.Axis.kRightTrigger)
         self.driveLeftTrig = self.drive.getRawAxis(XboxController.Axis.kLeftTrigger)
+        self.driveRightBump = self.drive.getRawButton(XboxController.Button.kBumperRight)
         #Mechanism controller inputs
         self.mechLeft = self.mech.getRawAxis(XboxController.Axis.kLeftY)
         self.mechRight = self.mech.getRawAxis(XboxController.Axis.kRightY)
@@ -78,7 +79,10 @@ class XboxMap():
 
     def getDriveLeftTrig(self):
         return self.driveLeftTrig
-    
+
+    def getDriveRightBump(self):
+        return self.driveRightBump
+
     def getMechLeft(self):
         return self.mechLeft
 

@@ -65,11 +65,13 @@ class MyRobot(MagicRobot):
         self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
 
         # Comment out if needed
-        self.ManualShooter.RunLoader(self.XboxMap.getMechRightTrig())
+        self.ManualShooter.RunLoader(self.XboxMap.getDriveRightTrig())
         self.ManualShooter.reverseLoader(self.XboxMap.getDriveLeftTrig())
-        self.ManualShooter.runShooter(self.XboxMap.getDriveRightTrig())
+        self.ManualShooter.runShooter(self.XboxMap.getDriveRightBump())
 
+        '''
         self.SensorShooter.fireShooter(self.XboxMap.getMechAButton())
+        '''
 
     def testInit(self):
         """

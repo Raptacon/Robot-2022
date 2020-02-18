@@ -116,7 +116,7 @@ class ManualControl:
     ShooterMotors: ShooterMotorCreation
 
     def __init__(self):
-        pass
+        self.shootSpeed = 0
 
     def RunLoader(self, loaderSpeed): # Intake handled by robot.py
         self.ShooterMotors.runLoader(loaderSpeed)
@@ -124,8 +124,9 @@ class ManualControl:
     def reverseLoader(self, reverseLoaderSpeed):
         self.ShooterMotors.runLoader(-reverseLoaderSpeed)
 
-    def runShooter(self, shootSpeed):
-        self.ShooterMotors.runShooter(shootSpeed)
+    def runShooter(self, shootActive):
+        if shootActive:
+            self.shootSpeed = 1
 
     def execute(self):
-        pass
+        self.ShooterMotors.runShooter(self.shootSpeed)
