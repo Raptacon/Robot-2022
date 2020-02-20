@@ -2,8 +2,13 @@ from wpilib import DigitalInput as dio
 from wpilib import XboxController
 from robotMap import XboxMap
 from components.ShooterMotors import ShooterMotorCreation
+from magicbot import StateMachine, state
 
-class shooterLogic:
+class ManualShooter:
+
+    ShooterMotors: ShooterMotorCreation
+
+class AutomaticShooter(StateMachine):
 
     ShooterMotors: ShooterMotorCreation
     sensorObjects: dio
