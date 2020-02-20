@@ -33,6 +33,9 @@ class ShooterMotorCreation:
         self.shooterSpeed = sSpeed
         self.shooter = True
 
+    def stopIntake(self):
+        self.intake = False
+
     def stopLoader(self):
         self.loader = False
 

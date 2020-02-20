@@ -47,17 +47,12 @@ class MyRobot(MagicRobot):
 
         # Enables automatic control
         if self.xboxMap.getMechYButton():
+            self.ShooterMotors.runLoader(0)
             self.ShooterController.runLoaderAutomatically()
 
         # Enables manual control
         elif self.xboxMap.getMechBButton():
             self.ShooterController.runLoaderManually()
-            if self.xboxMap.getMechAButton():
-                print("FIRE SHOOTER")
-                self.ShooterController.fireShooter()
-            else:
-                self.ShooterController.ShooterMotors.stopShooter()
-                self.ShooterController.ShooterMotors.stopLoader()
 
     def testInit(self):
         """
