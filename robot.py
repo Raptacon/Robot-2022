@@ -9,6 +9,7 @@ from magicbot import MagicRobot
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
 from components.buttonManager import ButtonManager, ButtonEvent
+from components.pneumatics import Pneumatics
 from examples.buttonManagerCallback import actionCallback, crashCallback, exampleCallback, simpleCallback
 
 class MyRobot(MagicRobot):
@@ -18,6 +19,7 @@ class MyRobot(MagicRobot):
 
     driveTrain: DriveTrain
     buttonManager: ButtonManager
+    pneumatics: Pneumatics
 
     def createObjects(self):
         """
