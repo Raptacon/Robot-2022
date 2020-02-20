@@ -35,14 +35,14 @@ class shooterLogic:
         self.ShooterMotors.runLoader(-0.8)
         if self.SensorArray[0].get():
             self.ShooterMotors.runShooter(.9)
-            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 3500:
+            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
                 self.ShooterMotors.runLoader(0.2)
                 if all(self.SensorArray[self.sensorX].get()):
                     self.ShooterMotors.stopLoader()
 
     def fireShooter(self):
         self.runningShooter = True
-        self.ShooterMotors.runShooter(0.9)
+        self.ShooterMotors.runShooter(1)
         print("shooter firing, velocity : ", self.ShooterMotors.shooterMotor.getEncoder().getVelocity())
         if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 3500:
             self.ShooterMotors.runLoader(1)

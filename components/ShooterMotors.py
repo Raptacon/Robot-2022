@@ -16,13 +16,7 @@ class ShooterMotorCreation:
         self.shooter = False
         self.runBoth = False
 
-        self.motors = {}
-
-        # shooter_MotorsList is the 'config.yml' dictionary
-        for motorDescKey in self.motorsList: # 'motorDescKey' is the key to look up within 'driveMotors'
-            currentMotor = self.motorsList[motorDescKey] # Actual value of key (like 'rightMotor')
-            print("{}".format(currentMotor)) # Prints actual value of key (like 'rightMotor')
-            self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
+        self.motors = self.motorsList
 
         self.loaderMotor = self.motors["loaderMotor"]
         self.intakeMotor = self.motors["intakeMotor"]
@@ -33,7 +27,7 @@ class ShooterMotorCreation:
         self.loader = True
 
     def runIntake(self, iSpeed):
-        self.intakeSpeed = iSpeed * .6
+        self.intakeSpeed = iSpeed
         self.intake = True
 
     def runShooter(self, sSpeed):

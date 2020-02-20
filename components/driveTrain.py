@@ -14,14 +14,7 @@ class DriveTrain:
         self.arcadeRotation = 0
         self.controllingOverArcade = False
         self.controllingOverTank = False
-
-        self.motors = {}
-
-        for motorDescKey in self.motorsList:
-            currentMotor = self.motorsList[motorDescKey]
-            print("{}".format(currentMotor))
-            self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
-
+        self.motors = self.motorsList
         self.leftMotor = self.motors["leftMotor"]
         self.rightMotor = self.motors["rightMotor"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)

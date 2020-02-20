@@ -1,6 +1,7 @@
 import ConfigMapper as mapper
 import os
 from wpilib import XboxController
+import motorHelper
 
 class RobotMap():
     """
@@ -23,7 +24,13 @@ class CANMap():
         """
         driveMotors = config.getDicts()
         print("DRIVEMOTORS: {}".format(driveMotors['leftMotor']))
-        self.driveMotors = driveMotors
+        self.motors = {}
+
+        for motorDescKey in driveMotors:
+            currentMotor = driveMotors[motorDescKey]
+            print("{}".format(currentMotor))
+            self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
+        self.driveMotors = self.motors
 
 class XboxMap():
     """

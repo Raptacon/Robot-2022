@@ -43,7 +43,7 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
         
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, -self.xboxMap.getDriveRightHoriz() * self.mult)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, self.xboxMap.getDriveRightHoriz() * self.mult)
 
         # Enables automatic control
         if self.xboxMap.getMechYButton():
