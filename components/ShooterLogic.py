@@ -117,6 +117,7 @@ class shooterLogic:
                 print("left trig", self.xboxMap.getMechLeftTrig())
             elif not self.runningShooter:
                 self.ShooterMotors.runIntake(0)
+                self.ShooterMotors.runShooter(0)
                 self.ShooterMotors.runLoader(0)
 
             #TODO: Look at drive station for proper inversions of variables
