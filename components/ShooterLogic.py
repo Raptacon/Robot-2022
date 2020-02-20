@@ -36,7 +36,7 @@ class shooterLogic:
         if self.SensorArray[0].get():
             self.ShooterMotors.runShooter(.9)
             if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-                self.ShooterMotors.runLoader(0.2)
+                self.ShooterMotors.runLoader(1)
                 if all(self.SensorArray[self.sensorX].get()):
                     self.ShooterMotors.stopLoader()
 
@@ -59,7 +59,7 @@ class shooterLogic:
         if self.isAutomatic:
             # Assert that key called exists
             try:
-                assert(self.sensorX >= 0 and self.sensorX >= 4)
+                assert(self.sensorX >= 0 and self.sensorX <= 4)
             except AssertionError as err:
                 print("Failed to get sensor key in range:", err)
 
@@ -76,6 +76,9 @@ class shooterLogic:
                 self.logicArray.append(self.logicSensors)
 
             # NOTE: After every control loop, the logicArray MUST be reset
+
+            self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig())
+            print(self.sensorX)
 
             # If one ball is loaded:
             if (
@@ -98,26 +101,28 @@ class shooterLogic:
                 self.logicArray = []
 
             # Shifts loader responsibility:
-            elif self.SensorArray[(self.sensorX - 1)].get():
-                self.sensorX -= 1
-                self.logicArray = []
+            elif self.sensorX > 0:
+                if self.SensorArray[(self.sensorX - 1)].get():
+                    self.sensorX -= 1
+                    self.logicArray = []
 
             # Intake has no ball:
             else:
                 self.logicArray = []
 
         elif self.isAutomatic == False:
+
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
                 self.ShooterMotors.runLoader(self.xboxMap.getMechRightTrig())
                 self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig())
                 print("right trig", self.xboxMap.getMechRightTrig())
+
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
                 self.ShooterMotors.runLoader(-self.xboxMap.getMechLeftTrig())
                 self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig())
                 print("left trig", self.xboxMap.getMechLeftTrig())
+
             elif not self.runningShooter:
                 self.ShooterMotors.runIntake(0)
-                self.ShooterMotors.runShooter(0)
                 self.ShooterMotors.runLoader(0)
-
-            #TODO: Look at drive station for proper inversions of variables
+                self.ShooterMotors.runShooter(0)

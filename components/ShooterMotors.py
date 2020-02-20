@@ -14,7 +14,6 @@ class ShooterMotorCreation:
         self.intake = False
         self.loader = False
         self.shooter = False
-        self.runBoth = False
 
         self.motors = self.motorsList
 
@@ -27,7 +26,7 @@ class ShooterMotorCreation:
         self.loader = True
 
     def runIntake(self, iSpeed):
-        self.intakeSpeed = iSpeed
+        self.intakeSpeed = iSpeed * .6
         self.intake = True
 
     def runShooter(self, sSpeed):
@@ -55,4 +54,3 @@ class ShooterMotorCreation:
             self.shooterMotor.set(self.shooterSpeed)
         elif self.shooter == False:
             self.shooterMotor.set(0)
-        

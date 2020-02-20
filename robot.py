@@ -48,8 +48,9 @@ class MyRobot(MagicRobot):
         # Enables automatic control
         if self.xboxMap.getMechYButton():
             self.ShooterController.runLoaderAutomatically()
+
         # Enables manual control
-        else:
+        elif self.xboxMap.getMechBButton():
             self.ShooterController.runLoaderManually()
             if self.xboxMap.getMechAButton():
                 print("FIRE SHOOTER")
@@ -57,8 +58,6 @@ class MyRobot(MagicRobot):
             else:
                 self.ShooterController.ShooterMotors.stopShooter()
                 self.ShooterController.ShooterMotors.stopLoader()
-
-        #TODO: Look at drive station for proper button syntax
 
     def testInit(self):
         """
