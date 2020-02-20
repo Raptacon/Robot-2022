@@ -5,12 +5,7 @@ class Lifter:
 
     def on_enable(self):
         self.upSpeed = 0
-        self.motors = {}
-
-        for motorDescKey in self.motorsList:
-            currentMotor = self.motorsList[motorDescKey]
-            print("{}".format(currentMotor))
-            self.motors[motorDescKey] = motorHelper.createMotor(currentMotor)
+        self.motors = self.motorsList
 
         self.winchMotor = self.motors["winchMotor"]
         self.winchFollower = self.motors["winchFollower"]
