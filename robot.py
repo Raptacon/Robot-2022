@@ -6,8 +6,8 @@ from magicbot import MagicRobot
 # Component imports:
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
-from components.towerMotors import ShooterMotorCreation
-from components.sensor import sensors, ManualControl
+from components.ShooterMotors import ShooterMotorCreation
+from components.ShooterLogic import shooterLogic
 from components.buttonManager import ButtonManager, ButtonEvent
 
 # Other imports:
@@ -18,7 +18,7 @@ class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
     """
-    ShooterSensors: ShooterLogic
+    ShooterController: shooterLogic
     ShooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
     lifter: Lifter
@@ -29,7 +29,7 @@ class MyRobot(MagicRobot):
         Robot-wide initialization code should go here. Replaces robotInit
         """
         self.map = RobotMap()
-        self.XboxMap = XboxMap(XboxController(0), XboxController(1))
+        self.xboxMap = XboxMap(XboxController(0), XboxController(1))
         self.motorsList = dict(self.map.motorsMap.driveMotors)
 
         self.sensorObjects = dio
@@ -41,18 +41,22 @@ class MyRobot(MagicRobot):
         """
         Must include. Called running teleop.
         """
-        self.XboxMap.controllerInput()
+        self.xboxMap.controllerInput()
         
-        self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, -self.xboxMap.getDriveRightHoriz() * self.mult)
 
         # Enables automatic control
-        if self.XboxMap.getMechYButton():
-            self.ShooterSensors.runLoaderAutomatically()
-            if self.XboxMap.getMechAButton():
-                self.ShooterSensors.fireShooter()
+        if self.xboxMap.getMechYButton():
+            self.ShooterController.runLoaderAutomatically()
         # Enables manual control
         else:
-            self.ShooterSensors.runLoaderManually()
+            self.ShooterController.runLoaderManually()
+            if self.xboxMap.getMechAButton():
+                print("FIRE SHOOTER")
+                self.ShooterController.fireShooter()
+            else:
+                self.ShooterController.ShooterMotors.stopShooter()
+                self.ShooterController.ShooterMotors.stopLoader()
 
         #TODO: Look at drive station for proper button syntax
 

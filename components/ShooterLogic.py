@@ -1,22 +1,23 @@
 from wpilib import DigitalInput as dio
 from wpilib import XboxController
-from components.ShooterMotors import ShooterMotorCreation
 from robotMap import XboxMap
+from components.ShooterMotors import ShooterMotorCreation
 
-class ShooterLogic:
+class shooterLogic:
 
     ShooterMotors: ShooterMotorCreation
     sensorObjects: dio
+    xboxMap: XboxMap
 
     def __init__(self):
 
         # Basic init:
-        self.XboxMap = XboxMap(XboxController(0), XboxController(1))
         self.CurrentSensor = None
         self.logicSensors = None
         self.initShooter = False
         self.startShooter = False
         self.isAutomatic = False
+        self.runningShooter = False
 
         # Arrays for sensors/logic-based sensors:
         self.logicArray = []
@@ -30,7 +31,7 @@ class ShooterLogic:
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
-    def fireShooter(self):
+    def fireShooterSensor(self):
         self.ShooterMotors.runLoader(-0.8)
         if self.SensorArray[0].get():
             self.ShooterMotors.runShooter(.9)
@@ -38,6 +39,14 @@ class ShooterLogic:
                 self.ShooterMotors.runLoader(0.2)
                 if all(self.SensorArray[self.sensorX].get()):
                     self.ShooterMotors.stopLoader()
+
+    def fireShooter(self):
+        self.runningShooter = True
+        self.ShooterMotors.runShooter(0.9)
+        print("shooter firing, velocity : ", self.ShooterMotors.shooterMotor.getEncoder().getVelocity())
+        if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 3500:
+            self.ShooterMotors.runLoader(1)
+
 
     def runLoaderAutomatically(self):
         self.isAutomatic = True
@@ -98,17 +107,16 @@ class ShooterLogic:
                 self.logicArray = []
 
         elif self.isAutomatic == False:
-            self.ShooterMotors.runLoader(self.XboxMap.getMechRightTrig())
-            self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
-            self.ShooterMotors.runLoader(self.XboxMap.getMechLeftTrig())
-            self.ShooterMotors.runIntake(self.XboxMap.getMechLeftTrig())
-
-            if self.XboxMap.getMechAButton():
-                self.ShooterMotors.runShooter(0.9)
-            elif self.XboxMap.getMechBButton():
-                self.ShooterMotors.runShooter(0)
+            if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
+                self.ShooterMotors.runLoader(self.xboxMap.getMechRightTrig())
+                self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig())
+                print("right trig", self.xboxMap.getMechRightTrig())
+            elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
+                self.ShooterMotors.runLoader(-self.xboxMap.getMechLeftTrig())
+                self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig())
+                print("left trig", self.xboxMap.getMechLeftTrig())
+            elif not self.runningShooter:
+                self.ShooterMotors.runIntake(0)
+                self.ShooterMotors.runLoader(0)
 
             #TODO: Look at drive station for proper inversions of variables
-
-        else:
-            pass
