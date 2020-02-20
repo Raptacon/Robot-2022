@@ -5,14 +5,16 @@ class ShooterMotorCreation:
 
     motorsList: dict
 
-    def on_enable(self):
+    def setup(self):
         self.intakeSpeed = 0
         self.loaderSpeed = 0
         self.shooterSpeed = 0
-        self.shooterEncoder = 1
+        self.speed = 0
+        # self.shooterEncoder = 1
         self.intake = False
         self.loader = False
         self.shooter = False
+        self.runBoth = False
 
         self.motors = {}
 
@@ -27,11 +29,16 @@ class ShooterMotorCreation:
         self.shooterMotor = self.motors["shooterMotor"]
 
     def runLoader(self, lSpeed):
-        self.loaderSpeed = lSpeed
+        self.loaderSpeed = lSpeed * .4 # changes to .4
         self.loader = True
 
     def runIntake(self, iSpeed):
-        self.intakeSpeed = iSpeed * .4
+        self.intakeSpeed = iSpeed * .6
+        self.intake = True
+
+    def runIntakeAndLoader(self, hSpeed):
+        self.speed = hSpeed * .2
+        self.runBoth = True
 
     def runShooter(self, sSpeed):
         self.shooterSpeed = sSpeed
@@ -43,13 +50,10 @@ class ShooterMotorCreation:
     def stopShooter(self):
         self.shooter = False
 
-    def isShooterAtSpeed(self):
-        return self.shooterEncoder
-
     def execute(self):
-        if self.intakeSpeed > 0:
+        if self.intake:
             self.intakeMotor.set(self.intakeSpeed)
-        elif self.intakeSpeed == 0:
+        elif self.intake == False:
             self.intakeMotor.set(0)
 
         if self.loader:
@@ -61,3 +65,9 @@ class ShooterMotorCreation:
             self.shooterMotor.set(self.shooterSpeed)
         elif self.shooter == False:
             self.shooterMotor.set(0)
+
+        if self.runBoth:
+            self.intakeMotor.set(-self.speed)
+            self.loaderMotor.set(-self.speed)
+
+        

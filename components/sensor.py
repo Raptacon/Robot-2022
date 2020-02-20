@@ -120,17 +120,22 @@ class ManualControl:
     ShooterMotors: ShooterMotorCreation
 
     def __init__(self):
-        self.shootSpeed = 0
+        self.shoot = False
 
-    def RunLoader(self, loaderSpeed): # Intake handled by robot.py
+    def RunLoader(self, loaderSpeed):
         self.ShooterMotors.runLoader(loaderSpeed)
+
+    def RunIntake(self, intakeSpeed):
+        self.ShooterMotors.runIntake(intakeSpeed)
 
     def reverseLoader(self, reverseLoaderSpeed):
         self.ShooterMotors.runLoader(-reverseLoaderSpeed)
 
-    def runShooter(self, shootActive):
-        if shootActive:
-            self.shootSpeed = 1
+    def runShooter(self):
+        self.shoot = True
 
     def execute(self):
-        self.ShooterMotors.runShooter(self.shootSpeed)
+        if self.shoot:
+            self.ShooterMotors.runShooter(.9)
+            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 3500:
+                self.ShooterMotors.runLoader(.2)

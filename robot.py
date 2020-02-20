@@ -6,12 +6,12 @@ from wpilib import XboxController
 from wpilib import DigitalInput as dio
 import wpilib
 from magicbot import MagicRobot
-from robotMap import RobotMap
+from robotMap import RobotMap, XboxMap
 
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
 from components.towerMotors import ShooterMotorCreation
-from components.sensor import sensors
+from components.sensor import sensors, ManualControl
 from components.buttonManager import ButtonManager, ButtonEvent
 from examples.buttonManagerCallback import exampleCallback, simpleCallback, crashCallback
 
@@ -20,15 +20,15 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
 
-    SensorShooter: sensors
+    # SensorShooter: sensors
 
     # Comment out if needed
-    # ManualShooter: ManualControl
+    ManualShooter: ManualControl
 
     driveTrain: DriveTrain
     lifter: Lifter
 
-    Motors: ShooterMotorCreation
+    ShooterMotors: ShooterMotorCreation
 
     buttonManager: ButtonManager
 
@@ -37,6 +37,7 @@ class MyRobot(MagicRobot):
         Robot-wide initialization code should go here. Replaces robotInit
         """
         self.map = RobotMap()
+        self.XboxMap = XboxMap(XboxController(0), XboxController(1))
         self.driveLeft = 0
         self.driveRight = 0
         self.driveController = wpilib.XboxController(0)
@@ -58,19 +59,34 @@ class MyRobot(MagicRobot):
         Must include. Called running teleop.
         """
         self.XboxMap.controllerInput()
+        
         self.driveTrain.setArcade(self.XboxMap.getDriveLeft() * self.mult, -self.XboxMap.getDriveRightHoriz() * self.mult)
+        """
+        self.ManualShooter.RunIntake(self.XboxMap.getMechRightTrig())
+        self.ManualShooter.RunLoader(self.XboxMap.getMechRightTrig())
+        self.ManualShooter.reverseLoader(self.XboxMap.getMechLeftTrig())
+        """
+        """
+        self.ShooterMotors.runIntakeAndLoader(self.XboxMap.getMechLeftTrig())
+        self.ShooterMotors.runIntakeAndLoader(-self.XboxMap.getMechRightTrig())
+        """
         self.ShooterMotors.runIntake(self.XboxMap.getMechRightTrig())
+        self.ShooterMotors.runLoader(self.XboxMap.getMechRightTrig())
+        if self.XboxMap.getMechLeftTrig() > 0:
+            self.ShooterMotors.runLoader(-self.XboxMap.getMechLeftTrig())
+            self.ShooterMotors.runIntake(-self.XboxMap.getMechLeftTrig())
+        if self.XboxMap.getMechAButton():
+            self.ShooterMotors.runShooter(.9)
+        elif self.XboxMap.getMechBButton():
+            self.ShooterMotors.runShooter(0)
 
-        # Comment out if needed
-        """
-        self.ManualShooter.RunLoader(self.XboxMap.getDriveRightTrig())
-        self.ManualShooter.reverseLoader(self.XboxMap.getDriveLeftTrig())
-        self.ManualShooter.runShooter(self.XboxMap.getDriveRightBump())
-        """
+        
 
+        """
         if self.XboxMap.getMechAButton():
             self.SensorShooter.fireShooter()
         # print(self.sensor.get())
+        """
 
     def testInit(self):
         """
