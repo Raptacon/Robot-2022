@@ -3,6 +3,7 @@ import wpilib
 from wpilib import XboxController
 from wpilib import DigitalInput as dio
 from magicbot import MagicRobot
+
 # Component imports:
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
@@ -19,7 +20,7 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
     shootManual: ManualShooter
-    # shootAutomatic: AutomaticShooter
+    shootAutomatic: AutomaticShooter
     ShooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
     lifter: Lifter
@@ -48,7 +49,14 @@ class MyRobot(MagicRobot):
 
         # Enables automatic control
         if self.xboxMap.getMechYButton():
+            self.shootManual.stopManual()
+            self.shootAutomatic.runLoaderAutomatically()
+
+        elif self.xboxMap.getMechYButton() and self.shootAutomatic.getAutomaticStatus():
+            self.shootAutomatic.stopAutomatic()
             self.shootManual.runLoaderManually()
+
+        self.shootAutomatic.initAutoLoading()
 
         """
         # Enables manual control

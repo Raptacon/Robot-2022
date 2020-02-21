@@ -46,7 +46,9 @@ class ManualShooter:
                 self.ShooterMotors.stopIntake()
                 self.ShooterMotors.stopLoader()
                 self.ShooterMotors.stopShooter()
-
+        
+        elif self.isAutomatic:
+            pass
 
 class AutomaticShooter(StateMachine):
 
@@ -75,6 +77,8 @@ class AutomaticShooter(StateMachine):
 
     def runLoaderAutomatically(self):
         self.isAutomatic = True
+
+    def getAutomaticStatus(self):
         return self.isAutomatic
     
     def stopAutomatic(self):
@@ -160,10 +164,12 @@ class AutomaticShooter(StateMachine):
     def runShooterMotor(self):
         if self.SensorArray[0].get():
             self.ShooterMotors.stopLoader()
-            self.ShooterMotors.runShooter()
+            self.ShooterMotors.runShooter(1)
             if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
                 self.next_state_now('shoot')
 
     @state
     def shoot(self):
         self.ShooterMotors.runLoader(1)
+        if self.xboxMap.getMechBButton():
+            self.ShooterMotors.stopLoader()
