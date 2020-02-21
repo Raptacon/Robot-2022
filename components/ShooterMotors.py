@@ -22,11 +22,11 @@ class ShooterMotorCreation:
         print("shooter motors created")
 
     def runLoader(self, lSpeed):
-        self.loaderSpeed = lSpeed * .4
+        self.loaderSpeed = lSpeed
         self.loader = True
 
     def runIntake(self, iSpeed):
-        self.intakeSpeed = iSpeed * .6
+        self.intakeSpeed = iSpeed
         self.intake = True
 
     def runShooter(self, sSpeed):
