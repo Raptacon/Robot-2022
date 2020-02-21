@@ -89,6 +89,8 @@ class AutomaticShooter(StateMachine):
     def initAutoLoading(self):
         if self.isAutomatic:
             self.engage()
+        elif self.isAutomatic == False:
+            pass
 
     @state(first = True)
     def beginLoading(self):
