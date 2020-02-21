@@ -30,10 +30,12 @@ class MyRobot(MagicRobot):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
+        # Motors/controllers:
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
         self.motorsList = dict(self.map.motorsMap.driveMotors)
 
+        # Sensor object
         self.sensorObjects = dio
 
     def teleopInit(self):
@@ -47,22 +49,17 @@ class MyRobot(MagicRobot):
         
         self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, self.xboxMap.getDriveRightHoriz() * self.mult)
 
-        # Enables automatic control
+        # Enables automatic control (Toggle)
         if self.xboxMap.getMechYButton() and not self.shootManual.getAutomaticStatus():
             self.shootManual.stopManual()
             self.shootAutomatic.runLoaderAutomatically()
 
+        # Enables manual control (Toggle)
         elif self.xboxMap.getMechYButton() and self.shootAutomatic.getAutomaticStatus():
             self.shootAutomatic.stopAutomatic()
             self.shootManual.runLoaderManually()
 
         self.shootAutomatic.initAutoLoading()
-
-        """
-        # Enables manual control
-        elif self.xboxMap.getMechBButton():
-            self.ShooterController.runLoaderManually()
-        """
 
     def testInit(self):
         """
