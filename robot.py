@@ -39,7 +39,7 @@ class MyRobot(MagicRobot):
         self.sensorObjects = dio
 
     def teleopInit(self):
-        self.mult = .5 #Multiplier for values. Should not be over 1.
+        self.mult = .5 # Multiplier for drive values. Should not be over 1.
 
     def teleopPeriodic(self):
         """
@@ -59,6 +59,7 @@ class MyRobot(MagicRobot):
             self.shootAutomatic.stopAutomatic()
             self.shootManual.runLoaderManually()
 
+        # Needs to run periodically (calls self.engage if automatic enabled)
         self.shootAutomatic.initAutoLoading()
 
     def testInit(self):

@@ -9,8 +9,6 @@ class ShooterMotorCreation:
         self.intakeSpeed = 0
         self.loaderSpeed = 0
         self.shooterSpeed = 0
-        self.speed = 0
-        # self.shooterEncoder = 1
         self.intake = False
         self.loader = False
         self.shooter = False
@@ -20,6 +18,8 @@ class ShooterMotorCreation:
         self.loaderMotor = self.motors["loaderMotor"]
         self.intakeMotor = self.motors["intakeMotor"]
         self.shooterMotor = self.motors["shooterMotor"]
+
+        print("shooter motors created")
 
     def runLoader(self, lSpeed):
         self.loaderSpeed = lSpeed * .4 # changes to .4
