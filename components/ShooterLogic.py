@@ -16,6 +16,9 @@ class ManualShooter:
         self.isAutomatic = False
         return self.isAutomatic
 
+    def stopManual(self):
+        self.isAutomatic = True
+
     def fireShooter(self):
         self.ShooterMotors.stopIntake()
         self.ShooterMotors.stopLoader()
@@ -56,10 +59,7 @@ class AutomaticShooter(StateMachine):
         # Basic init:
         self.CurrentSensor = None
         self.logicSensors = None
-        self.initShooter = False
-        self.startShooter = False
         self.isAutomatic = False
-        self.runningShooter = False
 
         # Arrays for sensors/logic-based sensors:
         self.logicArray = []
@@ -73,95 +73,97 @@ class AutomaticShooter(StateMachine):
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
-    def fireShooterSensor(self):
-        if self.SensorArray[0].get() == False:
-            self.ShooterMotors.runLoader(-1)
-            print("reverse loader")
-        elif self.SensorArray[0].get():
-            self.ShooterMotors.stopLoader()
-            self.ShooterMotors.runShooter(1)
-            print("automatic shooter running")
-        if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-            self.ShooterMotors.runLoader(1)
-        if self.CurrentSensor.get(): #FIXME: prevents reverse loader
-            # self.ShooterMotors.stopLoader()
-            # self.ShooterMotors.stopShooter()
-            pass
-
     def runLoaderAutomatically(self):
         self.isAutomatic = True
+        return self.isAutomatic
+    
+    def stopAutomatic(self):
+        self.isAutomatic = False
 
-    def execute(self):
-        # Checks if driver wants automatic loading:
+    def initAutoLoading(self):
         if self.isAutomatic:
-            # Assert that key called exists
-            try:
-                assert(self.sensorX >= 0 and self.sensorX <= 4)
-            except AssertionError as err:
-                print("Failed to get sensor key in range:", err)
+            self.engage()
 
-            # Sets the current sensor:
-            self.CurrentSensor = self.SensorArray[self.sensorX]
+    @state(first = True)
+    def beginLoading(self):
+        # Assert that key called exists
+        try:
+            assert(self.sensorX >= 0 and self.sensorX <= 4)
+        except AssertionError as err:
+            print("Failed to get sensor key in range:", err)
 
-            # Creats sensor logic array:
-            for x in range((self.sensorX + 1), 5):
-                self.logicSensors = self.SensorArray[x].get()
-                self.logicArray.append(self.logicSensors)
+        # Sets the current sensor:
+        self.CurrentSensor = self.SensorArray[self.sensorX]
 
-            # NOTE: After every control loop, the logicArray MUST be reset
+        # Creats sensor logic array:
+        for x in range((self.sensorX + 1), 5):
+            self.logicSensors = self.SensorArray[x].get()
+            self.logicArray.append(self.logicSensors)
 
-            if self.xboxMap.getMechRightTrig() and self.xboxMap.getMechLeftTrig() == 0:
-                self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig())
-                print("right trig automatic:", self.xboxMap.getMechRightTrig())
+        if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
+            self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig())
+            print("right trig automatic:", self.xboxMap.getMechRightTrig())
 
-            elif self.xboxMap.getMechLeftTrig() and self.xboxMap.getMechRightTrig() == 0:
-                self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig())
-                print("left trig automatic:", self.xboxMap.getMechLeftTrig())
+        elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
+            self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig())
+            print("left trig automatic:", self.xboxMap.getMechLeftTrig())
 
-            else:
-                self.ShooterMotors.stopIntake()
+        else:
+            self.ShooterMotors.stopIntake()
 
-            if self.xboxMap.getMechAButton():
-                self.fireShooterSensor()
+        '''
+        Creates the basis for the logic regarding when the loader is run.
+        Checks boolean values all sensors aside from current sensor, and
+        runs loader appropriately in if-elif-else chain:
+        '''
+        # NOTE: After every control loop, the logicArray MUST be reset
+        # If one ball is loaded:
+        if (
+            self.CurrentSensor.get() and
+            all(self.logicArray) == False
+        ):
+            self.ShooterMotors.runLoader(1)
+            self.logicArray = []
 
-            else:
-                self.ShooterMotors.stopLoader()
-                self.ShooterMotors.stopShooter()
+        # If one ball has reached loader sensor:
+        elif self.CurrentSensor.get() == False and all(self.logicArray):
+            self.ShooterMotors.stopLoader()
+            self.sensorX += 1
+            self.logicArray = []
 
-            '''
-            Creates the basis for the logic regarding when the loader is run.
-            Checks boolean values all sensors aside from current sensor, and
-            runs loader appropriately in if-elif-else chain:
-            '''
-            # If one ball is loaded:
-            if (
-                self.CurrentSensor.get() and
-                all(self.logicArray) == False
-            ):
-                self.ShooterMotors.runLoader(1)
+        # If more than one ball is loaded:
+        elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
+            self.ShooterMotors.runLoader(1)
+            self.sensorX += 1
+            self.logicArray = []
+
+        # Shifts loader responsibility:
+        elif self.sensorX > 0:
+            if self.SensorArray[(self.sensorX - 1)].get():
+                self.sensorX -= 1
                 self.logicArray = []
 
-            # If one ball has reached loader sensor:
-            elif self.CurrentSensor.get() == False and all(self.logicArray):
-                self.ShooterMotors.stopLoader()
-                self.sensorX += 1
-                self.logicArray = []
+        # Intake has no ball:
+        else:
+            self.logicArray = []
 
-            # If more than one ball is loaded:
-            elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
-                self.ShooterMotors.runLoader(1)
-                self.sensorX += 1
-                self.logicArray = []
+        if self.xboxMap.getMechAButton() and all(self.logicArray):
+            self.next_state_now('reverseShooting')
 
-            # Shifts loader responsibility:
-            elif self.sensorX > 0:
-                if self.SensorArray[(self.sensorX - 1)].get():
-                    self.sensorX -= 1
-                    self.logicArray = []
+    @state
+    def reverseShooting(self):
+        if not self.SensorArray[0].get():
+            self.ShooterMotors.runLoader(-1)
+            self.next_state_now('runShooterMotor')
 
-            # Intake has no ball:
-            else:
-                self.logicArray = []
+    @state
+    def runShooterMotor(self):
+        if self.SensorArray[0].get():
+            self.ShooterMotors.stopLoader()
+            self.ShooterMotors.runShooter()
+            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
+                self.next_state_now('shoot')
 
-        elif self.isAutomatic == False:
-            pass
+    @state
+    def shoot(self):
+        self.ShooterMotors.runLoader(1)
