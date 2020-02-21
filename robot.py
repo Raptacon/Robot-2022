@@ -7,7 +7,7 @@ from magicbot import MagicRobot
 from components.driveTrain import DriveTrain
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
-from components.ShooterLogic import shooterLogic
+from components.ShooterLogic import ManualShooter, AutomaticShooter
 from components.buttonManager import ButtonManager, ButtonEvent
 
 # Other imports:
@@ -18,7 +18,8 @@ class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
     """
-    ShooterController: shooterLogic
+    shootManual: ManualShooter
+    # shootAutomatic: AutomaticShooter
     ShooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
     lifter: Lifter
@@ -47,12 +48,13 @@ class MyRobot(MagicRobot):
 
         # Enables automatic control
         if self.xboxMap.getMechYButton():
-            self.ShooterMotors.runLoader(0)
-            self.ShooterController.runLoaderAutomatically()
+            self.shootManual.runLoaderManually()
 
+        """
         # Enables manual control
         elif self.xboxMap.getMechBButton():
             self.ShooterController.runLoaderManually()
+        """
 
     def testInit(self):
         """

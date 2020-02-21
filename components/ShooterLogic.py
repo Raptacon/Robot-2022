@@ -7,6 +7,43 @@ from magicbot import StateMachine, state
 class ManualShooter:
 
     ShooterMotors: ShooterMotorCreation
+    xboxMap: XboxMap
+
+    def __init__(self):
+        self.isAutomatic = False
+
+    def runLoaderManually(self):
+        self.isAutomatic = False
+        return self.isAutomatic
+
+    def fireShooter(self):
+        self.ShooterMotors.stopIntake()
+        self.ShooterMotors.stopLoader()
+        print("manual shooter running")
+        self.ShooterMotors.runShooter(1)
+        if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
+            self.ShooterMotors.runLoader(1)
+
+    def execute(self):
+        if not self.isAutomatic:
+            if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
+                self.ShooterMotors.runLoader(self.xboxMap.getMechRightTrig())
+                self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig())
+                print("right trig manual", self.xboxMap.getMechRightTrig())
+
+            elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
+                self.ShooterMotors.runLoader(-self.xboxMap.getMechLeftTrig())
+                self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig())
+                print("left trig manual", self.xboxMap.getMechLeftTrig())
+
+            elif self.xboxMap.getMechAButton():
+                self.fireShooter()
+
+            else:
+                self.ShooterMotors.stopIntake()
+                self.ShooterMotors.stopLoader()
+                self.ShooterMotors.stopShooter()
+
 
 class AutomaticShooter(StateMachine):
 
@@ -36,14 +73,6 @@ class AutomaticShooter(StateMachine):
             self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
 
-    def fireShooter(self):
-        self.ShooterMotors.stopIntake()
-        self.ShooterMotors.stopLoader()
-        print("manual shooter running")
-        self.ShooterMotors.runShooter(1)
-        if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-            self.ShooterMotors.runLoader(1)
-
     def fireShooterSensor(self):
         if self.SensorArray[0].get() == False:
             self.ShooterMotors.runLoader(-1)
@@ -61,9 +90,6 @@ class AutomaticShooter(StateMachine):
 
     def runLoaderAutomatically(self):
         self.isAutomatic = True
-
-    def runLoaderManually(self):
-        self.isAutomatic = False
 
     def execute(self):
         # Checks if driver wants automatic loading:
@@ -138,21 +164,4 @@ class AutomaticShooter(StateMachine):
                 self.logicArray = []
 
         elif self.isAutomatic == False:
-
-            if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.ShooterMotors.runLoader(self.xboxMap.getMechRightTrig())
-                self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig())
-                print("right trig manual", self.xboxMap.getMechRightTrig())
-
-            elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.ShooterMotors.runLoader(-self.xboxMap.getMechLeftTrig())
-                self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig())
-                print("left trig manual", self.xboxMap.getMechLeftTrig())
-
-            elif self.xboxMap.getMechAButton():
-                self.fireShooter()
-
-            else: #elif not self.runningShooter:
-                self.ShooterMotors.stopIntake()
-                self.ShooterMotors.stopLoader()
-                self.ShooterMotors.stopShooter()
+            pass
