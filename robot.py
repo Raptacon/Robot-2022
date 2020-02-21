@@ -48,7 +48,7 @@ class MyRobot(MagicRobot):
         self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, self.xboxMap.getDriveRightHoriz() * self.mult)
 
         # Enables automatic control
-        if self.xboxMap.getMechYButton():
+        if self.xboxMap.getMechYButton() and not self.shootManual.getAutomaticStatus():
             self.shootManual.stopManual()
             self.shootAutomatic.runLoaderAutomatically()
 

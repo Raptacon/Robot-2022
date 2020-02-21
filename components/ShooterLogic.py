@@ -14,6 +14,8 @@ class ManualShooter:
 
     def runLoaderManually(self):
         self.isAutomatic = False
+
+    def getAutomaticStatus(self):
         return self.isAutomatic
 
     def stopManual(self):
