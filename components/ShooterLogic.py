@@ -177,3 +177,4 @@ class AutomaticShooter(StateMachine):
         self.ShooterMotors.runLoader(1)
         if self.xboxMap.getMechBButton():
             self.ShooterMotors.stopLoader()
+            self.next_state_now('beginLoading')
