@@ -8,7 +8,7 @@ class ManualShooter:
 
     shooterMotors: ShooterMotorCreation
     xboxMap: XboxMap
-    loaderMotorMultiplier = tunable(.24)
+    loaderMotorVal = tunable(.24)
     intakeMotorMinVal = tunable(.5)
     intakeMotorMaxVal = tunable(.7)
 
@@ -32,7 +32,7 @@ class ManualShooter:
             print("manual shooter running")
             self.shooterMotors.runShooter(1)
             if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-                self.shooterMotors.runLoader(self.loaderMotorMultiplier)
+                self.shooterMotors.runLoader(self.loaderMotorVal)
 
         elif self.isAutomatic:
             pass
@@ -40,7 +40,7 @@ class ManualShooter:
     def execute(self):
         if not self.isAutomatic:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.shooterMotors.runLoader(self.loaderMotorMultiplier)
+                self.shooterMotors.runLoader(self.loaderMotorVal)
                 self.shooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMotorMaxVal-self.intakeMotorMinVal))+self.intakeMotorMinVal)
                 print("right trig manual", self.xboxMap.getMechRightTrig())
 
@@ -62,7 +62,7 @@ class AutomaticShooter(StateMachine):
     shooterMotors: ShooterMotorCreation
     sensorObjects: dio
     xboxMap: XboxMap
-    loaderMotorMultiplier = tunable(.4)
+    loaderMotorVal = tunable(.4)
     intakeMotorMinVal = tunable(.5)
     intakeMotorMaxVal = tunable(.7)
 
@@ -139,7 +139,7 @@ class AutomaticShooter(StateMachine):
         if (
             self.CurrentSensor.get() and all(self.logicArray) == False
         ):
-            self.shooterMotors.runLoader(self.loaderMotorMultiplier)
+            self.shooterMotors.runLoader(self.loaderMotorVal)
             self.logicArray = []
 
         # If one ball has reached loader sensor:
@@ -150,7 +150,7 @@ class AutomaticShooter(StateMachine):
 
         # If more than one ball is loaded:
         elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
-            self.shooterMotors.runLoader(self.loaderMotorMultiplier)
+            self.shooterMotors.runLoader(self.loaderMotorVal)
             self.sensorX += 1
             self.logicArray = []
 
@@ -171,7 +171,7 @@ class AutomaticShooter(StateMachine):
 
     @state
     def reverseShooting(self, state_tm):
-        self.shooterMotors.runLoader(-self.loaderMotorMultiplier)
+        self.shooterMotors.runLoader(-self.loaderMotorVal)
         self.next_state('runShooterMotor')
 
     @state
@@ -184,7 +184,7 @@ class AutomaticShooter(StateMachine):
 
     @state
     def shoot(self, state_tm):
-        self.shooterMotors.runLoader(self.loaderMotorMultiplier)
+        self.shooterMotors.runLoader(self.loaderMotorVal)
         if state_tm > 6:
             self.shooterMotors.stopLoader()
             self.next_state('beginLoading')
