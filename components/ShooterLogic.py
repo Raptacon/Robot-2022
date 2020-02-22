@@ -2,7 +2,8 @@ from wpilib import DigitalInput as dio
 from wpilib import XboxController
 from robotMap import XboxMap
 from components.ShooterMotors import ShooterMotorCreation
-from magicbot import StateMachine, state
+from magicbot import StateMachine, state, tunable
+
 
 class ManualShooter:
 
@@ -163,22 +164,25 @@ class AutomaticShooter(StateMachine):
             self.next_state_now('reverseShooting')
 
     @state
-    def reverseShooting(self):
+    def reverseShooting(self, state_tm):
         if not self.SensorArray[0].get():
             self.ShooterMotors.runLoader(-1*.4)
             self.next_state_now('runShooterMotor')
 
+        elif state_tm > 2:
+            self.done()
+
     @state
-    def runShooterMotor(self):
+    def runShooterMotor(self, state_tm):
         if self.SensorArray[0].get():
             self.ShooterMotors.stopLoader()
             self.ShooterMotors.runShooter(1)
-            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
+            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000 or state_tm > 3:
                 self.next_state_now('shoot')
 
     @state
-    def shoot(self):
+    def shoot(self, state_tm):
         self.ShooterMotors.runLoader(1*.4)
-        if self.xboxMap.getMechBButton():
+        if state_tm > 4:
             self.ShooterMotors.stopLoader()
             self.next_state_now('beginLoading')
