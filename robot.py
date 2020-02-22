@@ -36,9 +36,6 @@ class MyRobot(MagicRobot):
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
         self.motorsList = dict(self.map.motorsMap.driveMotors)
 
-        # Sensor object
-        self.sensorObjects = dio
-
     def teleopInit(self):
         pass
 
