@@ -9,6 +9,7 @@ from magicbot import MagicRobot
 from robotMap import RobotMap
 from components.driveTrain import DriveTrain
 from components.buttonManager import ButtonManager, ButtonEvent
+from components.pneumatics import Pneumatics
 from examples.buttonManagerCallback import actionCallback, crashCallback, exampleCallback, simpleCallback
 
 class MyRobot(MagicRobot):
@@ -18,6 +19,7 @@ class MyRobot(MagicRobot):
 
     driveTrain: DriveTrain
     buttonManager: ButtonManager
+    pneumatics: Pneumatics
 
     def createObjects(self):
         """
@@ -39,6 +41,8 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kY,  ButtonEvent.kOnPress, actionCallback)
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.enableSolenoid)
+        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnRelease, self.pneumatics.disableSolenoid)
 
     def teleopPeriodic(self):
         """
