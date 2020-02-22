@@ -13,7 +13,10 @@ from components.buttonManager import ButtonManager, ButtonEvent
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
 from components.ShooterLogic import ManualShooter, AutomaticShooter
+<<<<<<< HEAD
 from components.elevator import Elevator
+=======
+>>>>>>> 26a3eabd284bd84dc33b30cbe4483f603bc4c915
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
