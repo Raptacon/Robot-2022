@@ -137,7 +137,7 @@ class AutomaticShooter(StateMachine):
         if (
             self.CurrentSensor.get() and all(self.logicArray) == False
         ):
-            self.shooterMotors.runLoader(1 * self.loaderMulti)
+            self.shooterMotors.runLoader(0.6 * self.loaderMulti)
             self.logicArray = []
 
         # If one ball has reached loader sensor:
@@ -164,7 +164,7 @@ class AutomaticShooter(StateMachine):
 
     def switchToReverse(self):
         if self.isAutomatic:
-            if self.SensorArray[0].get() == False:
+            if self.SensorArray[0].get() == False and self.shooterMotors.isLoaderActive() == False:
                 self.next_state('reverseShooting')
 
     @state
