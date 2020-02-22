@@ -31,7 +31,7 @@ class ManualShooter:
             print("manual shooter running")
             self.shooterMotors.runShooter(1)
             if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-                self.shooterMotors.runLoader(1 * self.loaderMulti)
+                self.shooterMotors.runLoader(0.6 * self.loaderMulti)
 
         elif self.isAutomatic:
             pass

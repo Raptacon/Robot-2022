@@ -75,6 +75,7 @@ class MyRobot(MagicRobot):
         """
         pass
 
+    # Automatic loading toggle
     def autoSwitch(self):
         if self.runShooterAutomatically:
             self.runShooterAutomatically = False
