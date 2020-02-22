@@ -4,8 +4,7 @@ class Elevator:
 
     def on_enable(self):
         self.upSpeed = 0
-        self.motors = self.motorsList
-        self.elevatorMotor = self.motors['elevatorMotor']
+        self.elevatorMotor = self.motorsList['elevatorMotor']
 
         print("Elevator Enabled")
     
