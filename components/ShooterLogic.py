@@ -10,6 +10,8 @@ class ManualShooter:
     ShooterMotors: ShooterMotorCreation
     xboxMap: XboxMap
     loaderMulti = tunable(.4)
+    intakeMin = tunable(.5)
+    intakeMax = tunable(.7)
 
     def __init__(self):
         self.isAutomatic = False
@@ -34,17 +36,13 @@ class ManualShooter:
     def execute(self):
         if not self.isAutomatic:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.max = .7
-                self.min = .5
                 self.ShooterMotors.runLoader(0.6 * self.loaderMulti)
-                self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min)
+                self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin)
                 print("right trig manual", self.xboxMap.getMechRightTrig())
 
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.max = .9
-                self.min = .5
                 self.ShooterMotors.runLoader(-0.2)
-                self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
+                self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin))
                 print("left trig manual", self.xboxMap.getMechLeftTrig())
 
             elif self.xboxMap.getMechAButton():
@@ -64,6 +62,8 @@ class AutomaticShooter(StateMachine):
     sensorObjects: dio
     xboxMap: XboxMap
     loaderMulti = tunable(.4)
+    intakeMin = tunable(.5)
+    intakeMax = tunable(.7)
 
     def __init__(self):
 
@@ -117,15 +117,11 @@ class AutomaticShooter(StateMachine):
 
         if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
             self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig()*.6)
-            self.max = .7
-            self.min = .5
-            self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min)
+            self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin)
             print("right trig automatic:", self.xboxMap.getMechRightTrig())
 
         elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-            self.max = .9
-            self.min = .5
-            self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
+            self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin))
             print("left trig automatic:", self.xboxMap.getMechLeftTrig())
 
         else:

@@ -2,7 +2,7 @@
 import wpilib
 from wpilib import XboxController
 from wpilib import DigitalInput as dio
-from magicbot import MagicRobot
+from magicbot import MagicRobot, tunable
 
 # Component imports:
 from components.driveTrain import DriveTrain
@@ -25,6 +25,7 @@ class MyRobot(MagicRobot):
     driveTrain: DriveTrain
     lifter: Lifter
     buttonManager: ButtonManager
+    driveMulti = tunable(.5)
 
     def createObjects(self):
         """
@@ -39,7 +40,7 @@ class MyRobot(MagicRobot):
         self.sensorObjects = dio
 
     def teleopInit(self):
-        self.mult = .5 # Multiplier for drive values. Should not be over 1.
+        pass
 
     def teleopPeriodic(self):
         """
@@ -47,7 +48,7 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
         
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, self.xboxMap.getDriveRightHoriz() * self.mult)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMulti, self.xboxMap.getDriveRightHoriz() * self.driveMulti)
 
         # Enables automatic control (Toggle)
         if self.xboxMap.getMechYButton() and not self.shootManual.getAutomaticStatus():
