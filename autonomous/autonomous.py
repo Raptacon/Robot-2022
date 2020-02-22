@@ -1,6 +1,5 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state
 import math
-from components.driveTrain import DriveTrain
 
 class autonomous(AutonomousStateMachine):
     """Creates the autonomous code"""
@@ -11,7 +10,6 @@ class autonomous(AutonomousStateMachine):
     #driveTrain: DriveTrain
 
     drive_speed = tunable(-1)
-
 
         
 

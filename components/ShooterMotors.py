@@ -1,5 +1,4 @@
 import wpilib
-import motorHelper
 
 class ShooterMotorCreation:
 

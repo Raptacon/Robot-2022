@@ -1,5 +1,4 @@
 from wpilib import DigitalInput as dio
-from wpilib import XboxController
 from robotMap import XboxMap
 from components.ShooterMotors import ShooterMotorCreation
 from magicbot import StateMachine, state
@@ -132,8 +131,7 @@ class AutomaticShooter(StateMachine):
         # If one ball is loaded:
         if (
             self.CurrentSensor.get() and
-            all(self.logicArray) == False
-        ):
+            all(self.logicArray) == False):
             self.ShooterMotors.runLoader(1*.4)
             self.logicArray = []
 

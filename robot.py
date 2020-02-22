@@ -9,11 +9,9 @@ from components.driveTrain import DriveTrain
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
 from components.ShooterLogic import ManualShooter, AutomaticShooter
-from components.buttonManager import ButtonManager, ButtonEvent
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
-from examples.buttonManagerCallback import exampleCallback, simpleCallback, crashCallback
 
 class MyRobot(MagicRobot):
     """
