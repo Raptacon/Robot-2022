@@ -8,6 +8,7 @@ class Elevator:
         self.elevatorMotor = self.motorsList['elevatorMotor']
         self.downSpeed = tunable(-.4)
         self.upSpeed = tunable(.7)
+        self.speed = 0
         print("Elevator Enabled")
     
     def setSpeed(self, speed):
