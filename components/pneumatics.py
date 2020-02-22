@@ -7,7 +7,7 @@ class Pneumatics:
         Setup to enable everything after variable injection from robot.py. This is where the bulk of setup for this class should be.
         on_enable() may need to be used for when something needs to happen everytime the state is changed, like from autonomous to teleop.
         """
-        self.solenoid = wpilib.DoubleSolenoid(6, 7) #I don't know if this is the proper a) class to define or b) the right channels for the solenoid. This is mostly a placeholder and can be fixed
+        self.solenoid = wpilib.DoubleSolenoid(6, 7) #This is both the proper class and proper channels for DOOF
         self.compressor = wpilib.Compressor()
         self.compressor.start()
 
