@@ -28,7 +28,7 @@ class Pneumatics:
         """
         Turn the solenoid into the "off" position. This can vary per configuration
         """
-        self.solenoid.set(wpilib.DoubleSolenoid.Value.kReversese) #currently, this is only set to handle one solenoid. I believe that both bots only have one.
+        self.solenoid.set(wpilib.DoubleSolenoid.Value.kReverse) #currently, this is only set to handle one solenoid. I believe that both bots only have one.
 
     def toggleSolenoid(self):
         """
