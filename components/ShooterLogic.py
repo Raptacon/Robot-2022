@@ -169,20 +169,14 @@ class AutomaticShooter(StateMachine):
 
     @state
     def reverseShooting(self, state_tm):
-        print("shooter reversing")
         self.shooterMotors.runLoader(-0.6 * self.loaderMulti)
         self.next_state('runShooterMotor')
 
-        # if state_tm > 3:
-        #     self.done()
-
     @state
     def runShooterMotor(self, state_tm):
-        print("shooter motor running automatic")
         if self.SensorArray[0].get():
             self.shooterMotors.stopLoader()
             self.shooterMotors.runShooter(1)
-            print("SHOOTER RUNNING!!! YAY!!!")
             if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000 or state_tm > 5:
                 self.next_state('shoot')
 
