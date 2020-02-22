@@ -80,6 +80,7 @@ class XboxMap():
         self.drive = Xbox1
         self.mech = Xbox2
         #Button mappings
+        self.controllerInput()
 
     def controllerInput(self):
         """

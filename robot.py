@@ -30,7 +30,7 @@ class MyRobot(MagicRobot):
     buttonManager: ButtonManager
     pneumatics: Pneumatics
     elevator: Elevator
-      
+    
     driveMotorsMutliplier = tunable(.5)
 
     def createObjects(self):
