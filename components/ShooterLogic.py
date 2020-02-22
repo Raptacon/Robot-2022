@@ -44,9 +44,6 @@ class ManualShooter:
                 self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
                 print("left trig manual", self.xboxMap.getMechLeftTrig())
 
-            elif self.xboxMap.getMechAButton():
-                self.fireShooter()
-
             else:
                 self.ShooterMotors.stopIntake()
                 self.ShooterMotors.stopLoader()
@@ -94,6 +91,10 @@ class AutomaticShooter(StateMachine):
             self.engage()
         elif self.isAutomatic == False:
             pass
+
+    def switchToReverse(self):
+        if all(self.logicArray):
+            self.next_state_now('reverseShooting')
 
     @state(first = True)
     def beginLoading(self):
@@ -155,9 +156,6 @@ class AutomaticShooter(StateMachine):
         # Intake has no ball:
         else:
             self.logicArray = []
-
-        if self.xboxMap.getMechAButton() and all(self.logicArray):
-            self.next_state_now('reverseShooting')
 
     @state
     def reverseShooting(self):

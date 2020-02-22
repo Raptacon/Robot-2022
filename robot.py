@@ -35,12 +35,14 @@ class MyRobot(MagicRobot):
         self.motorsList = dict(self.map.motorsMap.driveMotors)
 
         # Sensor object
-        self.sensorObjects = 
         self.auto = False
 
     def teleopInit(self):
         self.mult = .5 # Multiplier for drive values. Should not be over 1.
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.autoSwitch)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootAutomatic.switchToReverse)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootManual.fireShooter)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shootManual.ShooterMotors.stopShooter)
 
     def teleopPeriodic(self):
         """
@@ -50,10 +52,6 @@ class MyRobot(MagicRobot):
         
         self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, self.xboxMap.getDriveRightHoriz() * self.mult)
 
-        # Enables automatic control (Toggle)
-        
-
-        # Enables manual control (Toggle)
         if self.auto:
             self.autoRun()
         else:
