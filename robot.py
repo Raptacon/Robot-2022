@@ -4,7 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 import wpilib
 from wpilib import XboxController
-from magicbot import MagicRobot
+from magicbot import MagicRobot, tunable
 
 # Component imports:
 from components.driveTrain import DriveTrain
@@ -30,27 +30,21 @@ class MyRobot(MagicRobot):
     lifter: Lifter
     buttonManager: ButtonManager
     pneumatics: Pneumatics
+    driveMutli = tunable(.5)
 
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
-        # Motors/controllers:
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
         self.motorsList = dict(self.map.motorsMap.driveMotors)
-        # Sensor object
         self.auto = False
 
     def teleopInit(self):
         #register button events
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kY,  ButtonEvent.kOnPress, actionCallback)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.enableSolenoid)
         self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnRelease, self.pneumatics.disableSolenoid)
-        self.mult = .5 # Multiplier for drive values. Should not be over 1.
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.autoSwitch)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootAutomatic.switchToReverse)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootManual.fireShooter)
@@ -62,7 +56,7 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
         
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, self.xboxMap.getDriveRightHoriz() * self.mult)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMutli, self.xboxMap.getDriveRightHoriz() * self.driveMutli)
 
         if self.auto:
             self.autoRun()

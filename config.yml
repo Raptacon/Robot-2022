@@ -65,3 +65,9 @@ motors:
     inverted: True
     motorType: "Brushless"
     pid: Null
+
+  elevatorMotor:
+    channel: 60
+    type: "CANTalonSRX"
+    inverted: False
+    pid: Null

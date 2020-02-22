@@ -1,12 +1,16 @@
 from wpilib import DigitalInput as dio
 from robotMap import XboxMap
 from components.ShooterMotors import ShooterMotorCreation
-from magicbot import StateMachine, state
+from magicbot import StateMachine, state, tunable
+
 
 class ManualShooter:
 
     ShooterMotors: ShooterMotorCreation
     xboxMap: XboxMap
+    loaderMulti = tunable(.4)
+    intakeMin = tunable(.5)
+    intakeMax = tunable(.7)
 
     def __init__(self):
         self.isAutomatic = False
@@ -26,22 +30,18 @@ class ManualShooter:
         print("manual shooter running")
         self.ShooterMotors.runShooter(1)
         if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-            self.ShooterMotors.runLoader(1)
+            self.ShooterMotors.runLoader(1 * self.loaderMulti)
 
     def execute(self):
         if not self.isAutomatic:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.max = .7
-                self.min = .5
-                self.ShooterMotors.runLoader(.6*.4)
-                self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min)
+                self.ShooterMotors.runLoader(0.6 * self.loaderMulti)
+                self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin)
                 print("right trig manual", self.xboxMap.getMechRightTrig())
 
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.max = .9
-                self.min = .5
-                self.ShooterMotors.runLoader(-.2)
-                self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
+                self.ShooterMotors.runLoader(-0.2)
+                self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin))
                 print("left trig manual", self.xboxMap.getMechLeftTrig())
 
             else:
@@ -57,6 +57,9 @@ class AutomaticShooter(StateMachine):
     ShooterMotors: ShooterMotorCreation
     sensorObjects: dio
     xboxMap: XboxMap
+    loaderMulti = tunable(.4)
+    intakeMin = tunable(.5)
+    intakeMax = tunable(.7)
 
     def __init__(self):
 
@@ -114,10 +117,11 @@ class AutomaticShooter(StateMachine):
 
         if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
             self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig()*.6)
+            self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin)
             print("right trig automatic:", self.xboxMap.getMechRightTrig())
 
         elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-            self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig()*.6)
+            self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.intakeMax-self.intakeMin))+self.intakeMin))
             print("left trig automatic:", self.xboxMap.getMechLeftTrig())
 
         else:
@@ -131,8 +135,10 @@ class AutomaticShooter(StateMachine):
         # NOTE: After every control loop, the logicArray MUST be reset
         # If one ball is loaded:
         if (
-            self.CurrentSensor.get() and all(self.logicArray) == False):
-            self.ShooterMotors.runLoader(1*.4)
+            self.CurrentSensor.get() and
+            all(self.logicArray) == False
+        ):
+            self.ShooterMotors.runLoader(1 * self.loaderMulti)
             self.logicArray = []
 
         # If one ball has reached loader sensor:
@@ -143,7 +149,7 @@ class AutomaticShooter(StateMachine):
 
         # If more than one ball is loaded:
         elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
-            self.ShooterMotors.runLoader(1*.4)
+            self.ShooterMotors.runLoader(1 * self.loaderMulti)
             self.sensorX += 1
             self.logicArray = []
 
@@ -158,22 +164,25 @@ class AutomaticShooter(StateMachine):
             self.logicArray = []
 
     @state
-    def reverseShooting(self):
+    def reverseShooting(self, state_tm):
         if not self.SensorArray[0].get():
-            self.ShooterMotors.runLoader(-1*.4)
+            self.ShooterMotors.runLoader(-0.6 * self.loaderMulti)
             self.next_state_now('runShooterMotor')
 
+        elif state_tm > 2:
+            self.done()
+
     @state
-    def runShooterMotor(self):
+    def runShooterMotor(self, state_tm):
         if self.SensorArray[0].get():
             self.ShooterMotors.stopLoader()
             self.ShooterMotors.runShooter(1)
-            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
+            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000 or state_tm > 3:
                 self.next_state_now('shoot')
 
     @state
-    def shoot(self):
-        self.ShooterMotors.runLoader(1*.4)
-        if self.xboxMap.getMechBButton():
+    def shoot(self, state_tm):
+        self.ShooterMotors.runLoader(0.6 * self.loaderMulti)
+        if state_tm > 4:
             self.ShooterMotors.stopLoader()
             self.next_state_now('beginLoading')
