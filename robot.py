@@ -1,7 +1,6 @@
 # Module imports:
 import wpilib
 from wpilib import XboxController
-from wpilib import DigitalInput as dio
 from magicbot import MagicRobot
 
 # Component imports:
