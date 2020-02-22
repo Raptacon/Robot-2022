@@ -18,11 +18,11 @@ class ManualShooter:
     def runLoaderManually(self):
         self.isAutomatic = False
 
-    def getAutomaticStatus(self):
-        return self.isAutomatic
-
     def stopManual(self):
         self.isAutomatic = True
+
+    def getAutomaticStatus(self):
+        return self.isAutomatic
 
     def fireShooter(self):
         if not self.isAutomatic:
@@ -87,11 +87,11 @@ class AutomaticShooter(StateMachine):
     def runLoaderAutomatically(self):
         self.isAutomatic = True
 
-    def getAutomaticStatus(self):
-        return self.isAutomatic
-    
     def stopAutomatic(self):
         self.isAutomatic = False
+
+    def getAutomaticStatus(self):
+        return self.isAutomatic
 
     def initAutoLoading(self):
         if self.isAutomatic:
@@ -162,9 +162,9 @@ class AutomaticShooter(StateMachine):
         else:
             self.logicArray = []
 
-    def switchToReverse(self):
+    def initAutoShooting(self):
         if self.isAutomatic:
-            if self.SensorArray[0].get() == False and self.shooterMotors.isLoaderActive() == False:
+            if not self.SensorArray[0].get() and not self.shooterMotors.isLoaderActive():
                 self.next_state('reverseShooting')
 
     @state
