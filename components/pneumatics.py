@@ -10,6 +10,7 @@ class Pneumatics:
         self.solenoid = wpilib.DoubleSolenoid(0, 1) #I don't know if this is the proper a) class to define or b) the right channels for the solenoid. This is mostly a placeholder and can be fixed
         self.compressor = wpilib.Compressor()
         self.compressor.start()
+        self.solenoid.set(wpilib.DoubleSolenoid.Value.kOff)
 
     def getSolenoid(self):
         """
@@ -21,22 +22,22 @@ class Pneumatics:
         """
         Turn the solenoid into the "on" position. This can vary per configuration
         """
-        self.solenoid.set(True) #currently, this is only set to handle one solenoid. I believe that both bots only have one.
+        self.solenoid.set(wpilib.DoubleSolenoid.Value.kForward) #currently, this is only set to handle one solenoid. I believe that both bots only have one.
 
     def disableSolenoid(self):
         """
         Turn the solenoid into the "off" position. This can vary per configuration
         """
-        self.solenoid.set(False) #currently, this is only set to handle one solenoid. I believe that both bots only have one.
+        self.solenoid.set(wpilib.DoubleSolenoid.Value.kReversese) #currently, this is only set to handle one solenoid. I believe that both bots only have one.
 
     def toggleSolenoid(self):
         """
         Toggle the solenoid from off to on, or on to off.
         """
         if self.solenoid.get() == True:
-            self.solenoid.set(False)
+            self.solenoid.set(wpilib.DoubleSolenoid.Value.kReverse)
         else:
-            self.solenoid.set(True)
+            self.solenoid.set(wpilib.DoubleSolenoid.Value.kForward)
 
     def getCompressorCurrent(self):
         """
