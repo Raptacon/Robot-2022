@@ -1,3 +1,6 @@
+"""
+Team 3200 Robot base class
+"""
 # Module imports:
 import wpilib
 from wpilib import XboxController
