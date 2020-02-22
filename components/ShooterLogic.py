@@ -166,6 +166,7 @@ class AutomaticShooter(StateMachine):
 
     def initAutoShooting(self):
         if self.isAutomatic:
+            # If first sensor is broken and loader is not running:
             if not self.SensorArray[0].get() and not self.shooterMotors.isLoaderActive():
                 self.next_state('reverseShooting')
 
