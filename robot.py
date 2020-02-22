@@ -33,7 +33,6 @@ class MyRobot(MagicRobot):
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
         self.motorsList = dict(self.map.motorsMap.driveMotors)
-
         # Sensor object
         self.sensorObjects = dio
 
