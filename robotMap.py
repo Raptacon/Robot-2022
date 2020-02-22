@@ -43,7 +43,7 @@ class XboxMap():
 
     def controllerInput(self):
         """
-        Collects all controller values and puts them in an easily readable format 
+        Collects all controller values and puts them in an easily readable format
         (Should only be used for axes while buttonManager has no equal for axes)
         """
         #Drive Controller inputs
