@@ -215,7 +215,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.PIDController.setI(pid['kI'], pid['feedbackDevice'])
         self.PIDController.setD(pid['kD'], pid['feedbackDevice'])
         self.PIDController.setFF(pid['kF'], pid['feedbackDevice'])
-        if 'Brake' in self.motorDescription.keys() and self.motorDescription['Brake'] == True:
+        if 'IdleBrake' in self.motorDescription.keys() and self.motorDescription['IdleBrake'] == True:
             self.setIdleMode(rev.IdleMode.kBrake)
         else:
             self.setIdleMode(rev.IdleMode.kCoast)
