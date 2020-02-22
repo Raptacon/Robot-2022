@@ -28,7 +28,7 @@ class MyRobot(MagicRobot):
     lifter: Lifter
     buttonManager: ButtonManager
     pneumatics: Pneumatics
-    driveMutli = tunable(.5)
+    driveMotorsMutliplier = tunable(.5)
 
     def createObjects(self):
         """
@@ -37,14 +37,14 @@ class MyRobot(MagicRobot):
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
         self.motorsList = dict(self.map.motorsMap.driveMotors)
-        self.auto = False
+        self.runShooterAutomatically = False
 
     def teleopInit(self):
         #register button events
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.autoSwitch)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootAutomatic.switchToReverse)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootManual.fireShooter)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootAutomatic.initAutoShooting)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kWhilePressed, self.shootManual.fireShooter)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shootManual.shooterMotors.stopShooter)
 
     def teleopPeriodic(self):
@@ -53,9 +53,9 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
         
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMutli, self.xboxMap.getDriveRightHoriz() * self.driveMutli)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMotorsMutliplier, self.xboxMap.getDriveRightHoriz() * self.driveMotorsMutliplier)
 
-        if self.auto:
+        if self.runShooterAutomatically:
             self.autoRun()
         else:
             self.manualRun()
@@ -75,11 +75,12 @@ class MyRobot(MagicRobot):
         """
         pass
 
+    # Automatic loading toggle
     def autoSwitch(self):
-        if self.auto:
-            self.auto = False
+        if self.runShooterAutomatically:
+            self.runShooterAutomatically = False
         else:
-            self.auto = True
+            self.runShooterAutomatically = True
 
     def autoRun(self):
         if not self.shootManual.getAutomaticStatus():
