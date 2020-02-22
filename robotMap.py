@@ -51,7 +51,7 @@ class RobotMap():
             logging.error("Please run `echo <robotcfg.yml> > ~/robotConcig` on the robot")
             logging.error("Using default %s", defaultConfig)
 
-        return defaultConfig        
+        return defaultConfig
 
 
 
