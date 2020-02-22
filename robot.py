@@ -25,7 +25,7 @@ class MyRobot(MagicRobot):
     """
     shootManual: ManualShooter
     shootAutomatic: AutomaticShooter
-    ShooterMotors: ShooterMotorCreation
+    shooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
     lifter: Lifter
     buttonManager: ButtonManager
