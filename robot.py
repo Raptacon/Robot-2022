@@ -4,8 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 import wpilib
 from wpilib import XboxController
-from wpilib import DigitalInput as dio
-from magicbot import MagicRobot
+from magicbot import MagicRobot, tunable
 
 # Component imports:
 from components.driveTrain import DriveTrain
@@ -15,6 +14,7 @@ from examples.buttonManagerCallback import actionCallback, crashCallback, exampl
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
 from components.ShooterLogic import ManualShooter, AutomaticShooter
+from components.buttonManager import ButtonManager, ButtonEvent
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -25,32 +25,29 @@ class MyRobot(MagicRobot):
     """
     shootManual: ManualShooter
     shootAutomatic: AutomaticShooter
-    ShooterMotors: ShooterMotorCreation
+    shooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
     lifter: Lifter
     buttonManager: ButtonManager
     pneumatics: Pneumatics
+    driveMutli = tunable(.5)
 
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
-        # Motors/controllers:
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
         self.motorsList = dict(self.map.motorsMap.driveMotors)
-        # Sensor object
-        self.sensorObjects = dio
+        self.auto = False
 
     def teleopInit(self):
         #register button events
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kY,  ButtonEvent.kOnPress, actionCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.enableSolenoid)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnRelease, self.pneumatics.disableSolenoid)
-        self.mult = .5 # Multiplier for drive values. Should not be over 1.
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.autoSwitch)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootAutomatic.switchToReverse)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootManual.fireShooter)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shootManual.ShooterMotors.stopShooter)
 
     def teleopPeriodic(self):
         """
@@ -58,17 +55,12 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
         
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.mult, self.xboxMap.getDriveRightHoriz() * self.mult)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMutli, self.xboxMap.getDriveRightHoriz() * self.driveMutli)
 
-        # Enables automatic control (Toggle)
-        if self.xboxMap.getMechYButton() and not self.shootManual.getAutomaticStatus():
-            self.shootManual.stopManual()
-            self.shootAutomatic.runLoaderAutomatically()
-
-        # Enables manual control (Toggle)
-        elif self.xboxMap.getMechYButton() and self.shootAutomatic.getAutomaticStatus():
-            self.shootAutomatic.stopAutomatic()
-            self.shootManual.runLoaderManually()
+        if self.auto:
+            self.autoRun()
+        else:
+            self.manualRun()
 
         # Needs to run periodically (calls self.engage if automatic enabled)
         self.shootAutomatic.initAutoLoading()
@@ -84,6 +76,21 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         pass
+    def autoSwitch(self):
+        if self.auto:
+            self.auto = False
+        else:
+            self.auto = True
+
+    def autoRun(self):
+        if not self.shootManual.getAutomaticStatus():
+            self.shootManual.stopManual()
+            self.shootAutomatic.runLoaderAutomatically()
+    
+    def manualRun(self):
+        if self.shootManual.getAutomaticStatus():
+            self.shootAutomatic.stopAutomatic()
+            self.shootManual.runLoaderManually()
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)
