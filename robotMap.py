@@ -85,9 +85,6 @@ class XboxMap():
     def getDriveLeftTrig(self):
         return self.driveLeftTrig
 
-    def getDriveAButton(self):
-        return self.driveAButton
-
     def getMechLeft(self):
         return self.mechLeft
 
@@ -105,12 +102,3 @@ class XboxMap():
 
     def getMechLeftTrig(self):
         return self.mechLeftTrig
-
-    def getMechAButton(self):
-        return self.mechAButton
-
-    def getMechBButton(self):
-        return self.mechBButton
-
-    def getMechYButton(self):
-        return self.mechYButton
