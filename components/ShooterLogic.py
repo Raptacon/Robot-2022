@@ -172,7 +172,7 @@ class AutomaticShooter(StateMachine):
     @state
     def reverseShooting(self, state_tm):
         if not self.SensorArray[0].get():
-            self.ShooterMotors.runLoader(-1*.4)
+            self.ShooterMotors.runLoader(-1*.3)
             self.next_state_now('runShooterMotor')
 
         elif state_tm > 2:
