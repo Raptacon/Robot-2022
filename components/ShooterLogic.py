@@ -32,13 +32,17 @@ class ManualShooter:
     def execute(self):
         if not self.isAutomatic:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.ShooterMotors.runLoader(1*0.4)
-                self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig()*0.6)
+                self.max = .7
+                self.min = .5
+                self.ShooterMotors.runLoader(.6*.4)
+                self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min)
                 print("right trig manual", self.xboxMap.getMechRightTrig())
 
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.ShooterMotors.runLoader(-self.xboxMap.getMechLeftTrig())
-                self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig()*0.6)
+                self.max = .9
+                self.min = .5
+                self.ShooterMotors.runLoader(-.2)
+                self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
                 print("left trig manual", self.xboxMap.getMechLeftTrig())
 
             elif self.xboxMap.getMechAButton():
