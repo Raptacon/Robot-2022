@@ -29,6 +29,15 @@ class Pneumatics:
         """
         self.solenoid.set(False) #currently, this is only set to handle one solenoid. I believe that both bots only have one.
 
+    def toggleSolenoid(self):
+        """
+        Toggle the solenoid from off to on, or on to off.
+        """
+        if self.solenoid.get() == True:
+            self.solenoid.set(False)
+        else:
+            self.solenoid.set(True)
+
     def getCompressorCurrent(self):
         """
         Returns how much power the compressor is currently drawing. Useful to not brown out

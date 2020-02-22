@@ -44,12 +44,7 @@ class MyRobot(MagicRobot):
 
     def teleopInit(self):
         #register button events
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kA, ButtonEvent.kOnPress, exampleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kBack, ButtonEvent.kOnPress | ButtonEvent.kOnRelease, crashCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kStart,  ButtonEvent.kWhilePressed, simpleCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kY,  ButtonEvent.kOnPress, actionCallback)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.enableSolenoid)
-        self.buttonManager.registerButtonEvent(self.stick, XboxController.Button.kX, ButtonEvent.kOnRelease, self.pneumatics.disableSolenoid)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
         self.mult = .5 # Multiplier for drive values. Should not be over 1.
 
     def teleopPeriodic(self):

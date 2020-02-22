@@ -5,7 +5,7 @@ from magicbot import StateMachine, state
 
 class ManualShooter:
 
-    ShooterMotors: ShooterMotorCreation
+    shooterMotors: ShooterMotorCreation
     xboxMap: XboxMap
 
     def __init__(self):
@@ -21,43 +21,43 @@ class ManualShooter:
         self.isAutomatic = True
 
     def fireShooter(self):
-        self.ShooterMotors.stopIntake()
-        self.ShooterMotors.stopLoader()
+        self.shooterMotors.stopIntake()
+        self.shooterMotors.stopLoader()
         print("manual shooter running")
-        self.ShooterMotors.runShooter(1)
-        if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-            self.ShooterMotors.runLoader(1)
+        self.shooterMotors.runShooter(1)
+        if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
+            self.shooterMotors.runLoader(1)
 
     def execute(self):
         if not self.isAutomatic:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
                 self.max = .7
                 self.min = .5
-                self.ShooterMotors.runLoader(.6*.4)
-                self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min)
+                self.shooterMotors.runLoader(.6*.4)
+                self.shooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min)
                 print("right trig manual", self.xboxMap.getMechRightTrig())
 
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
                 self.max = .9
                 self.min = .5
-                self.ShooterMotors.runLoader(-.2)
-                self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
+                self.shooterMotors.runLoader(-.2)
+                self.shooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
                 print("left trig manual", self.xboxMap.getMechLeftTrig())
 
             elif self.xboxMap.getMechAButton():
                 self.fireShooter()
 
             else:
-                self.ShooterMotors.stopIntake()
-                self.ShooterMotors.stopLoader()
-                self.ShooterMotors.stopShooter()
+                self.shooterMotors.stopIntake()
+                self.shooterMotors.stopLoader()
+                self.shooterMotors.stopShooter()
         
         elif self.isAutomatic:
             pass
 
 class AutomaticShooter(StateMachine):
 
-    ShooterMotors: ShooterMotorCreation
+    shooterMotors: ShooterMotorCreation
     sensorObjects: dio
     xboxMap: XboxMap
 
@@ -112,15 +112,15 @@ class AutomaticShooter(StateMachine):
             self.logicArray.append(self.logicSensors)
 
         if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-            self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig()*.6)
+            self.shooterMotors.runIntake(self.xboxMap.getMechRightTrig()*.6)
             print("right trig automatic:", self.xboxMap.getMechRightTrig())
 
         elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-            self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig()*.6)
+            self.shooterMotors.runIntake(-self.xboxMap.getMechLeftTrig()*.6)
             print("left trig automatic:", self.xboxMap.getMechLeftTrig())
 
         else:
-            self.ShooterMotors.stopIntake()
+            self.shooterMotors.stopIntake()
 
         '''
         Creates the basis for the logic regarding when the loader is run.
@@ -131,18 +131,18 @@ class AutomaticShooter(StateMachine):
         # If one ball is loaded:
         if (
             self.CurrentSensor.get() and all(self.logicArray) == False):
-            self.ShooterMotors.runLoader(1*.4)
+            self.shooterMotors.runLoader(1*.4)
             self.logicArray = []
 
         # If one ball has reached loader sensor:
         elif self.CurrentSensor.get() == False and all(self.logicArray):
-            self.ShooterMotors.stopLoader()
+            self.shooterMotors.stopLoader()
             self.sensorX += 1
             self.logicArray = []
 
         # If more than one ball is loaded:
         elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
-            self.ShooterMotors.runLoader(1*.4)
+            self.shooterMotors.runLoader(1*.4)
             self.sensorX += 1
             self.logicArray = []
 
@@ -162,20 +162,20 @@ class AutomaticShooter(StateMachine):
     @state
     def reverseShooting(self):
         if not self.SensorArray[0].get():
-            self.ShooterMotors.runLoader(-1*.4)
+            self.shooterMotors.runLoader(-1*.4)
             self.next_state_now('runShooterMotor')
 
     @state
     def runShooterMotor(self):
         if self.SensorArray[0].get():
-            self.ShooterMotors.stopLoader()
-            self.ShooterMotors.runShooter(1)
-            if self.ShooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
+            self.shooterMotors.stopLoader()
+            self.shooterMotors.runShooter(1)
+            if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
                 self.next_state_now('shoot')
 
     @state
     def shoot(self):
-        self.ShooterMotors.runLoader(1*.4)
+        self.shooterMotors.runLoader(1*.4)
         if self.xboxMap.getMechBButton():
-            self.ShooterMotors.stopLoader()
+            self.shooterMotors.stopLoader()
             self.next_state_now('beginLoading')
