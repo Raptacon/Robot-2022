@@ -130,8 +130,7 @@ class AutomaticShooter(StateMachine):
         # NOTE: After every control loop, the logicArray MUST be reset
         # If one ball is loaded:
         if (
-            self.CurrentSensor.get() and
-            all(self.logicArray) == False):
+            self.CurrentSensor.get() and all(self.logicArray) == False):
             self.ShooterMotors.runLoader(1*.4)
             self.logicArray = []
 

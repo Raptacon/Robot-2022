@@ -9,6 +9,7 @@ from components.driveTrain import DriveTrain
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
 from components.ShooterLogic import ManualShooter, AutomaticShooter
+from components.buttonManager import ButtonManager
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
