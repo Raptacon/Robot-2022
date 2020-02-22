@@ -1,3 +1,4 @@
+from magicbot import tunable
 
 class Elevator:
     motorsList: dict
@@ -5,20 +6,21 @@ class Elevator:
     def on_enable(self):
         self.upSpeed = 0
         self.elevatorMotor = self.motorsList['elevatorMotor']
-
+        self.downSpeed = tunable(-.4)
+        self.upSpeed = tunable(.7)
         print("Elevator Enabled")
     
     def setSpeed(self, speed):
-        self.upSpeed = speed
+        self.speed = speed
 
     def setRaise(self):
-        self.upSpeed = .7
+        self.speed = self.upSpeed
 
     def setLower(self):
-        self.upSpeed = -.4
+        self.speed = self.downSpeed
 
     def stop(self):
-        self.upSpeed = 0
+        self.speed = 0
     
     def execute(self):
-        self.elevatorMotor.set(self.upSpeed)
+        self.elevatorMotor.set(self.speed)
