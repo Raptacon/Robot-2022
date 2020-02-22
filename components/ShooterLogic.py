@@ -115,10 +115,16 @@ class AutomaticShooter(StateMachine):
 
         if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
             self.ShooterMotors.runIntake(self.xboxMap.getMechRightTrig()*.6)
+            self.max = .7
+            self.min = .5
+            self.ShooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min)
             print("right trig automatic:", self.xboxMap.getMechRightTrig())
 
         elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-            self.ShooterMotors.runIntake(-self.xboxMap.getMechLeftTrig()*.6)
+            self.max = .9
+            self.min = .5
+            self.ShooterMotors.runLoader(-.2)
+            self.ShooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.max-self.min))+self.min))
             print("left trig automatic:", self.xboxMap.getMechLeftTrig())
 
         else:
