@@ -82,7 +82,7 @@ class MyRobot(MagicRobot):
             self.shootAutomatic.runLoaderAutomatically()
     
     def manualRun(self):
-        if self.xboxMap.getMechYButton():
+        if self.shootManual.getAutomaticStatus():
             self.shootAutomatic.stopAutomatic()
             self.shootManual.runLoaderManually()
 
