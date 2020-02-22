@@ -168,7 +168,7 @@ class AutomaticShooter(StateMachine):
             self.ShooterMotors.runLoader(-0.6 * self.loaderMulti)
             self.next_state_now('runShooterMotor')
 
-        elif state_tm > 2:
+        elif state_tm > 3:
             self.done()
 
     @state
@@ -182,6 +182,6 @@ class AutomaticShooter(StateMachine):
     @state
     def shoot(self, state_tm):
         self.ShooterMotors.runLoader(0.6 * self.loaderMulti)
-        if state_tm > 4:
+        if state_tm > 6:
             self.ShooterMotors.stopLoader()
             self.next_state_now('beginLoading')
