@@ -16,7 +16,7 @@ class ButtonEvent(Flag):
     kWhileReleased = auto()
     kNone = 0
 
-class ButtonManager:
+class ButtonManager(object):
     """
     Class manages the buttons on a HID device. If a HID device is registered users should not
     use any registered buttons directley.
