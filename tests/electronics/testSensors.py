@@ -3,6 +3,9 @@ from wpilib import DigitalInput as dio
 import wpilib
 
 class MyRobot(MagicRobot):
+    """
+    This will show the sensors getting tripped
+    """
 
     def createObjects(self):
 
