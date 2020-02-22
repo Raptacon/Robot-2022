@@ -22,11 +22,46 @@ class ButtonManager(object):
     use any registered buttons directley.
     """
 
-    def __init__(self):
+    def setup(self):
         """
-        Initilizer for class
+        Sets up Button manager.
         """
+        #update to change logging level
+        #self.logger.setLevel(logging.DEBUG)
+        
         self.entrys = {}
+        self.enabledTypes = {}
+
+    def registerButtonEvent(self, hidDevice: wpilib.interfaces.GenericHID, buttonId: int, eventTypes: ButtonEvent, callback : callable):
+        """
+        Registered a button on a HID for eventType. When even type is triggered, callback is invoked.
+        Callback must take form of callable(**kwargs). See exampleCallback. It may be of type self.callable
+        where self is a class instance
+        """
+        assert isinstance(hidDevice, wpilib.interfaces.GenericHID), f"{str(hidDevice)} is not a HID"
+        #assert buttonId > 0 and buttonId < 16, f"Invalid button ID {str(buttonId)}"
+        assert isinstance(eventTypes, ButtonEvent), f"{eventTypes} is not an eventTypes"
+        assert callable(callback), f"{str(callback)} must be callable"
+        
+        entry = self.__createCallbackEntry(hidDevice, buttonId, eventTypes, callback)
+        self.logger.info(f"Registering event [{self.__entryStr(entry)}]")
+
+    def getregisteredEvent(self, hidDevice: wpilib.interfaces.GenericHID , buttonId: int, callback: callable):
+        """
+        Finds matching callback for a given hidDevice, buttonId, and callback
+        Can be used to get call counts
+        """
+        #TODO test and cleanup
+        try:
+            entrys = self.entrys[hidDevice][buttonId]
+            for entry in entrys:
+                if callback == entrys[entry]["callback"]:
+                    return entry
+        except Exception as e:
+            print(e)
+        return None
+
+    #### Everything below this is private
 
     def __createCallbackEntry(self, hidDevice, buttonId, eventTypes, callback):
         """
@@ -61,45 +96,6 @@ class ButtonManager(object):
 
         return retVal
 
-    def setup(self):
-        """
-        Sets up Button manager.
-        """
-        #update to change logging level
-        #self.logger.setLevel(logging.DEBUG)
-        
-        self.entrys = {}
-        self.enabledTypes = {}
-
-    def registerButtonEvent(self, hidDevice, buttonId, eventTypes: ButtonEvent, callback):
-        """
-        Registered a button on a HID for eventType. When even type is triggered, callback is invoked.
-        Callback must take form of callable(**kwargs). See exampleCallback. It may be of type self.callable
-        where self is a class instance
-        """
-        assert isinstance(hidDevice, wpilib.interfaces.GenericHID), f"{str(hidDevice)} is not a HID"
-        #assert buttonId > 0 and buttonId < 16, f"Invalid button ID {str(buttonId)}"
-        assert isinstance(eventTypes, ButtonEvent), f"{eventTypes} is not an eventTypes"
-        assert callable(callback), f"{str(callback)} must be callable"
-        
-        entry = self.__createCallbackEntry(hidDevice, buttonId, eventTypes, callback)
-        self.logger.info(f"Registering event [{self.__entryStr(entry)}]")
-
-    def getregisteredEvent(self, hidDevice, buttonId, callback):
-        """
-        Finds matching callback for a given hidDevice, buttonId, and callback
-        Can be used to get call counts
-        """
-        #TODO test and cleanup
-        try:
-            entrys = self.entrys[hidDevice][buttonId]
-            for entry in entrys:
-                if callback == entrys[entry]["callback"]:
-                    return entry
-        except Exception as e:
-            print(e)
-        return None
-
     def __processEvent(self, entrys, action):
         """
         Private: Process all entrys when action occurs
@@ -117,12 +113,19 @@ class ButtonManager(object):
             callback = entry["callback"]
             args, varargs, varkw, defaults = inspect.getargspec(callback)
             try:
-                if(varkw):
-                    #takes kwargs
-                    callback(action = action, **entry)
-                else:
-                    #no varargs, so assume no arguments
-                    callback()
+                #Create a complete dictonary of possible values
+                updatedEntry = entry.copy()
+                updatedEntry["action"] = action
+                #Output args list
+                outputArgs = {}
+                for item in updatedEntry:
+                    if item in args:
+                        outputArgs[item] = updatedEntry[item]
+                #if varkw args is used, pass in all values
+                if varkw:
+                    outputArgs.update(updatedEntry)
+                #outputArgs is now filtered to only be the args given
+                callback(**outputArgs)
             except Exception as e:
                 self.logger.error(f"{str(callback)} crashed. E is {str(e)}")
                 traceback.print_exc()
