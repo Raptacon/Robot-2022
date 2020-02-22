@@ -28,7 +28,7 @@ class MyRobot(MagicRobot):
     lifter: Lifter
     buttonManager: ButtonManager
     pneumatics: Pneumatics
-    driveMutli = tunable(.5)
+    driveMotorsMutliplier = tunable(.5)
 
     def createObjects(self):
         """
@@ -53,7 +53,7 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
         
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMutli, self.xboxMap.getDriveRightHoriz() * self.driveMutli)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMotorsMutliplier, self.xboxMap.getDriveRightHoriz() * self.driveMotorsMutliplier)
 
         if self.runShooterAutomatically:
             self.autoRun()
