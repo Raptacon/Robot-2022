@@ -1,4 +1,6 @@
 import ConfigMapper as mapper
+from wpilib import XboxController
+import motorHelper
 import os
 import logging
 from pathlib import Path
