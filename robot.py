@@ -13,6 +13,7 @@ from components.buttonManager import ButtonManager, ButtonEvent
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
 from components.ShooterLogic import ManualShooter, AutomaticShooter
+from components.elevator import Elevator
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -28,6 +29,8 @@ class MyRobot(MagicRobot):
     lifter: Lifter
     buttonManager: ButtonManager
     pneumatics: Pneumatics
+    elevator: Elevator
+      
     driveMotorsMutliplier = tunable(.5)
 
     def createObjects(self):
@@ -46,6 +49,10 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootAutomatic.initAutoShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kWhilePressed, self.shootManual.fireShooter)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shootManual.shooterMotors.stopShooter)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.elevator.setRaise)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnRelease, self.elevator.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.elevator.setLower)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
 
     def teleopPeriodic(self):
         """
