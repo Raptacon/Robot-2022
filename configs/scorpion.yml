@@ -1,0 +1,69 @@
+#Right motor must always be called rightMotor, left motor must always be leftMotor. Look through motorHelper to see what values are necessary,
+#it varies by motor.
+driveMotors:
+  rightMotor:
+    channel: 30
+    type: "CANTalonFX"
+    inverted: True
+    pid:
+      controlType: "Velocity"
+      feedbackDevice: 1
+      kPreScale: 4096
+      kP: .01
+      kD: 0
+      kI: .0000001
+      kF: 0
+      sensorPhase: True
+
+  rightFollower:
+    channel: 31
+    masterChannel: 30
+    type: "CANTalonFXFollower"
+    inverted: True
+
+  leftMotor:
+    channel: 20
+    type: "CANTalonFX"
+    inverted: True
+    pid:
+      controlType: "Velocity"
+      feedbackDevice: 1
+      kPreScale: 4096
+      kP: .01
+      kD: 0
+      kI: .0000001
+      kF: 0
+      sensorPhase: True
+
+  leftFollower:
+    channel: 21
+    masterChannel: 20
+    type: "CANTalonFXFollower"
+    inverted: True
+
+  loaderMotor:
+    channel: 11
+    type: "SparkMax"
+    inverted: True
+    pid: Null
+    motorType: "Brushed"
+
+  intakeMotor:
+    channel: 51
+    type: "CANTalonSRX"
+    inverted: True
+    pid: Null
+  
+  intakeFollower:
+    channel: 50
+    masterChannel: 51
+    type: "CANTalonSRXFollower"
+    inverted: False
+    pid: Null
+
+  shooterMotor:
+    channel: 52
+    type: "SparkMax"
+    motorType: "Brushed"
+    inverted: False
+    pid: Null

@@ -25,12 +25,16 @@ class ManualShooter:
         self.isAutomatic = True
 
     def fireShooter(self):
-        self.shooterMotors.stopIntake()
-        self.shooterMotors.stopLoader()
-        print("manual shooter running")
-        self.shooterMotors.runShooter(1)
-        if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
-            self.shooterMotors.runLoader(1 * self.loaderMulti)
+        if not self.isAutomatic:
+            self.shooterMotors.stopIntake()
+            self.shooterMotors.stopLoader()
+            print("manual shooter running")
+            self.shooterMotors.runShooter(1)
+            if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000:
+                self.shooterMotors.runLoader(1 * self.loaderMulti)
+
+        elif self.isAutomatic:
+            pass
 
     def execute(self):
         if not self.isAutomatic:
@@ -95,10 +99,6 @@ class AutomaticShooter(StateMachine):
         elif self.isAutomatic == False:
             pass
 
-    def switchToReverse(self):
-        if all(self.logicArray):
-            self.next_state_now('reverseShooting')
-
     @state(first = True)
     def beginLoading(self):
         # Assert that key called exists
@@ -135,10 +135,9 @@ class AutomaticShooter(StateMachine):
         # NOTE: After every control loop, the logicArray MUST be reset
         # If one ball is loaded:
         if (
-            self.CurrentSensor.get() and
-            all(self.logicArray) == False
+            self.CurrentSensor.get() and all(self.logicArray) == False
         ):
-            self.shooterMotors.runLoader(1 * self.loaderMulti)
+            self.shooterMotors.runLoader(0.6 * self.loaderMulti)
             self.logicArray = []
 
         # If one ball has reached loader sensor:
@@ -149,7 +148,7 @@ class AutomaticShooter(StateMachine):
 
         # If more than one ball is loaded:
         elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
-            self.shooterMotors.runLoader(1 * self.loaderMulti)
+            self.shooterMotors.runLoader(0.6 * self.loaderMulti)
             self.sensorX += 1
             self.logicArray = []
 
@@ -163,26 +162,27 @@ class AutomaticShooter(StateMachine):
         else:
             self.logicArray = []
 
+    def switchToReverse(self):
+        if self.isAutomatic:
+            if self.SensorArray[0].get() == False and self.shooterMotors.isLoaderActive() == False:
+                self.next_state('reverseShooting')
+
     @state
     def reverseShooting(self, state_tm):
-        if not self.SensorArray[0].get():
-            self.shooterMotors.runLoader(-0.6 * self.loaderMulti)
-            self.next_state_now('runShooterMotor')
-
-        elif state_tm > 2:
-            self.done()
+        self.shooterMotors.runLoader(-0.6 * self.loaderMulti)
+        self.next_state('runShooterMotor')
 
     @state
     def runShooterMotor(self, state_tm):
         if self.SensorArray[0].get():
             self.shooterMotors.stopLoader()
             self.shooterMotors.runShooter(1)
-            if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000 or state_tm > 3:
-                self.next_state_now('shoot')
+            if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= 5000 or state_tm > 5:
+                self.next_state('shoot')
 
     @state
     def shoot(self, state_tm):
         self.shooterMotors.runLoader(0.6 * self.loaderMulti)
-        if state_tm > 4:
+        if state_tm > 6:
             self.shooterMotors.stopLoader()
-            self.next_state_now('beginLoading')
+            self.next_state('beginLoading')

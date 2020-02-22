@@ -1,0 +1,9 @@
+driveMotors:
+  rightMotor:
+    channel: 30
+    type: "CANTalonSRX"
+    inverted: False
+  leftMotor:
+    channel: 20
+    type: "CANTalonSRX"
+    inverted: False

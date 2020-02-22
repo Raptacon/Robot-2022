@@ -10,11 +10,9 @@ from magicbot import MagicRobot, tunable
 from components.driveTrain import DriveTrain
 from components.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
-from examples.buttonManagerCallback import actionCallback, crashCallback, exampleCallback, simpleCallback
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
 from components.ShooterLogic import ManualShooter, AutomaticShooter
-from components.buttonManager import ButtonManager, ButtonEvent
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -76,6 +74,7 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         pass
+
     def autoSwitch(self):
         if self.auto:
             self.auto = False

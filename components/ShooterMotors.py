@@ -40,6 +40,9 @@ class ShooterMotorCreation:
     def stopShooter(self):
         self.shooter = False
 
+    def isLoaderActive(self):
+        return self.loader
+
     def execute(self):
         if self.intake:
             self.intakeMotor.set(self.intakeSpeed)
