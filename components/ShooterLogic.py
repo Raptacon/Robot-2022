@@ -148,7 +148,7 @@ class AutomaticShooter(StateMachine):
 
         # If more than one ball is loaded:
         elif self.CurrentSensor.get() == False and all(self.logicArray) == False:
-            self.shooterMotors.runLoader(1 * self.loaderMulti)
+            self.shooterMotors.runLoader(0.6 * self.loaderMulti)
             self.sensorX += 1
             self.logicArray = []
 
