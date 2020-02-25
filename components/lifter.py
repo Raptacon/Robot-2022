@@ -1,14 +1,14 @@
 
 class Lifter:
-    motorsList: dict
+    compatString = ["doof"]
+    motors_lifter: dict
 
     def on_enable(self):
         self.upSpeed = 0
-        self.motors = self.motorsList
-        self.winchMotor = self.motors["winchMotor"]
-        self.winchFollower = self.motors["winchFollower"]
+        self.winchMotor = self.motors_lifter["winchMotor"]
+        self.winchFollower = self.motors_lifter["winchFollower"]
 
-        print("Lifter Enabled")
+        self.logger.info("Lifter Component Created")
     
     def setSpeed(self, speed):
         self.upSpeed = speed

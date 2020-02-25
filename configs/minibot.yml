@@ -1,9 +1,15 @@
-driveMotors:
-  rightMotor:
-    channel: 30
-    type: "CANTalonSRX"
-    inverted: False
-  leftMotor:
-    channel: 20
-    type: "CANTalonSRX"
-    inverted: False
+compatibility: "minibot"
+driveTrain:
+  subsystem: "driveTrain"
+  description: "All motors used in the drive train live here"
+  motors:
+    groups:
+      - "motors"
+    rightMotor:
+      channel: 30
+      type: "CANTalonSRX"
+      inverted: False
+    leftMotor:
+      channel: 20
+      type: "CANTalonSRX"
+      inverted: False

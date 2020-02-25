@@ -14,9 +14,12 @@ from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
 from components.ShooterLogic import ManualShooter, AutomaticShooter
 from components.elevator import Elevator
+from components.scorpionLoader import ScorpionLoader
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
+from utils.componentUtils import testComponentCompatibility
+from utils.motorHelper import createMotor
 
 class MyRobot(MagicRobot):
     """
@@ -30,6 +33,7 @@ class MyRobot(MagicRobot):
     buttonManager: ButtonManager
     pneumatics: Pneumatics
     elevator: Elevator
+    scorpionLoader: ScorpionLoader
     
     driveMotorsMutliplier = tunable(.5)
 
@@ -39,8 +43,22 @@ class MyRobot(MagicRobot):
         """
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
-        self.motorsList = dict(self.map.motorsMap.driveMotors)
+
+        #self.motorsList = dict(self.map.motorsMap.driveMotors)
+        self.instantiateSubsystemsMotors()
         self.runShooterAutomatically = False
+
+
+        #check each componet for compatibility
+        testComponentCompatibility(self, ManualShooter)
+        testComponentCompatibility(self, AutomaticShooter)
+        testComponentCompatibility(self, ShooterMotorCreation)
+        testComponentCompatibility(self, DriveTrain)
+        testComponentCompatibility(self, Lifter)
+        testComponentCompatibility(self, ButtonManager)
+        testComponentCompatibility(self, Pneumatics)
+        testComponentCompatibility(self, Elevator)
+        
 
     def teleopInit(self):
         #register button events
@@ -70,6 +88,9 @@ class MyRobot(MagicRobot):
         # Needs to run periodically (calls self.engage if automatic enabled)
         self.shootAutomatic.initAutoLoading()
 
+        #Scoprion Code
+        self.scorpionLoader.checkController()
+
     def testInit(self):
         """
         Function called when testInit is called. Crashes on 2nd call right now
@@ -98,6 +119,24 @@ class MyRobot(MagicRobot):
         if self.shootManual.getAutomaticStatus():
             self.shootAutomatic.stopAutomatic()
             self.shootManual.runLoaderManually()
+
+    def instantiateSubsystemsMotors(self):
+        """
+        For each subsystem, find all motors and create them. Save them to the motors_subsystem variable and subsystemsMotor
+        """
+        config = self.map.configMapper
+        
+        if not hasattr(self, 'subsystemMotors'):
+            self.subsystemMotors = {}
+
+        subsystems = config.getSubsystems()
+
+        for subsystem in subsystems:
+            self.subsystemMotors[subsystem] = {key:createMotor(descp) for (key, descp) in config.getGroupDict(subsystem, "motors").items()}
+            motors_subsystem = 'motors_'+subsystem
+            self.logger.info("Creating %s", motors_subsystem)
+            setattr(self, motors_subsystem, self.subsystemMotors[subsystem])
+
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)

@@ -33,6 +33,7 @@ class Pneumatics:
         """
         Toggle the solenoid from off to on, or on to off.
         """
+        self.logger.warning("Changing solenoid")
         if self.solenoid.get() == True:
             self.solenoid.set(wpilib.DoubleSolenoid.Value.kReverse)
         else:

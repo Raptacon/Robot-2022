@@ -35,10 +35,8 @@ def createMotor(motorDescp, motors = {}):
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
-        if motorDescp['motorType'] == "Brushless":
-            motorDescp['motorType'] = rev.MotorType.kBrushless
-        else:
-            motorDescp['motorType'] == rev.MotorType.kBrushed
+        motorDescp['motorType'] = getattr(rev.MotorType, motorDescp['motorType'])
+
         if 'pid' in motorDescp and motorDescp['pid'] != None:
             motor = SparkMaxFeedback(motorDescp, motors)
             motor.setupPid()
@@ -49,10 +47,7 @@ def createMotor(motorDescp, motors = {}):
     elif motorDescp['type'] == 'SparkMaxFollower':
         '''This is where SparkMax followers are set up
         For masterChannel, use a motor object. MASTER MUST BE A "CANSparkMax"  '''
-        if motorDescp['motorType'] == "Brushless":
-            motorDescp['motorType'] = rev.MotorType.kBrushless
-        else:
-            motorDescp['motorType'] == rev.MotorType.kBrushed
+        motorDescp['motorType'] = getattr(rev.MotorType, motorDescp['motorType'])
         motor = SparkMaxFeedback(motorDescp, motors)
         motor.follow(motors.get(str(motorDescp['masterChannel'])), motorDescp['inverted'])
 
@@ -183,12 +178,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
     def __init__(self, motorDescription, motors):
         self.motorDescription = motorDescription
         self.motorType = self.motorDescription['motorType']
-        if self.motorDescription['motorType'] == "Brushless":
-            self.motorType = rev.MotorType.kBrushless
-        elif self.motorDescription['motorType'] == "Brushed":
-            self.motorType = rev.MotorType.kBrushed
-        else:
-            print("Use an actual motor type for motor ",self.motorDescription['channel'], ",", self.motorDescription['motorType']," is not a type !")
+
         rev.CANSparkMax.__init__(self, self.motorDescription['channel'], self.motorType)
         self.setInverted(self.motorDescription['inverted'])
         self.motors = motors

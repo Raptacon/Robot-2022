@@ -1,0 +1,28 @@
+lifter:
+  subsystem: "lifter"
+  description: "All motors used in the robot lifter mechanism live here for the lifter component"
+  motors:
+    groups: "motors" 
+    winchMotor:
+      channel: 40
+      type: "SparkMax"
+      inverted: False
+      motorType: "kBrushless"
+      pid:
+        controlType: "Velocity"
+        feedbackDevice: 2
+        kPreScale: 6
+        kP: .1
+        kD: 0
+        kI: .0000001
+        kF: 0
+        sensorPhase: True
+    
+    winchFollower:
+      channel: 41
+      masterChannel: 40
+      type: "SparkMaxFollower"
+      motorType: "kBrushless"
+      inverted: True
+
+description: "Base file stuff"
