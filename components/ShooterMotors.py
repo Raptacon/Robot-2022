@@ -1,10 +1,9 @@
-
 class ShooterMotorCreation:
     compatString = ["doof"]
     motors_shooter: dict
     motors_loader: dict
 
-    def setup(self):
+    def on_enable(self):
         self.intakeSpeed = 0
         self.loaderSpeed = 0
         self.shooterSpeed = 0
@@ -39,7 +38,7 @@ class ShooterMotorCreation:
     def stopShooter(self):
         self.shooter = False
 
-    def isLoaderActive(self):
+    def getLoaderStatus(self):
         return self.loader
 
     def execute(self):

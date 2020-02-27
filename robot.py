@@ -12,7 +12,7 @@ from components.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
 from components.lifter import Lifter
 from components.ShooterMotors import ShooterMotorCreation
-from components.ShooterLogic import ManualShooter, AutomaticShooter
+from components.ShooterLogic import ShooterLogic
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 
@@ -25,8 +25,7 @@ class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
     """
-    shootManual: ManualShooter
-    shootAutomatic: AutomaticShooter
+    shooter: ShooterLogic
     shooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
     lifter: Lifter
@@ -50,23 +49,23 @@ class MyRobot(MagicRobot):
 
 
         #check each componet for compatibility
-        testComponentCompatibility(self, ManualShooter)
-        testComponentCompatibility(self, AutomaticShooter)
+        testComponentCompatibility(self, ShooterLogic)
         testComponentCompatibility(self, ShooterMotorCreation)
         testComponentCompatibility(self, DriveTrain)
         testComponentCompatibility(self, Lifter)
         testComponentCompatibility(self, ButtonManager)
         testComponentCompatibility(self, Pneumatics)
         testComponentCompatibility(self, Elevator)
-        
+        testComponentCompatibility(self, ScorpionLoader)
 
     def teleopInit(self):
-        #register button events
+        #register button events for doof
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.autoSwitch)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shootAutomatic.initAutoShooting)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kWhilePressed, self.shootManual.fireShooter)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shootManual.shooterMotors.stopShooter)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.initAutomatic)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.shooter.initManual)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kWhilePressed, self.shooter.fireManualShooter)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooterMotors.stopShooter)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.fireAutomaticShooter)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.elevator.setRaise)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnRelease, self.elevator.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.elevator.setLower)
@@ -77,16 +76,17 @@ class MyRobot(MagicRobot):
         Must include. Called running teleop.
         """
         self.xboxMap.controllerInput()
-        
+
         self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMotorsMutliplier, self.xboxMap.getDriveRightHoriz() * self.driveMotorsMutliplier)
 
-        if self.runShooterAutomatically:
-            self.autoRun()
-        else:
-            self.manualRun()
+        # Runs manual if self.isAutomatic == False
+        self.shooter.startManual()
 
-        # Needs to run periodically (calls self.engage if automatic enabled)
-        self.shootAutomatic.initAutoLoading()
+        # Runs automatic if self.isAutomaic == True
+        self.shooter.startAutomatic()
+
+        # Calls intake buttons for automatic
+        self.shooter.runIntakeAutomatically()
 
         #Scoprion Code
         self.scorpionLoader.checkController()
@@ -102,23 +102,6 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         pass
-
-    # Automatic loading toggle
-    def autoSwitch(self):
-        if self.runShooterAutomatically:
-            self.runShooterAutomatically = False
-        else:
-            self.runShooterAutomatically = True
-
-    def autoRun(self):
-        if not self.shootManual.getAutomaticStatus():
-            self.shootManual.stopManual()
-            self.shootAutomatic.runLoaderAutomatically()
-    
-    def manualRun(self):
-        if self.shootManual.getAutomaticStatus():
-            self.shootAutomatic.stopAutomatic()
-            self.shootManual.runLoaderManually()
 
     def instantiateSubsystemsMotors(self):
         """
@@ -136,7 +119,6 @@ class MyRobot(MagicRobot):
             motors_subsystem = 'motors_'+subsystem
             self.logger.info("Creating %s", motors_subsystem)
             setattr(self, motors_subsystem, self.subsystemMotors[subsystem])
-
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)
