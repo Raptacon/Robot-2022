@@ -1,16 +1,19 @@
 from robotMap import XboxMap
+from magicbot import tunable
 
 class ScorpionLoader:
     compatString = ["scorpion"]
     motors_shooter: dict
     motors_loader: dict
     xboxMap: XboxMap
+    shooterSpeed = tunable(-0.4)
+    
 
     def setup(self):
         self.intakeSpeed = 0
         self.loaderSpeed = 0
         self.shooterSpeed = 0
-
+    
         self.loaderMotor = self.motors_loader["loaderMotor"]
         self.intakeMotor = self.motors_loader["intakeMotor"]
         self.logger.info("Shooter Motor Component Created")
@@ -33,7 +36,7 @@ class ScorpionLoader:
         return self.loader
 
     def checkController(self):
-        self.runIntake(self.xboxMap.mechLeft)
+        self.runIntake(self.shooterSpeed if self.xboxMap.mechLeft < -.2 else 0)
         self.runLoader(self.xboxMap.mechRight)
 
     def execute(self):
