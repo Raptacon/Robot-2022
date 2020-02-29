@@ -4,7 +4,7 @@ lifter:
   motors:
     groups: "motors" 
     winchMotor:
-      channel: 40
+      channel: 41
       type: "SparkMax"
       inverted: False
       motorType: "kBrushless"
@@ -17,12 +17,10 @@ lifter:
         kI: .0000001
         kF: 0
         sensorPhase: True
-    
-    winchFollower:
-      channel: 41
-      masterChannel: 40
-      type: "SparkMaxFollower"
-      motorType: "kBrushless"
-      inverted: True
+        currentLimits:
+          freeLimit: 30
+          stallLimit: 30
+          stallLimitRPM: 50
+          secondaryLimit: 35
 
 description: "Base file stuff"

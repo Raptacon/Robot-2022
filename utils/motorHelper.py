@@ -14,13 +14,13 @@ def createMotor(motorDescp, motors = {}):
             motor.setupPid()
         else:
             motor = ctre.WPI_TalonSRX(motorDescp['channel'])
-        setCTRECurrentLimits(motor, motorDescp)
+        setTalonSRXCurrentLimits(motor, motorDescp)
         motors[str(motorDescp['channel'])] = motor
 
     elif motorDescp['type'] == 'CANTalonSRXFollower':
         motor =ctre.WPI_TalonSRX(motorDescp['channel'])
         motor.set(mode = ctre.ControlMode.Follower, value = motorDescp['masterChannel'])
-        setCTRECurrentLimits(motor, motorDescp)
+        setTalonSRXCurrentLimits(motor, motorDescp)
         motors[str(motorDescp['channel'])] = motor
 
     elif motorDescp['type'] == 'CANTalonFX':
@@ -29,13 +29,13 @@ def createMotor(motorDescp, motors = {}):
             motor.setupPid()
         else:
             motor = ctre.WPI_TalonFX(motorDescp['channel'])
-        setCTRECurrentLimits(motor, motorDescp)
+        setTalonFXCurrentLimits(motor, motorDescp)
     
     elif motorDescp['type'] == 'CANTalonFXFollower':
         motor =ctre.WPI_TalonFX(motorDescp['channel'])
         motor.set(mode = ctre.TalonFXControlMode.Follower, value = motorDescp['masterChannel'])
         motors[str(motorDescp['channel'])] = motor
-        setCTRECurrentLimits(motor, motorDescp)
+        setTalonFXCurrentLimits(motor, motorDescp)
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
@@ -70,31 +70,49 @@ def createMotor(motorDescp, motors = {}):
 
     return motor
 
-def setCTRECurrentLimits(motor, motorDescp):
+def setTalonFXCurrentLimits(motor, motorDescp):
     """
     Sets current limits based off of "currentLimits"
-    in your motor and config of choice. Must be a CTRE motor controller
+    in your motor and config of choice. Must be a Talon FX motor controller
+    In currentLimits, you need currentLimit, triggerThresholdCurrent, and triggerThresholdTime.
+    """
+    if 'currentLimits' in motorDescp:
+        currentLimits = motorDescp['currentLimits']
+        currentLimit = currentLimits['currentLimit']
+        triggerThresholdCurrent = currentLimits['triggerThresholdCurrent']
+        triggerThresholdTime = currentLimits['triggerThresholdTime']
+        statorCurrentConfig = ctre.StatorCurrentLimitConfiguration(True, currentLimit, triggerThresholdCurrent, triggerThresholdTime)
+        supplyCurrentConfig = ctre.SupplyCurrentLimitConfiguration(True, currentLimit, triggerThresholdCurrent, triggerThresholdTime)
+        motor.configStatorCurrentLimit(statorCurrentConfig)
+        motor.configSupplyCurrentLimit(supplyCurrentConfig)
+
+def setTalonSRXCurrentLimits(motor, motorDescp):
+    """
+    Sets current limits based off of "currentLimits"
+    in your motor and config of choice. Must be a Talon SRX motor controller
+    In currentLimits, you need absMax, absMaxTimeMs, maxNominal.
     """
     if 'currentLimits' in motorDescp:
         currentLimits = motorDescp['currentLimits']
         absMax = currentLimits['absMax']
         absMaxTimeMs = currentLimits['absMaxTimeMs']
         nominalMaxCurrent = currentLimits['maxNominal']
-        motor.configPeakCurrentLimit(absMax,10)
-        motor.configPeakCurrentDuration(absMaxTimeMs,10)
-        motor.configContinuousCurrentLimit(nominalMaxCurrent,10)
+        motor.configPeakCurrentLimit(absMax, 10)
+        motor.configPeakCurrentDuration(absMaxTimeMs, 10)
+        motor.configContinuousCurrentLimit(nominalMaxCurrent, 10)
         motor.enableCurrentLimit(True)
 
 def setREVCurrentLimits(motor, motorDescp):
     """
     Sets current limits based off of "currentLimits"
     in your motor and config of choice. Must be a REV motor controller
+    In currentLimits, you need freeLimit, stallLimit, stallLimitRPM and secondaryLimit
     """
     if 'currentLimits' in motorDescp:
         currentLimits = motorDescp['currentLimits']
         freeLimit = currentLimits['freeLimit']
         stallLimit = currentLimits['stallLimit']
-        limitRPM = currentLimits['limitRPM']
+        limitRPM = currentLimits['stallLimitRPM']
         secondaryLimit = currentLimits['secondaryLimit']
         motor.setSecondaryCurrentLimit(secondaryLimit)
         motor.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM)

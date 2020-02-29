@@ -6,7 +6,6 @@ class Lifter:
     def on_enable(self):
         self.upSpeed = 0
         self.winchMotor = self.motors_lifter["winchMotor"]
-        self.winchFollower = self.motors_lifter["winchFollower"]
 
         self.logger.info("Lifter Component Created")
     

@@ -24,40 +24,40 @@ driveTrain:
       type: "CANTalonFX"
       inverted: False
       pid: Null
-      currentLimitsL:
-        absMax: 60
-        absMaxTimeMs: 50
-        maxNominal: 40
+      currentLimits:
+        triggerThresholdCurrent: 10
+        triggerThresholdTime: 50
+        currentLimit: 10
 
     rightFollower:
       channel: 31
       masterChannel: 30
       type: "CANTalonFXFollower"
       inverted: False
-      currentLimitsL:
-        absMax: 60
-        absMaxTimeMs: 50
-        maxNominal: 40
+      currentLimits:
+        triggerThresholdCurrent: 10
+        triggerThresholdTime: 50
+        currentLimit: 10
 
     leftMotor:
       channel: 20
       type: "CANTalonFX"
       inverted: False
       pid: Null
-      currentLimitsL:
-        absMax: 60
-        absMaxTimeMs: 50
-        maxNominal: 40
+      currentLimits:
+        triggerThresholdCurrent: 10
+        triggerThresholdTime: 50
+        currentLimit: 10
 
     leftFollower:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"
       inverted: False
-      currentLimitsL:
-        absMax: 60
-        absMaxTimeMs: 50
-        maxNominal: 40
+      currentLimits:
+        triggerThresholdCurrent: 10
+        triggerThresholdTime: 50
+        currentLimit: 10
   
 loaderMotors:
   subsystem: "loader"
@@ -69,7 +69,7 @@ loaderMotors:
       type: "CANTalonSRX"
       inverted: False
       pid: Null
-      currentLimitsL:
+      currentLimits:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
@@ -79,7 +79,7 @@ loaderMotors:
       type: "CANTalonSRX"
       inverted: False
       pid: Null
-      currentLimitsL:
+      currentLimits:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
@@ -89,7 +89,7 @@ loaderMotors:
       type: "CANTalonSRX"
       inverted: False
       pid: Null
-      currentLimitsL:
+      currentLimits:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
@@ -108,7 +108,7 @@ shooterMotors:
       currentLimits:
         freeLimit: 30
         stallLimit: 30
-        limitRPM: 50
+        stallLimitRPM: 50
         secondaryLimit: 35
 
 
