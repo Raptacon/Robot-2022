@@ -1,0 +1,18 @@
+pneumatics:
+  subsystem: "pneumatics"
+  description: "All pneumatics goes here Solenoids should be moved to proper subsystem later"
+  compressors:
+    groups: "compressors" 
+    compressor:
+      type: "compressor"
+  
+  solenoids:
+    groups: "solenoids"
+    loader:
+      type: "doubleSolenoid"
+      channel:
+        forward: 6
+        reverse: 7
+        pcm: 0
+      default: "kForward"
+      

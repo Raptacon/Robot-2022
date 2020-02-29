@@ -1,4 +1,15 @@
 compatibility: "doof"
+
+system:
+  subsystem: "system"
+  description: "Contains system wide resources such as one off hardware devices"  
+  gyro:
+    groups: "gyros"
+    navx:
+      type: "navx"
+      method: "spi"
+
+
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
@@ -30,8 +41,8 @@ driveTrain:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"
-      inverted: False
-
+      inverted: False    
+  
 loaderMotors:
   subsystem: "loader"
   description: "All motors used in the robot loader mechanism live here for the loader component"
@@ -42,7 +53,6 @@ loaderMotors:
       type: "CANTalonSRX"
       inverted: False
       pid: Null
-
     loaderMotor:
       channel: 51
       type: "CANTalonSRX"
@@ -69,3 +79,7 @@ shooterMotors:
 lifter:
   type: "yaml"
   file: "lifter.yml"
+
+pneumatics:
+  type: "yaml"
+  file: "pneumatics.yml"

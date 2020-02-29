@@ -1,5 +1,16 @@
+import logging
+from enum import IntEnum
+
+class Direction(IntEnum):
+    """Enum for intake direction."""
+    kForwards = 0
+    kBackwards = 1
+    kDisabled = 2
+
 class ShooterMotorCreation:
     compatString = ["doof"]
+
+    logger: logging
     motors_shooter: dict
     motors_loader: dict
 
@@ -17,13 +28,21 @@ class ShooterMotorCreation:
 
         self.logger.info("Shooter Motor Component Created")
 
-    def runLoader(self, lSpeed):
-        self.loaderSpeed = lSpeed
-        self.loader = True
+    def runIntake(self, iSpeed, direction):
+        if direction == Direction.kForwards:  # Forwards
+            self.intakeSpeed = iSpeed
+        elif direction == Direction.kBackwards: # Backwards
+            self.intakeSpeed = -iSpeed
 
-    def runIntake(self, iSpeed):
-        self.intakeSpeed = iSpeed
         self.intake = True
+
+    def runLoader(self, lSpeed, direction):
+        if direction == Direction.kForwards: # Forwards
+            self.loaderSpeed = lSpeed
+        elif direction == Direction.kBackwards: # Backwards
+            self.loaderSpeed = -lSpeed
+
+        self.loader = True
 
     def runShooter(self, sSpeed):
         self.shooterSpeed = sSpeed
@@ -38,8 +57,14 @@ class ShooterMotorCreation:
     def stopShooter(self):
         self.shooter = False
 
-    def getLoaderStatus(self):
+    def isIntakeRunning(self):
+        return self.intake
+
+    def isLoaderRunning(self):
         return self.loader
+
+    def isShooterRunning(self):
+        return self.shooter
 
     def execute(self):
         if self.intake:
