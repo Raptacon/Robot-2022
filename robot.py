@@ -80,9 +80,9 @@ class MyRobot(MagicRobot):
         self.xboxMap.controllerInput()
 
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveMotorsMutliplier
-        driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveMotorsMutliplier
+        driveRight = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveMotorsMutliplier
 
-        self.driveTrain.setArcade(driveLeft, driveRight)
+        self.driveTrain.setTank(driveLeft, driveRight)
 
         # Scoprion Code
         self.scorpionLoader.checkController()

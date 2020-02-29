@@ -35,7 +35,7 @@ driveTrain:
       type: "CANTalonFXFollower"
       inverted: False
       currentLimits:
-        riggerThresholdCurrent: 60
+        triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
 
@@ -45,7 +45,7 @@ driveTrain:
       inverted: False
       pid: Null
       currentLimits:
-        riggerThresholdCurrent: 60
+        triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
 
@@ -55,7 +55,7 @@ driveTrain:
       type: "CANTalonFXFollower"
       inverted: False
       currentLimits:
-        riggerThresholdCurrent: 60
+        triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
   
