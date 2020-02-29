@@ -34,20 +34,19 @@ class MyRobot(MagicRobot):
     elevator: Elevator
     scorpionLoader: ScorpionLoader
     
-    driveMotorsMutliplier = tunable(.5)
+    driveMotorsMultiplier = tunable(.5)
 
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
+        self.driveMotorsMultiplier = MyRobot.driveMotorsMultiplier
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
 
         #self.motorsList = dict(self.map.motorsMap.driveMotors)
         self.instantiateSubsystemsMotors()
         self.runShooterAutomatically = False
-
-
         #check each componet for compatibility
         testComponentCompatibility(self, ShooterLogic)
         testComponentCompatibility(self, ShooterMotorCreation)
@@ -70,6 +69,8 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnRelease, self.elevator.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.elevator.setLower)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.creeperMode)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
 
     def teleopPeriodic(self):
         """

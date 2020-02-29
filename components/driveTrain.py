@@ -1,10 +1,11 @@
 import wpilib.drive
 
+from magicbot import tunable
 
 class DriveTrain:
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
-
+    driveMotorMultiplier: tunable
     def setup(self):
         self.tankLeftSpeed = 0
         self.tankRightSpeed = 0
@@ -15,8 +16,8 @@ class DriveTrain:
         self.leftMotor = self.motors_driveTrain["leftMotor"]
         self.rightMotor = self.motors_driveTrain["rightMotor"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
-
         self.logger.info("DriveTrain setup completed")
+        
 
     def getLeft(self):
         return self.leftMotor.get()
@@ -38,6 +39,14 @@ class DriveTrain:
         self.controllingOverArcade = True
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation
+
+    def creeperMode(self):
+        """set driveMotorMultiplier to .25"""
+        self.prevMultiplier = .5
+        self.driveMotorMutliplier = tunable(.25)
+
+    def disableCreeperMode(self):
+        self.driveMotorMultiplier = tunable(self.prevMultiplier)
 
     def stop(self, coast=False):
         self.controllingOverTank = False
