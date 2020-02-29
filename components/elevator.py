@@ -3,7 +3,7 @@ from magicbot import tunable
 class Elevator:
     motors_loader: dict
     downSpeed = tunable(-.4)
-    upSpeed = tunable(.7)
+    upSpeed = tunable(.4)
 
     def on_enable(self):
         self.speed = 0

@@ -64,7 +64,7 @@ class MyRobot(MagicRobot):
 
     def teleopInit(self):
         # Register button events for doof
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.setAutoLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.shooter.setManualLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.shootBalls)
@@ -84,7 +84,11 @@ class MyRobot(MagicRobot):
 
         self.driveTrain.setArcade(driveLeft, driveRight)
 
-        # Scoprion Code
+        if self.xboxMap.getMechDPad() == 0:
+            self.lifter.setRaise()
+        else:
+            self.lifter.stop()
+        # Scorpion Code
         self.scorpionLoader.checkController()
 
     def testInit(self):
