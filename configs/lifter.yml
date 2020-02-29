@@ -8,19 +8,12 @@ lifter:
       type: "SparkMax"
       inverted: False
       motorType: "kBrushless"
-      pid:
-        controlType: "Velocity"
-        feedbackDevice: 2
-        kPreScale: 6
-        kP: .1
-        kD: 0
-        kI: .0000001
-        kF: 0
         sensorPhase: True
         currentLimits:
           freeLimit: 30
           stallLimit: 30
           stallLimitRPM: 50
           secondaryLimit: 35
+      pid: Null
 
 description: "Base file stuff"

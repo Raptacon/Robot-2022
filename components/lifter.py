@@ -9,8 +9,11 @@ class Lifter:
 
         self.logger.info("Lifter Component Created")
     
-    def setSpeed(self, speed):
-        self.upSpeed = speed
-    
+    def setRaise(self):
+        self.upSpeed = .5
+
+    def stop(self):
+        self.upSpeed = 0
+
     def execute(self):
         self.winchMotor.set(self.upSpeed)

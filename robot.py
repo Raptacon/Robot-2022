@@ -86,7 +86,11 @@ class MyRobot(MagicRobot):
 
         self.driveTrain.setTank(driveLeft, driveRight)
 
-        # Scoprion Code
+        if self.xboxMap.getMechDPad() == 0:
+            self.lifter.setRaise()
+        else:
+            self.lifter.stop()
+        # Scorpion Code
         self.scorpionLoader.checkController()
 
     def testInit(self):
