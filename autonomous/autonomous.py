@@ -32,7 +32,7 @@ class autonomous(AutonomousStateMachine):
     @timed_state(duration = time, next_state = "stop")
     def turn(self):
         """Turns for a time"""
-        self.driveTrain.setup(-self.drive_speed, self.drive_speed)
+        self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
 
     @state(must_finish = True)
     def stop(self):
