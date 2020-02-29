@@ -37,7 +37,7 @@ class MyRobot(MagicRobot):
     elevator: Elevator
     scorpionLoader: ScorpionLoader
     
-    driveMotorsMutliplier = tunable(1)
+    driveMotorsMutliplier = tunable(.5)
     sensitivityExponent = tunable(1.8)
 
     def createObjects(self):

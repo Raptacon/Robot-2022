@@ -4,7 +4,7 @@ lifter:
   motors:
     groups: "motors" 
     winchMotor:
-      channel: 41
+      channel: 40
       type: "SparkMax"
       inverted: False
       motorType: "kBrushless"
