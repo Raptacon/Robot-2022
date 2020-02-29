@@ -37,12 +37,8 @@ class MyRobot(MagicRobot):
     elevator: Elevator
     scorpionLoader: ScorpionLoader
     
-<<<<<<< HEAD
-    
-=======
-    driveMotorsMutliplier = tunable(.5)
     sensitivityExponent = tunable(1.8)
->>>>>>> upstream/master
+
 
     def createObjects(self):
         """
@@ -51,19 +47,12 @@ class MyRobot(MagicRobot):
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
 
-<<<<<<< HEAD
-        #self.motorsList = dict(self.map.motorsMap.driveMotors)
-        self.instantiateSubsystemsMotors()
-        self.runShooterAutomatically = False
-        #check each componet for compatibility
-=======
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
 
         # Check each componet for compatibility
->>>>>>> upstream/master
         testComponentCompatibility(self, ShooterLogic)
         testComponentCompatibility(self, ShooterMotorCreation)
         testComponentCompatibility(self, DriveTrain)
@@ -75,7 +64,7 @@ class MyRobot(MagicRobot):
 
     def teleopInit(self):
         # Register button events for doof
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.setAutoLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.shooter.setManualLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.shootBalls)
@@ -92,15 +81,8 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
 
-<<<<<<< HEAD
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveTrain.driveMotorsMultiplier, self.xboxMap.getDriveRightHoriz() * self.driveTrain.driveMotorsMultiplier)
-
-        # Runs manual if self.isAutomatic == False
-        self.shooter.startManual()
-=======
-        driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveMotorsMutliplier
-        driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveMotorsMutliplier
->>>>>>> upstream/master
+        driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
         self.driveTrain.setArcade(driveLeft, driveRight)
 

@@ -1,9 +1,7 @@
 import wpilib.drive
 from enum import Enum, auto
 
-<<<<<<< HEAD
 from magicbot import tunable
-=======
 class ControlMode(Enum):
     """
     Drive Train Control Modes
@@ -12,17 +10,13 @@ class ControlMode(Enum):
     kTankDrive = auto()
     kAngleTurning = auto()
     kDisabled = auto()
->>>>>>> upstream/master
 
 class DriveTrain():
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
-<<<<<<< HEAD
     driveMotorsMultiplier = tunable(.5)
-=======
     gyros_system: dict
 
->>>>>>> upstream/master
     def setup(self):
         self.tankLeftSpeed = 0
         self.tankRightSpeed = 0
