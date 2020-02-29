@@ -34,13 +34,12 @@ class MyRobot(MagicRobot):
     elevator: Elevator
     scorpionLoader: ScorpionLoader
     
-    driveMotorsMultiplier = tunable(.5)
+    
 
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
-        self.driveMotorsMultiplier = MyRobot.driveMotorsMultiplier
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
 
@@ -78,7 +77,7 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
 
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMotorsMutliplier, self.xboxMap.getDriveRightHoriz() * self.driveMotorsMutliplier)
+        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveTrain.driveMotorsMultiplier, self.xboxMap.getDriveRightHoriz() * self.driveTrain.driveMotorsMultiplier)
 
         # Runs manual if self.isAutomatic == False
         self.shooter.startManual()
