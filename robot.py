@@ -90,8 +90,9 @@ class MyRobot(MagicRobot):
             self.lifter.setRaise()
         else:
             self.lifter.stop()
-        # Scorpion Code
+        # Scorpion Code \/
         self.scorpionLoader.checkController()
+        # Scorpion Code /\
 
     def testInit(self):
         """

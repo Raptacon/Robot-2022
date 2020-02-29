@@ -10,9 +10,15 @@ class Lifter:
         self.logger.info("Lifter Component Created")
     
     def setRaise(self):
+        """
+        Sets the motor speed to .5 in order to reel in the winch
+        """
         self.upSpeed = .5
 
     def stop(self):
+        """
+        Sets the motor speed to 0 in order to stop the winch
+        """
         self.upSpeed = 0
 
     def execute(self):
