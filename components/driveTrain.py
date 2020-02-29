@@ -1,17 +1,26 @@
 import wpilib.drive
+from enum import Enum, auto
 
+class ControlMode(Enum):
+    """
+    Drive Train Control Modes
+    """
+    kArcadeDrive = auto()
+    kTankDrive = auto()
+    kAngleTurning = auto()
+    kDisabled = auto()
 
 class DriveTrain:
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
+    gyros_system: dict
 
     def setup(self):
         self.tankLeftSpeed = 0
         self.tankRightSpeed = 0
         self.arcadeSpeed = 0
         self.arcadeRotation = 0
-        self.controllingOverArcade = False
-        self.controllingOverTank = False
+        self.controlMode = ControlMode.kDisabled
         self.leftMotor = self.motors_driveTrain["leftMotor"]
         self.rightMotor = self.motors_driveTrain["rightMotor"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
@@ -28,27 +37,25 @@ class DriveTrain:
         pass
 
     def setTank(self, leftSpeed, rightSpeed):
-        self.controllingOverArcade = False
-        self.controllingOverTank = True
+        self.controlMode = ControlMode.kTankDrive
         self.tankLeftSpeed = leftSpeed
         self.tankRightSpeed = rightSpeed
 
     def setArcade(self, speed, rotation):
-        self.controllingOverTank = False
-        self.controllingOverArcade = True
+        self.controlMode = ControlMode.kArcadeDrive
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation
 
     def stop(self, coast=False):
-        self.controllingOverTank = False
-        self.controllingOverArcade = False
+        self.controlMode = ControlMode.kDisabled
 
     def getMeasuredSpeed(self):
         pass
 
     def execute(self):
-        if self.controllingOverTank:
+        if self.controlMode == ControlMode.kTankDrive:
             self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
 
-        elif self.controllingOverArcade:
+        elif self.controlMode == ControlMode.kArcadeDrive:
             self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
+        

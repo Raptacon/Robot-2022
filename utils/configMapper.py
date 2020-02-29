@@ -172,9 +172,12 @@ class ConfigMapper(object):
                         inputData[key][loadedKey] = data[loadedKey]
 
             #if subsystem, walk subsystem
-            if "subsystem" in inputData[key]:
+            if "subsystem" in inputData[key] and isinstance(inputData[key], dict):
                 log.info("Walking subsystem")
                 #make a new subsystem
+                print("Crashing????")
+                print(inputData[key])
+                print(inputData[key]["subsystem"])
                 processedData[inputData[key]["subsystem"]] = self.__convertToSubsystems(inputData[key], inputData[key]["subsystem"])
 
             #copy field over if no special processing

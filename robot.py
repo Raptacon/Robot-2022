@@ -20,6 +20,8 @@ from components.scorpionLoader import ScorpionLoader
 from robotMap import RobotMap, XboxMap
 from utils.componentUtils import testComponentCompatibility
 from utils.motorHelper import createMotor
+from utils.sensorFactories import gyroFactory
+from utils.acturatorFactories import compressorFactory, solenoidFactory
 
 class MyRobot(MagicRobot):
     """
@@ -44,7 +46,11 @@ class MyRobot(MagicRobot):
         self.xboxMap = XboxMap(XboxController(0), XboxController(1))
 
         #self.motorsList = dict(self.map.motorsMap.driveMotors)
-        self.instantiateSubsystemsMotors()
+        self.instantiateSubsystemGroup("motors", createMotor)
+        self.instantiateSubsystemGroup("gyros", gyroFactory)
+        self.instantiateSubsystemGroup("compressors", compressorFactory)
+        self.instantiateSubsystemGroup("solenoids", solenoidFactory)
+
         self.runShooterAutomatically = False
 
 
@@ -60,7 +66,7 @@ class MyRobot(MagicRobot):
 
     def teleopInit(self):
         #register button events for doof
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.initAutomatic)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.shooter.initManual)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kWhilePressed, self.shooter.fireManualShooter)
@@ -103,22 +109,36 @@ class MyRobot(MagicRobot):
         """
         pass
 
-    def instantiateSubsystemsMotors(self):
+    def instantiateSubsystemGroup(self, groupName, factory):
         """
-        For each subsystem, find all motors and create them. Save them to the motors_subsystem variable and subsystemsMotor
+        For each subsystem find all groupNames and call factory.
+        Each one is saved to groupName_subsystem and subsystem_groupName
         """
         config = self.map.configMapper
+        containerName = "subsystem" + groupName[0].upper() + groupName[1:]
         
-        if not hasattr(self, 'subsystemMotors'):
-            self.subsystemMotors = {}
+        if not hasattr(self, containerName):
+            setattr(self, containerName, {})
+            self.subsystemGyros = {}
+
+        #note this is a dicontary refernce, so changes to it
+        #are changes to self.<containerName>
+        container = getattr(self, containerName)
 
         subsystems = config.getSubsystems()
-
+        createdCount = 0
         for subsystem in subsystems:
-            self.subsystemMotors[subsystem] = {key:createMotor(descp) for (key, descp) in config.getGroupDict(subsystem, "motors").items()}
-            motors_subsystem = 'motors_'+subsystem
-            self.logger.info("Creating %s", motors_subsystem)
-            setattr(self, motors_subsystem, self.subsystemMotors[subsystem])
+            items = {key:factory(descp) for (key, descp) in config.getGroupDict(subsystem, groupName).items()}
+            if(len(items) == 0):
+                continue
+            container[subsystem] = items
+            createdCount += len(container[subsystem])
+            groupName_subsystem = "_".join([groupName,subsystem])
+            self.logger.info("Creating %s", groupName_subsystem)
+            setattr(self, groupName_subsystem, container[subsystem])
+
+        self.logger.info(f"Created {createdCount} items for {groupName} groups with `{factory.__name__}` into `{containerName}")
+
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)
