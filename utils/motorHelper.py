@@ -65,8 +65,6 @@ def createMotor(motorDescp, motors = {}):
         motor.setInverted(motorDescp['inverted'])
 
 
-    #if 'rampRate' in motorDescp:
-    #    motor.configOpenLoopRamp(motorDescp['rampRate'],10)
 
     return motor
 
