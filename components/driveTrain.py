@@ -49,11 +49,12 @@ class DriveTrain():
         self.arcadeRotation = rotation
 
     def creeperMode(self):
-        """set driveMotorMultiplier to .25"""
+        """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
         self.prevMultiplier = self.driveMotorsMultiplier
         self.driveMotorsMultiplier = .25
 
     def disableCreeperMode(self):
+        """when left bumper is released, it sets the multiplier back to it's original value"""
         self.driveMotorsMultiplier = self.prevMultiplier
 
     def stop(self, coast=False):
