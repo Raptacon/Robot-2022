@@ -22,6 +22,7 @@ from utils.componentUtils import testComponentCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory
 from utils.acturatorFactories import compressorFactory, solenoidFactory
+import utils.math
 
 class MyRobot(MagicRobot):
     """
@@ -37,6 +38,7 @@ class MyRobot(MagicRobot):
     scorpionLoader: ScorpionLoader
     
     driveMotorsMutliplier = tunable(.5)
+    sensitivityExponent = tunable(1.8)
 
     def createObjects(self):
         """
@@ -83,7 +85,10 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
 
-        self.driveTrain.setArcade(self.xboxMap.getDriveLeft() * self.driveMotorsMutliplier, self.xboxMap.getDriveRightHoriz() * self.driveMotorsMutliplier)
+        driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveMotorsMutliplier
+        driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveMotorsMutliplier
+
+        self.driveTrain.setArcade(driveLeft, driveRight)
 
         # Runs manual if self.isAutomatic == False
         self.shooter.startManual()
