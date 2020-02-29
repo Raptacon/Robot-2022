@@ -24,24 +24,40 @@ driveTrain:
       type: "CANTalonFX"
       inverted: False
       pid: Null
+      currentLimitsL:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
 
     rightFollower:
       channel: 31
       masterChannel: 30
       type: "CANTalonFXFollower"
       inverted: False
+      currentLimitsL:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
 
     leftMotor:
       channel: 20
       type: "CANTalonFX"
       inverted: False
       pid: Null
+      currentLimitsL:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
 
     leftFollower:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"
-      inverted: False    
+      inverted: False
+      currentLimitsL:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
   
 loaderMotors:
   subsystem: "loader"
@@ -53,17 +69,30 @@ loaderMotors:
       type: "CANTalonSRX"
       inverted: False
       pid: Null
+      currentLimitsL:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
 
     loaderMotor:
       channel: 51
       type: "CANTalonSRX"
       inverted: False
       pid: Null
+      currentLimitsL:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
+
     elevatorMotor:
       channel: 60
       type: "CANTalonSRX"
       inverted: False
       pid: Null
+      currentLimitsL:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
 
 shooterMotors:
   subsystem: "shooter"
@@ -76,6 +105,12 @@ shooterMotors:
       inverted: True
       motorType: "kBrushless"
       pid: Null
+      currentLimits:
+        freeLimit: 30
+        stallLimit: 30
+        limitRPM: 50
+        secondaryLimit: 35
+
 
 lifter:
   type: "yaml"
