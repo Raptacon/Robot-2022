@@ -37,7 +37,7 @@ class MyRobot(MagicRobot):
     elevator: Elevator
     scorpionLoader: ScorpionLoader
     
-    driveMotorsMutliplier = tunable(.5)
+    driveMotorsMutliplier = tunable(1)
     sensitivityExponent = tunable(1.8)
 
     def createObjects(self):
@@ -64,7 +64,7 @@ class MyRobot(MagicRobot):
 
     def teleopInit(self):
         # Register button events for doof
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleSolenoid)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.setAutoLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.shooter.setManualLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.shootBalls)
