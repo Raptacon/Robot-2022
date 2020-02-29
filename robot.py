@@ -53,7 +53,7 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
 
         # Check each componet for compatibility
-        testComponentCompatibility(self, ShooterLogic)
+        #testComponentCompatibility(self, ShooterLogic)
         testComponentCompatibility(self, ShooterMotorCreation)
         testComponentCompatibility(self, DriveTrain)
         testComponentCompatibility(self, Lifter)

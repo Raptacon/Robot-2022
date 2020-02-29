@@ -50,7 +50,7 @@ class DriveTrain():
 
     def creeperMode(self):
         """set driveMotorMultiplier to .25"""
-        self.prevMultiplier = .5
+        self.prevMultiplier = self.driveMotorsMultiplier
         self.driveMotorsMultiplier = .25
 
     def disableCreeperMode(self):
