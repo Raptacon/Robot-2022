@@ -69,11 +69,14 @@ loaderMotors:
       type: "CANTalonSRX"
       inverted: False
       pid: Null
+<<<<<<< HEAD
       currentLimits:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
 
+=======
+>>>>>>> b3d4f35c75c994d5e493025771f5acd28f890067
     loaderMotor:
       channel: 51
       type: "CANTalonSRX"

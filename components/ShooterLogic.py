@@ -1,31 +1,40 @@
 from wpilib import DigitalInput as dio
-from time import sleep
 from robotMap import XboxMap
-from components.ShooterMotors import ShooterMotorCreation
-from magicbot import StateMachine, state, default_state, tunable
+from components.ShooterMotors import ShooterMotorCreation, Direction
+from magicbot import StateMachine, state, timed_state, tunable
 import logging
+from enum import IntEnum
 
+class Sensors(IntEnum):
+    """Enum for sensors."""
+    kLoadingSensor = 4
+    kShootingSensor = 0
 
 class ShooterLogic(StateMachine):
-    """
-    State-machine based shooter
-    """
+    """StateMachine-based shooter. Has both manual and automatic modes."""
     compatString = ["doof"]
+
+    # Component/module related things
     logger: logging
     shooterMotors: ShooterMotorCreation
     xboxMap: XboxMap
-    loaderMotorVal = tunable(.4)
-    intakeMotorMinVal = tunable(.5)
-    intakeMotorMaxVal = tunable(.7)
+
+    # Tunables
+    loaderMotorSpeed = tunable(.4)
+    intakeMotorMinSpeed = tunable(.5)
+    intakeMotorMaxSpeed = tunable(.7)
+    targetShootingSpeed = tunable(4800)
+
+    # Other variables
+    shooterStoppingDelay = 2
 
     def on_enable(self):
-        self.isAutomatic = False
+        """Called when bot is enabled."""
         self.SensorArray = []
-        self.sleepTime = 0
 
         # Creates sensors:
         for x in range(1, 6):
-            self.sensorObjects = dio(x) # .get()
+            self.sensorObjects = dio(x)
             self.SensorArray.append(self.sensorObjects)
             # NOTE: Sensor keys are different than dio value:
             # dio(1) >>> SensorArray[0]
@@ -34,127 +43,112 @@ class ShooterLogic(StateMachine):
             # dio(4) >>> SensorArray[3]
             # dio(5) >>> SensorArray[4]
 
-        self.currentSensor = None
-
         # self.logger.setLevel(logging.DEBUG)
 
-    def initManual(self):
-        """Initializes manual control"""
-        self.isAutomatic = False
+    def setAutoLoading(self):
+        """Runs sensor-based loading."""
+        if self.SensorArray[Sensors.kShootingSensor].get():
+            self.next_state('checkForBall')
 
-    def startManual(self):
-        """Starts manual control"""
-        if not self.isAutomatic:
-            self.done()
+    def setManualLoading(self):
+        """Runs trigger-based loading."""
+        if self.shooterMotors.isLoaderRunning() or self.shooterMotors.isShooterRunning():
+            return False
         else:
-            pass
+            self.next_state('runLoaderManually')
+            return True
 
-    def fireManualShooter(self):
-        """Fires shooter manually"""
-        if not self.isAutomatic:
-            print("shooter running:")
-            self.shooterMotors.runShooter(1)
+    def shootBalls(self):
+        """Executes smart shooter."""
+        if self.shooterMotors.isLoaderRunning() or self.shooterMotors.isShooterRunning():
+            return False
         else:
-            pass
+            self.next_state('initShooting')
+            return True
 
-    def initAutomatic(self):
-        """Initializes automatic control"""
-        self.isAutomatic = True
-
-        # if all(self.SensorArray):
-        #     self.isAutomatic = True
-        # else:
-        #     self.logger.info("Unable to enable automatic; ball(s) already loaded")
-        #TODO: Need to add logic to prevent automatic switch if balls are loaded
-
-    def startAutomatic(self):
-        """Starts automatic control"""
-        if self.isAutomatic:
-            self.engage()
-
-    def fireAutomaticShooter(self):
-        """Fires shooter automatically"""
-        if self.isAutomatic:
-            self.next_state('setupShootAutomatically')
-
-    # Beginning of manual
-    @default_state # Run if self.engage() is not called
-    def runManually(self):
-        """Logic for running loader/intake manually"""
+    def runIntake(self):
+        """Universal function for running the intake. Used in both manual and automatic."""
         if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-            self.shooterMotors.runLoader(self.loaderMotorVal)
-            self.shooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMotorMaxVal-self.intakeMotorMinVal))+self.intakeMotorMinVal)
-            self.logger.debug("right trig manual", self.xboxMap.getMechRightTrig())
+            self.shooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMotorMaxSpeed-self.intakeMotorMinSpeed))+self.intakeMotorMinSpeed, Direction.kForwards)
+            self.logger.debug("right trig intake", self.xboxMap.getMechRightTrig())
 
         elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-            self.shooterMotors.runLoader(-0.35)
-            self.shooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.intakeMotorMaxVal-self.intakeMotorMinVal))+self.intakeMotorMinVal))
-            self.logger.debug("left trig manual", self.xboxMap.getMechLeftTrig())
+            self.shooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMotorMaxSpeed-self.intakeMotorMinSpeed))+self.intakeMotorMinSpeed, Direction.kBackwards)
+            self.logger.debug("left trig intake", self.xboxMap.getMechLeftTrig())
 
         else:
             self.shooterMotors.stopIntake()
+
+    # Beginning of manual
+    @state(first = True)
+    def runLoaderManually(self):
+        """Trigger-based manual loader."""
+        if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
+            self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kForwards)
+            self.logger.debug("right trig manual", self.xboxMap.getMechRightTrig())
+
+        elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
+            self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kBackwards)
+            self.logger.debug("left trig manual", self.xboxMap.getMechLeftTrig())
+
+        else:
             self.shooterMotors.stopLoader()
-
-    def runIntakeAutomatically(self):
-        """Logic for running intake automatically"""
-        if self.isAutomatic:
-            if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.shooterMotors.runIntake((self.xboxMap.getMechRightTrig()*(self.intakeMotorMaxVal-self.intakeMotorMinVal))+self.intakeMotorMinVal)
-                self.logger.debug("right trig automatic", self.xboxMap.getMechRightTrig())
-
-            elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.shooterMotors.runIntake(-((self.xboxMap.getMechRightTrig()*(self.intakeMotorMaxVal-self.intakeMotorMinVal))+self.intakeMotorMinVal))
-                self.logger.debug("left trig automatic", self.xboxMap.getMechLeftTrig())
-
-            else:
-                self.shooterMotors.stopIntake()
-        
-        elif not self.isAutomatic:
-            pass
-
-    # Beginning of automatic
-    @state(first = True) # Run if self.engage() is called
-    def runLoaderAutomatically(self):
-        """Instantiates automatic loading"""
-        self.next_state('autoLoading')
 
     @state
-    def autoLoading(self, state_tm):
-        """Logic for running loader automatically"""
-        loaderSensor = 4
-        if not self.SensorArray[loaderSensor].get() and self.SensorArray[0].get():
-            self.shooterMotors.runLoader(self.loaderMotorVal)
-            self.sleepTime = .25
-
-        elif not self.SensorArray[loaderSensor].get() and not self.SensorArray[0].get():
-            self.shooterMotors.runLoader(self.loaderMotorVal)
-            self.sleepTime = 0
-            print("loader run final")
-
-        if self.SensorArray[loaderSensor].get():
-            sleep(self.sleepTime)
-            self.shooterMotors.stopLoader()
-            self.sleepTime = 0
+    def checkForBall(self):
+        """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
+        self.shooterMotors.stopLoader()
+        if not self.SensorArray[Sensors.kLoadingSensor].get():
+            self.next_state('loadBall')
 
     @state
-    def setupShootAutomatically(self):
-        """Predecessor to automatic shooting"""
-        if not self.SensorArray[0].get():
-            self.shooterMotors.runLoader(-.3)
+    def loadBall(self):
+        """Loads ball if ball has entered."""
+        self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kForwards)
+        self.next_state('waitForBallIntake')
 
-        elif self.SensorArray[0].get():
+    @state
+    def waitForBallIntake(self):
+        """Checks for intake to be completed."""
+        if self.SensorArray[Sensors.kLoadingSensor].get():
+            self.next_state('stopBall')
+
+    @timed_state(duration = .15, next_state = 'checkForBall')
+    def stopBall(self):
+        """Stops ball after a short delay."""
+        pass
+
+    @state
+    def initShooting(self):
+        """Smart shooter initialization (reversing if necessary)."""
+        if not self.SensorArray[Sensors.kShootingSensor].get():
+            self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kBackwards)
+
+        elif self.SensorArray[Sensors.kShootingSensor].get():
             self.shooterMotors.stopLoader()
-            self.next_state('shootAutomatically')
+            self.next_state('runShooter')
 
-    @state(must_finish = True) # Potentially change to timed_state?
-    def shootAutomatically(self, state_tm):
-        """Execute shoot automatically"""
+    @state
+    def runShooter(self, state_tm):
+        """Runs shooter to a certain speed or until a set time."""
         self.shooterMotors.runShooter(1)
-        self.logger.debug("running auto shooter")
-        if state_tm > 1:
-            self.shooterMotors.runLoader(self.loaderMotorVal)
-            if state_tm > 4:
-                self.shooterMotors.stopLoader()
-                self.shooterMotors.stopShooter()
-                self.currentSensor = 3
-                self.done()
+        if self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= self.targetShootingSpeed or state_tm > 2:
+            self.next_state('shoot')
+
+    @timed_state(duration = shooterStoppingDelay, next_state = 'stopShooter')
+    def shoot(self):
+        """Runs loader for a set time after shooter is at speed."""
+        self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kForwards)
+
+    @state
+    def stopShooter(self):
+        """Halts all shooter-related tasks and resets to 'checkForBall' state."""
+        self.shooterMotors.stopLoader()
+        self.shooterMotors.stopShooter()
+        self.next_state('checkForBall')
+
+    def execute(self):
+        """Constantly runs state machine. Necessary for function."""
+        self.engage()
+        self.runIntake()
+        super().execute()
