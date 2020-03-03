@@ -80,10 +80,10 @@ class MyRobot(MagicRobot):
 
         # Register sensor events for doof
         # NOTE: Format: StateMachine used, action title, sensor used, sensor value needed, previous state needed (conditional), state to transition to
-        # NOTE: Action title must include type of action (i.e. 'Loader', 'Shooter', or 'LED')
+        # NOTE: Action title must include type of action (i.e. 'Loader', 'Shooter', or 'LED') and it MUST have a unique name
         self.breakSensors.registerSensorEvent(self.shooter, "beginLoader", Sensors.kLoadingSensor, False, None, "autoLoadBall")
         self.breakSensors.registerSensorEvent(self.shooter, "stopLoader", Sensors.kLoadingSensor, True,  None, "autoIdling")
-        self.breakSensors.registerSensorEvent(self.shooter, "initShooter", Sensors.kShootingSensor, False, "shootInitShooting", "reversingLoaderShoot")
+        self.breakSensors.registerSensorEvent(self.shooter, "initShooter", Sensors.kShootingSensor, False, "shootInitShooting", "shootReverseLoader")
         self.breakSensors.registerSensorEvent(self.shooter, "fireShooterAfterInit", Sensors.kShootingSensor, True, "shootReverseLoader", "shootRunShooter")
         self.breakSensors.registerSensorEvent(self.shooter, "fireShooter", Sensors.kShootingSensor, True, "shootInitShooting", "shootRunShooter")
 
