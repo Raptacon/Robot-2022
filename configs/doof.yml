@@ -22,26 +22,26 @@ driveTrain:
     rightMotor:
       channel: 30
       type: "CANTalonFX"
-      inverted: False
+      inverted: True
       pid: Null
 
     rightFollower:
       channel: 31
       masterChannel: 30
       type: "CANTalonFXFollower"
-      inverted: False
+      inverted: True
 
     leftMotor:
       channel: 20
       type: "CANTalonFX"
-      inverted: False
+      inverted: True
       pid: Null
 
     leftFollower:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"
-      inverted: False    
+      inverted: True
   
 loaderMotors:
   subsystem: "loader"

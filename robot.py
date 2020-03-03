@@ -84,7 +84,7 @@ class MyRobot(MagicRobot):
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
-        self.driveTrain.setArcade(driveLeft, driveRight)
+        self.driveTrain.setTank(driveLeft, driveRight)
 
         if self.xboxMap.getMechDPad() == 0:
             self.lifter.setRaise()
