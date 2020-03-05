@@ -9,7 +9,6 @@ system:
       type: "navx"
       method: "spi"
 
-
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
@@ -22,7 +21,7 @@ driveTrain:
     rightMotor:
       channel: 30
       type: "CANTalonFX"
-      inverted: False
+      inverted: True
       pid: Null
       currentLimits:
         triggerThresholdCurrent: 60
@@ -33,16 +32,16 @@ driveTrain:
       channel: 31
       masterChannel: 30
       type: "CANTalonFXFollower"
-      inverted: False
       currentLimits:
         triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
+      inverted: True
 
     leftMotor:
       channel: 20
       type: "CANTalonFX"
-      inverted: False
+      inverted: True
       pid: Null
       currentLimits:
         triggerThresholdCurrent: 60
@@ -53,11 +52,11 @@ driveTrain:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"
-      inverted: False
       currentLimits:
         triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
+      inverted: True
   
 loaderMotors:
   subsystem: "loader"
@@ -93,6 +92,32 @@ loaderMotors:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
+
+loaderSensors:
+  subsystem: "breaksensors"
+  description: "All IR break sensors used for the loader live here for the loader/LED component"
+  loaderSensors:
+    groups: "digitalInput"
+    sensor1:
+      type: "RIODigitalIn"
+      channel: 1
+      description: "Loading sensor"
+    sensor2:
+      type: "RIODigitalIn"
+      channel: 2
+      description: "Second bottom sensor"
+    sensor3:
+      type: "RIODigitalIn"
+      channel: 3
+      description: "Middle sensor"
+    sensor4:
+      type: "RIODigitalIn"
+      channel: 4
+      description: "Second top sensor"
+    sensor5:
+      type: "RIODigitalIn"
+      channel: 5
+      description: "Shooting sensor"
 
 shooterMotors:
   subsystem: "shooter"

@@ -22,6 +22,7 @@ class DriveTrain():
         self.tankRightSpeed = 0
         self.arcadeSpeed = 0
         self.arcadeRotation = 0
+        self.creeperMode = False
         self.controlMode = ControlMode.kDisabled
         self.leftMotor = self.motors_driveTrain["leftMotor"]
         self.rightMotor = self.motors_driveTrain["rightMotor"]
@@ -48,14 +49,20 @@ class DriveTrain():
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation
 
-    def creeperMode(self):
+    def enableCreeperMode(self):
         """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
+        if self.creeperMode:
+            return
         self.prevMultiplier = self.driveMotorsMultiplier
         self.driveMotorsMultiplier = .25
+        self.creeperMode = True
 
     def disableCreeperMode(self):
         """when left bumper is released, it sets the multiplier back to it's original value"""
+        if not self.creeperMode:
+            return
         self.driveMotorsMultiplier = self.prevMultiplier
+        self.creeperMode = False
 
     def stop(self, coast=False):
         self.controlMode = ControlMode.kDisabled

@@ -2,6 +2,7 @@
 Contains helpers to create various sensor types
 """
 
+from wpilib import DigitalInput as di
 import logging
 import navx
 
@@ -24,5 +25,16 @@ def gyroFactory(descp):
 
     except Exception as e:
         logging.error("Failed to create gyro for %s. Error %s",descp, e)
-    
+    return None
+
+def breaksensorFactory(descp):
+    """
+    Creates break sensors from a break sensor descp
+    """
+    try:
+        if "RIODigitalIn" in descp["type"]:
+            return di(descp["channel"])
+
+    except Exception as e:
+        logging.error("Failed to create IR Break sensor for %s. Error %s", descp, e)
     return None
