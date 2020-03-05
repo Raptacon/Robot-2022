@@ -16,7 +16,9 @@ from components.shooterLogic import ShooterLogic
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 from components.breakSensors import BreakSensors, Sensors
-
+###EMH - Adding Autoaim
+from components.autoAim import AutoAim
+###EMH - End Adding Autoaim
 # Other imports:
 from robotMap import RobotMap, XboxMap
 from utils.componentUtils import testComponentCompatibility
@@ -38,9 +40,10 @@ class MyRobot(MagicRobot):
     breakSensors: BreakSensors
     elevator: Elevator
     scorpionLoader: ScorpionLoader
-
     sensitivityExponent = tunable(1.8)
-
+    ###EMH - Adding AutoAim
+    autoAim: AutoAim
+    ###EMH - End Adding AutoAim
 
     def createObjects(self):
         """
@@ -77,6 +80,9 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.creeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
+        ###EMH - Adding autoaim
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.autoAim.start)
+        ###EMH - End Adding autoaim
 
         # Register sensor events for doof
         # NOTE: Format: StateMachine used, action title, sensor used, sensor value needed, previous state needed (conditional), state to transition to
