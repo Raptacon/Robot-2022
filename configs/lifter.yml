@@ -6,7 +6,7 @@ lifter:
     winchMotor:
       channel: 40
       type: "SparkMax"
-      inverted: False
+      inverted: True
       motorType: "kBrushless"
       pid: Null
 
