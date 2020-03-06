@@ -11,7 +11,7 @@ from components.driveTrain import DriveTrain
 from components.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
 from components.breakSensors import Sensors
-from components.lifter import Lifter
+from components.winch import Winch
 from components.shooterMotors import ShooterMotorCreation
 from components.shooterLogic import ShooterLogic, AutonomousShooting
 from components.loaderLogic import LoaderLogic
@@ -36,7 +36,7 @@ class MyRobot(MagicRobot):
     autonomousShooting: AutonomousShooting
     shooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
-    lifter: Lifter
+    winch: Winch
     buttonManager: ButtonManager
     pneumatics: Pneumatics
     elevator: Elevator
@@ -61,7 +61,7 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, ShooterLogic)
         testComponentCompatibility(self, ShooterMotorCreation)
         testComponentCompatibility(self, DriveTrain)
-        testComponentCompatibility(self, Lifter)
+        testComponentCompatibility(self, Winch)
         testComponentCompatibility(self, ButtonManager)
         testComponentCompatibility(self, Pneumatics)
         testComponentCompatibility(self, Elevator)
@@ -94,9 +94,9 @@ class MyRobot(MagicRobot):
         self.driveTrain.setTank(driveLeft, driveRight)
 
         if self.xboxMap.getMechDPad() == 0:
-            self.lifter.setRaise()
+            self.winch.setRaise()
         else:
-            self.lifter.stop()
+            self.winch.stop()
 
         self.scorpionLoader.checkController()
 

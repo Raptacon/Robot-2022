@@ -1,6 +1,6 @@
-lifter:
-  subsystem: "lifter"
-  description: "All motors used in the robot lifter mechanism live here for the lifter component"
+winch:
+  subsystem: "winch"
+  description: "All motors used in the robot winch mechanism live here for the winch component"
   motors:
     groups: "motors" 
     winchMotor:

@@ -1,11 +1,11 @@
 
-class Lifter:
+class Winch:
     compatString = ["doof"]
-    motors_lifter: dict
+    motors_winch: dict
 
     def on_enable(self):
         self.upSpeed = 0
-        self.winchMotor = self.motors_lifter["winchMotor"]
+        self.winchMotor = self.motors_winch["winchMotor"]
 
         self.logger.info("Lifter Component Created")
     
