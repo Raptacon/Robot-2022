@@ -8,12 +8,12 @@ lifter:
       type: "SparkMax"
       inverted: True
       motorType: "kBrushless"
-        sensorPhase: True
-        currentLimits:
-          freeLimit: 30
-          stallLimit: 30
-          stallLimitRPM: 50
-          secondaryLimit: 35
+      sensorPhase: True
+      currentLimits:
+        freeLimit: 30
+        stallLimit: 30
+        stallLimitRPM: 50
+        secondaryLimit: 35
       pid: Null
 
 description: "Base file stuff"
