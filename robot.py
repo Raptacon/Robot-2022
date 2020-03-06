@@ -12,10 +12,10 @@ from components.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
 from components.lifter import Lifter
 from components.shooterMotors import ShooterMotorCreation
-from components.shooterLogic import ShooterLogic
+from components.shooterLogic import ShooterLogic, AutonomousShooting
+from components.loaderLogic import LoaderLogic
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
-from components.breakSensors import BreakSensors, Sensors
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -30,17 +30,17 @@ class MyRobot(MagicRobot):
     Base robot class of Magic Bot Type
     """
     shooter: ShooterLogic
+    loader: LoaderLogic
+    autonomousShooting: AutonomousShooting
     shooterMotors: ShooterMotorCreation
     driveTrain: DriveTrain
     lifter: Lifter
     buttonManager: ButtonManager
     pneumatics: Pneumatics
-    breakSensors: BreakSensors
     elevator: Elevator
     scorpionLoader: ScorpionLoader
 
     sensitivityExponent = tunable(1.8)
-
 
     def createObjects(self):
         """
@@ -68,24 +68,16 @@ class MyRobot(MagicRobot):
     def teleopInit(self):
         # Register button events for doof
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.setAutoLoading)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.shooter.setManualLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.loader.setAutoLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.loader.setManualLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.shootBalls)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.nextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.elevator.setRaise)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnRelease, self.elevator.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.elevator.setLower)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
-
-        # Register sensor events for doof
-        # NOTE: Format: StateMachine used, action title, sensor used, sensor value needed, previous state needed (conditional), state to transition to
-        # NOTE: Action title must include type of action (i.e. 'Loader', 'Shooter', or 'LED') and it MUST have a unique name
-        self.breakSensors.registerSensorEvent(self.shooter, "beginLoader", Sensors.kLoadingSensor, False, None, "autoLoadBall")
-        self.breakSensors.registerSensorEvent(self.shooter, "stopLoader", Sensors.kLoadingSensor, True,  None, "autoIdling")
-        self.breakSensors.registerSensorEvent(self.shooter, "initShooter", Sensors.kShootingSensor, False, "shootInitShooting", "shootReverseLoader")
-        self.breakSensors.registerSensorEvent(self.shooter, "fireShooterAfterInit", Sensors.kShootingSensor, True, "shootReverseLoader", "shootRunShooter")
-        self.breakSensors.registerSensorEvent(self.shooter, "fireShooter", Sensors.kShootingSensor, True, "shootInitShooting", "shootRunShooter")
 
     def teleopPeriodic(self):
         """
@@ -104,9 +96,6 @@ class MyRobot(MagicRobot):
             self.lifter.stop()
 
         self.scorpionLoader.checkController()
-
-        # self.breakSensors.loadingType()
-
 
     def testInit(self):
         """
