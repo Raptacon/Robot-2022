@@ -68,10 +68,10 @@ loaderMotors:
       type: "CANTalonSRX"
       inverted: False
       pid: Null
-      currentLimits:
-        absMax: 60
+      currentLimits: #Normal current is around 2.75-3.25
+        absMax: 10
         absMaxTimeMs: 50
-        maxNominal: 40
+        maxNominal: 6
 
     loaderMotor:
       channel: 51
