@@ -236,6 +236,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
         rev.CANSparkMax.__init__(self, self.motorDescription['channel'], self.motorType)
         self.setInverted(self.motorDescription['inverted'])
         self.motors = motors
+        self.coasting = False
 
     def setupPid(self):
         '''Sets up the PIDF values and a pidcontroller to use to control the motor using pid.'''
@@ -301,6 +302,9 @@ class SparkMaxFeedback(rev.CANSparkMax):
         """
         Stores the current control type, moves to Duty Cycle, sets to 0.
         """
+        if self.coasting:
+            return
+        self.coasting = True
         self.prevControlType = self.ControlType
         self.setControlType("Duty Cycle")
         self.PIDController.setReference(0, self.ControlType, self.pid['feedbackDevice'])
@@ -309,7 +313,9 @@ class SparkMaxFeedback(rev.CANSparkMax):
         """
         Restores previous control type. Whatever it was.
         """
-        self.ControlType = self.prevControlType
+        if self.coasting:
+            self.ControlType = self.prevControlType
+        self.coasting = False
 
     def set(self, speed):
         """
