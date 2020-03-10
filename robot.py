@@ -69,6 +69,7 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, ScorpionLoader)
 
     def autonomousInit(self):
+        """Run when autonomous is enabled."""
         self.shooter.autonomousEnabled()
         self.loader.stopLoading()
 
@@ -110,7 +111,7 @@ class MyRobot(MagicRobot):
 
     def testInit(self):
         """
-        Function called when testInit is called. Crashes on 2nd call right now
+        Function called when testInit is called.
         """
         print("testInit was Successful")
 

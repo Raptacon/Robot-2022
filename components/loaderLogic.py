@@ -17,10 +17,11 @@ class LoaderLogic(StateMachine):
     xboxMap: XboxMap
 
     # Tunable
-    loaderMotorSpeed = tunable(.4)
+    automaticLoaderSpeed = tunable(.4)
 
     # Other variables
     isAutomatic = True
+    loaderStoppingDelay = .16
 
     def on_enable(self):
         self.isAutomatic = True
@@ -36,6 +37,8 @@ class LoaderLogic(StateMachine):
         self.next_state('runLoaderManually')
 
     def stopLoading(self):
+        if self.shooterMotors.isLoaderRunning():
+            return
         self.next_state('shooting')
 
     def determineNextAction(self):
@@ -64,7 +67,7 @@ class LoaderLogic(StateMachine):
     @state
     def loadBall(self):
         """Loads ball if ball has entered."""
-        self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kForwards)
+        self.shooterMotors.runLoader(self.automaticLoaderSpeed, Direction.kForwards)
         self.next_state('waitForBallIntake')
 
     @state
@@ -73,7 +76,7 @@ class LoaderLogic(StateMachine):
         if self.sensors.loadingSensor(State.kNotTripped):
             self.next_state('stopBall')
 
-    @timed_state(duration = .17, next_state = 'checkForBall')
+    @timed_state(duration = loaderStoppingDelay, next_state = 'checkForBall')
     def stopBall(self):
         """Stops ball after a short delay."""
         pass

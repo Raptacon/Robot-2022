@@ -16,11 +16,12 @@ class ShooterLogic(StateMachine):
     sensors: Sensors
     xboxMap: XboxMap
     speedTolerance = tunable(50)
+
     # Tunables
-    loaderMotorSpeed = tunable(.4)
-    intakeMotorMinSpeed = tunable(.5)
-    intakeMotorMaxSpeed = tunable(.7)
-    shootingSpeed = tunable(5300)
+    shootingLoaderSpeed = tunable(.4)
+    autoShootingSpeed = tunable(4800)
+    teleShootingSpeed = tunable(5300)
+
     # Other variables
     isSetup = False
     isAutonomous = False
@@ -32,11 +33,11 @@ class ShooterLogic(StateMachine):
         self.isSetup = True
 
     def autonomousEnabled(self):
-        """Indicates the robot is in autonomous mode."""
+        """Indicates if the robot is in autonomous mode."""
         self.isAutonomous = True
 
     def autonomousDisabled(self):
-        """Indicates the robot is not in autonomous mode."""
+        """Indicates if the robot is not in autonomous mode."""
         self.isAutonomous = False
 
     def shootBalls(self):
@@ -53,10 +54,13 @@ class ShooterLogic(StateMachine):
     @feedback
     def isShooterUpToSpeed(self):
         """Determines if the shooter is up to speed, then rumbles controller and publishes to NetworkTables."""
-        autoLoadingSpeed = self.shootingSpeed - self.speedTolerance
+        if self.isAutonomous:
+            shootSpeed = self.autoShootingSpeed - self.speedTolerance
+        elif not self.isAutonomous:
+            shootSpeed = self.teleShootingSpeed - self.speedTolerance
         if not self.isSetup:
             return False
-        atSpeed = bool(self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= autoLoadingSpeed)
+        atSpeed = bool(self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= shootSpeed)
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
@@ -68,7 +72,7 @@ class ShooterLogic(StateMachine):
     def initShooting(self):
         """Smart shooter initialization (reversing if necessary)."""
         if self.sensors.shootingSensor(State.kTripped):
-            self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kBackwards)
+            self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kBackwards)
 
         else:
             self.shooterMotors.stopLoader()
@@ -88,17 +92,19 @@ class ShooterLogic(StateMachine):
         Runs shooter to a certain speed, then lets drivers control loading if in teleop.
         If in autonomous, run shooter automatically.
         """
-        self.shooterMotors.runShooter(self.shootingSpeed)
         if not self.isAutonomous:
+            self.shooterMotors.runShooter(self.teleShootingSpeed)
             self.feeder.run(Type.kLoader)
 
-        elif self.isShooterUpToSpeed() and self.isAutonomous:
-            self.next_state('autonomousShoot')
+        elif self.isAutonomous:
+            self.shooterMotors.runShooter(self.autoShootingSpeed)
+            if self.isShooterUpToSpeed():
+                self.next_state('autonomousShoot')
 
     @timed_state(duration = shooterStoppingDelay, next_state = 'finishShooting')
     def autonomousShoot(self):
         """Shoot balls when shooter is up to speed. Strictly for autonomous use."""
-        self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kForwards)
+        self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
 
     @state
     def finishShooting(self):
