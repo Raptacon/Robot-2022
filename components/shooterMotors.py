@@ -1,11 +1,11 @@
 import logging
-from enum import IntEnum
+from enum import Enum, auto
 
-class Direction(IntEnum):
+class Direction(Enum):
     """Enum for intake direction."""
-    kForwards = 0
-    kBackwards = 1
-    kDisabled = 2
+    kForwards = auto()
+    kBackwards = auto()
+    kDisabled = auto()
 
 class ShooterMotorCreation:
     compatString = ["doof"]

@@ -11,8 +11,6 @@ class RobotMap():
         configFile, configPath = configMapper.findConfig()
         self.configMapper = configMapper.ConfigMapper(configFile, configPath)
 
-
-
 class XboxMap():
     """
     Holds the mappings to TWO Xbox controllers, one for driving, one for mechanisms
