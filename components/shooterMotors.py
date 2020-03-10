@@ -8,6 +8,9 @@ class Direction(Enum):
     kDisabled = auto()
 
 class ShooterMotorCreation:
+    """
+    Allows you to run motors in the shooter
+    """
     compatString = ["doof"]
 
     logger: logging
@@ -15,6 +18,9 @@ class ShooterMotorCreation:
     motors_loader: dict
 
     def on_enable(self):
+        """
+        Sets up shooter motors
+        """
         self.intakeSpeed = 0
         self.loaderSpeed = 0
         self.shooterSpeed = 0
@@ -29,6 +35,9 @@ class ShooterMotorCreation:
         self.logger.info("Shooter Motor Component Created")
 
     def runIntake(self, iSpeed, direction):
+        """
+        Sets the intake to speed iSpeed
+        """
         if direction == Direction.kForwards:  # Forwards
             self.intakeSpeed = iSpeed
         elif direction == Direction.kBackwards: # Backwards
@@ -37,6 +46,9 @@ class ShooterMotorCreation:
         self.intake = True
 
     def runLoader(self, lSpeed, direction):
+        """
+        Sets the intake to speed lSpeed
+        """
         if direction == Direction.kForwards: # Forwards
             self.loaderSpeed = lSpeed
         elif direction == Direction.kBackwards: # Backwards
@@ -45,16 +57,28 @@ class ShooterMotorCreation:
         self.loader = True
 
     def runShooter(self, sSpeed):
+        """
+        Sets the shooter to speed sSpeed
+        """
         self.shooterSpeed = sSpeed
         self.shooter = True
 
     def stopIntake(self):
+        """
+        Turns the intake off
+        """
         self.intake = False
 
     def stopLoader(self):
+        """
+        Turns the loader off
+        """
         self.loader = False
 
     def stopShooter(self):
+        """
+        Turns the shooter off
+        """
         self.shooter = False
 
     def isIntakeRunning(self):
@@ -67,6 +91,9 @@ class ShooterMotorCreation:
         return self.shooter
 
     def execute(self):
+        """
+        Sets all the motors to previously defined values. If not set by methods, set to 0.
+        """
         if self.intake:
             self.intakeMotor.set(self.intakeSpeed)
         elif self.intake == False:

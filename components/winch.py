@@ -4,6 +4,9 @@ class Winch:
     motors_winch: dict
 
     def on_enable(self):
+        """
+        Sets up the winch
+        """
         self.upSpeed = 0
         self.winchMotor = self.motors_winch["winchMotor"]
 

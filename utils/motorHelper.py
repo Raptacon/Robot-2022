@@ -18,12 +18,14 @@ def createMotor(motorDescp, motors = {}):
         motors[str(motorDescp['channel'])] = motor
 
     elif motorDescp['type'] == 'CANTalonSRXFollower':
+        '''This is where we set up Talon SRXs over CAN'''
         motor =ctre.WPI_TalonSRX(motorDescp['channel'])
         motor.set(mode = ctre.ControlMode.Follower, value = motorDescp['masterChannel'])
         setTalonSRXCurrentLimits(motor, motorDescp)
         motors[str(motorDescp['channel'])] = motor
 
     elif motorDescp['type'] == 'CANTalonFX':
+        '''This is where CANTalon FXs are set up'''
         if('pid' in motorDescp) and motorDescp['pid'] != None:
             motor = WPI_TalonFXFeedback(motorDescp)
             motor.setupPid()
@@ -32,6 +34,7 @@ def createMotor(motorDescp, motors = {}):
         setTalonFXCurrentLimits(motor, motorDescp)
     
     elif motorDescp['type'] == 'CANTalonFXFollower':
+        '''This is where CANTalon FX Followers are set up'''
         motor =ctre.WPI_TalonFX(motorDescp['channel'])
         motor.set(mode = ctre.TalonFXControlMode.Follower, value = motorDescp['masterChannel'])
         motors[str(motorDescp['channel'])] = motor
@@ -52,7 +55,7 @@ def createMotor(motorDescp, motors = {}):
 
     elif motorDescp['type'] == 'SparkMaxFollower':
         '''This is where SparkMax followers are set up
-        For masterChannel, use a motor object. MASTER MUST BE A "CANSparkMax"  '''
+        For masterChannel, use a motor object. MASTER MUST BE A "CANSparkMax" because blame rev'''
         motorDescp['motorType'] = getattr(rev.MotorType, motorDescp['motorType'])
         motor = SparkMaxFeedback(motorDescp, motors)
         motor.follow(motors.get(str(motorDescp['masterChannel'])), motorDescp['inverted'])
@@ -126,18 +129,21 @@ class WPI_TalonSRXFeedback(ctre.WPI_TalonSRX):#ctre.wpi_talonsrx.WPI_TalonSRX
 
     def setupPid(self,motorDescription = None):
         '''Sets up PID based on dictionary motorDescription['pid'].
-        This dictionary must contain controlType, sensorPhase, kPreScale, and P, I, D and F.'''
+        This dictionary must contain controlType, feedbackDevice, sensorPhase, kPreScale, and P, I, D and F.'''
         if not motorDescription:
             motorDescription = self.motorDescription
         if not 'pid' in self.motorDescription:
             print("Motor channel %d has no PID"%(self.motorDescription['channel']))
             return
         self.pid = self.motorDescription['pid']
+        
+        #Takes a str and converts it to a ctre enum
         self.controlType = self.pid['controlType']
         if self.controlType == "Position":
             self.controlType = ctre.ControlMode.Position
         elif self.controlType == "Velocity":
             self.controlType = ctre.ControlMode.Velocity
+        
         
         self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
@@ -176,18 +182,22 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
 
     def setupPid(self,motorDescription = None):
         '''Sets up pid based on the dictionary motorDescription['pid']
-        (Must contain channel, P, I, D, F, control type, sensorPhase (boolean), kPreScale)'''
+        (Must contain channel, P, I, D, F, control type, sensorPhase (boolean), kPreScale, feedbackDevice)'''
         if not motorDescription:
             motorDescription = self.motorDescription
         if not 'pid' in self.motorDescription:
             print("Motor channel %d has no PID"%(self.motorDescription['channel']))
             return
         self.pid = self.motorDescription['pid']
+        
+        #Takes a str and converts it to a ctre enum for controltype.
         self.controlType = self.pid['controlType']
         if self.controlType == "Position":
-            self.controlType = ctre.ControlMode.Position
+            self.controlType = ctre.TalonFXControlMode.Position
         elif self.controlType == "Velocity":
-            self.controlType = ctre.ControlMode.Velocity
+            self.controlType = ctre.TalonFXControlMode.Velocity
+        else:
+            print("Unrecognized control type: ",self.ControlType)
         
         self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
@@ -216,7 +226,8 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
 
 class SparkMaxFeedback(rev.CANSparkMax):
     """
-    Class used to setup SparkMax motor if there are PID settings for it
+    Class used to setup SparkMax motor if there are PID settings for it - MUST CALL setupPID
+    if you don't want it to crash. Great design decision on my part.
     """
     def __init__(self, motorDescription, motors):
         self.motorDescription = motorDescription
@@ -234,36 +245,78 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.pid = self.motorDescription['pid']
         pid = self.pid
         self.ControlType = pid['controlType']
+        
+        #Turns strings from pid dictionary in config into enums from rev library for control type
         if self.ControlType == "Position":
             self.ControlType = rev.ControlType.kPosition
         elif self.ControlType == "Velocity":
             self.ControlType = rev.ControlType.kVelocity
         else:
             print("Unrecognized control type: ",self.ControlType)
+
+        #If coastOnZero is true, when set() is called with a speed of 0, we will use DutyCycle
+        #And let the motor spin down by itself. (demonstrated in coast and stopcoast methods and within set())
+        if 'coastOnZero' in self.pid and self.pid['coastOnZero'] == True:
+            self.coastOnZero = True
+        else:
+            self.coastOnZero = False
+
+        self.prevControlType = self.ControlType
+
         self.encoder = self.getEncoder()
-        self.kPreScale = pid['kPreScale']
+        self.kPreScale = pid['kPreScale'] #Multiplier for the speed - lets you stay withing -1 to 1 for input but different outputs to pidController
         self.PIDController = self.getPIDController() #creates pid controller
 
-        self.PIDController.setP(pid['kP'], pid['feedbackDevice'])
+        #Sets PID(F) values
+        self.PIDController.setP(pid['kP'], pid['feedbackDevice']) #pid['feedbackDevice'] is a slot for PID(F) configs. They range from 0-3.
         self.PIDController.setI(pid['kI'], pid['feedbackDevice'])
         self.PIDController.setD(pid['kD'], pid['feedbackDevice'])
         self.PIDController.setFF(pid['kF'], pid['feedbackDevice'])
+        
+        #Generally just a way to overwrite previous settings on any motor controller - We don't brake often.
         if 'IdleBrake' in self.motorDescription.keys() and self.motorDescription['IdleBrake'] == True:
             self.setIdleMode(rev.IdleMode.kBrake)
         else:
             self.setIdleMode(rev.IdleMode.kCoast)
+        
+        #Configures output range - that's what Spark Maxes accept
         self.PIDController.setOutputRange(-1, 1, pid['feedbackDevice'])
         self.PIDController.setReference(0 , self.ControlType, pid['feedbackDevice'])
 
-    def setControlType(self, type):
-        '''Use the rev.ControlType.k(control type) as arg'''
-        if self.ControlType == "Position":
+    def setControlType(self, type: str):
+        """
+        Takes str type as argument, currently accepts Position, Velocity and Duty Cycle.
+        More can be added as necessary, following previous syntax in this method.
+        """
+        if type == "Position":
             self.ControlType = rev.ControlType.kPosition
-        elif self.ControlType == "Velocity":
-            self.ControlType == rev.ControlType.kVelocity
+        elif type == "Velocity":
+            self.ControlType = rev.ControlType.kVelocity
+        elif type == "Duty Cycle":
+            self.ControlType = rev.ControlType.kDutyCycle
+        else:
+            print("Unrecognized control type: ",self.ControlType)
+
+    def coast(self):
+        """
+        Stores the current control type, moves to Duty Cycle, sets to 0.
+        """
+        self.prevControlType = self.ControlType
+        self.setControlType("Duty Cycle")
+        self.PIDController.setReference(0, self.ControlType, self.pid['feedbackDevice'])
+
+    def stopCoast(self):
+        """
+        Restores previous control type. Whatever it was.
+        """
+        self.ControlType = self.prevControlType
 
     def set(self, speed):
         """
         Overrides the default set() to allow for control using the pid loop
         """
+        if self.coastOnZero and speed == 0:
+            self.coast()
+        else:
+            self.stopCoast()
         return self.PIDController.setReference(speed*self.pid['kPreScale'], self.ControlType, self.pid['feedbackDevice'])

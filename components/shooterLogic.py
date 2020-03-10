@@ -15,11 +15,12 @@ class ShooterLogic(StateMachine):
     logger: logging
     sensors: Sensors
     xboxMap: XboxMap
-
+    speedTolerance = tunable(50)
     # Tunables
-    loaderMotorSpeed = tunable(.3)
-    targetShootingSpeed = tunable(5600)
-
+    loaderMotorSpeed = tunable(.4)
+    intakeMotorMinSpeed = tunable(.5)
+    intakeMotorMaxSpeed = tunable(.7)
+    shootingSpeed = tunable(5300)
     # Other variables
     isSetup = False
     isAutonomous = False
@@ -52,9 +53,10 @@ class ShooterLogic(StateMachine):
     @feedback
     def isShooterUpToSpeed(self):
         """Determines if the shooter is up to speed, then rumbles controller and publishes to NetworkTables."""
+        autoLoadingSpeed = self.shootingSpeed - self.speedTolerance
         if not self.isSetup:
             return False
-        atSpeed = bool(self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= self.targetShootingSpeed)
+        atSpeed = bool(self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= autoLoadingSpeed)
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
