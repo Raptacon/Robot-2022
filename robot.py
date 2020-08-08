@@ -19,7 +19,6 @@ from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 from components.feederMap import FeederMap
 
-from components.breakSensors import BreakSensors, Sensors
 ###EMH - Adding Autoaim
 from components.autoAim import AutoAim
 ###EMH - End Adding Autoaim

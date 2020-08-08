@@ -1,4 +1,7 @@
-import networktable
+from networktables import NetworkTables
+from magicbot import AutonomousStateMachine, tunable
+from components.driveTrain import DriveTrain
+from components.shooterLogic import ShooterLogic
 
 class AutoAim(AutonomousStateMachine):
     compatString = ["doof"]
@@ -41,7 +44,3 @@ class AutoAim(AutonomousStateMachine):
         self.driveTrain.setTank(0, 0)  
         #shoot
         self.shooter.shootBalls()
-  
-    @state(must_finish = True)
-    def stop(self):
-    
