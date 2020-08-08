@@ -18,16 +18,17 @@ class AutoAim(StateMachine):
     @state(first = True)
     def start(self):
         table = networktable.getTable("limelight")
-        if table.getNumber("tv") == 1: #If limelight has any valid targets
-            tx = table.getNumber("tx")
-            if tx > minAimOffset:
-                self.next_state_now("adjust_self_left")
-            elif tx < -1*minAimOffset:
-                self.next_state_now("adjust_self_right")
-            elif tx < minAimOffset and tx > -1*minAimOffset:
-                self.next_state_now("stop_shoot")
-            else:
-                self.next_state_now("stop")
+        if table.getNumber("tv", -1) == 1: #If limelight has any valid targets
+            tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
+            if tx != -50:
+                if tx > minAimOffset:
+                    self.next_state_now("adjust_self_left")
+                elif tx < -1*minAimOffset:
+                    self.next_state_now("adjust_self_right")
+                elif tx < minAimOffset and tx > -1*minAimOffset:
+                    self.next_state_now("stop_shoot")
+                else:
+                    self.next_state_now("stop")
 
 
     @timed_state(duration = time, next_state = "start")
