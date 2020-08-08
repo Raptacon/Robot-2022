@@ -4,8 +4,7 @@ from magicbot.state_machine import state, timed_state
 from components.driveTrain import DriveTrain
 from components.shooterLogic import ShooterLogic
 
-#Initializing network tables. We should do this in __init__ in the future to avoid many instances of initialization
-networktable.initialize(server='roborio-3200-frc.local')
+
 
 class AutoAim(AutonomousStateMachine):
     compatString = ["doof"]
@@ -15,12 +14,11 @@ class AutoAim(AutonomousStateMachine):
     drive_speed_left = tunable(.05)
     drive_speed_right = tunable(-.05)
     minAimOffset = .5;
-    table: networktable
 
     @state(first = True)
     def start(self):
         """should add check if limelight even sees it to auto send it to stop in case hit or pressed accidentally"""
-        table.getTable("limelight")
+        networktable.getTable("limelight")
         tx = table("tx")
         if tx > minAimOffset:
             self.next_state_now("adjust_self_left")
