@@ -35,7 +35,7 @@ class XboxMap():
         self.driveLeftTrig = self.drive.getRawAxis(XboxController.Axis.kLeftTrigger)
         self.driveDPad = self.drive.getPOV()
         ###EMH - Adding autoaim
-        self.driveA = self.drive.getAButton(XboxController.getAButton)
+        self.driveA = self.drive.getAButton()
         ###EMH - End Adding autoaim
 
         #Mechanism controller inputs

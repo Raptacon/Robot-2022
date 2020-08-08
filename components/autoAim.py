@@ -1,7 +1,11 @@
-from networktables import NetworkTables
+from networktables import NetworkTables as networktable
 from magicbot import AutonomousStateMachine, tunable
+from magicbot.state_machine import state, timed_state
 from components.driveTrain import DriveTrain
 from components.shooterLogic import ShooterLogic
+
+#Initializing network tables. We should do this in __init__ in the future to avoid many instances of initialization
+networktable.initialize(server='roborio-3200-frc.local')
 
 class AutoAim(AutonomousStateMachine):
     compatString = ["doof"]
@@ -26,12 +30,12 @@ class AutoAim(AutonomousStateMachine):
             self.next_state_now("stop_shoot")
         else:
             self.next_state_now("stop")
-            
-         
+
+
     @timed_state(duration = time, next_state = "start")
     def adjust_self_left(self):
         """Drives the bot backwards for a time"""
-        self.driveTrain.setTank(self.drive_speed_left, self.drive_speed_right)
+        self.driveTrain.setTank(self.drive_speed_left, self.drive_speed_right) #We could do this based off of PID and error at some point, instead of timing.
     
     @timed_state(duration = time, next_state = "start")
     def adjust_self_right(self):
