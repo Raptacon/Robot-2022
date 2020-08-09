@@ -1,9 +1,10 @@
-//This dictionary provides a conversion between RPM and distance (in feet). Meant to provide a data set for a quadratic regression.
+#This dictionary provides a conversion between RPM and distance (in feet). Meant to provide a data set for a quadratic regression.
 RPMtoDIST:
     4800: 10
 
-//This will provide the values for the quadratic (a,b,c) in y = ax^2 + bx + c.
-QuadVals:
-    a:
-    b:
-    c:
+
+#This will provide the values for the quadratic (a,b,c) in y = ax^2 + bx + c.
+QuadVals: #TEST VALUES PLEASE UPDATE (We'll run a regression)
+    a: 1
+    b: 1
+    c: 1

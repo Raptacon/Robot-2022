@@ -4,17 +4,50 @@ from magicbot.state_machine import state, timed_state
 from components.driveTrain import DriveTrain
 from components.shooterLogic import ShooterLogic
 
-from utils.configMapper import findConfig
+import logging as log
+import os
+from pathlib import Path
 
 import yaml
 
 
 
-def calculateRPM(dist, filename):
+def findRPM(configName):
+    """
+    Will determine the correct yml file for the robot.
+    Please run 'echo (robotCfg.yml) > robotConfig' on the robot.
+    This will tell the robot to use robotCfg file remove the () and use file name file.
+    Files should be configs dir
+    """
+    configPath = os.path.dirname(__file__) + os.path.sep + ".." +os.path.sep + "configs" + os.path.sep
+    home = str(Path.home()) + os.path.sep
+    defaultConfig = configName
+    robotConfigFile = home + configName
+
+    if not os.path.isfile(robotConfigFile):
+        log.info("Could not find %s. Using %s", robotConfigFile, configPath+configName)
+        robotConfigFile = configPath + configName
+    try:
+
+        if os.path.isfile(robotConfigFile):
+            log.info("Using %s config file", robotConfigFile)
+            return configPath
+        log.error("No config? Can't find %s", robotConfigFile)
+    except Exception as e:
+        log.error("Could not find %s", robotConfigFile)
+        log.error(e)
+        log.error("Please run `echo <robotcfg.yml> > ~/robotConcig` on the robot")
+        log.error("Using default %s", defaultConfig)
+
+    return configPath
+
+
+def calculateRPM(dist, dir, filename):
     """Calculates a RPM based off of a quadratic derived from values in rpmToDistance.yml
     as well as parameter dist. RPMdir is the location of rpmToDistance.yml. filename is the filename, most often rpmToDistance.yml"""
-    
-    values = yaml.load(open(self.configDir + os.path.sep + filename))
+
+
+    values = yaml.load(open(dir+filename))
     if "QuadVals" in values:
         quadVals = values["QuadVals"]
         if "a" in quadVals and "b" in quadVals and "c" in quadVals:
@@ -41,11 +74,14 @@ class AutoAim(StateMachine):
     drive_speed_left = tunable(.05)
     drive_speed_right = tunable(-.05)
     minAimOffset = .5;
+    dir = findRPM(filename)
 
     @state(first = True)
     def start(self):
         table = networktable.getTable("limelight")
-        rpm = calculateRPM(1,)
+
+        rpm = calculateRPM(1, dir, "rpmToDistance.yml") #TEST VALUE
+
         if table.getNumber("tv", -1) == 1: #If limelight has any valid targets
             tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
             if tx != -50:
