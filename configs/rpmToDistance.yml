@@ -5,6 +5,7 @@ RPMtoDIST:
 
 #This will provide the values for the quadratic (a,b,c) in y = ax^2 + bx + c.
 QuadVals: #TEST VALUES PLEASE UPDATE (We'll run a regression)
+#Regarding the regression: it would be easier to run a regression outside of python and write the vals here instead of running it at start.
     a: 1
     b: 1
     c: 1
