@@ -51,6 +51,9 @@ class ShooterLogic(StateMachine):
         """Finishes shooting process and reverts back to appropriate mode."""
         self.next_state('finishShooting')
 
+    def setRPM(self, rpm):
+        self.teleShootingSpeed = rpm
+
     @feedback
     def isShooterUpToSpeed(self):
         """Determines if the shooter is up to speed, then rumbles controller and publishes to NetworkTables."""
@@ -76,15 +79,8 @@ class ShooterLogic(StateMachine):
 
         else:
             self.shooterMotors.stopLoader()
-            self.next_state('alignToTarget')
+            self.next_state('runShooter')
 
-    @state
-    def alignToTarget(self):
-        """Aligns turret and/or drive train to the goal."""
-        self.next_state('runShooter')
-        #NOTE: This is a temporary placeholder until we can get limelight alignment successfully implemented.
-        #      Useful logic would include: determining if the limelight can see the target before attempting
-        #      alignment, especially for autonomous.
 
     @state
     def runShooter(self):

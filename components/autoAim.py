@@ -74,13 +74,15 @@ class AutoAim(StateMachine):
     drive_speed_left = tunable(.05)
     drive_speed_right = tunable(-.05)
     minAimOffset = .5;
-    dir = findRPM(filename)
+    RPMfilename = "rpmToDistance.yml"
+    RPMdir = findRPM(RPMfilename)
 
     @state(first = True)
     def start(self):
+        #TODO: Calculate distance from target using limelight values.
         table = networktable.getTable("limelight")
 
-        rpm = calculateRPM(1, dir, "rpmToDistance.yml") #TEST VALUE
+        rpm = calculateRPM(1, self.RPMdir, self.RPMfilename) #TEST VALUE
 
         if table.getNumber("tv", -1) == 1: #If limelight has any valid targets
             tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
@@ -108,6 +110,8 @@ class AutoAim(StateMachine):
     @state(must_finish = True)
     def stop_shoot(self):
         #stop
-        self.driveTrain.setTank(0, 0)  
+        self.driveTrain.setTank(0, 0)
+        #set rpm
+        self.shooter.setRPM(rpm)  
         #shoot
         self.shooter.shootBalls()
