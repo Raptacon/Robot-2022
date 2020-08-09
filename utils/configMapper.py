@@ -197,8 +197,7 @@ def findConfig(configName):
     configPath = os.path.dirname(__file__) + os.path.sep + ".." +os.path.sep + "configs" + os.path.sep
     home = str(Path.home()) + os.path.sep
     defaultConfig = configName
-    robotConfigFile = home + "robotConfig"
-    
+    robotConfigFile = home + configName
 
     if not os.path.isfile(robotConfigFile):
         log.error("Could not find %s. Using default", robotConfigFile)

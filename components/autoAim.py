@@ -4,13 +4,16 @@ from magicbot.state_machine import state, timed_state
 from components.driveTrain import DriveTrain
 from components.shooterLogic import ShooterLogic
 
+from utils.configMapper import findConfig
+
 import yaml
 
 
 
-def calculateRPM(dist, RPMdir, filename):
+def calculateRPM(dist, filename):
     """Calculates a RPM based off of a quadratic derived from values in rpmToDistance.yml
     as well as parameter dist. RPMdir is the location of rpmToDistance.yml. filename is the filename, most often rpmToDistance.yml"""
+    
     values = yaml.load(open(self.configDir + os.path.sep + filename))
     if "QuadVals" in values:
         quadVals = values["QuadVals"]
