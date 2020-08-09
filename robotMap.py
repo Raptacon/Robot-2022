@@ -8,7 +8,8 @@ class RobotMap():
     """
     def __init__(self):
         """intilize the robot map"""
-        configFile, configPath = configMapper.findConfig()
+        defaultConfig = "doof.yml"
+        configFile, configPath = configMapper.findConfig(defaultConfig)
         self.configMapper = configMapper.ConfigMapper(configFile, configPath)
 
 class XboxMap():

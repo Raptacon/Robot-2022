@@ -187,7 +187,7 @@ class ConfigMapper(object):
 
 
 
-def findConfig():
+def findConfig(configName):
     """
     Will determine the correct yml file for the robot.
     Please run 'echo (robotCfg.yml) > robotConfig' on the robot.
@@ -196,7 +196,7 @@ def findConfig():
     """
     configPath = os.path.dirname(__file__) + os.path.sep + ".." +os.path.sep + "configs" + os.path.sep
     home = str(Path.home()) + os.path.sep
-    defaultConfig = "doof.yml"
+    defaultConfig = configName
     robotConfigFile = home + "robotConfig"
     
 

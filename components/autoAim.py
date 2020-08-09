@@ -4,6 +4,30 @@ from magicbot.state_machine import state, timed_state
 from components.driveTrain import DriveTrain
 from components.shooterLogic import ShooterLogic
 
+import yaml
+
+
+
+def calculateRPM(dist, RPMdir, filename):
+    """Calculates a RPM based off of a quadratic derived from values in rpmToDistance.yml
+    as well as parameter dist. RPMdir is the location of rpmToDistance.yml. filename is the filename, most often rpmToDistance.yml"""
+    values = yaml.load(open(self.configDir + os.path.sep + filename))
+    if "QuadVals" in values:
+        quadVals = values["QuadVals"]
+        if "a" in quadVals and "b" in quadVals and "c" in quadVals:
+            a = quadVals["a"]
+            b = quadVals["b"]
+            c = quadVals["c"]
+        else:
+            print("Given file did not have correct values in QuadVals (needs a, b and c)")
+            return
+    else:
+        print("Given file did not have QuadVals at base")
+        return
+
+    rpm = (a*(dist**2))+b*dist+c
+    return rpm
+
 
 
 class AutoAim(StateMachine):
@@ -18,6 +42,7 @@ class AutoAim(StateMachine):
     @state(first = True)
     def start(self):
         table = networktable.getTable("limelight")
+        rpm = calculateRPM(1,)
         if table.getNumber("tv", -1) == 1: #If limelight has any valid targets
             tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
             if tx != -50:
