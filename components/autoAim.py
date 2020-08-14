@@ -90,11 +90,11 @@ class AutoAim(StateMachine):
             tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
             self.ty = table.getNumber("ty", -50) #"ty" is the vertical offset. I figure this is more reliable than using size as a guess for distance.
             if tx != -50:
-                if tx > minAimOffset:
+                if tx > self.minAimOffset:
                     self.next_state_now("adjust_self_left")
-                elif tx < -1*minAimOffset:
+                elif tx < -1 * self.minAimOffset:
                     self.next_state_now("adjust_self_right")
-                elif tx < minAimOffset and tx > -1*minAimOffset:
+                elif tx < self.minAimOffset and tx > -1 * self.minAimOffset:
                     self.next_state_now("stop_shoot")
                 else:
                     self.next_state("calc_RPM")
@@ -118,7 +118,7 @@ class AutoAim(StateMachine):
         #stop
         self.driveTrain.setTank(0, 0)
         #set rpm
-        self.shooter.setRPM(self.rpm)  
+        self.shooter.setRPM(self.rpm)
         #shoot
         self.shooter.shootBalls()
 
