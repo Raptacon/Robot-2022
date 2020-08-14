@@ -3,6 +3,7 @@ from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 from components.driveTrain import DriveTrain
 from components.shooterLogic import ShooterLogic
+import math
 
 import logging as log
 import os
@@ -71,6 +72,8 @@ class AutoAim(StateMachine):
     time = 0.1
     driveTrain: DriveTrain
     shooter: ShooterLogic
+    targetHeight = 6.97916667 #height of the middle of the limelight target in feet. So this is the middle of the lower half of the hexagon
+    limeHeight = 3.5 #height of the limelight on the robot in feet. Used to calculate distance from the target.
     drive_speed_left = tunable(.05)
     drive_speed_right = tunable(-.05)
     minAimOffset = .5;
@@ -82,10 +85,13 @@ class AutoAim(StateMachine):
         #TODO: Calculate distance from target using limelight values.
         table = networktable.getTable("limelight")
 
-        rpm = calculateRPM(1, self.RPMdir, self.RPMfilename) #TEST VALUE
+
+        #TEST
+        self.next_state("calc_RPM")
 
         if table.getNumber("tv", -1) == 1: #If limelight has any valid targets
             tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
+            self.ty = table.getNumber("ty", -50) #"ty" is the vertical offset. I figure this is more reliable than using size as a guess for distance.
             if tx != -50:
                 if tx > minAimOffset:
                     self.next_state_now("adjust_self_left")
@@ -94,7 +100,10 @@ class AutoAim(StateMachine):
                 elif tx < minAimOffset and tx > -1*minAimOffset:
                     self.next_state_now("stop_shoot")
                 else:
+                    self.next_state("calc_RPM")
                     self.next_state_now("stop")
+        else:
+            log.error("Limelight: No Valid Targets")
 
 
     @timed_state(duration = time, next_state = "start")
@@ -112,6 +121,15 @@ class AutoAim(StateMachine):
         #stop
         self.driveTrain.setTank(0, 0)
         #set rpm
-        self.shooter.setRPM(rpm)  
+        self.shooter.setRPM(self.rpm)  
         #shoot
         self.shooter.shootBalls()
+
+    @state(must_finish = True)
+    def calc_RPM(self):
+        #TEST VALUE, PLEASE REMOVE
+        self.ty = 1
+        
+        dist_x = (self.targetHeight - self.limeHeight) / math.degrees(math.tan(self.ty))
+        self.rpm = calculateRPM(dist_x, self.RPMdir, self.RPMfilename)
+        print("        RPM CALCULATED: ", self.rpm)
