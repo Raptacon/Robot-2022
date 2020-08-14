@@ -86,9 +86,6 @@ class AutoAim(StateMachine):
         table = networktable.getTable("limelight")
 
 
-        #TEST
-        self.next_state("calc_RPM")
-
         if table.getNumber("tv", -1) == 1: #If limelight has any valid targets
             tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
             self.ty = table.getNumber("ty", -50) #"ty" is the vertical offset. I figure this is more reliable than using size as a guess for distance.
@@ -127,8 +124,6 @@ class AutoAim(StateMachine):
 
     @state(must_finish = True)
     def calc_RPM(self):
-        #TEST VALUE, PLEASE REMOVE
-        self.ty = 1
         
         dist_x = (self.targetHeight - self.limeHeight) / math.degrees(math.tan(self.ty))
         self.rpm = calculateRPM(dist_x, self.RPMdir, self.RPMfilename)

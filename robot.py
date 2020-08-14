@@ -105,8 +105,6 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
 
-        #TEST
-        self.autoAim.engage()
 
 
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
