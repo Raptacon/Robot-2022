@@ -56,10 +56,10 @@ def calculateRPM(dist, dir, filename):
             b = quadVals["b"]
             c = quadVals["c"]
         else:
-            print("Given file did not have correct values in QuadVals (needs a, b and c)")
+            log.error("Given file did not have correct values in QuadVals (needs a, b and c)")
             return
     else:
-        print("Given file did not have QuadVals at base")
+        log.error("Given file did not have QuadVals at base")
         return
 
     rpm = (a*(dist**2))+b*dist+c
