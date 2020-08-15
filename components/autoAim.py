@@ -49,17 +49,11 @@ def calculateRPM(dist, dir, filename):
 
 
     values = yaml.load(open(dir+filename))
-    if "QuadVals" in values:
-        quadVals = values["QuadVals"]
-        if "a" in quadVals and "b" in quadVals and "c" in quadVals:
-            a = quadVals["a"]
-            b = quadVals["b"]
-            c = quadVals["c"]
-        else:
-            log.error("Given file did not have correct values in QuadVals (needs a, b and c)")
-            return
+    if "DISTtoRPM" in values:
+        DtoRPM = values["DISTtoRPM"]
+        distances = DtoRPM.keys
     else:
-        log.error("Given file did not have QuadVals at base")
+        log.error("Given file did not have values at base")
         return
 
     rpm = (a*(dist**2))+b*dist+c
@@ -76,7 +70,9 @@ class AutoAim(StateMachine):
     limeHeight = 3.5 #height of the limelight on the robot in feet. Used to calculate distance from the target.
     drive_speed_left = tunable(.05)
     drive_speed_right = tunable(-.05)
-    minAimOffset = .5;
+    minAimOffset = .5
+    minDist_x = 6.5
+    limeLightAngleOffset = 5
     RPMfilename = "rpmToDistance.yml"
     RPMdir = findRPM(RPMfilename)
 
@@ -125,6 +121,10 @@ class AutoAim(StateMachine):
     @state(must_finish = True)
     def calc_RPM(self):
         
-        dist_x = (self.targetHeight - self.limeHeight) / math.degrees(math.tan(self.ty))
+        
+        dist_x = (self.targetHeight - self.limeHeight) / math.degrees(math.tan(self.ty+self.limeLightAngleOffset))
+        print("Guess at dist is: ",dist_x)
+        if dist_x < self.minDist_x:
+            log.error("Dist is too low")
         self.rpm = calculateRPM(dist_x, self.RPMdir, self.RPMfilename)
         print("        RPM CALCULATED: ", self.rpm)

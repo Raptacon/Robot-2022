@@ -93,9 +93,6 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
-        ###EMH - Adding autoaim
-        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.autoAim.start)
-        ###EMH - End Adding autoaim
 
         self.shooter.autonomousDisabled()
 
@@ -116,6 +113,8 @@ class MyRobot(MagicRobot):
             self.winch.setRaise()
         else:
             self.winch.stop()
+        if self.xboxMap.getDriveA() == True:
+            self.autoAim.engage()
 
         self.scorpionLoader.checkController()
 

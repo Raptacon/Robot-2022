@@ -14,3 +14,4 @@ robotpy-navx
 robotpy-rev
 pynetworktables
 pyyaml
+chardet

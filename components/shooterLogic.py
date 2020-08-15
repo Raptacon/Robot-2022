@@ -90,6 +90,8 @@ class ShooterLogic(StateMachine):
         """
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed)
+            shootingspeed = self.shooterMotors.shooterMotor.getEncoder().getVelocity()
+            print("Shooting speed: ", shootingspeed)
             self.feeder.run(Type.kLoader)
 
         elif self.isAutonomous:
