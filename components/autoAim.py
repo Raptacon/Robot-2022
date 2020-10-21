@@ -47,16 +47,32 @@ def calculateRPM(dist, dir, filename):
     """Calculates a RPM based off of a quadratic derived from values in rpmToDistance.yml
     as well as parameter dist. RPMdir is the location of rpmToDistance.yml. filename is the filename, most often rpmToDistance.yml"""
 
-
+    rpm = 5000 #default value in case nothing is calculated
     values = yaml.load(open(dir+filename))
+    minDist_x = 6.5
+    maxRPM = 5750
+    if dist < minDist_x:
+            log.error("Dist is too low")
+            rpm = 5500
+            return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
-        distances = DtoRPM.keys
+
+        for distance, rpm in DtoRPM.items():
+            # truncate distance to integer (dist will likely be a float)
+            if distance == int(dist):
+                lowdist = distance
+                highdist = lowdist + 1
+                break
+        #             4000               3500 = 500
+        diff = DtoRPM[highdist] - DtoRPM[lowdist]
+        #      5.2        5       500         3500
+        rpm = (dist - lowdist) * diff + DtoRPM[lowdist]
+
     else:
         log.error("Given file did not have values at base")
         return
 
-    rpm = (a*(dist**2))+b*dist+c
     return rpm
 
 
@@ -71,7 +87,6 @@ class AutoAim(StateMachine):
     drive_speed_left = tunable(.05)
     drive_speed_right = tunable(-.05)
     minAimOffset = .5
-    minDist_x = 6.5
     limeLightAngleOffset = 5
     RPMfilename = "rpmToDistance.yml"
     RPMdir = findRPM(RPMfilename)
@@ -124,7 +139,5 @@ class AutoAim(StateMachine):
         
         dist_x = (self.targetHeight - self.limeHeight) / math.degrees(math.tan(self.ty+self.limeLightAngleOffset))
         print("Guess at dist is: ",dist_x)
-        if dist_x < self.minDist_x:
-            log.error("Dist is too low")
         self.rpm = calculateRPM(dist_x, self.RPMdir, self.RPMfilename)
         print("        RPM CALCULATED: ", self.rpm)
