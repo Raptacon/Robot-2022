@@ -52,9 +52,9 @@ def calculateRPM(dist, dir, filename):
     minDist_x = 6.5
     maxRPM = 5750
     if dist < minDist_x:
-            log.error("Dist is too low")
-            rpm = 5500
-            return rpm
+        log.error("Dist is too low")
+        rpm = 5500
+        return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
 
