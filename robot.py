@@ -76,11 +76,6 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, Elevator)
         testComponentCompatibility(self, ScorpionLoader)
 
-        #TEST LIMELIGHT CODE
-        if networktable.initialize('10.32.0.2'):
-            print("NETWORK TABLES INIT")
-        else:
-            log.error("NO NETWORK TABLE INIT")
 
     def autonomousInit(self):
         """Run when autonomous is enabled."""
@@ -104,6 +99,12 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
 
         self.shooter.autonomousDisabled()
+
+        #TEST LIMELIGHT CODE
+        if networktable.initialize('10.32.0.2'):
+            print("NETWORK TABLES INIT")
+        else:
+            log.error("NO NETWORK TABLE INIT")
 
     def teleopPeriodic(self):
         """
