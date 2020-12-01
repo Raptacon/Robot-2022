@@ -125,11 +125,11 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called.
         """
-        #TEST LIMELIGHT CODE
-        if networktable.initialize('10.32.0.2'):
-            print("NETWORK TABLES INIT")
-        else:
-            log.error("NO NETWORK TABLE INIT")
+        # #TEST LIMELIGHT CODE
+        # if networktable.initialize('10.32.0.2'):
+        #     print("NETWORK TABLES INIT")
+        # else:
+        #     log.error("NO NETWORK TABLE INIT")
 
         print("testInit was Successful")
 
