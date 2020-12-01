@@ -94,6 +94,8 @@ class AutoAim(StateMachine):
     @state(first = True)
     def start(self):
         #TODO: Calculate distance from target using limelight values.
+        if networktable.initialize('10.32.0.2'):
+            print("NETWORK TABLES INIT")
         table = networktable.getTable("limelight")
 
 
