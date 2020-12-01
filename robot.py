@@ -21,7 +21,6 @@ from components.feederMap import FeederMap
 
 ###EMH - Adding Autoaim
 from components.autoAim import AutoAim
-from networktables import NetworkTables as networktable
 ###EMH - End Adding Autoaim
 # Other imports:
 from robotMap import RobotMap, XboxMap
