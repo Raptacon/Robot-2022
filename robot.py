@@ -23,7 +23,6 @@ from components.feederMap import FeederMap
 from components.autoAim import AutoAim
 from networktables import NetworkTables as networktable
 import logging as log
-import threading
 ###EMH - End Adding Autoaim
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -85,39 +84,22 @@ class MyRobot(MagicRobot):
 
     def teleopInit(self):
         # Register button events for doof
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.loader.setAutoLoading)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.loader.setManualLoading)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.shootBalls)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.elevator.setRaise)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnRelease, self.elevator.stop)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.elevator.setLower)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
-        # self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.loader.setAutoLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.loader.setManualLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.shootBalls)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.elevator.setRaise)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnRelease, self.elevator.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.elevator.setLower)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
 
-        # self.shooter.autonomousDisabled()
+        self.shooter.autonomousDisabled()
 
-        #TEST LIMELIGHT CODE
-        cond = threading.Condition()
-        notified = [False]
-
-        def connectionListener(connected, info):
-            print(info, '; Connected=%s' % connected)
-            with cond:
-                notified[0] = True
-                cond.notify()
-
-        networktable.initialize('10.32.0.22')
-        networktable.addConnectionListener(connectionListener, immediateNotify= True)
-
-        with cond:
-            print("WAITING FOR CONNECTION")
-            if not notified[0]:
-                cond.wait()
 
 
     def teleopPeriodic(self):
@@ -144,34 +126,13 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called.
         """
-        #TEST LIMELIGHT CODE
-        cond = threading.Condition()
-        notified = [False]
-
-        def connectionListener(connected, info):
-            print(info, '; Connected=%s' % connected)
-            with cond:
-                notified[0] = True
-                cond.notify()
-
-        networktable.initialize('10.32.0.22')
-        networktable.addConnectionListener(connectionListener, immediateNotify= True)
-
-        with cond:
-            print("WAITING FOR CONNECTION")
-            if not notified[0]:
-                cond.wait()
-
         print("testInit was Successful")
 
     def testPeriodic(self):
         """
         Called during test mode alot
         """
-        table = networktable.getTable("limelight")
-        Valid = table.getNumber("tv", -1)
-        print(str(Valid) +" YESS?????")
-        #pass
+        pass
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """

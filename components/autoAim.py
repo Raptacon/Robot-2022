@@ -73,7 +73,11 @@ def calculateRPM(dist, dir, filename):
         log.error("Given file did not have values at base")
         return
 
-    return rpm
+    if rpm>maxRPM:
+        log.error("RPM too high. Using max of "+str(maxRPM))
+        return maxRPM
+    else:
+        return rpm
 
 
 
@@ -87,7 +91,9 @@ class AutoAim(StateMachine):
     drive_speed_left = tunable(.05)
     drive_speed_right = tunable(-.05)
     minAimOffset = .5
-    limeLightAngleOffset = 5
+    limeLightAngleOffset = 2.903 #Could also be changed using the crosshair in limelight settings, otherwise the
+    #CROSSHAIR MUST BE CENTERED IN LIMELIGHT
+
     RPMfilename = "rpmToDistance.yml"
     RPMdir = findRPM(RPMfilename)
 
@@ -97,25 +103,23 @@ class AutoAim(StateMachine):
         table = networktable.getTable("limelight")
 
 
-        if table.getNumber("tv", -1) == 1: #If limelight has any valid targets
+        if table.getNumber("tx", -50) != -50 or table.getNumber("tx", -50) != 0: #If limelight can see something
             tx = table.getNumber("tx", -50) # "-50" is the default value, so if that is returned, nothing should be done because there is no connection.
             self.ty = table.getNumber("ty", -50) #"ty" is the vertical offset. I figure this is more reliable than using size as a guess for distance.
             if tx != -50:
                 if tx > self.minAimOffset:
                     self.next_state_now("adjust_self_left")
 
-                    print("ADJUST LEFT")
-
                 elif tx < -1 * self.minAimOffset:
                     self.next_state_now("adjust_self_right")
 
-                    print("ADJUST RIGHT")
-
                 elif tx < self.minAimOffset and tx > -1 * self.minAimOffset:
-                    self.next_state_now("stop_shoot")
-                else:
-                    self.next_state("calc_RPM")
-                    self.next_state_now("stop")
+                    self.tx = table.getNumber("tx", -50)
+                    self.ty = table.getNumber("ty", -50)
+                    if self.tx == -50 or self.tx == 0 or self.ty == -50 or self.ty == -1:
+                        log.error("ANGLES ARE WRONG, NO SHOOTING")
+                    else:
+                        self.next_state("calc_RPM_shoot")
         else:
             log.error("Limelight: No Valid Targets")
 
@@ -140,10 +144,9 @@ class AutoAim(StateMachine):
         self.shooter.shootBalls()
 
     @state(must_finish = True)
-    def calc_RPM(self):
+    def calc_RPM_shoot(self):
 
 
-        dist_x = (self.targetHeight - self.limeHeight) / math.degrees(math.tan(self.ty+self.limeLightAngleOffset))
-        print("Guess at dist is: ",dist_x)
-        self.rpm = calculateRPM(dist_x, self.RPMdir, self.RPMfilename)
-        print("        RPM CALCULATED: ", self.rpm)
+        self.dist_x = (self.targetHeight - self.limeHeight) / math.tan(math.radians(self.ty+self.limeLightAngleOffset))
+        self.rpm = calculateRPM(self.dist_x, self.RPMdir, self.RPMfilename)
+        self.next_state("stop_shoot")
