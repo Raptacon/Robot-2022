@@ -100,11 +100,6 @@ class MyRobot(MagicRobot):
 
         self.shooter.autonomousDisabled()
 
-        #TEST LIMELIGHT CODE
-        if networktable.initialize('10.32.0.2'):
-            print("NETWORK TABLES INIT")
-        else:
-            log.error("NO NETWORK TABLE INIT")
 
     def teleopPeriodic(self):
         """
@@ -130,13 +125,20 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called.
         """
+        #TEST LIMELIGHT CODE
+        if networktable.initialize('10.32.0.2'):
+            print("NETWORK TABLES INIT")
+        else:
+            log.error("NO NETWORK TABLE INIT")
+
         print("testInit was Successful")
 
     def testPeriodic(self):
         """
         Called during test mode alot
         """
-        pass
+        self.autoAim.engage()
+        #pass
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
