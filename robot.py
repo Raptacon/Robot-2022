@@ -21,6 +21,8 @@ from components.feederMap import FeederMap
 
 ###EMH - Adding Autoaim
 from components.autoAim import AutoAim
+from networktables import NetworkTables as networktable
+import logging as log
 ###EMH - End Adding Autoaim
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -73,6 +75,12 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, Pneumatics)
         testComponentCompatibility(self, Elevator)
         testComponentCompatibility(self, ScorpionLoader)
+
+        #TEST LIMELIGHT CODE
+        if networktable.initialize('10.32.0.2'):
+            print("NETWORK TABLES INIT")
+        else:
+            log.error("NO NETWORK TABLE INIT")
 
     def autonomousInit(self):
         """Run when autonomous is enabled."""
