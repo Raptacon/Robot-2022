@@ -103,8 +103,14 @@ class AutoAim(StateMachine):
             if tx != -50:
                 if tx > self.minAimOffset:
                     self.next_state_now("adjust_self_left")
+
+                    print("ADJUST LEFT")
+
                 elif tx < -1 * self.minAimOffset:
                     self.next_state_now("adjust_self_right")
+
+                    print("ADJUST RIGHT")
+
                 elif tx < self.minAimOffset and tx > -1 * self.minAimOffset:
                     self.next_state_now("stop_shoot")
                 else:
