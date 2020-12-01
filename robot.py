@@ -139,7 +139,7 @@ class MyRobot(MagicRobot):
         """
         table = networktable.getTable("limelight")
         Valid = table.getNumber("tv", -1)
-        print('%d', Valid +" YESS?????")
+        print(str(Valid) +" YESS?????")
         #pass
 
     def instantiateSubsystemGroup(self, groupName, factory):
