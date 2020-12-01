@@ -137,7 +137,9 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        self.autoAim.engage()
+        table = networktable.getTable("limelight")
+        Valid = table.getNumber("tv", -1)
+        print('%d', Valid +" YESS?????")
         #pass
 
     def instantiateSubsystemGroup(self, groupName, factory):
