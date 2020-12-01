@@ -30,6 +30,9 @@ from utils.sensorFactories import gyroFactory, breaksensorFactory
 from utils.acturatorFactories import compressorFactory, solenoidFactory
 import utils.math
 
+#TEST IMPORTS
+from networktables import NetworkTables as networktable
+
 class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
@@ -102,7 +105,10 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
 
-
+        #TEST CODE TEST CODE START
+        table = networktable.getTable("limelight")
+        print("TARGET? " + "%d" % table.getNumber("tv", -1)+"   VERTICAL OFFSET: "+"%d",table.getNumber("ty", -50))
+        #TEST CODE TEST CODE END
 
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier

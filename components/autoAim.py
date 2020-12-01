@@ -135,8 +135,8 @@ class AutoAim(StateMachine):
 
     @state(must_finish = True)
     def calc_RPM(self):
-        
-        
+
+
         dist_x = (self.targetHeight - self.limeHeight) / math.degrees(math.tan(self.ty+self.limeLightAngleOffset))
         print("Guess at dist is: ",dist_x)
         self.rpm = calculateRPM(dist_x, self.RPMdir, self.RPMfilename)
