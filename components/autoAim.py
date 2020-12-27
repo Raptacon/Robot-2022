@@ -70,7 +70,7 @@ def calculateRPM(dist, dir, filename):
         rpm = (dist - lowdist) * diff + DtoRPM[lowdist]
 
     else:
-        log.error("Given file did not have values at base")
+        log.error("Given file did not have values at base, using default RPM")
         return
 
     if rpm>maxRPM:
@@ -86,8 +86,9 @@ class AutoAim(StateMachine):
     time = 0.1
     driveTrain: DriveTrain
     shooter: ShooterLogic
-    dist = tunable(0) #I'm using tunables as display variables right now. If you know a better way to display these, please do change it.
-    angle = tunable(0)
+    dist = int(0)
+    angle = int(0)
+    smartTable = networktable.getTable('SmartDashboard')
     targetHeight = 39.5/12 #height of the middle of the limelight target in feet. So this is the middle of the lower half of the hexagon
     limeHeight = 4.75/12 #height of the limelight on the robot in feet. Used to calculate distance from the target.
     drive_speed_left = tunable(.2)
@@ -116,8 +117,8 @@ class AutoAim(StateMachine):
                     self.next_state_now("adjust_self_right")
 
                 elif tx < self.minAimOffset and tx > -1 * self.minAimOffset:
-                    self.tx = table.getNumber("tx", -50)
-                    self.ty = table.getNumber("ty", -50)
+                    self.tx = limeTable.getNumber("tx", -50)
+                    self.ty = limeTable.getNumber("ty", -50)
                     if self.tx == -50 or self.tx == 0 or self.ty == -50 or self.ty == -1:
                         log.error("ANGLES ARE MISSING, NO SHOOTING")
                     else:
@@ -154,4 +155,9 @@ class AutoAim(StateMachine):
         self.dist = self.dist_x
         self.angle = self.ty + self.limeLightAngleOffset
         self.rpm = calculateRPM(self.dist_x, self.RPMdir, self.RPMfilename)
+
+        #Update variables on network tables, accessable through Smart Dashboard.
+        self.smartTable.putNumber(self.dist)
+        self.smartTable.putNumber(self.rpm)
+
         self.next_state("stop_shoot")
