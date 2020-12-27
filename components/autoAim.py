@@ -44,7 +44,7 @@ def findRPM(configName):
 
 
 def calculateRPM(dist, dir, filename):
-    """Calculates a RPM based off of a quadratic derived from values in rpmToDistance.yml
+    """Calculates a RPM based off of a set of values in rpmToDistance.yml
     as well as parameter dist. RPMdir is the location of rpmToDistance.yml. filename is the filename, most often rpmToDistance.yml"""
 
     rpm = 5000 #default value in case nothing is calculated
@@ -52,9 +52,9 @@ def calculateRPM(dist, dir, filename):
     minDist_x = 6.5
     maxRPM = 5750
     if dist < minDist_x:
-            log.error("Dist is too low")
-            rpm = 5500
-            return rpm
+        log.error("Dist is too low")
+        rpm = 5500
+        return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
 
@@ -119,7 +119,7 @@ class AutoAim(StateMachine):
                     self.tx = table.getNumber("tx", -50)
                     self.ty = table.getNumber("ty", -50)
                     if self.tx == -50 or self.tx == 0 or self.ty == -50 or self.ty == -1:
-                        log.error("ANGLES ARE WRONG, NO SHOOTING")
+                        log.error("ANGLES ARE MISSING, NO SHOOTING")
                     else:
                         self.next_state("calc_RPM_shoot")
         else:
