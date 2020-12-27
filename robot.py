@@ -20,7 +20,7 @@ from components.scorpionLoader import ScorpionLoader
 from components.feederMap import FeederMap
 
 ###EMH - Adding Autoaim
-from components.autoAim import AutoAim
+from components.autoAlign import AutoAlign
 ###EMH - End Adding Autoaim
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -48,7 +48,7 @@ class MyRobot(MagicRobot):
     scorpionLoader: ScorpionLoader
     sensitivityExponent = tunable(1.8)
     ###EMH - Adding AutoAim
-    autoAim: AutoAim
+    autoAlign: AutoAlign
     ###EMH - End Adding AutoAim
 
     def createObjects(self):
@@ -116,7 +116,8 @@ class MyRobot(MagicRobot):
         else:
             self.winch.stop()
         if self.xboxMap.getDriveA() == True:
-            self.autoAim.engage()
+            self.autoAlign.setShootAfterComplete(True)
+            self.autoAlign.engage()
 
         self.scorpionLoader.checkController()
 
