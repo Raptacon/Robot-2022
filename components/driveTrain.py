@@ -1,6 +1,8 @@
 import wpilib.drive
+import logging
 from enum import Enum, auto
 
+log = logging
 from magicbot import tunable
 class ControlMode(Enum):
     """
@@ -16,6 +18,7 @@ class DriveTrain():
     motors_driveTrain: dict
     driveMotorsMultiplier = tunable(.5)
     gyros_system: dict
+    logger = log
 
     def setup(self):
         self.tankLeftSpeed = 0

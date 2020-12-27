@@ -86,12 +86,14 @@ class AutoAim(StateMachine):
     time = 0.1
     driveTrain: DriveTrain
     shooter: ShooterLogic
-    targetHeight = 6.97916667 #height of the middle of the limelight target in feet. So this is the middle of the lower half of the hexagon
-    limeHeight = 3.5 #height of the limelight on the robot in feet. Used to calculate distance from the target.
-    drive_speed_left = tunable(.05)
-    drive_speed_right = tunable(-.05)
-    minAimOffset = .5
-    limeLightAngleOffset = 2.903 #Could also be changed using the crosshair in limelight settings, otherwise the
+    dist = tunable(0) #I'm using tunables as display variables right now. If you know a better way to display these, please do change it.
+    angle = tunable(0)
+    targetHeight = 39.5/12 #height of the middle of the limelight target in feet. So this is the middle of the lower half of the hexagon
+    limeHeight = 4.75/12 #height of the limelight on the robot in feet. Used to calculate distance from the target.
+    drive_speed_left = tunable(.2)
+    drive_speed_right = tunable(-.2)
+    minAimOffset = 6
+    limeLightAngleOffset = 6.8 #Could also be changed using the crosshair in limelight settings, otherwise the
     #CROSSHAIR MUST BE CENTERED IN LIMELIGHT
 
     RPMfilename = "rpmToDistance.yml"
@@ -142,11 +144,14 @@ class AutoAim(StateMachine):
         self.shooter.setRPM(self.rpm)
         #shoot
         self.shooter.shootBalls()
+        self.done()
 
     @state(must_finish = True)
     def calc_RPM_shoot(self):
 
 
         self.dist_x = (self.targetHeight - self.limeHeight) / math.tan(math.radians(self.ty+self.limeLightAngleOffset))
+        self.dist = self.dist_x
+        self.angle = self.ty + self.limeLightAngleOffset
         self.rpm = calculateRPM(self.dist_x, self.RPMdir, self.RPMfilename)
         self.next_state("stop_shoot")
