@@ -3,13 +3,8 @@ from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 from components.driveTrain import DriveTrain
 from components.autoShoot import AutoShoot
-import math
 
 import logging as log
-import os
-from pathlib import Path
-
-import yaml
 
 class AutoAlign(StateMachine):
     """
