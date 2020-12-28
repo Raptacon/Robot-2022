@@ -21,6 +21,7 @@ from components.feederMap import FeederMap
 
 ###EMH - Adding Autoaim
 from components.autoAlign import AutoAlign
+from components.autoShoot import AutoShoot
 ###EMH - End Adding Autoaim
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -49,6 +50,7 @@ class MyRobot(MagicRobot):
     sensitivityExponent = tunable(1.8)
     ###EMH - Adding AutoAim
     autoAlign: AutoAlign
+    autoShoot: AutoShoot
     ###EMH - End Adding AutoAim
 
     def createObjects(self):
@@ -102,22 +104,34 @@ class MyRobot(MagicRobot):
 
     def teleopPeriodic(self):
         """
-        Must include. Called running teleop.
+        Must include. Called repeatedly while running teleop.
         """
         self.xboxMap.controllerInput()
+
+        #This variable determines whether to use controller input for the drivetrain or not.
+        #If we are using a command (such as auto align) that uses the drivetrain, we don't want to use the controller's input because it would overwrite
+        #what the component is doing.
+        executingDriveCommand = False
 
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
-        self.driveTrain.setTank(driveLeft, driveRight)
-
         if self.xboxMap.getMechDPad() == 0:
             self.winch.setRaise()
+
         else:
             self.winch.stop()
+
         if self.xboxMap.getDriveA() == True:
+            executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(True)
             self.autoAlign.engage()
+        else:
+            self.autoAlign.done()
+            self.autoShoot.done()
+
+        if not executingDriveCommand:
+            self.driveTrain.setTank(driveLeft, driveRight)
 
         self.scorpionLoader.checkController()
 
