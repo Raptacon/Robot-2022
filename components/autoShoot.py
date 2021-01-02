@@ -2,6 +2,7 @@ from networktables import NetworkTables as networktable
 from magicbot import StateMachine
 from magicbot.state_machine import state
 from components.shooterLogic import ShooterLogic
+from components.driveTrain import DriveTrain
 from utils.guessDistance import guessDistanceTrig
 
 import logging as log
@@ -90,6 +91,10 @@ class AutoShoot(StateMachine):
     dist = int(0)
     angle = int(0)
     smartTable = networktable.getTable('SmartDashboard')
+    #Initializing network table variables
+    smartTable.putNumber("Distance", 0)
+    smartTable.putNumber("Vertical angle offset", 0)
+    smartTable.putNumber("Estimated Necessary RPM", 0)
 
     #Config file vars
     RPMfilename = "rpmToDistance.yml"
@@ -103,6 +108,7 @@ class AutoShoot(StateMachine):
     #IF "limeLightAngleOffset" is 0, CROSSHAIR MUST BE ON HORIZONTAL IN LIMELIGHT
 
     shooter: ShooterLogic
+    driveTrain: DriveTrain
 
     @state(first = True)
     def start(self):
@@ -128,9 +134,9 @@ class AutoShoot(StateMachine):
         self.rpm = calculateRPM(self.dist_x, self.RPMdir, self.RPMfilename)
 
         #Update variables on network tables, accessable through Smart Dashboard.
-        self.smartTable.putNumber(self.dist)
-        self.smartTable.putNumber(self.angle)
-        self.smartTable.putNumber(self.rpm)
+        self.smartTable.putNumber("Distance", self.dist)
+        self.smartTable.putNumber("Vertical angle offset", self.angle)
+        self.smartTable.putNumber("Estimated Necessary RPM", self.rpm)
 
         self.next_state("stop_shoot")
 

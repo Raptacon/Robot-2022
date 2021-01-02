@@ -31,7 +31,6 @@ from utils.sensorFactories import gyroFactory, breaksensorFactory
 from utils.acturatorFactories import compressorFactory, solenoidFactory
 import utils.math
 
-
 class MyRobot(MagicRobot):
     """
     Base robot class of Magic Bot Type
