@@ -111,6 +111,7 @@ class AutoShoot(StateMachine):
     RPMdir = findRPM(RPMfilename)
 
     # Distance estimate variables
+
     # height of the middle of the limelight target in feet.
     # So this is the middle of the lower half of the hexagon
     targetHeight = 39.5/12
