@@ -130,6 +130,7 @@ class MyRobot(MagicRobot):
             self.autoShoot.done()
 
         if not executingDriveCommand:
+            self.autoAlign.reset_integral()
             self.driveTrain.setTank(driveLeft, driveRight)
 
         self.scorpionLoader.checkController()

@@ -15,24 +15,27 @@ class AutoAlign(StateMachine):
     """
 
     compatString = ["doof"]
-    time = 0.1
+    time = 0.01
     driveTrain: DriveTrain
 
     # Auto Align variables
     shootAfterComplete = False
-    drive_speed_left = tunable(.17)
-    drive_speed_right = tunable(-.17)
+    # Maximum horizontal offset before shooting in degrees
     maxAimOffset = 2
 
     # PID
-    P = 0
-    I = 0
-    D = 0
+    P = tunable(0.005)
+    I = tunable(0.1)
+    D = tunable(0)
+    inverted = False
     speed = 0
     integral = 0
     preverror = 0
 
     limeTable = networktable.getTable("limelight")
+    smartTable = networktable.getTable('SmartDashboard')
+    smartTable.putNumber("PIDspeed", 0)
+    smartTable.putNumber("Integral", 0)
 
     autoShoot: AutoShoot
 
@@ -80,19 +83,24 @@ class AutoAlign(StateMachine):
         self.driveTrain.setTank(self.speed, -1 * self.speed)
 
     @timed_state(duration=time, next_state="start")
-    def adjust_self_left(self, speed):
+    def adjust_self_left(self):
         """Turns the bot left"""
-        self.driveTrain.setTank(-1 * self.speed, self.speed)
+        self.driveTrain.setTank(self.speed, -1 * self.speed)
 
     def calc_PID(self, error):
         """
         Uses PID values defined in init section to give a power output for
-        the drivetrain. .02 is the amount of time assumed to have passed.
+        the drivetrain. "time" is the amount of time assumed to have passed.
         """
-        self.integral = self.integral + error * .02
-        setspeed = self.P * (error) + self.D * (error - self.preverror)
-        + self.I * (self.integral * .02)
+        self.integral = self.integral + error * self.time
+        setspeed = self.P * (error) + self.D * (error - self.preverror) + self.I * (self.integral)
         self.preverror = error
+
+        if self.inverted:
+            setspeed *= -1
+
+        self.smartTable.putNumber("PIDspeed", setspeed)
+        self.smartTable.putNumber("Integral", self.integral)
         return setspeed
 
     def reset_integral(self):

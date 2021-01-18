@@ -19,8 +19,7 @@ def findRPM(configName):
     robot to use robotCfg file remove the () and use file name file.
     Files should be in configs dir
     """
-    configPath = os.path.dirname(__file__) + os.path.sep + ".."
-    + os.path.sep + "configs" + os.path.sep
+    configPath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + "configs" + os.path.sep
 
     home = str(Path.home()) + os.path.sep
     defaultConfig = configName
