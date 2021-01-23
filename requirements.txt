@@ -1,0 +1,17 @@
+cryptography==3.2.1
+pyflakes
+py2app
+macholib
+modulegraph
+flake8
+coverage
+
+
+# If installed on OSX (joystick support) it seems to fail?
+pyfrc
+robotpy-ctre
+robotpy-navx
+robotpy-rev
+robotpy-halsim-gui
+pynetworktables
+pyyaml
