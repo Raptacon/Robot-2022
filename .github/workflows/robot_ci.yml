@@ -8,18 +8,6 @@ on:
     
 jobs:
   RobotUnitTestLinux:
-    name: Unit / Integration Tests (Linux)
-    #runs-on: ubuntu-latest
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v1
-
-    - name: Set up Python 3.9
-      timeout-minutes: 2
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.9
-
     - name: Install dependencies
       timeout-minutes: 60
       run: |
@@ -30,7 +18,7 @@ jobs:
       timeout-minutes: 1
       continue-on-error: True
       run: |
-        python3 robot.py test
+        python robot.py test
 
   RobotUnitTestWindows:
     name: Unit / Integration Tests (Windows)
