@@ -7,7 +7,6 @@
 
 import wpilib
 from wpilib.drive import DifferentialDrive
-import fakelib 
 
 
 class MyRobot(wpilib.TimedRobot):
