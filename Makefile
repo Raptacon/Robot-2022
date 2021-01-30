@@ -39,7 +39,6 @@ coverage: setup_${VENV} test
 
 setup_${VENV}: ${VENV}
 	${VENVBIN}/pip install --upgrade pip setuptools
-	@echo "CWD=${CWD}"
 	${VENVBIN}/pip install --pre -r ${CWD}/requirements.txt
 	$(file > setup_${VENV})
 
