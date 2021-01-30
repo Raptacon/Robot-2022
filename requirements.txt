@@ -5,6 +5,7 @@ macholib
 modulegraph
 flake8
 coverage
+wheel
 
 robotpy
 
