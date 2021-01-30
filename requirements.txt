@@ -6,12 +6,13 @@ modulegraph
 flake8
 coverage
 
+robotpy
 
 # If installed on OSX (joystick support) it seems to fail?
 pyfrc
 robotpy-ctre
 robotpy-navx
-robotpy-rev
-robotpy-halsim-gui
-pynetworktables
-pyyaml
+#robotpy-rev
+#robotpy-halsim-gui
+#pynetworktables
+#pyyaml
