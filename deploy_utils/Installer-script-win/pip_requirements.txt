@@ -1,1 +1,6 @@
-pyyaml
+robotpy
+robotpy-ctre
+robotpy-navx
+robotpy-rev
+robotpy-wpilib-utilities
+pynetworktables
