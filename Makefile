@@ -56,3 +56,6 @@ docker: docker_build
 
 docker_build:
 	docker build . --tag raptacon2021_build
+
+deploy:
+	${PYTHON} robot.py deploy --no-resolve --robot 10.32.0.2
