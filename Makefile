@@ -3,15 +3,15 @@
 CWD=${CURDIR}
 
 ifeq ($(OS), Windows_NT)
-VENV=venv_windows
+VENV=.venv_windows
 PYTHON=py
 VENVBIN=./${VENV}/Scripts
 else ifneq ("$(wildcard /.dockerenv)","")
-VENV=venv_docker
+VENV=.venv_docker
 PYTHON=python3
 VENVBIN=./${VENV}/bin
 else
-VENV=venv_osx
+VENV=.venv_osx
 PYTHON=python3
 VENVBIN=./${VENV}/bin
 endif
@@ -22,6 +22,9 @@ endif
 sim: setup_${VENV}
 	${VENVBIN}/${PYTHON} robot.py coverage sim
 	${VENVBIN}/${PYTHON} robot.py sim
+
+run:
+	${PYTHON} robot.py run
 
 ${VENV}:
 	${PYTHON} -m venv ${VENV}
@@ -46,7 +49,7 @@ clean:
 	rm -f setup setup_${VENV}
 
 realclean: clean
-	rm -fr venv_${VENV} 
+	rm -fr ${VENV} 
 
 docker: docker_build
 	docker run --rm -ti -v $$(PWD):/src raptacon2021_build bash 
