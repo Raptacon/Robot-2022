@@ -5,7 +5,9 @@ macholib
 modulegraph
 flake8
 coverage
+wheel
 
+robotpy
 
 # If installed on OSX (joystick support) it seems to fail?
 pyfrc
