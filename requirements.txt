@@ -17,4 +17,3 @@ robotpy-rev
 robotpy-halsim-gui
 robotpy-wpilib-utilities
 pynetworktables
-pyyaml
