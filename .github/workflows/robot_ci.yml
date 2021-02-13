@@ -94,4 +94,4 @@ jobs:
       timeout-minutes: 1
       run: |
         pip install flake8
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude */tests/pyfrc*,utils/yaml/*,.venv*/ venv*/
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude */tests/pyfrc*,utils/yaml/*,.venv*/,venv*/
