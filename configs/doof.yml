@@ -2,7 +2,7 @@ compatibility: "doof"
 
 system:
   subsystem: "system"
-  description: "Contains system wide resources such as one off hardware devices"  
+  description: "Contains system wide resources such as one off hardware devices"
   gyro:
     groups: "gyros"
     navx:
@@ -12,8 +12,6 @@ system:
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
-  #Right motor must always be called rightMotor, left motor must always be leftMotor. Look through motorHelper to see what values are necessary,
-#it varies by motor.
   motors:
     groups:
       - "motors"
@@ -57,7 +55,7 @@ driveTrain:
         triggerThresholdTime: 50
         currentLimit: 40
       inverted: True
-  
+
 loaderMotors:
   subsystem: "loader"
   description: "All motors used in the robot loader mechanism live here for the loader component"
