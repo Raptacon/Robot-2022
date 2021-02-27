@@ -4,6 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 import wpilib
 from wpilib import XboxController
+from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -18,6 +19,7 @@ from components.loaderLogic import LoaderLogic
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 from components.feederMap import FeederMap
+from components.lidar import Lidar
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -59,6 +61,9 @@ class MyRobot(MagicRobot):
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
 
+        self.MXPserial = SerialPort(57600, SerialPort.Port.kMXP, 8,
+        SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
+
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
         self.instantiateSubsystemGroup("digitalInput", breaksensorFactory)
@@ -74,6 +79,9 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, Pneumatics)
         testComponentCompatibility(self, Elevator)
         testComponentCompatibility(self, ScorpionLoader)
+        testComponentCompatibility(self, TestBoard)
+        testComponentCompatibility(self, FeederMap)
+        testComponentCompatibility(self, Lidar)
 
 
     def autonomousInit(self):
