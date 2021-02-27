@@ -1,0 +1,28 @@
+compatibility: "testBoard"
+
+testMotors:
+  subsystem: "testMotors"
+  description: "All motors used for testing live here"
+  shooterMotors:
+    groups: "motors"
+    testMotor1:
+      channel: 30
+      type: "CANTalonFX"
+      inverted: True
+      motorType: "kBrushless"
+
+      currentLimits:
+        currentLimit: 50
+        triggerThresholdCurrent: 30
+        triggerThresholdTime: 20
+
+    testMotor2:
+      channel: 31
+      type: "CANTalonFX"
+      inverted: True
+      motorType: "kBrushless"
+
+      currentLimits:
+        currentLimit: 50
+        triggerThresholdCurrent: 30
+        triggerThresholdTime: 20

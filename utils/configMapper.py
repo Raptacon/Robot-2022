@@ -4,6 +4,7 @@ from pprint import pprint
 import os
 from pathlib import Path
 
+
 class ConfigMapper(object):
     def __init__(self, filename, configDir):
         """
@@ -17,20 +18,20 @@ class ConfigMapper(object):
         log.debug("Intial data %s", initialData)
         self.subsystems = self.__convertToSubsystems(initialData, "/")
         root = self.subsystems["/"]
-        if not "compatibility" in root:
+        if "compatibility" not in root:
             log.warning("No Compatibility string found. Matching all")
             self.subsystems["compatibility"] = ["any"]
         if not isinstance(root["compatibility"], list):
             root["compatibility"] = [root["compatibility"]]
-        
-        root["compatibility"] =  [x.lower() for x in root["compatibility"]]
 
+        root["compatibility"] = [x.lower() for x in root["compatibility"]]
 
     def getSubsystem(self, subsystem):
         """
-        returns the complete config for specified subsystem or none if not found
+        returns the complete config for specified subsystem or none if not
+        found
         """
-        #gives the values.
+        # gives the values.
 
         if subsystem in self.subsystems:
             return self.subsystems[subsystem]
@@ -89,7 +90,7 @@ class ConfigMapper(object):
             typeNames = [typeNames]
         data = self.getSubsystem(subsystem)
         data = self.__getTypes(data, typeNames, name)
-        
+
         return data
 
     def __getGroups(self, data, groupName, name):
@@ -115,7 +116,8 @@ class ConfigMapper(object):
     def __getTypes(self, data, typeNames, name):
         """
         internal call, recusivley search the data for entries with
-        typeName in ["types"] and if a name is given only types inside key with name
+        typeName in ["types"] and if a name is given only types
+        inside key with name
         """
         retVal = {}
         for key in data:
@@ -131,7 +133,6 @@ class ConfigMapper(object):
                     retVal[key] = data[key]
         return retVal
 
-
     def __loadFile(self, filename):
         """
         Loads a yaml or yml file and returns the contents as dictionary
@@ -139,7 +140,6 @@ class ConfigMapper(object):
         with open(self.configDir + os.path.sep + filename) as file:
             values = yaml.load(file, yaml.FullLoader)
             return values
-
 
     def __convertToSubsystems(self, inputData, defSubsystem):
         """
@@ -156,35 +156,33 @@ class ConfigMapper(object):
 
         for key in inputData:
 
-            #if file, load file and walk
+            # if file, load file and walk
             if isinstance(inputData[key], dict) and "file" in inputData[key]:
                 fileName = inputData[key].pop("file")
                 fileType = inputData[key].pop("type")
                 if not fileType == "yaml":
-                    log.error("Unknonw file type fileType. Trying Yaml")
+                    log.error("Unknown file type fileType. Trying Yaml")
                 log.info("Loading %s into entry %s", fileName, key)
                 data = self.__loadFile(fileName)
-                #Flatten the root node of newly loaded yaml file.
+                # Flatten the root node of newly loaded yaml file.
                 for loadedKey in data:
                     if isinstance(data[loadedKey], dict):
                         inputData[key].update(data[loadedKey])
                     else:
                         inputData[key][loadedKey] = data[loadedKey]
 
-            #if subsystem, walk subsystem
+            # if subsystem, walk subsystem
             if "subsystem" in inputData[key] and isinstance(inputData[key], dict):
                 log.info("Walking subsystem")
-                #make a new subsystem
-                print("Crashing????")
+                # make a new subsystem
                 print(inputData[key])
                 print(inputData[key]["subsystem"])
                 processedData[inputData[key]["subsystem"]] = self.__convertToSubsystems(inputData[key], inputData[key]["subsystem"])
 
-            #copy field over if no special processing
+            # copy field over if no special processing
             processedData[subsystem][key] = inputData[key]
-        
-        return processedData
 
+        return processedData
 
 
 def findConfig():
@@ -198,7 +196,6 @@ def findConfig():
     home = str(Path.home()) + os.path.sep
     defaultConfig = "doof.yml"
     robotConfigFile = home + "robotConfig"
-    
 
     if not os.path.isfile(robotConfigFile):
         log.error("Could not find %s. Using default", robotConfigFile)
@@ -208,7 +205,7 @@ def findConfig():
         configFileName = file.readline().strip()
         file.close()
         configFile = configPath + configFileName
-        
+
         if os.path.isfile(configFile):
             log.info("Using %s config file", configFile)
             return configFileName, configPath
@@ -217,7 +214,7 @@ def findConfig():
     except Exception as e:
         log.error("Could not find %s", robotConfigFile)
         log.error(e)
-        log.error("Please run `echo <robotcfg.yml> > ~/robotConcig` on the robot")
+        log.error("Please run `echo <robotcfg.yml> > ~/robotConfig` on the robot")
         log.error("Using default %s", defaultConfig)
 
     return defaultConfig, configPath
@@ -226,21 +223,21 @@ def findConfig():
 if __name__ == "__main__":
     mapper = ConfigMapper("doof.yml", "configs")
     print("Subsystem driveTrain:", mapper.getSubsystem("driveTrain"))
-    
+
     print("driveTrain Motors")
     pprint(mapper.getGroupDict("driveTrain", "motors"))
-    
+
     print("Shooter motors:")
     pprint(mapper.getGroupDict("shooter", "motors", "loaderMotors"))
 
     print("All motors:")
     mapper.getGroupDict("/", "motors")
-    #print()
+    # print()
     pprint(mapper.getGroupDict("/", "motors"))
 
     print("CANTalonFXFollower motors:")
     data = mapper.getTypesDict("/", "CANTalonFXFollower")
-    #print()
+    # print()
     pprint(data)
 
     compatTest = ["Dog", "all", "doof", "minibot", "DOOF"]

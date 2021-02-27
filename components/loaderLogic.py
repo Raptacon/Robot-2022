@@ -3,7 +3,6 @@ from components.shooterMotors import ShooterMotorCreation, Direction
 from components.breakSensors import Sensors, State
 from components.feederMap import FeederMap, Type
 from magicbot import StateMachine, state, timed_state, tunable, feedback
-import logging
 
 class LoaderLogic(StateMachine):
     """StateMachine-based loader. Has both automatic and manual modes."""
@@ -12,7 +11,6 @@ class LoaderLogic(StateMachine):
     # Component/module related things
     shooterMotors: ShooterMotorCreation
     feeder: FeederMap
-    logger: logging
     sensors: Sensors
     xboxMap: XboxMap
 

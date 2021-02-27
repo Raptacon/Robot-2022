@@ -3,7 +3,6 @@ from components.shooterMotors import ShooterMotorCreation, Direction
 from components.breakSensors import Sensors, State
 from components.feederMap import FeederMap, Type
 from magicbot import StateMachine, state, timed_state, tunable, feedback
-import logging
 
 class ShooterLogic(StateMachine):
     """StateMachine-based shooter. Has both manual and automatic modes."""
@@ -12,7 +11,6 @@ class ShooterLogic(StateMachine):
     # Component/module related things
     shooterMotors: ShooterMotorCreation
     feeder: FeederMap
-    logger: logging
     sensors: Sensors
     xboxMap: XboxMap
     speedTolerance = tunable(50)
