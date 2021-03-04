@@ -48,12 +48,14 @@ class Lidar:
             log.info('The packet is not full, so lidar cannot find distance')
             return 0
 
+    def getDist(self):
+        return self.dist
+
     def execute(self):
         self.read()
         self.dist = self.checkAndRead(self.bufferArray)
         if self.dist == 0:
             print("Lidar failed to read dist")
-        print(self.dist)
 
     def read(self):
         self.MXPserial.read(self.bufferArray)
