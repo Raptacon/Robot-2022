@@ -6,6 +6,7 @@ import wpilib
 from wpilib import XboxController
 from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
+import logging as log
 
 # Component imports:
 from components.driveTrain import DriveTrain
@@ -48,6 +49,7 @@ class MyRobot(MagicRobot):
     pneumatics: Pneumatics
     elevator: Elevator
     scorpionLoader: ScorpionLoader
+    lidar: Lidar
 
     # Test code:
     testBoard: TestBoard
@@ -61,8 +63,10 @@ class MyRobot(MagicRobot):
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
 
-        self.MXPserial = SerialPort(57600, SerialPort.Port.kMXP, 8,
+        self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
         SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
+        self.MXPserial.setReadBufferSize(18)
+        self.MXPserial.setTimeout(1)
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -82,6 +86,7 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, TestBoard)
         testComponentCompatibility(self, FeederMap)
         testComponentCompatibility(self, Lidar)
+        testComponentCompatibility(self, LoaderLogic)
 
 
     def autonomousInit(self):
@@ -133,16 +138,10 @@ class MyRobot(MagicRobot):
 
     def testPeriodic(self):
         """
-        Called during test mode alot
+        Called during test mode a lot
         """
-        self.xboxMap.controllerInput()
-
-        if self.xboxMap.getDriveLeft() > 0:
-            self.testBoard.setRaise()
-        elif self.xboxMap.getDriveLeft() < 0:
-            self.testBoard.setLower()
-        else:
-            self.testBoard.stop()
+        self.lidar.execute()
+        print(self.lidar.bufferArray)
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
