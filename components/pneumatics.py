@@ -1,13 +1,12 @@
 from wpilib import DoubleSolenoid
 dsPos = DoubleSolenoid.Value
-import logging
+import logging as log
 
 class Pneumatics:
-    
+    compatString = ["doof"]
     compressors_pneumatics: dict
     solenoids_pneumatics: dict
-    logger: logging
-    
+
 
     def setup(self):
         """
@@ -17,7 +16,7 @@ class Pneumatics:
         self.loaderSolenoid = self.solenoids_pneumatics["loader"]
         self.newLoaderValue = None
         #turn on all compressors
-        self.logger.info("Starting compressor %s", self.compressors_pneumatics["compressor"])
+        log.info("Starting compressor %s", self.compressors_pneumatics["compressor"])
         self.compressors_pneumatics["compressor"].start()
 
     def getLoaderDeployed(self):
@@ -25,7 +24,7 @@ class Pneumatics:
         returns the "value" of the solenoid. Boolean, is it on or off?
         """
         return True if self.solenloaderSolenoidoid.get() == dsPos.kForward else False
-        
+
     def deployLoader(self):
         """
         Turn the loader to the deployed position
@@ -44,7 +43,7 @@ class Pneumatics:
         """
         Toggle the Loader from deployed to retracted or vice versa
         """
-        self.logger.warning("Changing solenoid")
+        log.warning("Changing solenoid")
         self.newLoaderValue = (dsPos.kReverse if self.loaderSolenoid.get() == dsPos.kForward else dsPos.kForward)
 
     def getCompressorCurrent(self):

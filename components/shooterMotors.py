@@ -1,4 +1,4 @@
-import logging
+import logging as log
 from enum import Enum, auto
 
 class Direction(Enum):
@@ -13,7 +13,6 @@ class ShooterMotorCreation:
     """
     compatString = ["doof"]
 
-    logger: logging
     motors_shooter: dict
     motors_loader: dict
 
@@ -32,7 +31,7 @@ class ShooterMotorCreation:
         self.intakeMotor = self.motors_loader["intakeMotor"]
         self.shooterMotor = self.motors_shooter["shooterMotor"]
 
-        self.logger.info("Shooter Motor Component Created")
+        log.info("Shooter Motor Component Created")
 
     def runIntake(self, iSpeed, direction):
         """
