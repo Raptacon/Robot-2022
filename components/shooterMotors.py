@@ -28,7 +28,7 @@ class ShooterMotorCreation:
         self.loader = False
         self.shooter = False
 
-        self.loaderMotor = self.motors_loader["loaderMotor"]
+        self.hopperMotor1 = self.motors_loader["hopperMotor1"]
         self.intakeMotor = self.motors_loader["intakeMotor"]
         self.shooterMotor = self.motors_shooter["shooterMotor"]
 
@@ -100,9 +100,9 @@ class ShooterMotorCreation:
             self.intakeMotor.set(0)
 
         if self.loader:
-            self.loaderMotor.set(self.loaderSpeed)
+            self.hopperMotor1.set(self.loaderSpeed)
         elif self.loader == False:
-            self.loaderMotor.set(0)
+            self.hopperMotor1.set(0)
 
         if self.shooter:
             self.shooterMotor.set(self.shooterSpeed)
