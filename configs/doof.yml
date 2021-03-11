@@ -54,7 +54,11 @@ driveTrain:
         triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
+<<<<<<< Updated upstream
       inverted: False
+=======
+      inverted: True
+>>>>>>> Stashed changes
 
 loaderMotors:
   subsystem: "loader"
@@ -100,23 +104,19 @@ loaderSensors:
     groups: "digitalInput"
     sensor1:
       type: "RIODigitalIn"
-      channel: 5
+      channel: 3
       description: "Loading sensor"
-    sensor2:
-      type: "RIODigitalIn"
-      channel: 4
-      description: "Second bottom sensor"
     sensor3:
       type: "RIODigitalIn"
-      channel: 3
+      channel: 2
       description: "Middle sensor"
     sensor4:
       type: "RIODigitalIn"
-      channel: 2
+      channel: 1
       description: "Second top sensor"
     sensor5:
       type: "RIODigitalIn"
-      channel: 1
+      channel: 0
       description: "Shooting sensor"
 
 shooterMotors:
