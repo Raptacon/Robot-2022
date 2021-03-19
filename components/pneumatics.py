@@ -42,11 +42,7 @@ class Pneumatics:
         """
         Toggle the Loader from deployed to retracted or vice versa
         """
-<<<<<<< HEAD
         log.warning("Changing solenoid")
-=======
-        self.logger.warning("Changing solenoid")
->>>>>>> Robot-2020/aimbot
         self.newLoaderValue = (dsPos.kReverse if self.loaderSolenoid.get() == dsPos.kForward else dsPos.kForward)
 
     def getCompressorCurrent(self):

@@ -3,10 +3,6 @@
 import rev
 import ctre
 
-<<<<<<< HEAD
-
-=======
->>>>>>> Robot-2020/aimbot
 def createMotor(motorDescp, motors = {}):
     '''This is where all motors are set up.
     Motors include CAN Talons, CAN Talon Followers, CAN Talon FX, CAN Talon FX Followers, and SparkMax and its follower.
@@ -36,7 +32,7 @@ def createMotor(motorDescp, motors = {}):
         else:
             motor = ctre.WPI_TalonFX(motorDescp['channel'])
         setTalonFXCurrentLimits(motor, motorDescp)
-    
+
     elif motorDescp['type'] == 'CANTalonFXFollower':
         '''This is where CANTalon FX Followers are set up'''
         motor =ctre.WPI_TalonFX(motorDescp['channel'])
@@ -140,15 +136,15 @@ class WPI_TalonSRXFeedback(ctre.WPI_TalonSRX):#ctre.wpi_talonsrx.WPI_TalonSRX
             print("Motor channel %d has no PID"%(self.motorDescription['channel']))
             return
         self.pid = self.motorDescription['pid']
-        
+
         #Takes a str and converts it to a ctre enum
         self.controlType = self.pid['controlType']
         if self.controlType == "Position":
             self.controlType = ctre.ControlMode.Position
         elif self.controlType == "Velocity":
             self.controlType = ctre.ControlMode.Velocity
-        
-        
+
+
         self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
         self.ControlType = self.pid['controlType']
@@ -193,7 +189,7 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
             print("Motor channel %d has no PID"%(self.motorDescription['channel']))
             return
         self.pid = self.motorDescription['pid']
-        
+
         #Takes a str and converts it to a ctre enum for controltype.
         self.controlType = self.pid['controlType']
         if self.controlType == "Position":
@@ -202,7 +198,7 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
             self.controlType = ctre.TalonFXControlMode.Velocity
         else:
             print("Unrecognized control type: ",self.ControlType)
-        
+
         self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
         self.kPreScale = self.pid['kPreScale']
@@ -250,7 +246,7 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.pid = self.motorDescription['pid']
         pid = self.pid
         self.ControlType = pid['controlType']
-        
+
         #Turns strings from pid dictionary in config into enums from rev library for control type
         if self.ControlType == "Position":
             self.ControlType = rev.ControlType.kPosition
@@ -277,13 +273,13 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.PIDController.setI(pid['kI'], pid['feedbackDevice'])
         self.PIDController.setD(pid['kD'], pid['feedbackDevice'])
         self.PIDController.setFF(pid['kF'], pid['feedbackDevice'])
-        
+
         #Generally just a way to overwrite previous settings on any motor controller - We don't brake often.
         if 'IdleBrake' in self.motorDescription.keys() and self.motorDescription['IdleBrake'] == True:
             self.setIdleMode(rev.IdleMode.kBrake)
         else:
             self.setIdleMode(rev.IdleMode.kCoast)
-        
+
         #Configures output range - that's what Spark Maxes accept
         self.PIDController.setOutputRange(-1, 1, pid['feedbackDevice'])
         self.PIDController.setReference(0 , self.ControlType, pid['feedbackDevice'])

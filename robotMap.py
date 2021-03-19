@@ -8,12 +8,7 @@ class RobotMap():
     """
     def __init__(self):
         """intilize the robot map"""
-<<<<<<< HEAD
         configFile, configPath = configMapper.findConfig()
-=======
-        defaultConfig = "doof.yml"
-        configFile, configPath = configMapper.findConfig(defaultConfig)
->>>>>>> Robot-2020/aimbot
         self.configMapper = configMapper.ConfigMapper(configFile, configPath)
 
 class XboxMap():
@@ -39,13 +34,8 @@ class XboxMap():
         self.driveRightTrig = self.drive.getRawAxis(XboxController.Axis.kRightTrigger)
         self.driveLeftTrig = self.drive.getRawAxis(XboxController.Axis.kLeftTrigger)
         self.driveDPad = self.drive.getPOV()
-<<<<<<< HEAD
-=======
-        ###EMH - Adding autoaim
         self.driveA = self.drive.getAButton()
-        ###EMH - End Adding autoaim
 
->>>>>>> Robot-2020/aimbot
         #Mechanism controller inputs
         self.mechLeft = self.mech.getRawAxis(XboxController.Axis.kLeftY)
         self.mechRight = self.mech.getRawAxis(XboxController.Axis.kRightY)
@@ -55,10 +45,6 @@ class XboxMap():
         self.mechLeftTrig = self.mech.getRawAxis(XboxController.Axis.kLeftTrigger)
         self.mechDPad = self.mech.getPOV()
 
-<<<<<<< HEAD
-=======
-
->>>>>>> Robot-2020/aimbot
     def getDriveController(self):
         return self.drive
 
@@ -86,14 +72,9 @@ class XboxMap():
     def getDriveDPad(self):
         return self.driveDPad
 
-<<<<<<< HEAD
-=======
-    ###EMH - Adding autoaim
     def getDriveA(self):
         return self.driveA
-    ###EMH - End Adding autoaim
 
->>>>>>> Robot-2020/aimbot
     def getMechLeft(self):
         return self.mechLeft
 
