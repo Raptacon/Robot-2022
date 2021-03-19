@@ -97,6 +97,11 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
 
+        #Test
+        for i, sensor in enumerate(self.sensors.SensorArray):
+            print("sensor ", i, " is ", sensor.get())
+        print("  ")
+
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
@@ -128,7 +133,7 @@ class MyRobot(MagicRobot):
         """
         config = self.map.configMapper
         containerName = "subsystem" + groupName[0].upper() + groupName[1:]
-        
+
         if not hasattr(self, containerName):
             setattr(self, containerName, {})
             self.subsystemGyros = {}

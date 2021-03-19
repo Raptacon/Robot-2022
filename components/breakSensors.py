@@ -1,8 +1,8 @@
 from enum import IntEnum
 
 class SensorKey(IntEnum):
-    kLoadingSensor = 0
-    kShootingSensor = 4
+    kLoadingSensor = 3
+    kShootingSensor = 0
 
 class State:
     kTripped = False
@@ -14,8 +14,9 @@ class Sensors:
 
     def on_enable(self):
         self.SensorArray = []
-        for x in range(1, 6):
+        for x in range(4):
             self.SensorArray.append(self.digitalInput_breaksensors["sensor" + str(x)])
+            self.logger.info("added break sensor "+"sensor"+str(x))
         self.logger.info("Break sensor component created")
 
     def loadingSensor(self, state):
