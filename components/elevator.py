@@ -19,6 +19,5 @@ class Elevator:
 
     def stop(self):
         self.speed = 0
-
     def execute(self):
         self.elevatorMotor.set(self.speed)

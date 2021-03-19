@@ -1,0 +1,19 @@
+#This dictionary provides a conversion between RPM and distance (in feet). Meant to provide a data set for a quadratic regression.
+DISTtoRPM:
+    7: 5600
+    8: 5500
+    9: 5000
+    10: 4900
+    11: 4800
+    12: 4750
+    13: 4850
+    14: 5000
+    15: 5000
+    16: 5050
+    17: 5050
+    18: 5125
+    19: 5300
+    20: 5450
+    21: 5550
+    22: 5600
+    23: 5700

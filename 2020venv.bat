@@ -1,0 +1,1 @@
+C:\Users\ehsra\2020venv\Scripts\activate.bat

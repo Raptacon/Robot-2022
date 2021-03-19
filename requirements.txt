@@ -1,19 +1,35 @@
+<<<<<<< HEAD
 cryptography==3.2.1
+=======
+>>>>>>> Robot-2020/aimbot
 pyflakes
 py2app
 macholib
 modulegraph
 flake8
 coverage
+<<<<<<< HEAD
 wheel
 
 robotpy
 
 # If installed on OSX (joystick support) it seems to fail?
+=======
+
+
+# If installed on OSX (joystick support) it seems to fail?
+pygame
+>>>>>>> Robot-2020/aimbot
 pyfrc
 robotpy-ctre
 robotpy-navx
 robotpy-rev
+<<<<<<< HEAD
 robotpy-halsim-gui
 robotpy-wpilib-utilities
 pynetworktables
+=======
+pynetworktables
+pyyaml
+chardet
+>>>>>>> Robot-2020/aimbot

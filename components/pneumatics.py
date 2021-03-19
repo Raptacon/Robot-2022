@@ -24,7 +24,6 @@ class Pneumatics:
         returns the "value" of the solenoid. Boolean, is it on or off?
         """
         return True if self.solenloaderSolenoidoid.get() == dsPos.kForward else False
-
     def deployLoader(self):
         """
         Turn the loader to the deployed position
@@ -43,7 +42,11 @@ class Pneumatics:
         """
         Toggle the Loader from deployed to retracted or vice versa
         """
+<<<<<<< HEAD
         log.warning("Changing solenoid")
+=======
+        self.logger.warning("Changing solenoid")
+>>>>>>> Robot-2020/aimbot
         self.newLoaderValue = (dsPos.kReverse if self.loaderSolenoid.get() == dsPos.kForward else dsPos.kForward)
 
     def getCompressorCurrent(self):

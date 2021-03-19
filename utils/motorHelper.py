@@ -3,7 +3,10 @@
 import rev
 import ctre
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> Robot-2020/aimbot
 def createMotor(motorDescp, motors = {}):
     '''This is where all motors are set up.
     Motors include CAN Talons, CAN Talon Followers, CAN Talon FX, CAN Talon FX Followers, and SparkMax and its follower.

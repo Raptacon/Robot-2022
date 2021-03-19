@@ -7,17 +7,53 @@ on:
     - cron: '0 2 * * *'
     
 jobs:
+<<<<<<< HEAD
+=======
+  RobotUnitTestLinux:
+    name: Unit / Integration Tests (Linux)
+    #runs-on: ubuntu-latest
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python 3.8
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      timeout-minutes: 60
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Robotpy tests
+      timeout-minutes: 1
+      continue-on-error: True
+      run: |
+        python3 robot.py test
+
+>>>>>>> Robot-2020/aimbot
   RobotUnitTestWindows:
     name: Unit / Integration Tests (Windows)
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
 
+<<<<<<< HEAD
     - name: Set up Python 3.9
       timeout-minutes: 2
       uses: actions/setup-python@v1
       with:
         python-version: 3.9
+=======
+    - name: Set up Python 3.8
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+>>>>>>> Robot-2020/aimbot
 
     - name: Install dependencies
       timeout-minutes: 5
@@ -37,11 +73,19 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+<<<<<<< HEAD
     - name: Set up Python 3.9
       timeout-minutes: 2
       uses: actions/setup-python@v1
       with:
         python-version: 3.9
+=======
+    - name: Set up Python 3.8
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+>>>>>>> Robot-2020/aimbot
 
     - name: Install dependencies
       timeout-minutes: 5
@@ -63,18 +107,30 @@ jobs:
     steps:
     - uses: actions/checkout@v1
       
+<<<<<<< HEAD
     - name: Set up Python 3.9
       timeout-minutes: 2
       uses: actions/setup-python@v1
       with:
         python-version: 3.9
+=======
+    - name: Set up Python 3.8
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+>>>>>>> Robot-2020/aimbot
     
     - name: Lint with flake8 critical
       timeout-minutes: 1
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
+<<<<<<< HEAD
         flake8 . --count --select=E9,F6,F7,F8,F4,W1,W2,W4,W5,W6,E11 --ignore W293 --show-source --statistics --exclude */tests/pyfrc*,utils/yaml/*,.venv*/,venv*/
+=======
+        flake8 . --count --select=E9,F6,F7,F8,F4,W1,W2,W4,W5,W6,E11 --ignore W293 --show-source --statistics --exclude */tests/pyfrc*
+>>>>>>> Robot-2020/aimbot
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 
 
@@ -84,14 +140,26 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+<<<<<<< HEAD
     - name: Set up Python 3.9
       timeout-minutes: 2
       uses: actions/setup-python@v1
       with:
         python-version: 3.9
+=======
+    - name: Set up Python 3.8
+      timeout-minutes: 2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+>>>>>>> Robot-2020/aimbot
     
     - name: Lint with flake8 extra
       timeout-minutes: 1
       run: |
         pip install flake8
+<<<<<<< HEAD
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude */tests/pyfrc*,utils/yaml/*,.venv*/,venv*/
+=======
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --ignore E265,E232,W391,E302 --exclude */tests/pyfrc*
+>>>>>>> Robot-2020/aimbot
