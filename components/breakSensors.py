@@ -1,4 +1,5 @@
 from enum import IntEnum
+import logging as log
 
 class SensorKey(IntEnum):
     kLoadingSensor = 3
@@ -16,8 +17,7 @@ class Sensors:
         self.SensorArray = []
         for x in range(4):
             self.SensorArray.append(self.digitalInput_breaksensors["sensor" + str(x)])
-            self.logger.info("added break sensor "+"sensor"+str(x))
-        self.logger.info("Break sensor component created")
+        log.info("Break sensor component created")
 
     def loadingSensor(self, state):
         """Gets the loading sensor state and checks if it matches the requested state."""
