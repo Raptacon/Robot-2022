@@ -38,6 +38,9 @@ class ShooterLogic(StateMachine):
         """Indicates if the robot is not in autonomous mode."""
         self.isAutonomous = False
 
+    def setRPM(self, rpm):
+        self.teleShootingSpeed = rpm
+
     def shootBalls(self):
         """Executes smart shooter."""
         if self.shooterMotors.isLoaderRunning() or self.shooterMotors.isShooterRunning():
@@ -91,8 +94,9 @@ class ShooterLogic(StateMachine):
         If in autonomous, run shooter automatically.
         """
         if not self.isAutonomous:
-            self.shooterMotors.runShooter(self.teleShootingSpeed)
-            self.feeder.run(Type.kLoader)
+            if self.isShooterUpToSpeed():
+                self.shooterMotors.runShooter(self.teleShootingSpeed)
+                self.feeder.run(Type.kLoader)
 
         elif self.isAutonomous:
             self.shooterMotors.runShooter(self.autoShootingSpeed)

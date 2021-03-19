@@ -9,7 +9,7 @@ import logging as log
 import os
 from pathlib import Path
 
-import yaml
+from utils import yaml
 
 
 def findRPM(configName):
@@ -139,8 +139,10 @@ class AutoShoot(StateMachine):
 
             if self.ty == -50 or self.ty == -1 or self.ty == 0:
                 log.error("ANGLES ARE MISSING, NO SHOOTING")
-            else:
+            elif self.ty > -50 and self.ty < 50:
                 self.next_state("calc_RPM_shoot")
+            else:
+                log.error("ANGLES ARE MISSING, NO SHOOTING")
         else:
             log.error("Limelight: No Valid Targets")
 
@@ -168,5 +170,8 @@ class AutoShoot(StateMachine):
         # set rpm
         self.shooter.setRPM(self.rpm)
         # shoot
-        self.shooter.shootBalls()
+        if self.shooter.shootBalls():
+            log.error("Shooting complete")
+        else:
+            log.error("Unable to shoot")
         self.done()

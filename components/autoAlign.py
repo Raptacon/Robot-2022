@@ -1,6 +1,7 @@
 from networktables import NetworkTables as networktable
 from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
+import logging as log
 from components.driveTrain import DriveTrain
 from components.autoShoot import AutoShoot
 
@@ -71,6 +72,7 @@ class AutoAlign(StateMachine):
                 # If the horizontal offset is within the given tolerance,
                 # finish.
                 elif tx < self.maxAimOffset and tx > -1 * self.maxAimOffset:
+                    log.info("Autoalign complete")
                     if self.shootAfterComplete:
                         self.autoShoot.engage()
 
