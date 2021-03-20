@@ -11,10 +11,11 @@ class State:
 
 class Sensors:
 
+    compatString = ["doof", "testBoard"]
     digitalInput_breaksensors: dict
+    SensorArray = []
 
     def on_enable(self):
-        self.SensorArray = []
         for x in range(4):
             self.SensorArray.append(self.digitalInput_breaksensors["sensor" + str(x)])
         log.info("Break sensor component created")
