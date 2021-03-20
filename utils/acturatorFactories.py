@@ -39,4 +39,3 @@ def solenoidFactory(descp):
         logging.error("Failed to create solenoid %s. Err %s", descp, e)
 
     return None
-
