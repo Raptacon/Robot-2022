@@ -40,8 +40,8 @@ def findRPM(configName):
     except Exception as e:
         log.error("Could not find %s", robotConfigFile)
         log.error(e)
-        log.error("Please run `echo <robotcfg.yml> >" +
-                  " ~/robotConfig` on the robot")
+        log.error(("Please run `echo <robotcfg.yml> >" +
+                  " ~/robotConfig` on the robot"))
         log.error("Using default %s", defaultConfig)
 
     return configPath
