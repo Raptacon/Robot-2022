@@ -65,7 +65,7 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
 
-        # Check each componet for compatibility
+        # Check each component for compatibility
         testComponentCompatibility(self, ShooterLogic)
         testComponentCompatibility(self, ShooterMotorCreation)
         testComponentCompatibility(self, DriveTrain)
@@ -109,7 +109,7 @@ class MyRobot(MagicRobot):
 
         #Test
         for i, sensor in enumerate(self.sensors.SensorArray):
-            print("sensor ", i, " is ", sensor.get())
+            print("sensor ", sensor, " is ", sensor.get())
         print("  ")
 
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
