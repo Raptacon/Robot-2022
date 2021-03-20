@@ -5,9 +5,6 @@ import logging as log
 from components.driveTrain import DriveTrain
 from components.autoShoot import AutoShoot
 
-import logging as log
-
-
 class AutoAlign(StateMachine):
     """
     Puts the limelight (not necessarily the entirely robot)

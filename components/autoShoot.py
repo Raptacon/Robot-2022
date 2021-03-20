@@ -19,7 +19,6 @@ def findRPM(configName):
     robot to use robotCfg file remove the () and use file name file.
     Files should be in configs dir
     """
-    compatString = ["doof"]
     configPath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + "configs" + os.path.sep
 
     home = str(Path.home()) + os.path.sep
@@ -98,6 +97,7 @@ class AutoShoot(StateMachine):
     MAKE SURE THAT THE ROBOT IS ALIGNED BEFORE ENGAGING.
     """
 
+    compatString = ["doof"]
     dist = int(0)
     angle = int(0)
     smartTable = networktable.getTable('SmartDashboard')
