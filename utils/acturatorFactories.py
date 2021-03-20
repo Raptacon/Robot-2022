@@ -37,6 +37,6 @@ def solenoidFactory(descp):
             return solenoid
     except Exception as e:
         logging.error("Failed to create solenoid %s. Err %s", descp, e)
-    
+
     return None
-        
+
