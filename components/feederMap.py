@@ -48,7 +48,7 @@ class FeederMap:
                 log.debug("left trig manual", self.xboxMap.getMechLeftTrig())
 
             else:
-                self.shooterMotors.stopLoader()
+                self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kForwards)
 
     def execute(self):
         pass

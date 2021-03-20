@@ -46,7 +46,7 @@ class ShooterMotorCreation:
 
     def runLoader(self, lSpeed, direction):
         """
-        Sets the intake to speed lSpeed
+        Sets the hopper motor to speed lSpeed
         """
         if direction == Direction.kForwards: # Forwards
             self.loaderSpeed = lSpeed

@@ -3,7 +3,6 @@ from components.shooterMotors import ShooterMotorCreation, Direction
 from components.breakSensors import Sensors, State
 from components.feederMap import FeederMap, Type
 from magicbot import StateMachine, state, timed_state, tunable, feedback
-import logging as log
 
 class ShooterLogic(StateMachine):
     """StateMachine-based shooter. Has both manual and automatic modes."""
@@ -104,7 +103,6 @@ class ShooterLogic(StateMachine):
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed)
             if self.isShooterUpToSpeed():
-                log.error("ITS UP TO SPEED")
                 self.feeder.run(Type.kLoader)
             else:
                 self.next_state('runShooter')
@@ -132,9 +130,7 @@ class ShooterLogic(StateMachine):
         """First state. Does nothing here. StateMachine returns to this state when not shooting."""
         if self.start == True and self.running == False:
             self.next_state('shootBalls')
-            log.error("SHOOTING!")
         else:
-            log.error("Not Shooting, "+str(self.start)+" "+str(self.running))
 
     def execute(self):
         """Constantly runs state machine. Necessary for function."""
