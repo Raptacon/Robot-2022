@@ -107,11 +107,6 @@ class MyRobot(MagicRobot):
         """
         self.xboxMap.controllerInput()
 
-        #Test
-        for i, sensor in enumerate(self.sensors.SensorArray):
-            print("sensor ", sensor, " is ", sensor.get())
-        print("  ")
-
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
@@ -134,14 +129,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        self.xboxMap.controllerInput()
-
-        if self.xboxMap.getDriveLeft() > 0:
-            self.testBoard.setRaise()
-        elif self.xboxMap.getDriveLeft() < 0:
-            self.testBoard.setLower()
-        else:
-            self.testBoard.stop()
+        pass
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
