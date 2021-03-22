@@ -1,4 +1,4 @@
-#This dictionary provides a conversion between RPM and distance (in feet). Meant to provide a data set for a quadratic regression.
+#This dictionary provides a conversion between RPM and distance (in feet).
 DISTtoRPM:
     7: 5600
     8: 5500

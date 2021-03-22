@@ -65,12 +65,14 @@ def calculateRPM(dist, dir, filename):
         return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
+        distances = DtoRPM.keys()
+        rpms = DtoRPM.values()
         distFound = False
-        for distance, rpm in DtoRPM.items():
+        for i, distance, rpm in enumerate(DtoRPM.items()):
             # truncate distance to integer (dist will likely be a float)
             if distance == int(dist):
                 lowdist = distance
-                highdist = lowdist + 1
+                highdist = distances[i+1]
                 distFound = True
                 break
         if distFound:
