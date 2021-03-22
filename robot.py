@@ -81,6 +81,7 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, AutoAlign)
         testComponentCompatibility(self, TestBoard)
         testComponentCompatibility(self, AutoShoot)
+        testComponentCompatibility(self, FeederMap)
 
 
     def autonomousInit(self):
@@ -153,7 +154,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        self.xboxMap.controllerInput()
+        pass
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
