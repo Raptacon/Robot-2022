@@ -1,4 +1,5 @@
 from robotMap import XboxMap
+import logging as log
 from components.shooterMotors import ShooterMotorCreation, Direction
 from components.breakSensors import Sensors, State
 from components.feederMap import FeederMap, Type
@@ -13,10 +14,10 @@ class ShooterLogic(StateMachine):
     feeder: FeederMap
     sensors: Sensors
     xboxMap: XboxMap
-    speedTolerance = tunable(50)
+    speedTolerance = tunable(75)
 
     # Tunables
-    shootingLoaderSpeed = tunable(.2)
+    shootingLoaderSpeed = tunable(.4)
     autoShootingSpeed = tunable(4800)
     teleShootingSpeed = tunable(5300)
 
@@ -55,6 +56,7 @@ class ShooterLogic(StateMachine):
 
     def doneShooting(self):
         """Finishes shooting process and reverts back to appropriate mode."""
+        self.start = False
         self.running = False
         self.next_state('finishShooting')
 
@@ -103,8 +105,10 @@ class ShooterLogic(StateMachine):
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed)
             if self.isShooterUpToSpeed():
-                self.feeder.run(Type.kLoader)
+                log.error("Shoottinginoiansdonosg")
+                self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
             else:
+                self.shooterMotors.runLoader(.2, Direction.kForwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
@@ -130,7 +134,6 @@ class ShooterLogic(StateMachine):
         """First state. Does nothing here. StateMachine returns to this state when not shooting."""
         if self.start == True and self.running == False:
             self.next_state('shootBalls')
-        else:
 
     def execute(self):
         """Constantly runs state machine. Necessary for function."""

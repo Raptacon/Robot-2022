@@ -65,21 +65,24 @@ def calculateRPM(dist, dir, filename):
         return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
-
+        distFound = False
         for distance, rpm in DtoRPM.items():
             # truncate distance to integer (dist will likely be a float)
             if distance == int(dist):
                 lowdist = distance
                 highdist = lowdist + 1
+                distFound = True
                 break
-        #             4000               3500 = 500
-        diff = DtoRPM[highdist] - DtoRPM[lowdist]
-        #      5.2        5       500         3500
-        rpm = (dist - lowdist) * diff + DtoRPM[lowdist]
+        if distFound:
+            #             4000               3500 = 500
+            diff = DtoRPM[highdist] - DtoRPM[lowdist]
+            #      5.2        5       500         3500
+            rpm = (dist - lowdist) * diff + DtoRPM[lowdist]
+        else:
+            log.error("Dist outside of range")
 
     else:
         log.error("Given file did not have values at base, using default RPM")
-        return
 
     if rpm > maxRPM:
         log.error("RPM too high. Using max of "+str(maxRPM))
@@ -114,12 +117,12 @@ class AutoShoot(StateMachine):
 
     # height of the middle of the limelight target in feet.
     # So this is the middle of the lower half of the hexagon
-    targetHeight = 39.5/12
+    targetHeight = 88/12
     # height of the limelight on the robot in feet.
     # Used to calculate distance from the target.
-    limeHeight = 4.75/12
+    limeHeight = 3
     # Could also be changed using the crosshair in limelight settings
-    limeLightAngleOffset = 6.8
+    limeLightAngleOffset = 4.7
 
     # IF "limeLightAngleOffset" is 0,
     # CROSSHAIR MUST BE ON HORIZONTAL IN LIMELIGHT
@@ -127,26 +130,34 @@ class AutoShoot(StateMachine):
     shooter: ShooterLogic
     driveTrain: DriveTrain
 
-    @state(first=True)
+    starting = False
+    stopping = False
+    running = False
+
+    @state
     def start(self):
         limeTable = networktable.getTable("limelight")
 
         # If limelight can see something
         self.tx = limeTable.getNumber("tx", -50)
         if self.tx != -50 or self.tx != 0:
+            log.error("LImelight exist")
             # "ty" is the vertical offset from the limelight.
             self.ty = limeTable.getNumber("ty", -50)
 
             if self.ty == -50 or self.ty == -1 or self.ty == 0:
                 log.error("ANGLES ARE MISSING, NO SHOOTING")
+                self.next_state("idling")
             elif self.ty > -50 and self.ty < 50:
                 self.next_state("calc_RPM_shoot")
             else:
                 log.error("ANGLES ARE MISSING, NO SHOOTING")
+                self.next_state("idling")
         else:
             log.error("Limelight: No Valid Targets")
+            self.next_state("idling")
 
-    @state(must_finish=True)
+    @state
     def calc_RPM_shoot(self):
 
         self.dist_x = guessDistanceTrig(self.targetHeight, self.limeHeight,
@@ -163,15 +174,32 @@ class AutoShoot(StateMachine):
 
         self.next_state("stop_shoot")
 
-    @state(must_finish=True)
+    @state
     def stop_shoot(self):
         # stop
         self.driveTrain.setTank(0, 0)
         # set rpm
         self.shooter.setRPM(self.rpm)
         # shoot
-        if self.shooter.shootBalls():
-            log.error("Shooting complete")
+        if not self.stopping:
+            self.shooter.startShooting()
+        self.next_state("idling")
+
+    @state(first=True)
+    def idling(self):
+        if self.starting:
+            self.starting = False
+            log.error("STARTING")
+            self.next_state("start")
         else:
-            log.error("Unable to shoot")
-        self.done()
+            self.next_state('idling')
+
+    def stop(self):
+        self.stopping = True
+        self.starting = False
+        self.shooter.doneShooting()
+        self.next_state("idling")
+
+    def startAutoShoot(self):
+        self.stopping = False
+        self.starting = True

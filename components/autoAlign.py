@@ -22,8 +22,8 @@ class AutoAlign(StateMachine):
     maxAimOffset = 2
 
     # PID
-    P = tunable(0.005)
-    I = tunable(0.1)
+    P = tunable(0.001)
+    I = tunable(0.01)
     D = tunable(0)
     inverted = False
     speed = 0
@@ -70,8 +70,9 @@ class AutoAlign(StateMachine):
                 # finish.
                 elif tx < self.maxAimOffset and tx > -1 * self.maxAimOffset:
                     log.info("Autoalign complete")
+                    self.driveTrain.setTank(0, 0)
                     if self.shootAfterComplete:
-                        self.autoShoot.engage()
+                        self.autoShoot.startAutoShoot()
 
         else:
             log.error("Limelight: No Valid Targets")
@@ -79,12 +80,12 @@ class AutoAlign(StateMachine):
     @timed_state(duration=time, next_state="start")
     def adjust_self_right(self):
         """Turns the bot right"""
-        self.driveTrain.setTank(self.speed, -1 * self.speed)
+        self.driveTrain.setTank(-1 * self.speed, self.speed)
 
     @timed_state(duration=time, next_state="start")
     def adjust_self_left(self):
         """Turns the bot left"""
-        self.driveTrain.setTank(self.speed, -1 * self.speed)
+        self.driveTrain.setTank(-1 * self.speed, self.speed)
 
     def calc_PID(self, error):
         """
@@ -104,3 +105,10 @@ class AutoAlign(StateMachine):
 
     def reset_integral(self):
         self.integral = 0
+
+    @state
+    def idling(self):
+        pass
+
+    def stop(self):
+        self.next_state_now("idling")
