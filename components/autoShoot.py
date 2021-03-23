@@ -57,31 +57,39 @@ def calculateRPM(dist, dir, filename):
     rpm = 5000
 
     values = yaml.load(open(dir+filename))
-    minDist_x = 6.5
+    minDist_x = 9
     maxRPM = 5750
     if dist < minDist_x:
         log.error("Dist is too low")
+        # default rpm for low distances
         rpm = 5500
         return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
-        distances = DtoRPM.keys()
-        rpms = DtoRPM.values()
+        distances = list(DtoRPM.keys())
+        rpms = list(DtoRPM.values())
         distFound = False
-        for i, distance, rpm in enumerate(DtoRPM.items()):
+        for i, distance in enumerate(distances):
             # truncate distance to integer (dist will likely be a float)
             if distance == int(dist):
                 lowdist = distance
-                highdist = distances[i+1]
+                if i < len(distances) - 1:
+                    highdist = distances[i+1]
+                    highRPM = DtoRPM[highdist]
+                else:
+                    highdist = -1
+                    highRPM = 5700
                 distFound = True
+                lowRPM = DtoRPM[lowdist]
                 break
         if distFound:
             #             4000               3500 = 500
-            diff = DtoRPM[highdist] - DtoRPM[lowdist]
+            diff = highRPM - lowRPM
             #      5.2        5       500         3500
             rpm = (dist - lowdist) * diff + DtoRPM[lowdist]
         else:
             log.error("Dist outside of range")
+            rpm = maxRPM
 
     else:
         log.error("Given file did not have values at base, using default RPM")
@@ -119,12 +127,12 @@ class AutoShoot(StateMachine):
 
     # height of the middle of the limelight target in feet.
     # So this is the middle of the lower half of the hexagon
-    targetHeight = 88/12
+    targetHeight = 82/12
     # height of the limelight on the robot in feet.
     # Used to calculate distance from the target.
-    limeHeight = 3
+    limeHeight = 35/12
     # Could also be changed using the crosshair in limelight settings
-    limeLightAngleOffset = 4.7
+    limeLightAngleOffset = 5.2
 
     # IF "limeLightAngleOffset" is 0,
     # CROSSHAIR MUST BE ON HORIZONTAL IN LIMELIGHT
@@ -134,7 +142,6 @@ class AutoShoot(StateMachine):
 
     starting = False
     stopping = False
-    running = False
 
     @state
     def start(self):

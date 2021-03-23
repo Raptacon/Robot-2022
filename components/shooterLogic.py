@@ -108,7 +108,7 @@ class ShooterLogic(StateMachine):
                 log.error("Shoottinginoiansdonosg")
                 self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
             else:
-                self.shooterMotors.runLoader(.2, Direction.kForwards)
+                self.shooterMotors.runLoader(0, Direction.kForwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
