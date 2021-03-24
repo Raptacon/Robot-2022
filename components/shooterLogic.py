@@ -2,7 +2,6 @@ from robotMap import XboxMap
 import logging as log
 from components.shooterMotors import ShooterMotorCreation, Direction
 from components.breakSensors import Sensors, State
-from components.feederMap import FeederMap, Type
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
 class ShooterLogic(StateMachine):
@@ -11,7 +10,6 @@ class ShooterLogic(StateMachine):
 
     # Component/module related things
     shooterMotors: ShooterMotorCreation
-    feeder: FeederMap
     sensors: Sensors
     xboxMap: XboxMap
     speedTolerance = tunable(75)
