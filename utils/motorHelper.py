@@ -35,7 +35,10 @@ def createMotor(motorDescp, motors = {}):
 
     elif motorDescp['type'] == 'CANTalonFXFollower':
         '''This is where CANTalon FX Followers are set up'''
-        motor = WPI_TalonFXFeedback(motorDescp)
+        motor =ctre.WPI_TalonFX(motorDescp['channel'])
+        motor.set(mode = ctre.TalonFXControlMode.Follower, value = motorDescp['masterChannel'])
+        motors[str(motorDescp['channel'])] = motor
+        setTalonFXCurrentLimits(motor, motorDescp)
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
