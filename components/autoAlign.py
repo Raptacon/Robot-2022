@@ -26,6 +26,7 @@ class AutoAlign(StateMachine):
     I = tunable(0.05)
     D = tunable(0)
     inverted = False
+    brakingBound = tunable(200)
     speed = 0
     integral = 0
     preverror = 0
@@ -95,8 +96,11 @@ class AutoAlign(StateMachine):
         the drivetrain. "time" is the amount of time assumed to have passed.
         """
         self.integral = self.integral + error * self.time
-        setspeed = self.P * (error) + self.D * (error - self.preverror) + self.I * (self.integral)
-        self.preverror = error
+        dError = error - self.preverror
+        setspeed = self.P * (error) + self.D * dError + self.I * (self.integral)
+
+        if dError * self.brakingBound < error:
+            return 0
 
         if setspeed > 0:
             setspeed += self.minThreshold
@@ -105,6 +109,11 @@ class AutoAlign(StateMachine):
 
         if self.inverted:
             setspeed *= -1
+
+        if setspeed > 1:
+            setspeed = 1
+        if setspeec < -1:
+            setspeed = -1
 
         self.smartTable.putNumber("PIDspeed", setspeed)
         self.smartTable.putNumber("Integral", self.integral)
