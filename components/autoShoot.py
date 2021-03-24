@@ -54,7 +54,7 @@ def calculateRPM(dist, dir, filename):
     """
 
     # default value in case nothing is calculated
-    rpm = 5100
+    rpm = ShooterLogic.teleShootingSpeed
 
     values = yaml.load(open(dir+filename))
     minDist_x = 9
