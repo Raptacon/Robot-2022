@@ -30,15 +30,12 @@ def createMotor(motorDescp, motors = {}):
             motor = WPI_TalonFXFeedback(motorDescp)
             motor.setupPid()
         else:
-            motor = ctre.WPI_TalonFX(motorDescp['channel'])
+            motor = WPI_TalonFXFeedback(motorDescp)
         setTalonFXCurrentLimits(motor, motorDescp)
 
     elif motorDescp['type'] == 'CANTalonFXFollower':
         '''This is where CANTalon FX Followers are set up'''
-        motor =ctre.WPI_TalonFX(motorDescp['channel'])
-        motor.set(mode = ctre.TalonFXControlMode.Follower, value = motorDescp['masterChannel'])
-        motors[str(motorDescp['channel'])] = motor
-        setTalonFXCurrentLimits(motor, motorDescp)
+        motor = WPI_TalonFXFeedback(motorDescp)
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
@@ -215,11 +212,19 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         self.config_kI(0, self.pid['kI'], 10)
         self.config_kD(0, self.pid['kD'], 10)
 
+    def setBraking(self, braking: bool):
+        if braking:
+            self.setNeutralMode(ctre.NeutralMode.Brake)
+        else:
+            self.setNeutralMode(ctre.NeutralMode.Coast)
+
     def set(self, speed):
         """
         Overrides the default set() to allow for controll using the pid loop
         """
-        if self.pid != None:
+        if self.controlType == ctre.TalonFXControlMode.Follower:
+            return ctre.WPI_TalonFX.set(self, self.controlType, self.motorDescription['masterChannel'])
+        elif self.pid != None:
             return ctre.WPI_TalonFX.set(self, self.controlType, speed * self.kPreScale)
         else:
             return ctre.WPI_TalonFX.set(self, speed)

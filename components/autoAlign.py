@@ -30,6 +30,8 @@ class AutoAlign(StateMachine):
     integral = 0
     preverror = 0
 
+    # Minimum value necessary to move the robot
+    minThreshold = .05
     limeTable = networktable.getTable("limelight")
     smartTable = networktable.getTable('SmartDashboard')
     smartTable.putNumber("PIDspeed", 0)
@@ -50,7 +52,7 @@ class AutoAlign(StateMachine):
 
     @state(first=True)
     def start(self):
-
+        self.driveTrain.setBraking(True)
         # If limelight can see something
         self.tx = self.limeTable.getNumber("tx", -50)
         if self.tx != -50 or self.tx != 0:
@@ -97,9 +99,9 @@ class AutoAlign(StateMachine):
         self.preverror = error
 
         if setspeed > 0:
-            setspeed += .05
+            setspeed += self.minThreshold
         elif setspeed < 0:
-            setspeed -= .05
+            setspeed -= self.minThreshold
 
         if self.inverted:
             setspeed *= -1
@@ -116,4 +118,5 @@ class AutoAlign(StateMachine):
         pass
 
     def stop(self):
+        self.driveTrain.setBraking(False)
         self.next_state_now("idling")
