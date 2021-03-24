@@ -27,17 +27,10 @@ class DriveTrain():
         self.creeperMode = False
         self.controlMode = ControlMode.kDisabled
         self.leftMotor = self.motors_driveTrain["leftMotor"]
-        self.leftFollower = self.motors_driveTrain["leftFollower"]
         self.rightMotor = self.motors_driveTrain["rightMotor"]
-        self.rightFollower = self.motors_driveTrain["rightFollower"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
         log.info("DriveTrain setup completed")
 
-    def setBraking(self, braking:bool):
-        self.leftMotor.setBraking(braking)
-        self.leftFollower.setBraking(braking)
-        self.rightMotor.setBraking(braking)
-        self.rightFollower.setBraking(braking)
 
     def getLeft(self):
         return self.leftMotor.get()
