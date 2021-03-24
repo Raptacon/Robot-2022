@@ -19,7 +19,7 @@ class ShooterLogic(StateMachine):
     # Tunables
     shootingLoaderSpeed = tunable(.4)
     autoShootingSpeed = tunable(4800)
-    teleShootingSpeed = tunable(5300)
+    teleShootingSpeed = tunable(5100)
 
     # Other variables
     isSetup = False
@@ -82,7 +82,7 @@ class ShooterLogic(StateMachine):
         """Smart shooter initialization (reversing if necessary)."""
         if self.sensors.shootingSensor(State.kTripped):
             self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kBackwards)
-            self.next_state('shootBalls')
+            self.next_state('initShooting')
 
         else:
             self.shooterMotors.stopLoader()
