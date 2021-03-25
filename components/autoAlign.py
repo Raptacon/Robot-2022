@@ -113,7 +113,7 @@ class AutoAlign(StateMachine):
         if setspeed < -1:
             setspeed = -1
 
-        if error < self.brakingBound * dError:
+        if self.brakingBound * error < dError:
             return 0
 
 
@@ -129,4 +129,5 @@ class AutoAlign(StateMachine):
         pass
 
     def stop(self):
+        self.driveTrain.setBraking(False)
         self.next_state_now("idling")
