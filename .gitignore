@@ -107,7 +107,6 @@ celerybeat.pid
 env/
 venv*/
 .venv*/
-.vscode/
 ENV/
 env.bak/
 venv.bak/
@@ -115,6 +114,9 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
+
+# VS Code project settings
+.vscode/
 
 # Rope project settings
 .ropeproject
@@ -136,3 +138,5 @@ raptaconVenv
 
 #FRC files
 imgui.ini
+.deploy_cfg
+.installer_config
