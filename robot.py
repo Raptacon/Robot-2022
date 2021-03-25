@@ -4,6 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 import wpilib
 from wpilib import XboxController
+from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -18,6 +19,7 @@ from components.loaderLogic import LoaderLogic
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 from components.feederMap import FeederMap
+from components.lidar import Lidar
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -46,6 +48,7 @@ class MyRobot(MagicRobot):
     pneumatics: Pneumatics
     elevator: Elevator
     scorpionLoader: ScorpionLoader
+    lidar: Lidar
 
     # Test code:
     testBoard: TestBoard
@@ -56,8 +59,14 @@ class MyRobot(MagicRobot):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
+        ReadBufferValue = 18
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
+
+        self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
+        SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
+        self.MXPserial.setReadBufferSize(ReadBufferValue)
+        self.MXPserial.setTimeout(1)
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -76,6 +85,8 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, ScorpionLoader)
         testComponentCompatibility(self, TestBoard)
         testComponentCompatibility(self, FeederMap)
+        testComponentCompatibility(self, Lidar)
+        testComponentCompatibility(self, LoaderLogic)
 
 
     def autonomousInit(self):
@@ -127,9 +138,10 @@ class MyRobot(MagicRobot):
 
     def testPeriodic(self):
         """
-        Called during test mode alot
+        Called during test mode a lot
         """
-        pass
+        self.lidar.execute()
+        print(self.lidar.bufferArray)
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
