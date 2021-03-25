@@ -110,6 +110,7 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
 
         self.shooter.autonomousDisabled()
+        self.driveTrain.setBraking(True)
         self.prevAState = False
 
     def teleopPeriodic(self):
@@ -155,6 +156,12 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         pass
+
+    def disabledInit(self):
+        """
+        Called when the robot is disabled
+        """
+        self.driveTrain.setBraking(False)
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
