@@ -59,12 +59,13 @@ class MyRobot(MagicRobot):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
+        ReadBufferValue = 18
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
 
         self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
         SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
-        self.MXPserial.setReadBufferSize(18)
+        self.MXPserial.setReadBufferSize(ReadBufferValue)
         self.MXPserial.setTimeout(1)
 
         self.instantiateSubsystemGroup("motors", createMotor)
