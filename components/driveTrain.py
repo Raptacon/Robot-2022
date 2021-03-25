@@ -1,6 +1,7 @@
 import wpilib.drive
 from enum import Enum, auto
 import logging as log
+import ctre
 
 from magicbot import tunable
 class ControlMode(Enum):
@@ -35,9 +36,13 @@ class DriveTrain():
 
     def setBraking(self, braking:bool):
         self.leftMotor.setBraking(braking)
-        self.leftFollower.setBraking(braking)
         self.rightMotor.setBraking(braking)
-        self.rightFollower.setBraking(braking)
+        if braking:
+            self.leftFollower.setNeutralMode(ctre.NeutralMode.Brake)
+            self.rightFollower.setNeutralMode(ctre.NeutralMode.Brake)
+        else:
+            self.leftFollower.setNeutralMode(ctre.NeutralMode.Coast)
+            self.rightFollower.setNeutralMode(ctre.NeutralMode.Coast)
 
     def getLeft(self):
         return self.leftMotor.get()
