@@ -14,7 +14,7 @@ class Lidar:
 
     def checkAndRead(self, packet):
         """
-        Checks the lidar and reads the output
+        Checks the given packet and reads the output of that packet
         sample packet:([0x59,0x59,0x59,0x0, 0x10, 0x45,0xB8, 0x7, 0x1F])
         The first 2 bytes are the indicators of the start of the packet.
         The last byte is the checksum.

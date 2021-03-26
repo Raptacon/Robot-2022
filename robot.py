@@ -130,6 +130,8 @@ class MyRobot(MagicRobot):
 
         self.scorpionLoader.checkController()
 
+        print(self.lidar.getDist())
+
     def testInit(self):
         """
         Function called when testInit is called.
