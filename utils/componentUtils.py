@@ -40,7 +40,7 @@ def testComponentCompatibility(robot, component_type):
                 "Component %s has a non-type annotation on %s (%r); lone non-injection variable annotations are disallowed, did you want to assign a static variable?"
                 % (inject_type, n, inject_type)
             )
-        
+
         if not hasattr(robot, n):
             #Create any injectables we need
             robot.logger.info("Creating variable %s for robot", n)
