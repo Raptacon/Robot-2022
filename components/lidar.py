@@ -21,6 +21,7 @@ class Lidar:
         """
         full = False
         self.packArr = packet
+        print("packet = ",self.packArr)
         x=0 #An index
         checksumin=0
         begin=0
