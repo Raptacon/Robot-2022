@@ -19,7 +19,9 @@ class AutoAlign(StateMachine):
     # Auto Align variables
     shootAfterComplete = False
     # Maximum horizontal offset before shooting in degrees
-    maxAimOffset = .25
+    maxAimOffset = tunable(.25)
+    PIDAimOffset = tunable(2.1)
+    DumbSpeed = .09
 
     # PID
     P = tunable(0.001)
@@ -50,7 +52,6 @@ class AutoAlign(StateMachine):
 
     @state(first=True)
     def start(self):
-
         # If limelight can see something
         self.tx = self.limeTable.getNumber("tx", -50)
         if self.tx != -50 or self.tx != 0:
@@ -59,11 +60,17 @@ class AutoAlign(StateMachine):
             tx = self.limeTable.getNumber("tx", -50)
             if tx != -50 and tx != 0:
                 if tx > self.maxAimOffset:
-                    self.speed = self.calc_PID(tx)
+                    if tx < self.PIDAimOffset:
+                        self.speed = self.calc_PID(tx)
+                    else:
+                        self.speed = self.DumbSpeed
                     self.next_state_now("adjust_self_right")
 
                 elif tx < -1 * self.maxAimOffset:
-                    self.speed = self.calc_PID(tx)
+                    if tx > -1 * self.PIDAimOffset:
+                        self.speed = -1 * self.calc_PID(tx)
+                    else:
+                        self.speed = self.DumbSpeed
                     self.next_state_now("adjust_self_left")
 
                 # If the horizontal offset is within the given tolerance,
@@ -85,7 +92,7 @@ class AutoAlign(StateMachine):
     @timed_state(duration=time, next_state="start")
     def adjust_self_left(self):
         """Turns the bot left"""
-        self.driveTrain.setTank(-1 * self.speed, self.speed)
+        self.driveTrain.setTank(self.speed, -1 * self.speed)
 
     def calc_PID(self, error):
         """

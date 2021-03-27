@@ -131,7 +131,7 @@ class AutoShoot(StateMachine):
     # Used to calculate distance from the target.
     limeHeight = 35/12
     # Could also be changed using the crosshair in limelight settings
-    limeLightAngleOffset = 5.2
+    limeLightAngleOffset = 7.81
 
     # IF "limeLightAngleOffset" is 0,
     # CROSSHAIR MUST BE ON HORIZONTAL IN LIMELIGHT
