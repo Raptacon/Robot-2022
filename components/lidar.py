@@ -41,9 +41,6 @@ class Lidar:
                     log.error('The index: '+str(checksumin)+' was out of range: '+str(len(self.packArr)-1))
             x += 1
 
-        if not full:
-            log.info('Lidar failed to find a packet')
-
         if full:
             # Indices 2 and 3 are the locations of the distance data
             strengthLow = self.packArr[2]
