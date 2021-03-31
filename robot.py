@@ -66,6 +66,8 @@ class MyRobot(MagicRobot):
         self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
         SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
         self.MXPserial.setReadBufferSize(ReadBufferValue)
+        self.MXPserial.setWriteBufferSize(10 * ReadBufferValue)
+        self.MXPserial.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess)
         self.MXPserial.setTimeout(1)
 
         self.instantiateSubsystemGroup("motors", createMotor)
@@ -144,7 +146,8 @@ class MyRobot(MagicRobot):
         Called during test mode a lot
         """
         self.lidar.execute()
-        print(self.lidar.bufferArray)
+        print(self.lidar.getDist())
+        print(list(self.lidar.bufferArray))
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
