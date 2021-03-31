@@ -24,14 +24,13 @@ class AutoAlign(StateMachine):
     DumbSpeed = .09
 
     # PID
-    P = tunable(0.001)
-    I = tunable(0.05)
+    P = tunable(0.01)
+    I = tunable(0.01)
     D = tunable(0)
     inverted = False
     speed = 0
     integral = 0
     preverror = 0
-    brakingBound = tunable(200)
 
     limeTable = networktable.getTable("limelight")
     smartTable = networktable.getTable('SmartDashboard')
@@ -76,7 +75,7 @@ class AutoAlign(StateMachine):
 
                 # If the horizontal offset is within the given tolerance,
                 # finish.
-                elif tx < self.maxAimOffset and tx > -1 * self.maxAimOffset:
+                else:
                     log.info("Autoalign complete")
                     self.driveTrain.setTank(0, 0)
                     if self.shootAfterComplete:
@@ -106,9 +105,9 @@ class AutoAlign(StateMachine):
         self.preverror = error
 
         if setspeed > 0:
-            setspeed += .05
+            setspeed += .07
         elif setspeed < 0:
-            setspeed -= .05
+            setspeed -= .07
 
         if self.inverted:
             setspeed *= -1
@@ -117,10 +116,6 @@ class AutoAlign(StateMachine):
             setspeed = 1
         if setspeed < -1:
             setspeed = -1
-
-        if self.brakingBound * error < dError:
-            return 0
-
 
         self.smartTable.putNumber("PIDspeed", setspeed)
         self.smartTable.putNumber("Integral", self.integral)

@@ -2,7 +2,7 @@ import logging as log
 from wpilib import SerialPort
 
 class Lidar:
-    compatString = ["doof","testBoard"]
+    compatString = ["testBoard"]
     dist = 0
 
     MXPserial: SerialPort
