@@ -21,7 +21,6 @@ class Lidar:
         """
         full = False
         self.packArr = packet
-        print("packet = ",self.packArr)
         x=0 #An index
         checksumin=0
         begin=0
@@ -59,7 +58,7 @@ class Lidar:
         self.read()
         self.dist = self.checkAndRead(self.bufferArray)
         if self.dist == 0:
-            print("Lidar failed to read dist")
+            log.error("Lidar failed to read dist")
 
     def read(self):
         self.MXPserial.read(self.bufferArray)
