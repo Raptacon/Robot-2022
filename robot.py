@@ -23,6 +23,7 @@ from components.lidar import Lidar
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
+from networktables import NetworkTables
 from utils.componentUtils import testComponentCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -66,9 +67,12 @@ class MyRobot(MagicRobot):
         self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
         SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
         self.MXPserial.setReadBufferSize(ReadBufferValue)
-        self.MXPserial.setWriteBufferSize(10 * ReadBufferValue)
+        self.MXPserial.setWriteBufferSize(2 * ReadBufferValue)
         self.MXPserial.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess)
-        self.MXPserial.setTimeout(1)
+        self.MXPserial.setTimeout(.1)
+
+        self.robotNetworkTable = NetworkTables.initialize('10.32.0.2')
+        self.smartDashboardTable = self.robotNetworkTable.getTable('SmartDashboard')
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -146,6 +150,8 @@ class MyRobot(MagicRobot):
         Called during test mode a lot
         """
         self.lidar.execute()
+        self.MXPserial.reset()
+        self.MXPserial.flush()
         print(self.lidar.getDist())
         print(list(self.lidar.bufferArray))
 
