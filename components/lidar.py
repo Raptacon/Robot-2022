@@ -52,6 +52,8 @@ class Lidar:
             return 0
 
     def getDist(self):
+        if self.dist > 600:
+            self.dist = 0
         return self.dist
 
     def execute(self):
