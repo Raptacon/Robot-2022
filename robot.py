@@ -152,7 +152,6 @@ class MyRobot(MagicRobot):
         self.MXPserial.reset()
         self.MXPserial.flush()
         self.smartDashboardTable.putNumber("Lidar Dist", self.lidar.getDist())
-        print(list(self.lidar.bufferArray))
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
