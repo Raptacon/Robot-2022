@@ -71,8 +71,7 @@ class MyRobot(MagicRobot):
         self.MXPserial.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess)
         self.MXPserial.setTimeout(.1)
 
-        self.robotNetworkTable = NetworkTables.initialize('10.32.0.2')
-        self.smartDashboardTable = self.robotNetworkTable.getTable('SmartDashboard')
+        self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -152,7 +151,7 @@ class MyRobot(MagicRobot):
         self.lidar.execute()
         self.MXPserial.reset()
         self.MXPserial.flush()
-        print(self.lidar.getDist())
+        self.smartDashboardTable.putNumber("Lidar Dist", self.lidar.getDist())
         print(list(self.lidar.bufferArray))
 
     def instantiateSubsystemGroup(self, groupName, factory):
