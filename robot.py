@@ -23,6 +23,7 @@ from components.lidar import Lidar
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
+from networktables import NetworkTables
 from utils.componentUtils import testComponentCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -66,7 +67,11 @@ class MyRobot(MagicRobot):
         self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
         SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
         self.MXPserial.setReadBufferSize(ReadBufferValue)
-        self.MXPserial.setTimeout(1)
+        self.MXPserial.setWriteBufferSize(2 * ReadBufferValue)
+        self.MXPserial.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess)
+        self.MXPserial.setTimeout(.1)
+
+        self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -130,6 +135,7 @@ class MyRobot(MagicRobot):
 
         self.scorpionLoader.checkController()
 
+
     def testInit(self):
         """
         Function called when testInit is called.
@@ -141,7 +147,9 @@ class MyRobot(MagicRobot):
         Called during test mode a lot
         """
         self.lidar.execute()
-        print(self.lidar.bufferArray)
+        self.MXPserial.reset()
+        self.MXPserial.flush()
+        self.smartDashboardTable.putNumber("Lidar Dist", self.lidar.getDist())
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
