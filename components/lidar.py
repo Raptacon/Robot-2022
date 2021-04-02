@@ -52,6 +52,10 @@ class Lidar:
             return 0
 
     def getDist(self):
+        # 65536 is 2^16, and the default distance is
+        # 65535 if nothing is detected.
+        # if the distance value is greater than 65500, something must be wrong
+        # so we return -1.
         if self.dist > 65500:
             self.dist = -1
         return self.dist
