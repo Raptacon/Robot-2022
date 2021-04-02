@@ -4,7 +4,6 @@ Team 3200 Robot base class
 # Module imports:
 import wpilib
 from wpilib import XboxController
-from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -19,11 +18,11 @@ from components.loaderLogic import LoaderLogic
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 from components.feederMap import FeederMap
-from components.lidar import Lidar
+from components.navx import Navx
+from components.turnToAngle import TurnToAngle
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
-from networktables import NetworkTables
 from utils.componentUtils import testComponentCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -49,7 +48,8 @@ class MyRobot(MagicRobot):
     pneumatics: Pneumatics
     elevator: Elevator
     scorpionLoader: ScorpionLoader
-    lidar: Lidar
+    navx: Navx
+    turnToAngle: TurnToAngle
 
     # Test code:
     testBoard: TestBoard
@@ -60,18 +60,9 @@ class MyRobot(MagicRobot):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
-        ReadBufferValue = 18
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
 
-        self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
-        SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
-        self.MXPserial.setReadBufferSize(ReadBufferValue)
-        self.MXPserial.setWriteBufferSize(2 * ReadBufferValue)
-        self.MXPserial.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess)
-        self.MXPserial.setTimeout(.1)
-
-        self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -90,14 +81,13 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, ScorpionLoader)
         testComponentCompatibility(self, TestBoard)
         testComponentCompatibility(self, FeederMap)
-        testComponentCompatibility(self, Lidar)
-        testComponentCompatibility(self, LoaderLogic)
 
 
     def autonomousInit(self):
         """Run when autonomous is enabled."""
         self.shooter.autonomousEnabled()
         self.loader.stopLoading()
+
 
     def teleopInit(self):
         # Register button events for doof
@@ -114,7 +104,7 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
-
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.navx.reset)
         self.shooter.autonomousDisabled()
 
     def teleopPeriodic(self):
@@ -126,30 +116,44 @@ class MyRobot(MagicRobot):
         driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
-        self.driveTrain.setTank(driveLeft, driveRight)
+        if self.xboxMap.getDriveX() == True:
+            self.turnToAngle.setIsRunning()
+        else:
+            self.driveTrain.setTank(driveLeft, driveRight)
+            self.turnToAngle.stop()
+
 
         if self.xboxMap.getMechDPad() == 0:
             self.winch.setRaise()
         else:
             self.winch.stop()
 
+
         self.scorpionLoader.checkController()
 
+        
 
     def testInit(self):
         """
         Function called when testInit is called.
         """
+        
         print("testInit was Successful")
 
     def testPeriodic(self):
         """
-        Called during test mode a lot
+        Called during test mode alot
         """
-        self.lidar.execute()
-        self.MXPserial.reset()
-        self.MXPserial.flush()
-        self.smartDashboardTable.putNumber("Lidar Dist", self.lidar.getDist())
+        print(str(self.navx.getFusedHeading()))
+        
+        self.xboxMap.controllerInput()
+
+        if self.xboxMap.getDriveLeft() > 0:
+            self.testBoard.setRaise()
+        elif self.xboxMap.getDriveLeft() < 0:
+            self.testBoard.setLower()
+        else:
+            self.testBoard.stop()
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
