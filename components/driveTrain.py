@@ -20,6 +20,7 @@ class DriveTrain():
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
     driveMotorsMultiplier = tunable(.5)
+    creeperMotorsMultiplier = tunable(.25)
     gyros_system: dict
     gearRatio = 10
     wheelCircumference = 6 * math.pi
@@ -67,7 +68,7 @@ class DriveTrain():
         if self.creeperMode:
             return
         self.prevMultiplier = self.driveMotorsMultiplier
-        self.driveMotorsMultiplier = .25
+        self.driveMotorsMultiplier = self.creeperMotorsMultiplier
         self.creeperMode = True
 
     def disableCreeperMode(self):
