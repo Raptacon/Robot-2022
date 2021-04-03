@@ -120,6 +120,9 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.navx.reset)
+
+        self.driveTrain.resetDistTraveled()
+
         self.shooter.autonomousDisabled()
 
     def teleopPeriodic(self):
@@ -175,7 +178,7 @@ class MyRobot(MagicRobot):
             setattr(self, containerName, {})
             self.subsystemGyros = {}
 
-        # note this is a dicontary refernce, so changes to it
+        # note this is a dictionary reference, so changes to it
         # are changes to self.<containerName>
         container = getattr(self, containerName)
 
