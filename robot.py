@@ -4,6 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 import wpilib
 from wpilib import XboxController
+from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -18,11 +19,13 @@ from components.loaderLogic import LoaderLogic
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 from components.feederMap import FeederMap
+from components.lidar import Lidar
 from components.navx import Navx
 from components.turnToAngle import TurnToAngle
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
+from networktables import NetworkTables
 from utils.componentUtils import testComponentCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -50,6 +53,7 @@ class MyRobot(MagicRobot):
     scorpionLoader: ScorpionLoader
     navx: Navx
     turnToAngle: TurnToAngle
+    lidar: Lidar
 
     # Test code:
     testBoard: TestBoard
@@ -60,9 +64,18 @@ class MyRobot(MagicRobot):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
+        ReadBufferValue = 18
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
 
+        self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
+        SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
+        self.MXPserial.setReadBufferSize(ReadBufferValue)
+        self.MXPserial.setWriteBufferSize(2 * ReadBufferValue)
+        self.MXPserial.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess)
+        self.MXPserial.setTimeout(.1)
+
+        self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -81,6 +94,8 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, ScorpionLoader)
         testComponentCompatibility(self, TestBoard)
         testComponentCompatibility(self, FeederMap)
+        testComponentCompatibility(self, Lidar)
+        testComponentCompatibility(self, LoaderLogic)
 
 
     def autonomousInit(self):
@@ -131,13 +146,13 @@ class MyRobot(MagicRobot):
 
         self.scorpionLoader.checkController()
 
-        
+
 
     def testInit(self):
         """
         Function called when testInit is called.
         """
-        
+
         print("testInit was Successful")
 
     def testPeriodic(self):
@@ -145,15 +160,8 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         print(str(self.navx.getFusedHeading()))
-        
-        self.xboxMap.controllerInput()
 
-        if self.xboxMap.getDriveLeft() > 0:
-            self.testBoard.setRaise()
-        elif self.xboxMap.getDriveLeft() < 0:
-            self.testBoard.setLower()
-        else:
-            self.testBoard.stop()
+        self.xboxMap.controllerInput()
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
