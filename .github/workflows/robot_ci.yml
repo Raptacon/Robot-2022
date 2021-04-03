@@ -7,6 +7,19 @@ on:
     - cron: '0 2 * * *'
     
 jobs:
+  normalize-crlf:
+    name: Check CRLF 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository contents
+        uses: actions/checkout@v1
+
+      - name: Use action to check for CRLF endings
+        uses: erclu/check-crlf@v1
+        #with: # omit this mapping to use default path
+        # path: ./a-custom-path
+
   RobotUnitTestWindows:
     name: Unit / Integration Tests (Windows)
     runs-on: windows-latest
