@@ -3,6 +3,7 @@ from enum import Enum, auto
 import math
 import wpilib.drive
 import logging as log
+from networktables import NetworkTables
 
 from magicbot import tunable
 class ControlMode(Enum):
@@ -22,6 +23,8 @@ class DriveTrain():
     gyros_system: dict
     gearRatio = 10
     wheelCircumference = 6 * math.pi
+
+    smartDashTable = NetworkTables.getTable("SmartDashboard")
 
     # Encoder variables
     leftSideSensorInverted = True
@@ -101,6 +104,7 @@ class DriveTrain():
             return self.leftDistInch
 
     def getEstTotalDistTraveled(self):
+        self.smartDashTable.putNumber("Estimated Encoder Distance since enable", (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2)
         return (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2
 
     def resetDistTraveled(self):
