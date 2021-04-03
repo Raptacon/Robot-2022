@@ -128,6 +128,7 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.goToDist.start)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.goToDist.stop)
 
+        self.driveTrain.setBraking(True)
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
@@ -205,6 +206,19 @@ class MyRobot(MagicRobot):
 
         self.logger.info(f"Created {createdCount} items for {groupName} groups with `{factory.__name__}` into `{containerName}")
 
+    def disabledInit(self):
+        """
+        What the robot runs on disabled start
+        NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
+        """
+        self.driveTrain.setBraking(False)
+    
+    def disabledPeriodic(self):
+        """
+        Runs repeatedly while disabled
+        NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
+        """
+        pass
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)

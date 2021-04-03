@@ -1,5 +1,6 @@
 from utils.UnitEnums import positionUnits
 from enum import Enum, auto
+import ctre
 import math
 import wpilib.drive
 import logging as log
@@ -40,9 +41,20 @@ class DriveTrain():
         self.controlMode = ControlMode.kDisabled
         self.leftMotor = self.motors_driveTrain["leftMotor"]
         self.rightMotor = self.motors_driveTrain["rightMotor"]
+        self.leftFollower = self.motors_driveTrain["leftFollower"]
+        self.rightFollower = self.motors_driveTrain["rightFollower"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
         log.info("DriveTrain setup completed")
 
+    def setBraking(self, braking:bool):
+        self.leftMotor.setBraking(braking)
+        self.rightMotor.setBraking(braking)
+        if braking:
+            self.leftFollower.setNeutralMode(ctre.NeutralMode.Brake)
+            self.rightFollower.setNeutralMode(ctre.NeutralMode.Brake)
+        else:
+            self.leftFollower.setNeutralMode(ctre.NeutralMode.Coast)
+            self.rightFollower.setNeutralMode(ctre.NeutralMode.Coast)
 
     def getLeft(self):
         return self.leftMotor.get()

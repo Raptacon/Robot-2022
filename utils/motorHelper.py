@@ -230,6 +230,12 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
 
         self.sensorCollection = self.getSensorCollection()
 
+    def setBraking(self, braking: bool):
+        if braking:
+            self.setNeutralMode(ctre.NeutralMode.Brake)
+        else:
+            self.setNeutralMode(ctre.NeutralMode.Coast)
+
     def resetPosition(self):
         self.sensorCollection.setIntegratedSensorPosition(0)
 
