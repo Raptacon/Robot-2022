@@ -16,7 +16,6 @@ from components.winch import Winch
 from components.shooterMotors import ShooterMotorCreation
 from components.shooterLogic import ShooterLogic
 from components.loaderLogic import LoaderLogic
-from components.lidar import Lidar
 from components.elevator import Elevator
 from components.scorpionLoader import ScorpionLoader
 from components.feederMap import FeederMap
