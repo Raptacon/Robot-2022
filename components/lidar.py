@@ -48,7 +48,6 @@ class Lidar:
             strength = strengthLow | (strengthHigh << 8)
             return strength
         else:
-            log.info('The packet is not full, so lidar cannot find distance')
             return 0
 
     def getDist(self):
@@ -64,7 +63,7 @@ class Lidar:
         self.read()
         self.dist = self.checkAndRead(self.bufferArray)
         if self.dist == 0:
-            log.error("Lidar failed to read dist")
+            log.debug("Lidar failed to read dist")
 
     def read(self):
         self.MXPserial.read(self.bufferArray)
