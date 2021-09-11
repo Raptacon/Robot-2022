@@ -1,25 +1,12 @@
 name: Raptacon (Team 3200) CI Pipeline
 
-on: 
+on:
   push:
   pull_request:
   schedule:
     - cron: '0 2 * * *'
-    
+
 jobs:
-  normalize-crlf:
-    name: Check CRLF 
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository contents
-        uses: actions/checkout@v1
-
-      - name: Use action to check for CRLF endings
-        uses: erclu/check-crlf@v1
-        #with: # omit this mapping to use default path
-        # path: ./a-custom-path
-
   RobotUnitTestWindows:
     name: Unit / Integration Tests (Windows)
     runs-on: windows-latest
@@ -37,13 +24,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        
+
     - name: Robotpy tests
       timeout-minutes: 1
       continue-on-error: True
       run: |
         python robot.py test
-    
+
   DocStringStatic:
     name: Doc String Verification
     runs-on: windows-latest
@@ -61,7 +48,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    
+
     - name: Force docstrings
       timeout-minutes: 1
       continue-on-error: True
@@ -69,28 +56,26 @@ jobs:
         python3 robot.py test
       env:
               DOC_STRING_CHECK: True
-      
+
   StaticCritical:
     name: Critical Static Analysis
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-      
+
     - name: Set up Python 3.9
       timeout-minutes: 2
       uses: actions/setup-python@v1
       with:
         python-version: 3.9
-    
+
     - name: Lint with flake8 critical
       timeout-minutes: 1
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F6,F7,F8,F4,W1,W2,W4,W5,W6,E11 --ignore W293 --show-source --statistics --exclude */tests/pyfrc*,utils/yaml/*,.venv*/,venv*/
+        flake8 . --count --select=E9,F6,F7,F8,F4,W1,W2,W4,W5,W6,E11 --ignore W293,W503 --show-source --statistics --exclude */tests/pyfrc*,utils/yaml/*,.venv*/,venv*/
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-
-
   ExtraStaticAnalysis:
     name: Extra Static Analysis
     runs-on: ubuntu-latest
@@ -102,7 +87,7 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.9
-    
+
     - name: Lint with flake8 extra
       timeout-minutes: 1
       run: |

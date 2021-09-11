@@ -31,7 +31,7 @@ ${VENV}:
 
 lint:
 	# From CI pipeline. We are more strict in our local check
-	# --select=E9,F6,F7,F8,F4,W1,W2,W4,W5,W6,E11 --ignore W293 
+	# --select=E9,F6,F7,F8,F4,W1,W2,W4,W5,W6,E11 --ignore W293
 	${VENVBIN}/flake8 . --count --ignore W293,E501 --show-source --statistics --exclude venv,*/tests/pyfrc*
 
 test: setup_${VENV} lint
@@ -49,10 +49,10 @@ clean:
 	rm -f setup setup_${VENV}
 
 realclean: clean
-	rm -fr ${VENV} 
+	rm -fr ${VENV}
 
 docker: docker_build
-	docker run --rm -ti -v $$(PWD):/src raptacon2021_build bash 
+	docker run --rm -ti -v $$(PWD):/src raptacon2021_build bash
 
 docker_build:
 	docker build . --tag raptacon2021_build

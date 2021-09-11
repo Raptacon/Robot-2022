@@ -4,7 +4,6 @@ from pprint import pprint
 import os
 from pathlib import Path
 
-
 class ConfigMapper(object):
     def __init__(self, filename, configDir):
         """
@@ -90,7 +89,6 @@ class ConfigMapper(object):
             typeNames = [typeNames]
         data = self.getSubsystem(subsystem)
         data = self.__getTypes(data, typeNames, name)
-
         return data
 
     def __getGroups(self, data, groupName, name):
@@ -205,7 +203,6 @@ def findConfig():
         configFileName = file.readline().strip()
         file.close()
         configFile = configPath + configFileName
-
         if os.path.isfile(configFile):
             log.info("Using %s config file", configFile)
             return configFileName, configPath

@@ -1,0 +1,17 @@
+#This dictionary provides a conversion between RPM and distance (in feet).
+DISTtoRPM:
+    9: 5000
+    10: 5200
+    11: 5000
+    12: 5000
+    13: 5000
+    14: 5100
+    15: 5100
+    16: 5200
+    17: 5200
+    18: 5350
+    19: 5400
+    20: 5450
+    21: 5500
+    22: 5650
+    23: 5700
