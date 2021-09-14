@@ -14,7 +14,7 @@ class Lidar:
 
     def checkAndRead(self, packet):
         """
-        Checks the lidar and reads the output
+        Checks the given packet and reads the output of that packet
         sample packet:([0x59,0x59,0x59,0x0, 0x10, 0x45,0xB8, 0x7, 0x1F])
         The first 2 bytes are the indicators of the start of the packet.
         The last byte is the checksum.
@@ -40,9 +40,6 @@ class Lidar:
                     log.error('The index: '+str(checksumin)+' was out of range: '+str(len(self.packArr)-1))
             x += 1
 
-        if not full:
-            log.info('Lidar failed to find a packet')
-
         if full:
             # Indices 2 and 3 are the locations of the distance data
             strengthLow = self.packArr[2]
@@ -51,17 +48,22 @@ class Lidar:
             strength = strengthLow | (strengthHigh << 8)
             return strength
         else:
-            log.info('The packet is not full, so lidar cannot find distance')
             return 0
 
     def getDist(self):
+        # 65536 is 2^16, and the default distance is
+        # 65535 if nothing is detected.
+        # if the distance value is greater than 65500, something must be wrong
+        # so we return -1.
+        if self.dist > 65500:
+            self.dist = -1
         return self.dist
 
     def execute(self):
         self.read()
         self.dist = self.checkAndRead(self.bufferArray)
         if self.dist == 0:
-            print("Lidar failed to read dist")
+            log.debug("Lidar failed to read dist")
 
     def read(self):
         self.MXPserial.read(self.bufferArray)

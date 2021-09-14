@@ -1,7 +1,10 @@
+![Raptacon (Team 3200) CI Pipeline](https://github.com/Raptacon/Robot-2021/workflows/Raptacon%20(Team%203200)%20CI%20Pipeline/badge.svg)
 
-## Welcome to Robot 2020
+![Build link](https://github.com/Raptacon/Robot-2021/actions/workflows/robot_ci.yml)
 
-Please take a look at the [wiki](https://github.com/Raptacon/Robot-2020/wiki) for the most up to date documenation
+## Welcome to Robot 2021
+
+Please take a look at the [wiki](https://github.com/Raptacon/Robot-2021/wiki) for the most up to date documenation
 
 Also make sure to check out the [Kanban board](https://github.com/Raptacon/Robot-2020/projects/1)
 test
@@ -13,7 +16,6 @@ There is a general setup that is needed for each OS before you can build the cod
 If you're using OSX you probably want to install python from python.org. Brew python has problems with Tk (simulator) where the widgets won't render correctly.
 
 ## Windows Users
-![Raptacon (Team 3200) CI Pipeline](https://github.com/Raptacon/Robot-2020/workflows/Raptacon%20(Team%203200)%20CI%20Pipeline/badge.svg)
 
 ### Initial Installation
 The easiest way to get things working is to install the package manager ![Chocolatey](https://chocolatey.org/) by going ![here](https://chocolatey.org/install) and going to Step 2 and following the directions OR just opening a PowerShell windows as Admin (yes...be careful) and doing:

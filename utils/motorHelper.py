@@ -2,6 +2,11 @@
 
 import rev
 import ctre
+<<<<<<< .merge_file_a06520
+=======
+import logging as log
+from .UnitEnums import positionUnits, velocityUnits
+>>>>>>> .merge_file_a04408
 
 def createMotor(motorDescp, motors = {}):
     '''This is where all motors are set up.
@@ -180,13 +185,14 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         else:
             self.controlType = ctre.TalonFXControlMode.PercentOutput
 
-    def setupPid(self,motorDescription = None):
+    def setupPid(self, motorDescription = None):
         '''Sets up pid based on the dictionary motorDescription['pid']
-        (Must contain channel, P, I, D, F, control type, sensorPhase (boolean), kPreScale, feedbackDevice)'''
+        (Must contain kP, kI, kD, kF, controlType, sensorPhase (boolean), kPreScale, feedbackDevice)
+        '''
         if not motorDescription:
             motorDescription = self.motorDescription
         if not 'pid' in self.motorDescription:
-            print("Motor channel %d has no PID"%(self.motorDescription['channel']))
+            log.error("Motor channel " + str(self.motorDescription['channel']) + " has no PID")
             return
         self.pid = self.motorDescription['pid']
 
@@ -196,10 +202,20 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
             self.controlType = ctre.TalonFXControlMode.Position
         elif self.controlType == "Velocity":
             self.controlType = ctre.TalonFXControlMode.Velocity
+        elif self.controlType == "PercentOutput":
+            # This is so that we can initialize a motor as percentoutput but also use an encoder
+            self.controlType = ctre.ControlMode.PercentOutput
         else:
-            print("Unrecognized control type: ",self.ControlType)
+            log.error("Unrecognized control type: " + str(self.ControlType))
 
-        self.configSelectedFeedbackSensor(ctre.FeedbackDevice(self.pid['feedbackDevice']), 0, 10)
+        if self.pid["feedbackDevice"] == "IntegratedSensor":
+            # This is the feedbackDevice for TalonFXs for the integrated sensor
+            feedbackDevice = ctre.FeedbackDevice.IntegratedSensor
+        else:
+            log.error("Unrecognized feedbackDevice " + str(self.pid["feedbackDevice"]))
+            return
+
+        self.configSelectedFeedbackSensor(feedbackDevice, 0, 10)
         self.setSensorPhase(self.pid['sensorPhase'])
         self.kPreScale = self.pid['kPreScale']
 
@@ -209,17 +225,67 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         self.configPeakOutputForward(1, 10)
         self.configPeakOutputReverse(-1, 10)
         self.configVelocityMeasurementPeriod(ctre.VelocityMeasPeriod(1), 10)
-        #/* set closed loop gains in slot0 */
+        #/* set closed loop gains in slot 0 */
         self.config_kF(0, self.pid['kF'], 10)
         self.config_kP(0, self.pid['kP'], 10)
         self.config_kI(0, self.pid['kI'], 10)
         self.config_kD(0, self.pid['kD'], 10)
 
+        self.sensorCollection = self.getSensorCollection()
+
+    def setBraking(self, braking: bool):
+        if braking:
+            self.setNeutralMode(ctre.NeutralMode.Brake)
+        else:
+            self.setNeutralMode(ctre.NeutralMode.Coast)
+
+    def resetPosition(self):
+        self.sensorCollection.setIntegratedSensorPosition(0)
+
+    def getPosition(self, pidId, units: positionUnits):
+        """
+        pidId: The ID of the pid config
+        (0 for primary, 1 for auxilliary)
+
+        Returns the integrated sensor's current position in
+        encoder ticks (2048 per 1 rotation)
+        """
+        if units == positionUnits.kEncoderTicks:
+            self.position = self.sensorCollection.getIntegratedSensorPosition()
+        elif units == positionUnits.kRotations:
+            self.position = self.sensorCollection.getIntegratedSensorPosition() / 2048
+        else:
+            log.error("Unrecognized units: "+str(units))
+            return "Unrecognized unit"
+
+        return self.position
+
+    def getVelocity(self, pidId, units: velocityUnits):
+        """
+        pidId: The ID of the pid config
+        (0 for primary, 1 for auxilliary)
+        units:
+
+        Returns the integrated sensor's current velocity in
+        encoder ticks / 100 ms (2048 encoder ticks per 1 rotation)
+        """
+        if units == velocityUnits.kEncoderTicksPer100:
+            self.velocity = self.sensorCollection.getIntegratedSensorVelocity()
+        elif units == velocityUnits.kRPS:
+            self.velocity = (10 * self.sensorCollection.getIntegratedSensorVelocity()) / 2048
+        elif units == velocityUnits.kRPM:
+            self.velocity = (self.sensorCollection.getIntegratedSensorVelocity() / 2048) / 600
+        else:
+            log.error("Unrecognized units: "+str(units))
+            return "Unrecognized unit"
+
+        return self.velocity
+
     def set(self, speed):
         """
-        Overrides the default set() to allow for controll using the pid loop
+        Overrides the default set() to allow for control using the pid loop
         """
-        if self.pid != None:
+        if self.pid:
             return ctre.WPI_TalonFX.set(self, self.controlType, speed * self.kPreScale)
         else:
             return ctre.WPI_TalonFX.set(self, speed)

@@ -22,9 +22,13 @@ from components.feederMap import FeederMap
 from components.autoAlign import AutoAlign
 from components.autoShoot import AutoShoot
 from components.lidar import Lidar
+from components.navx import Navx
+from components.turnToAngle import TurnToAngle
+from components.driveTrainGoToDist import GoToDist
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
+from networktables import NetworkTables
 from utils.componentUtils import testComponentCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -52,25 +56,34 @@ class MyRobot(MagicRobot):
     scorpionLoader: ScorpionLoader
     autoAlign: AutoAlign
     autoShoot: AutoShoot
+    navx: Navx
+    turnToAngle: TurnToAngle
     lidar: Lidar
+    goToDist: GoToDist
 
     # Test code:
     testBoard: TestBoard
 
     sensitivityExponent = tunable(1.8)
+    arcadeMode = tunable(False)
 
     def createObjects(self):
         """
         Robot-wide initialization code should go here. Replaces robotInit
         """
-        ReadBufferValue = 18
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
+
+        ReadBufferValue = 18
 
         self.MXPserial = SerialPort(115200, SerialPort.Port.kMXP, 8,
         SerialPort.Parity.kParity_None, SerialPort.StopBits.kStopBits_One)
         self.MXPserial.setReadBufferSize(ReadBufferValue)
-        self.MXPserial.setTimeout(1)
+        self.MXPserial.setWriteBufferSize(2 * ReadBufferValue)
+        self.MXPserial.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess)
+        self.MXPserial.setTimeout(.1)
+
+        self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -93,12 +106,14 @@ class MyRobot(MagicRobot):
         testComponentCompatibility(self, FeederMap)
         testComponentCompatibility(self, Lidar)
         testComponentCompatibility(self, LoaderLogic)
+        testComponentCompatibility(self, GoToDist)
 
 
     def autonomousInit(self):
         """Run when autonomous is enabled."""
         self.shooter.autonomousEnabled()
         self.loader.stopLoading()
+
 
     def teleopInit(self):
         # Register button events for doof
@@ -119,6 +134,12 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.autoShoot.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.navx.reset)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.goToDist.start)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.goToDist.stop)
+
+        self.driveTrain.setBraking(True)
+        self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
         self.prevAState = False
@@ -134,15 +155,23 @@ class MyRobot(MagicRobot):
         #what the component is doing.
         executingDriveCommand = False
 
-        driveLeft = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        driveRight = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveLeftY = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
+        self.goToDist.engage()
         self.autoShoot.engage()
         if self.xboxMap.getDriveA() == True:
             executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(True)
             self.autoAlign.engage()
-        elif self.xboxMap.getDriveA() == False and self.prevAState == True:
+        if self.xboxMap.getDriveX() == True:
+            executingDriveCommand = True
+            self.turnToAngle.setIsRunning()
+        else:
+            self.turnToAngle.stop()
+        if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()
             self.autoShoot.stop()
             self.shooterMotors.stopShooter()
@@ -150,20 +179,26 @@ class MyRobot(MagicRobot):
         self.prevAState = self.xboxMap.getDriveA()
 
         if not executingDriveCommand:
+            if self.arcadeMode:
+                self.driveTrain.setArcade(driveLeftY, -1 * driveRightX)
+            else:
+                self.driveTrain.setTank(driveLeftY, driveRightY)
             self.autoAlign.reset_integral()
-            self.driveTrain.setTank(driveLeft, driveRight)
 
         self.scorpionLoader.checkController()
+
+
 
     def testInit(self):
         """
         Function called when testInit is called.
         """
+
         print("testInit was Successful")
 
     def testPeriodic(self):
         """
-        Called during test mode a lot
+        Called during test mode alot
         """
         pass
 
@@ -179,7 +214,7 @@ class MyRobot(MagicRobot):
             setattr(self, containerName, {})
             self.subsystemGyros = {}
 
-        # note this is a dicontary refernce, so changes to it
+        # note this is a dictionary reference, so changes to it
         # are changes to self.<containerName>
         container = getattr(self, containerName)
 
@@ -197,6 +232,19 @@ class MyRobot(MagicRobot):
 
         self.logger.info(f"Created {createdCount} items for {groupName} groups with `{factory.__name__}` into `{containerName}")
 
+    def disabledInit(self):
+        """
+        What the robot runs on disabled start
+        NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
+        """
+        self.driveTrain.setBraking(False)
+    
+    def disabledPeriodic(self):
+        """
+        Runs repeatedly while disabled
+        NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
+        """
+        pass
 
 if __name__ == '__main__':
     wpilib.run(MyRobot)
