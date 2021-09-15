@@ -56,9 +56,9 @@ class TurnToAngle():
             if abs(self.change) > 90:
                 self.speed = .25
             elif abs(self.change) <= 90 and abs(self.change) > 20:
-                self.speed = .15
+                self.speed = .2
             elif abs(self.change) <= 20:
-                self.speed = .09
+                self.speed = .15
 
             if self.setSpeed == True:
                 if self.change > 0:
