@@ -1,8 +1,7 @@
 from components.driveTrain import DriveTrain
 from magicbot import tunable, feedback
 from wpilib import controller
-
-import navx
+from components.navx import Navx
 
 class TurnToAngle():
 
@@ -13,14 +12,13 @@ class TurnToAngle():
     time = 0.01
     PIDController = None
     
-    navx = navx._navx.AHRS.create_spi()
+    navx : Navx
     driveTrain: DriveTrain
     isRunning = False
     nextOutput = 0
     initialHeading = 0
     nextHeading = 0
     heading = 0
-    originalHeading = 0
     turnAngle = tunable(10)
     speed = 0
     tolerance = tunable(.5)
@@ -29,7 +27,6 @@ class TurnToAngle():
 
     def setup(self):
         self.heading = self.navx.getFusedHeading()
-        self.originalHeading = self.navx.getFusedHeading()
         self.initialHeading = self.navx.getFusedHeading()
         self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
 
@@ -40,7 +37,7 @@ class TurnToAngle():
     
     def output(self):
         if self.isRunning == True:
-            
+
             if self.nextHeading > 360:
                 self.nextHeading -= 360
             elif self.nextHeading < 0:

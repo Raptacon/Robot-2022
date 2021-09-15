@@ -2,10 +2,13 @@ import navx
 from magicbot import feedback
 
 class Navx:
-    
+    relativeHeading = 0
+    originalHeading = 0
+
     def setup(self):
-        
         self.navx = navx._navx.AHRS.create_spi()
+        
+        self.originalHeading = int(self.navx.getFusedHeading())
 
     @feedback
     def getXDisplacement(self):
@@ -40,6 +43,10 @@ class Navx:
 
         self.navx.reset()
         self.navx.resetDisplacement()
+    @feedback
+    def relToOriginal(self):
+        self.relativeHeading = int(self.navx.getFusedHeading()) - self.originalHeading
+        return self.relativeHeading
 
     def execute(self):
         pass
