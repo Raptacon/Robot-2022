@@ -2,11 +2,8 @@
 
 import rev
 import ctre
-<<<<<<< .merge_file_a06520
-=======
 import logging as log
 from .UnitEnums import positionUnits, velocityUnits
->>>>>>> .merge_file_a04408
 
 def createMotor(motorDescp, motors = {}):
     '''This is where all motors are set up.

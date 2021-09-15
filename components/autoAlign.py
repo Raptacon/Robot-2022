@@ -21,7 +21,7 @@ class AutoAlign(StateMachine):
     # Maximum horizontal offset before shooting in degrees
     maxAimOffset = tunable(.25)
     PIDAimOffset = tunable(2.1)
-    DumbSpeed = .09
+    DumbSpeed = .15
 
     # PID
     P = tunable(0.01)
