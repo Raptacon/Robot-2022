@@ -4,7 +4,6 @@ import ctre
 import math
 import wpilib.drive
 import logging as log
-import ctre
 from networktables import NetworkTables
 
 from magicbot import tunable
