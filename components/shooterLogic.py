@@ -102,7 +102,6 @@ class ShooterLogic(StateMachine):
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed)
             if self.isShooterUpToSpeed():
-                log.error("Shoottinginoiansdonosg")
                 self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
             else:
                 self.shooterMotors.runLoader(0, Direction.kForwards)
