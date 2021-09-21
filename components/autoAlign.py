@@ -21,12 +21,13 @@ class AutoAlign(StateMachine):
     # Maximum horizontal offset before shooting in degrees
     maxAimOffset = tunable(.25)
     PIDAimOffset = tunable(2.1)
-    DumbSpeed = .15
+    DumbSpeed = .14
 
     # PID
     P = tunable(0.01)
-    I = tunable(0.01)
+    I = tunable(0.08)
     D = tunable(0)
+    PIDSpeedFloor = .11
     inverted = False
     speed = 0
     integral = 0
@@ -105,9 +106,9 @@ class AutoAlign(StateMachine):
         self.preverror = error
 
         if setspeed > 0:
-            setspeed += .07
+            setspeed += self.PIDSpeedFloor
         elif setspeed < 0:
-            setspeed -= .07
+            setspeed -= self.PIDSpeedFloor
 
         if self.inverted:
             setspeed *= -1
