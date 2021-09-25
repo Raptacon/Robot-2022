@@ -9,6 +9,7 @@ from components.pneumatics import Pneumatics
 class Autonomous(AutonomousStateMachine):
     """Creates the autonomous code"""
     time = 1.4
+    shootTime = 4
     MODE_NAME = "Basic Autonomous"
     DEFAULT = True
     driveTrain: DriveTrain
@@ -25,15 +26,15 @@ class Autonomous(AutonomousStateMachine):
         self.shooter.startShooting()
         self.next_state('shooter_wait')
 
-    @state
+    @timed_state(duration = shootTime, next_state="drive_backwards")
     def shooter_wait(self):
         """Waits for shooter to finish, then next state"""
-        if self.shooter.current_state == 'idling':
-            self.next_state_now('drive_backwards')
+        pass
 
     @timed_state(duration = time, next_state = 'turn')
     def drive_backwards(self):
         """Drives the bot backwards for a time"""
+        self.shooter.doneShooting()
         self.driveTrain.setTank(self.drive_speed, self.drive_speed)
 
     @timed_state(duration = time, next_state = 'stop')
