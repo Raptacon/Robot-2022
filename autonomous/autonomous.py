@@ -21,8 +21,8 @@ class Autonomous(AutonomousStateMachine):
     def engage_shooter(self):
         """Starts shooter and fires"""
         self.pneumatics.deployLoader()
-        # This is broken
-        self.shooter.shootBalls()
+        self.shooter.engage()
+        self.shooter.startShooting()
         self.next_state('shooter_wait')
 
     @state
