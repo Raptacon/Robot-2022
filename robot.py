@@ -25,6 +25,7 @@ from components.lidar import Lidar
 from components.navx import Navx
 from components.turnToAngle import TurnToAngle
 from components.driveTrainGoToDist import GoToDist
+from components.ballCounter import BallCounter
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -60,6 +61,7 @@ class MyRobot(MagicRobot):
     turnToAngle: TurnToAngle
     lidar: Lidar
     goToDist: GoToDist
+    ballCounter: BallCounter
 
     # Test code:
     testBoard: TestBoard
@@ -124,7 +126,7 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.autoShoot.stop)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
-        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.navx.reset)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.navx.reset)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.goToDist.start)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.goToDist.stop)
 

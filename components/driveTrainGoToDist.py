@@ -12,7 +12,7 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
-    dumbSpeeds = [.3, .2, .15, .1]
+    dumbSpeeds = [.3, .25, .2, .15]
     dumbSpeedLimits = [36, 12, 8, 5]
 
     def setTargetDist(self, distance):

@@ -100,10 +100,10 @@ class ShooterLogic(StateMachine):
         Runs shooter to a certain speed, then lets drivers control loading if in teleop.
         If in autonomous, run shooter automatically.
         """
+        self.shooting = True
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed)
             if self.isShooterUpToSpeed():
-                log.error("Shoottinginoiansdonosg")
                 self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
             else:
                 self.shooterMotors.runLoader(0, Direction.kForwards)
@@ -117,7 +117,11 @@ class ShooterLogic(StateMachine):
     @timed_state(duration = shooterStoppingDelay, next_state = 'finishShooting')
     def autonomousShoot(self):
         """Shoot balls when shooter is up to speed. Strictly for autonomous use."""
-        self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
+        if self.isShooterUpToSpeed():
+            self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
+        else:
+            self.shooterMotors.runLoader(0, Direction.kForwards)
+            self.next_state('autonomousShoot')
 
     @state
     def finishShooting(self):
@@ -130,6 +134,7 @@ class ShooterLogic(StateMachine):
     @state(first = True)
     def idling(self):
         """First state. Does nothing here. StateMachine returns to this state when not shooting."""
+        self.shooting = False
         if self.start == True and self.running == False:
             self.next_state('shootBalls')
 
