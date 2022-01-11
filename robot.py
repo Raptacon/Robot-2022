@@ -30,7 +30,7 @@ from components.ballCounter import BallCounter
 # Other imports:
 from robotMap import RobotMap, XboxMap
 from networktables import NetworkTables
-from utils.componentUtils import testComponentCompatibility
+from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
 from utils.acturatorFactories import compressorFactory, solenoidFactory
@@ -94,21 +94,11 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
 
         # Check each component for compatibility
-        testComponentCompatibility(self, ShooterLogic)
-        testComponentCompatibility(self, ShooterMotorCreation)
-        testComponentCompatibility(self, DriveTrain)
-        testComponentCompatibility(self, Winch)
-        testComponentCompatibility(self, ButtonManager)
-        testComponentCompatibility(self, Pneumatics)
-        testComponentCompatibility(self, Elevator)
-        testComponentCompatibility(self, ScorpionLoader)
-        testComponentCompatibility(self, AutoAlign)
-        testComponentCompatibility(self, TestBoard)
-        testComponentCompatibility(self, AutoShoot)
-        testComponentCompatibility(self, FeederMap)
-        testComponentCompatibility(self, Lidar)
-        testComponentCompatibility(self, LoaderLogic)
-        testComponentCompatibility(self, GoToDist)
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotorCreation, DriveTrain,
+                         ButtonManager, Pneumatics, Elevator, ScorpionLoader,
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar,
+                         LoaderLogic]
+        testComponentListCompatibility(self, componentList)
 
 
     def autonomousInit(self):
