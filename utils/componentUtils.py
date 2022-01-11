@@ -7,9 +7,9 @@ import typing
 
 def testComponentListCompatibility(robot, componentList):
     """
-    takes a robot and a component_type to check
+    takes a robot and a component_type list to check
     If the component is not compatibile with the robot type, it will attempt to create basic bindings and
-    disable the on_enable and execute() methods of the compeont.
+    disable the on_enable and execute() methods of the component.
     """
     print(componentList)
     for component_type in componentList:
