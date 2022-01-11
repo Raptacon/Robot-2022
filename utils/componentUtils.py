@@ -11,9 +11,7 @@ def testComponentListCompatibility(robot, componentList):
     If the component is not compatibile with the robot type, it will attempt to create basic bindings and
     disable the on_enable and execute() methods of the component.
     """
-    print(componentList)
     for component_type in componentList:
-        print("Doing",component_type)
         # Iterate over variables with type annotations
         if not hasattr(component_type, "compatString"):
             robot.logger.warn("%s has no compatString set. Assuming compatible", component_type)
