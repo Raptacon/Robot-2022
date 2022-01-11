@@ -22,6 +22,7 @@ class AutoAlign(StateMachine):
     maxAimOffset = tunable(.25)
     PIDAimOffset = tunable(2.1)
     DumbSpeed = .14
+    values = [[self.maxAimOffset, self.PIDAimOffset],[self.calc_PID(DevationX),self.DumbSpeed]]
 
     # PID
     P = tunable(0.01)
@@ -51,36 +52,36 @@ class AutoAlign(StateMachine):
             self.shootAfterComplete = True
         return self.shootAfterComplete
 
+    @state
+    def idling(self):
+        pass
+
     @state(first=True)
     def start(self):
         # If limelight can see something
-        self.tx = self.limeTable.getNumber("tx", -50)
-        if self.tx != -50 or self.tx != 0:
+        self.DevationX = self.limeTable.getNumber("DevationX", -50)
+        if self.DevationX != -50 or self.DevationX != 0:
             # "-50" is the default value, so if that is returned,
             # nothing should be done because there is no connection.
-            tx = self.limeTable.getNumber("tx", -50)
-            if tx != -50 and tx != 0:
-                if tx > self.maxAimOffset:
-                    if tx < self.PIDAimOffset:
-                        self.speed = self.calc_PID(tx)
-                    else:
-                        self.speed = self.DumbSpeed
-                    self.next_state_now("adjust_self_right")
 
-                elif tx < -1 * self.maxAimOffset:
-                    if tx > -1 * self.PIDAimOffset:
-                        self.speed = -1 * self.calc_PID(tx)
-                    else:
-                        self.speed = self.DumbSpeed
-                    self.next_state_now("adjust_self_left")
+            DevationX = self.limeTable.getNumber("DevationX", -50)
+
+            if DevationX > self.maxAimOffset and DevationX < self.PIDAimOffset:
+                    self.speed = self.calc_PID(DevationX)
+            elif DevationX >= self.PIDAimOffset:
+                self.speed = self.DumbSpeed
+            self.next_state_now("adjust_self_left")
+            else:
+                log.info("Autoalign complete")
+                self.driveTrain.setTank(0, 0)
+                if self.shootAfterComplete:
+                    self.autoShoot.startAutoShoot()
+
+
 
                 # If the horizontal offset is within the given tolerance,
                 # finish.
-                else:
-                    log.info("Autoalign complete")
-                    self.driveTrain.setTank(0, 0)
-                    if self.shootAfterComplete:
-                        self.autoShoot.startAutoShoot()
+
 
         else:
             log.error("Limelight: No Valid Targets")
@@ -125,9 +126,7 @@ class AutoAlign(StateMachine):
     def reset_integral(self):
         self.integral = 0
 
-    @state
-    def idling(self):
-        pass
+
 
     def stop(self):
         self.next_state_now("idling")
