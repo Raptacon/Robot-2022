@@ -67,7 +67,7 @@ class MyRobot(MagicRobot):
     testBoard: TestBoard
 
     sensitivityExponent = tunable(1.8)
-    arcadeMode = tunable(True)
+    arcadeMode = tunable(False)
 
     def createObjects(self):
         """
