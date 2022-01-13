@@ -22,8 +22,7 @@ class AutoAlign(StateMachine):
     maxAimOffset = tunable(.25)
     PIDAimOffset = tunable(2.1)
     DumbSpeed = .14
-    values = [[self.maxAimOffset, self.PIDAimOffset],[self.calc_PID(DevationX),self.DumbSpeed]]
-
+    
     # PID
     P = tunable(0.01)
     I = tunable(0.08)
@@ -33,6 +32,8 @@ class AutoAlign(StateMachine):
     speed = 0
     integral = 0
     preverror = 0
+    #starting is false 
+    starting = False
 
     limeTable = networktable.getTable("limelight")
     smartTable = networktable.getTable('SmartDashboard')
@@ -51,50 +52,69 @@ class AutoAlign(StateMachine):
         else:
             self.shootAfterComplete = True
         return self.shootAfterComplete
-
+    #Stops robot from running until starting is true
     @state
     def idling(self):
-        pass
+        if self.starting:
+            self.starting = False
+            log.error("starting")
+            self.next_state("start")
+        else:
+            self.next_state("idling")
 
     @state(first=True)
     def start(self):
         # If limelight can see something
-        self.DevationX = self.limeTable.getNumber("DevationX", -50)
-        if self.DevationX != -50 or self.DevationX != 0:
+        self.DeviationX = self.limeTable.getNumber("tx", -50)
+        if self.DeviationX != -50 or self.DeviationX != 0:
             # "-50" is the default value, so if that is returned,
             # nothing should be done because there is no connection.
+            DeviationX = self.limeTable.getNumber("DeviationX", -50)
+            values = [
+                     [[self.maxAimOffset, self.PIDAimOffset],["PID"]],
+                     [[self.PIDAimOffset,"End"],[self.DumbSpeed]]
+                     ]
 
-            DevationX = self.limeTable.getNumber("DevationX", -50)
+            """
+            
+            """
 
-            if DevationX > self.maxAimOffset and DevationX < self.PIDAimOffset:
-                    self.speed = self.calc_PID(DevationX)
-            elif DevationX >= self.PIDAimOffset:
-                self.speed = self.DumbSpeed
-            self.next_state_now("adjust_self_left")
+            self.speed = 0
+            done = True
+            self.AbsolteX = abs(DeviationX)
+            for section in values:
+                for dists, speed in section:
+
+                    if (len(dists) == 2 and
+                       dists[0] < self.AbsolteX and
+                       self.AbsolteX < dists[1] or
+                       dists[1] == "End"):
+                        self.speed = speed
+                        done = False
+                        break
+
+            if done == False:
+                self.next_state("adjust_self")
             else:
                 log.info("Autoalign complete")
                 self.driveTrain.setTank(0, 0)
                 if self.shootAfterComplete:
                     self.autoShoot.startAutoShoot()
-
-
-
-                # If the horizontal offset is within the given tolerance,
-                # finish.
-
+        # If the horizontal offset is within the given tolerance,
+        # finish.
 
         else:
             log.error("Limelight: No Valid Targets")
+            self.next_state("idling")
 
     @timed_state(duration=time, next_state="start")
-    def adjust_self_right(self):
-        """Turns the bot right"""
-        self.driveTrain.setTank(-1 * self.speed, self.speed)
-
-    @timed_state(duration=time, next_state="start")
-    def adjust_self_left(self):
-        """Turns the bot left"""
-        self.driveTrain.setTank(self.speed, -1 * self.speed)
+    def adjust_self(self):
+        """Turns the bot"""
+        if(self.DeviationX == self.AbsolteX):
+            self.driveTrain.setTank(1 * self.speed, self.speed)
+        else:
+            self.driveTrain.setTank(-1 * self.speed, self.speed)
+        self.next_state("start")
 
     def calc_PID(self, error):
         """
@@ -126,7 +146,8 @@ class AutoAlign(StateMachine):
     def reset_integral(self):
         self.integral = 0
 
-
+    def StartautoAlign(self):
+        self.start = True
 
     def stop(self):
         self.next_state_now("idling")
