@@ -52,10 +52,10 @@ realclean: clean
 	rm -fr ${VENV}
 
 docker: docker_build
-	docker run --rm -ti -v $$(PWD):/src raptacon2021_build bash
+	docker run --rm -ti -v $$(PWD):/src raptacon2022_build bash
 
 docker_build:
-	docker build . --tag raptacon2021_build
+	docker build . --tag raptacon2022_build
 
 deploy:
 	${PYTHON} robot.py deploy --no-resolve --robot 10.32.0.2
