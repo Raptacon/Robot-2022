@@ -72,8 +72,8 @@ class AutoAlign(StateMachine):
             # "-50" is the default value, so if that is returned,
             # nothing should be done because there is no connection.
             values = [
-                     [[self.maxAimOffset, self.PIDAimOffset],self.DumbSpeed],
-                     [[self.PIDAimOffset,"End"],self.DumbSpeed]
+                     [self.PIDAimOffset,"PID"],
+                     ["End",self.DumbSpeed]
                      ]
 
             """
@@ -86,20 +86,20 @@ class AutoAlign(StateMachine):
             self.speed = 0
             self.AbsoluteX = abs(self.DeviationX)
             for dists, speed in values:
-
-                if (dists[1] == "End"
-                    or len(dists) == 2
-                    and dists[0] < self.AbsoluteX
-                    and self.AbsoluteX < dists[1]):
+                if (dists == "End"
+                    or (self.AbsoluteX < dists 
+                    and self.AbsoluteX > self.maxAimOffset)):
                     if speed == "PID":
                         self.speed = self.calc_PID(self.DeviationX)
                     else:
                         self.speed = speed
                     self.next_state("adjust_self")
                     break
-
-            log.info("Autoalign complete")
-            self.driveTrain.setTank(0, 0)
+                else:
+                    log.info("Autoalign complete")
+                    self.driveTrain.setTank(0, 0)
+                    self.next_state("idling")
+            
             # if self.shootAfterComplete:
             #     self.autoShoot.startAutoShoot()
         # If the horizontal offset is within the given tolerance,
