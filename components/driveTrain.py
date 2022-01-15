@@ -22,7 +22,6 @@ class DriveTrain():
     motors_driveTrain: dict
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
-    gyros_system: dict
     gearRatio = 10
     wheelCircumference = 6 * math.pi
 
