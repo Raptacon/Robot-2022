@@ -6,6 +6,7 @@ import wpilib
 from wpilib import XboxController
 from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
+from components.colorSensor import ColorSensor
 
 # Component imports:
 from components.driveTrain import DriveTrain
@@ -26,6 +27,7 @@ from components.navx import Navx
 from components.turnToAngle import TurnToAngle
 from components.driveTrainGoToDist import GoToDist
 from components.ballCounter import BallCounter
+from components.colorSensor import ColorSensor
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -62,6 +64,7 @@ class MyRobot(MagicRobot):
     lidar: Lidar
     goToDist: GoToDist
     ballCounter: BallCounter
+    colorSensor: ColorSensor
 
     # Test code:
     testBoard: TestBoard
@@ -97,7 +100,7 @@ class MyRobot(MagicRobot):
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotorCreation, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader,
                          AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar,
-                         LoaderLogic]
+                         LoaderLogic, ColorSensor]
         testComponentListCompatibility(self, componentList)
 
 
