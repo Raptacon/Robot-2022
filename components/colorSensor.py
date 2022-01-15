@@ -11,8 +11,8 @@ class ColorSensor():
              "black":wpilib.Color(0, 0, 0)}
 
     def setup(self):
-        for color in self.colors:
-            self.colorMatch.addColorMatch(color)
+        for color in self.colors.keys():
+            self.colorMatch.addColorMatch(self.colors[color])
 
     def updateColor(self):
         self.color = self.colorSensor.getColor()
