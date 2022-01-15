@@ -7,7 +7,7 @@ import logging as log
 class Type(Enum):
     """Enumeration for the two types within the feeder."""
     kIntake = auto()
-    kLoader = auto()
+    kHopper = auto()
 
 class FeederMap:
     """Simple map that holds the logic for running elements of the feeder."""

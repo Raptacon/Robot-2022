@@ -1,7 +1,7 @@
 import logging as log
 from enum import Enum, auto
 
-class ShooterMotorCreation:
+class ShooterMotors:
     """
     Allows you to run motors in the shooter
     """

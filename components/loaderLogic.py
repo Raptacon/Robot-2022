@@ -1,7 +1,9 @@
 from robotMap import XboxMap
-from components.shooterMotors import ShooterMotorCreation, Direction
+from components.intakeMotor import IntakeMotor
+from components.hopperMotor import HopperMotor
 from components.breakSensors import Sensors, State
 from components.feederMap import FeederMap, Type
+from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
 class LoaderLogic(StateMachine):
@@ -9,7 +11,8 @@ class LoaderLogic(StateMachine):
     compatString = ["doof"]
 
     # Component/module related things
-    shooterMotors: ShooterMotorCreation
+    intakeMotor: IntakeMotor
+    hopperMotor: HopperMotor
     feeder: FeederMap
     sensors: Sensors
     xboxMap: XboxMap
@@ -32,10 +35,10 @@ class LoaderLogic(StateMachine):
     def setManualLoading(self):
         """Runs trigger-based loading."""
         self.isAutomatic = False
-        self.next_state('runLoaderManually')
+        self.next_state('runHopperManually')
 
     def stopLoading(self):
-        if self.shooterMotors.isLoaderRunning():
+        if self.intakeMotor.isHopperRunning():
             return
         self.next_state('shooting')
 
@@ -51,21 +54,21 @@ class LoaderLogic(StateMachine):
         self.feeder.run(Type.kIntake)
 
     @state
-    def runLoaderManually(self):
+    def runHopperManually(self):
         """Trigger-based manual loader."""
-        self.feeder.run(Type.kLoader)
+        self.feeder.run(Type.kHopper)
 
     @state(first = True)
     def checkForBall(self):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
-        self.shooterMotors.stopLoader()
+        self.hopperMotor.stopHopper()
         if self.sensors.loadingSensor(State.kTripped):
             self.next_state('loadBall')
 
     @state
     def loadBall(self):
         """Loads ball if ball has entered."""
-        self.shooterMotors.runLoader(self.automaticLoaderSpeed, Direction.kForwards)
+        self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kForwards)
         self.next_state('waitForBallIntake')
 
     @state

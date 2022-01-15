@@ -1,13 +1,7 @@
 import logging as log
-from enum import Enum, auto
+from utils.DirectionEnums import Direction
 
-class Direction(Enum):
-    """Enum for intake direction."""
-    kForwards = auto()
-    kBackwards = auto()
-    kDisabled = auto()
-
-class ShooterMotorCreation:
+class HopperMotor:
     """
     Allows you to run motors in the hopper
     """
