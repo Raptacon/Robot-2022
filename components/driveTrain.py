@@ -6,7 +6,7 @@ import wpilib.drive
 import logging as log
 from networktables import NetworkTables
 
-from magicbot import tunable
+from magicbot import tunable, feedback
 class ControlMode(Enum):
     """
     Drive Train Control Modes
@@ -17,12 +17,11 @@ class ControlMode(Enum):
     kDisabled = auto()
 
 class DriveTrain():
-    compatString = ["doof","scorpion"]
+    compatString = ["doof","scorpion", "greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
-    gyros_system: dict
     gearRatio = 10
     wheelCircumference = 6 * math.pi
 
@@ -116,6 +115,7 @@ class DriveTrain():
         else:
             return self.leftDistInch
 
+    @feedback
     def getEstTotalDistTraveled(self):
         self.smartDashTable.putNumber("Estimated Encoder Distance since enable", (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2)
         return (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2

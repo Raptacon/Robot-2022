@@ -4,7 +4,6 @@ from magicbot import feedback
 class Navx:
     
     def setup(self):
-        
         self.navx = navx._navx.AHRS.create_spi()
 
     @feedback
