@@ -1,5 +1,6 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.driveTrain import DriveTrain
+from components.driveTrainGoToDist import GoToDist
 from components.shooterLogic import ShooterLogic
 from components.shooterMotors import ShooterMotorCreation
 from components.autoAlign import AutoAlign
