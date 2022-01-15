@@ -6,7 +6,6 @@ import wpilib
 from wpilib import XboxController
 from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
-from components.colorSensor import ColorSensor
 
 # Component imports:
 from components.driveTrain import DriveTrain
