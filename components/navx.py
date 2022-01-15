@@ -41,6 +41,4 @@ class Navx:
         self.navx.resetDisplacement()
 
     def execute(self):
-        self.getXDisplacement()
-        self.getYDisplacement()
-        self.getZDisplacement()
+        pass
