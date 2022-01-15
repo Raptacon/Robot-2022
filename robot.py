@@ -94,9 +94,10 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
 
         # Check each component for compatibility
-        componentList = [ShooterLogic, ShooterMotorCreation, DriveTrain, Winch, ButtonManager,
-                         Pneumatics, Elevator, ScorpionLoader, AutoAlign, TestBoard, AutoShoot,
-                         FeederMap, Lidar, LoaderLogic, GoToDist]
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotorCreation, DriveTrain,
+                         ButtonManager, Pneumatics, Elevator, ScorpionLoader,
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar,
+                         LoaderLogic]
         testComponentListCompatibility(self, componentList)
 
 
@@ -229,7 +230,7 @@ class MyRobot(MagicRobot):
         NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
         """
         self.driveTrain.setBraking(False)
-    
+
     def disabledPeriodic(self):
         """
         Runs repeatedly while disabled
