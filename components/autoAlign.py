@@ -90,16 +90,13 @@ class AutoAlign(StateMachine):
                        self.AbsolteX < dists[1] or
                        dists[1] == "End"):
                         self.speed = speed
-                        done = False
+                        self.next_state("adjust_self")
                         break
 
-            if done == False:
-                self.next_state("adjust_self")
-            else:
-                log.info("Autoalign complete")
-                self.driveTrain.setTank(0, 0)
-                if self.shootAfterComplete:
-                    self.autoShoot.startAutoShoot()
+            log.info("Autoalign complete")
+            self.driveTrain.setTank(0, 0)
+            if self.shootAfterComplete:
+                self.autoShoot.startAutoShoot()
         # If the horizontal offset is within the given tolerance,
         # finish.
 
