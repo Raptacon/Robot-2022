@@ -6,7 +6,7 @@ import wpilib.drive
 import logging as log
 from networktables import NetworkTables
 
-from magicbot import tunable
+from magicbot import tunable, feedback
 class ControlMode(Enum):
     """
     Drive Train Control Modes
@@ -115,6 +115,7 @@ class DriveTrain():
         else:
             return self.leftDistInch
 
+    @feedback
     def getEstTotalDistTraveled(self):
         self.smartDashTable.putNumber("Estimated Encoder Distance since enable", (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2)
         return (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2
