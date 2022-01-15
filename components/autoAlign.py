@@ -84,7 +84,6 @@ class AutoAlign(StateMachine):
             """
 
             self.speed = 0
-            done = True
             self.AbsoluteX = abs(self.DeviationX)
             for dists, speed in values:
 
