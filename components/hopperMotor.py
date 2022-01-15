@@ -9,7 +9,7 @@ class Direction(Enum):
 
 class ShooterMotorCreation:
     """
-    Allows you to run motors in the loader
+    Allows you to run motors in the hopper
     """
     compatString = ["doof"]
 
@@ -17,43 +17,37 @@ class ShooterMotorCreation:
 
     def on_enable(self):
         """
-        Sets up shooter motors
+        Sets up hopper motors
         """
-        self.intakeSpeed = 0
-        self.loaderSpeed = 0
-        self.shooterSpeed = 0
-        self.intake = False
-        self.loader = False
-        self.shooter = False
+        self.hopperSpeed = 0
+        self.hopper = False
 
-        self.hopperMotor1 = self.motors_loader["hopperMotor1"]
-        self.intakeMotor = self.motors_loader["intakeMotor"]
-        self.shooterMotor = self.motors_shooter["shooterMotor"]
+        self.hopperMotor1 = self.motors_hopper["hopperMotor1"]
 
-        log.info("Shooter Motor Component Created")
+        log.info("Hopper Motor Component Created")
 
-    def runLoader(self, lSpeed, direction):
+    def runHopper(self, lSpeed, direction):
         """
         Sets the hopper motor to speed lSpeed
         """
         if direction == Direction.kForwards: # Forwards
-            self.loaderSpeed = lSpeed
+            self.hopperSpeed = lSpeed
         elif direction == Direction.kBackwards: # Backwards
-            self.loaderSpeed = -lSpeed
+            self.hopperSpeed = -lSpeed
 
-        self.loader = True
+        self.hopper = True
 
-    def stopLoader(self):
+    def stopHopper(self):
         """
-        Turns the loader off
+        Turns the hopper off
         """
-        self.loader = False
+        self.hopper = False
 
-    def isLoaderRunning(self):
-        return self.loader
+    def isHopperRunning(self):
+        return self.hopper
 
     def execute(self):
-        if self.loader:
-            self.hopperMotor1.set(self.loaderSpeed)
-        elif self.loader == False:
+        if self.hopper:
+            self.hopperMotor1.set(self.hopperSpeed)
+        elif self.hopper == False:
             self.hopperMotor1.set(0)

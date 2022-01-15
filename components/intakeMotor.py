@@ -18,16 +18,11 @@ class ShooterMotorCreation:
         Sets up shooter motors
         """
         self.intakeSpeed = 0
-        self.loaderSpeed = 0
-        self.shooterSpeed = 0
         self.intake = False
-        self.loader = False
-        self.shooter = False
 
         self.intakeMotor = self.motors_loader["intakeMotor"]
-        self.shooterMotor = self.motors_shooter["shooterMotor"]
 
-        log.info("Shooter Motor Component Created")
+        log.info("Intake Motor Component Created")
 
     motors_loader: dict
 
