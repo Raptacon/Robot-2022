@@ -26,6 +26,7 @@ from components.navx import Navx
 from components.turnToAngle import TurnToAngle
 from components.driveTrainGoToDist import GoToDist
 from components.ballCounter import BallCounter
+from components.colorSensor import ColorSensor
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -62,6 +63,7 @@ class MyRobot(MagicRobot):
     lidar: Lidar
     goToDist: GoToDist
     ballCounter: BallCounter
+    colorSensor: ColorSensor
 
     # Test code:
     testBoard: TestBoard
@@ -97,7 +99,7 @@ class MyRobot(MagicRobot):
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotorCreation, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader,
                          AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar,
-                         LoaderLogic, BallCounter]
+                         LoaderLogic, BallCounter, ColorSensor]
         testComponentListCompatibility(self, componentList)
 
 
@@ -185,7 +187,6 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called.
         """
-
         print("testInit was Successful")
 
     def testPeriodic(self):
