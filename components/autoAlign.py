@@ -87,7 +87,7 @@ class AutoAlign(StateMachine):
             self.AbsoluteX = abs(self.DeviationX)
             for dists, speed in values:
                 if (dists == "End"
-                    or (self.AbsoluteX < dists 
+                    or (self.AbsoluteX < dists
                     and self.AbsoluteX > self.maxAimOffset)):
                     if speed == "PID":
                         self.speed = self.calc_PID(self.DeviationX)
@@ -99,7 +99,6 @@ class AutoAlign(StateMachine):
                     log.info("Autoalign complete")
                     self.driveTrain.setTank(0, 0)
                     self.next_state("idling")
-            
             # if self.shootAfterComplete:
             #     self.autoShoot.startAutoShoot()
         # If the horizontal offset is within the given tolerance,
