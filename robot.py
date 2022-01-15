@@ -13,7 +13,9 @@ from components.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
 from components.breakSensors import Sensors
 from components.winch import Winch
-from components.shooterMotors import ShooterMotorCreation
+from components.shooterMotors import ShooterMotors
+from components.hopperMotor import HopperMotor
+from components.intakeMotor import IntakeMotor
 from components.shooterLogic import ShooterLogic
 from components.loaderLogic import LoaderLogic
 from components.elevator import Elevator
@@ -49,7 +51,9 @@ class MyRobot(MagicRobot):
     loader: LoaderLogic
     feeder: FeederMap
     sensors: Sensors
-    shooterMotors: ShooterMotorCreation
+    shooterMotors: ShooterMotors
+    intakeMotor: IntakeMotor
+    hopperMotor: HopperMotor
     driveTrain: DriveTrain
     winch: Winch
     buttonManager: ButtonManager
@@ -96,10 +100,10 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
 
         # Check each component for compatibility
-        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotorCreation, DriveTrain,
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader,
                          AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar,
-                         LoaderLogic, BallCounter, ColorSensor]
+                         LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
 
@@ -169,7 +173,7 @@ class MyRobot(MagicRobot):
             self.autoAlign.stop()
             self.autoShoot.stop()
             self.shooterMotors.stopShooter()
-            self.shooterMotors.stopLoader()
+            self.hopperMotor.stopHopper()
         self.prevAState = self.xboxMap.getDriveA()
 
         if not executingDriveCommand:
