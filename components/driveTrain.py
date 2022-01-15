@@ -6,7 +6,7 @@ import wpilib.drive
 import logging as log
 from networktables import NetworkTables
 
-from magicbot import tunable
+from magicbot import tunable, feedback
 class ControlMode(Enum):
     """
     Drive Train Control Modes
