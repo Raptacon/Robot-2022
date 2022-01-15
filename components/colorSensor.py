@@ -20,6 +20,14 @@ class ColorSensor():
     def getColor(self):
         return self.color
 
+    def getColorMatch(self):
+        """
+        Returns the color closest
+        to the current input.
+        Either red, blue, white or black.
+        """
+        return self.colorMatch.matchClosestColor(self.color)
+
     def getRed(self):
         return True if self.colorMatch.matchClosestColor(self.color) == self.colors["red"] else False
 
