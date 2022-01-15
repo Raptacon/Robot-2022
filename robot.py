@@ -156,7 +156,7 @@ class MyRobot(MagicRobot):
         self.autoShoot.engage()
         if self.xboxMap.getDriveA() == True:
             executingDriveCommand = True
-            self.autoAlign.setShootAfterComplete(True)
+            self.autoAlign.setShootAfterComplete(False)
             self.autoAlign.engage()
         if self.xboxMap.getDriveX() == True:
             executingDriveCommand = True

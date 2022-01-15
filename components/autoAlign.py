@@ -69,14 +69,13 @@ class AutoAlign(StateMachine):
         if self.DeviationX != -50 or self.DeviationX != 0:
             # "-50" is the default value, so if that is returned,
             # nothing should be done because there is no connection.
-            DeviationX = self.limeTable.getNumber("DeviationX", -50)
             values = [
-                     [[self.maxAimOffset, self.PIDAimOffset],["PID"]],
-                     [[self.PIDAimOffset,"End"],[self.DumbSpeed]]
+                     [[self.maxAimOffset, self.PIDAimOffset],"PID"],
+                     [[self.PIDAimOffset,"End"],self.DumbSpeed]
                      ]
 
             """
-            If DeviationX value is in between the minimum and maximum values 
+            If DeviationX value is in between the minimum and maximum values
             then the speed is set to the second array. if only one value needs to be check put
             "End" as max value.
             [self.min, self.max],[speed]
@@ -84,17 +83,19 @@ class AutoAlign(StateMachine):
 
             self.speed = 0
             done = True
-            self.AbsolteX = abs(DeviationX)
-            for section in values:
-                for dists, speed in section:
+            self.AbsoluteX = abs(self.DeviationX)
+            for dists, speed in values:
 
-                    if (len(dists) == 2 and
-                       dists[0] < self.AbsolteX and
-                       self.AbsolteX < dists[1] or
-                       dists[1] == "End"):
+                if (dists[1] == "End" or
+                    len(dists) == 2 and
+                    dists[0] < self.AbsoluteX and
+                    self.AbsoluteX < dists[1]):
+                    if speed == "PID":
+                        self.speed = self.calc_PID(self.DeviationX)
+                    else:
                         self.speed = speed
-                        self.next_state("adjust_self")
-                        break
+                    self.next_state("adjust_self")
+                    break
 
             log.info("Autoalign complete")
             self.driveTrain.setTank(0, 0)
@@ -110,10 +111,10 @@ class AutoAlign(StateMachine):
     @timed_state(duration=time, next_state="start")
     def adjust_self(self):
         """Turns the bot"""
-        if(self.DeviationX == self.AbsolteX):
-            self.driveTrain.setTank(1 * self.speed, self.speed)
-        else:
+        if(self.DeviationX == self.AbsoluteX):
             self.driveTrain.setTank(-1 * self.speed, self.speed)
+        else:
+            self.driveTrain.setTank(self.speed, -1 * self.speed)
         self.next_state("start")
 
     def calc_PID(self, error):
