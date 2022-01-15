@@ -87,10 +87,10 @@ class AutoAlign(StateMachine):
             self.AbsoluteX = abs(self.DeviationX)
             for dists, speed in values:
 
-                if (dists[1] == "End" or
-                    len(dists) == 2 and
-                    dists[0] < self.AbsoluteX and
-                    self.AbsoluteX < dists[1]):
+                if (dists[1] == "End"
+                    or len(dists) == 2
+                    and dists[0] < self.AbsoluteX
+                    and self.AbsoluteX < dists[1]):
                     if speed == "PID":
                         self.speed = self.calc_PID(self.DeviationX)
                     else:
