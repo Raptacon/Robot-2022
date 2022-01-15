@@ -188,17 +188,13 @@ class MyRobot(MagicRobot):
         """
         Function called when testInit is called.
         """
-        self.colorSensor.setup()
-        self.logger.debug("REEE")
         print("testInit was Successful")
 
     def testPeriodic(self):
         """
         Called during test mode alot
         """
-        self.colorSensor.execute()
-        self.logger.debug("Color is "+ str(self.colorSensor.getColor()))
-        self.logger.debug("Closest color is "+ str(self.colorSensor.getColorMatch()))
+        pass
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
