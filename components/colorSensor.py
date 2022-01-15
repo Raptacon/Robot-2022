@@ -6,7 +6,7 @@ class ColorSensor():
     colorSensor = ColorSensorV3(wpilib.I2C.Port.kOnboard)
     colorMatch = ColorMatch()
     colors = {"red":wpilib.Color(1, 0, 0),
-             "blue":wpilib.Color(0, 1, 0),
+             "blue":wpilib.Color(0, 0, 1),
              "white":wpilib.Color(1, 1, 1),
              "black":wpilib.Color(0, 0, 0)}
 
