@@ -197,8 +197,8 @@ class MyRobot(MagicRobot):
         Called during test mode alot
         """
         self.colorSensor.execute()
-        self.logger.debug("Color is "+self.colorSensor.getColor())
-        self.logger.debug("Closest color is "+self.colorSensor.getColorMatch())
+        self.logger.debug("Color is "+ str(self.colorSensor.getColor()))
+        self.logger.debug("Closest color is "+ str(self.colorSensor.getColorMatch()))
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
