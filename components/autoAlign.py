@@ -76,7 +76,10 @@ class AutoAlign(StateMachine):
                      ]
 
             """
-            
+            If DeviationX value is in between the minimum and maximum values 
+            then the speed is set to the second array. if only one value needs to be check put
+            "End" as max value.
+            [self.min, self.max],[speed]
             """
 
             self.speed = 0
@@ -147,4 +150,5 @@ class AutoAlign(StateMachine):
         self.start = True
 
     def stop(self):
+        #Stops the robot
         self.next_state_now("idling")
