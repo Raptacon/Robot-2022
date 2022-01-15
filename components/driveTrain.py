@@ -17,7 +17,7 @@ class ControlMode(Enum):
     kDisabled = auto()
 
 class DriveTrain():
-    compatString = ["doof","scorpion"]
+    compatString = ["doof","scorpion", "greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
     driveMotorsMultiplier = tunable(.5)
