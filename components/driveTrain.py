@@ -115,6 +115,7 @@ class DriveTrain():
         else:
             return self.leftDistInch
 
+    @feedback
     def getEstTotalDistTraveled(self):
         self.smartDashTable.putNumber("Estimated Encoder Distance since enable", (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2)
         return (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2
