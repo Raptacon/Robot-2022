@@ -93,7 +93,7 @@ class LoaderLogic(StateMachine):
         if self.isAutomatic:
             self.next_state('checkForBall')
         elif not self.isAutomatic:
-            self.next_state('runLoaderManually')
+            self.next_state('runHopperManually')
 
     def execute(self):
         """Constantly runs state machine and intake. Necessary for function."""
