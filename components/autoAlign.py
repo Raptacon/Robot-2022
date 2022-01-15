@@ -2,6 +2,7 @@ from networktables import NetworkTables as networktable
 from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 import logging as log
+from components.shooterMotors import ShooterMotorCreation, Direction
 from components.driveTrain import DriveTrain
 from components.autoShoot import AutoShoot
 
@@ -15,14 +16,15 @@ class AutoAlign(StateMachine):
     compatString = ["doof"]
     time = 0.01
     driveTrain: DriveTrain
+    shooterMotors: ShooterMotorCreation
 
     # Auto Align variables
     shootAfterComplete = False
     # Maximum horizontal offset before shooting in degrees
     maxAimOffset = tunable(.25)
     PIDAimOffset = tunable(2.1)
-    DumbSpeed = .14
-    
+    DumbSpeed = .5
+
     # PID
     P = tunable(0.01)
     I = tunable(0.08)
@@ -32,7 +34,7 @@ class AutoAlign(StateMachine):
     speed = 0
     integral = 0
     preverror = 0
-    #starting is false 
+    #starting is false
     starting = False
 
     limeTable = networktable.getTable("limelight")
@@ -112,9 +114,9 @@ class AutoAlign(StateMachine):
     def adjust_self(self):
         """Turns the bot"""
         if(self.DeviationX == self.AbsoluteX):
-            self.driveTrain.setTank(-1 * self.speed, self.speed)
+            self.shooterMotors.runLoader(self.speed,Direction.kBackwards)
         else:
-            self.driveTrain.setTank(self.speed, -1 * self.speed)
+            self.shooterMotors.runLoader(self.speed,Direction.kForwards)
         self.next_state("start")
 
     def calc_PID(self, error):
