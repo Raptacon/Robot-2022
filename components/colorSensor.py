@@ -5,6 +5,8 @@ class ColorSensor():
 
     colorSensor = ColorSensorV3(wpilib.I2C.Port.kOnboard)
     colorMatch = ColorMatch()
+    # The closer this is to 0, the closer the color has to be to the color.
+    confidence = .1
     colors = {"red":wpilib.Color(1, 0, 0),
              "blue":wpilib.Color(0, 0, 1),
              "white":wpilib.Color(1, 1, 1),
@@ -26,13 +28,13 @@ class ColorSensor():
         to the current input.
         Either red, blue, white or black.
         """
-        return self.colorMatch.matchClosestColor(self.color)
+        return self.colorMatch.matchClosestColor(self.color, self.confidence)
 
     def getRed(self):
-        return True if self.colorMatch.matchClosestColor(self.color) == self.colors["red"] else False
+        return True if self.colorMatch.matchClosestColor(self.color, self.confidence) == self.colors["red"] else False
 
     def getBlue(self):
-        return True if self.colorMatch.matchClosestColor(self.color) == self.colors["blue"] else False
+        return True if self.colorMatch.matchClosestColor(self.color, self.confidence) == self.colors["blue"] else False
 
     def execute(self):
         self.updateColor()
