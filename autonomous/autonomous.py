@@ -1,6 +1,7 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.driveTrain import DriveTrain
 from components.driveTrainGoToDist import GoToDist
+from components.turnToAngle import TurnToAngle
 from components.shooterLogic import ShooterLogic
 from components.shooterMotors import ShooterMotorCreation
 from components.autoAlign import AutoAlign
@@ -15,6 +16,7 @@ class Autonomous(AutonomousStateMachine):
     DEFAULT = True
     driveTrain: DriveTrain
     goToDist: GoToDist
+    turnToAngle: TurnToAngle
     shooter: ShooterLogic
     shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
@@ -39,13 +41,29 @@ class Autonomous(AutonomousStateMachine):
         self.goToDist.setTargetDist(5)
         self.goToDist.start()
         self.goToDist.next_state("idling")
+        self.next_state("turn90DegreesRight")
 
-    state(duration = time, next_state = 'stop')
-    def turn(self):
+    @state
+    def turn90DegreesRight(self):
         """Turns for a time"""
-        self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
+        # self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
+        self.turnToAngle.turnAngle = 90
+        self.turnToAngle.setup()
+        self.turnToAngle.setIsRunning()
+        self.turnToAngle.output()
+        self.next_state("turn100DegreesLeft")
 
-    @state()
+    @state
+    def turn100DegreesLeft(self):
+        """Turns for a time"""
+        # self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
+        self.turnToAngle.turnAngle = -100
+        self.turnToAngle.setup()
+        self.turnToAngle.setIsRunning()
+        self.turnToAngle.output()
+        self.next_state("turn90DegreesRight")
+
+    @state
     def drive_backwards(self):
         """Drives the bot forwards for a time"""
         self.goToDist.setTargetDist(-5)
