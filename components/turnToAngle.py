@@ -37,6 +37,7 @@ class TurnToAngle(StateMachine):
     """
     def start(self):
         self.starting = True
+        self.next_state("idling")
 
     @state(first = True)
     def idling(self):
@@ -56,7 +57,6 @@ class TurnToAngle(StateMachine):
         self.starting = False
         self.nextHeading = self.initialHeading + self.turnAngle
         self.next_state("turn")
-        #self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
     
     @state
     def turn(self):
@@ -90,7 +90,8 @@ class TurnToAngle(StateMachine):
                 self.setSpeed = False
                 self.nextOutput = self.PIDController.calculate(measurement = self.heading, setpoint = self.nextHeading)
                 self.driveTrain.setTank(-1 * self.nextOutput, self.nextOutput)
-                self.stop
+                self.stop()
+                self.next_state("idling")
 
     def stop(self):
         self.nextOutput = 0
@@ -98,7 +99,6 @@ class TurnToAngle(StateMachine):
         self.starting = False
         self.initialHeading = self.heading
         self.setSpeed = True
-        self.next_state("idling")
 
 
     @feedback
