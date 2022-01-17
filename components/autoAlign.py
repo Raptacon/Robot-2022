@@ -4,7 +4,6 @@ from magicbot.state_machine import state, timed_state
 import logging as log
 from components.driveTrain import DriveTrain
 from components.autoShoot import AutoShoot
-from utils.DirectionEnums import Direction
 
 class AutoAlign(StateMachine):
     """
