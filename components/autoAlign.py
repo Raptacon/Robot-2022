@@ -2,8 +2,6 @@ from networktables import NetworkTables as networktable
 from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 import logging as log
-from components.shooterMotors import ShooterMotors
-from components.hopperMotor import HopperMotor
 from components.driveTrain import DriveTrain
 from components.autoShoot import AutoShoot
 from utils.DirectionEnums import Direction
@@ -18,8 +16,6 @@ class AutoAlign(StateMachine):
     compatString = ["doof"]
     time = 0.01
     driveTrain: DriveTrain
-    shooterMotors: ShooterMotors
-    hopperMotor: HopperMotor
 
     # Auto Align variables
     shootAfterComplete = False
