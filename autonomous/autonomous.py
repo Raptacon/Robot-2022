@@ -100,9 +100,15 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.next_state("stoprunning")
 
     @state
-    def stoprunning(self):
-        if self.goToDist.running == False:
-            while self.goToDist.running == False:
+    def stoprunning(self, initial_call):
+        if initial_call:
+            self.next_state("stoprunning")
+        elif self.goToDist.running:
+            while self.goToDist.running:
+                pass
+            if self.goToDist.running:
+                self.next_state("stoprunning")
+            else:
                 self.next_state("turn")
 
     @state
@@ -113,21 +119,27 @@ class AutonomousAutoStart(AutonomousStateMachine):
         turn3 = -90
 
         self.turnToAngle.turnAngle = turn1
-        self.turnToAngle.setIsRunning
+        self.turnToAngle.setIsRunning()
         self.next_state("check_angle")
 
         self.turnToAngle.turnAngle = turn2
-        self.turnToAngle.setIsRunning
+        self.turnToAngle.setIsRunning()
         self.next_state("check_angle")
 
         self.turnToAngle.turnAngle = turn3
-        self.turnToAngle.setIsRunning
+        self.turnToAngle.setIsRunning()
         self.next_state("check_angle")
 
     @state
-    def check_angle(self):
-        if self.turnToAngle.isRunning == False:
-            while self.turnToAngle.isRunning == False:
+    def check_angle(self, initial_call):
+        if initial_call:
+            self.next_state("check_angle")
+        elif self.turnToAngle.isRunning:
+            while self.turnToAngle.isRunning:
+                pass
+            if self.turnToAngle.isRunning:
+                self.next_state("check_angle")
+            else:
                 self.next_state("drive_backwards")
         
     @state
