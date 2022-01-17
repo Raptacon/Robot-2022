@@ -29,11 +29,11 @@ class TurnToAngle(StateMachine):
         self.heading = self.navx.getFusedHeading()
         self.originalHeading = self.navx.getFusedHeading()
         self.initialHeading = self.navx.getFusedHeading()
-
+    """
     def setAngle(self, angle):
-        """Sets the desired turn angle"""
+        Sets the desired turn angle
         self.turnAngle = angle
-
+    """
     def start(self):
         self.starting = True
 
@@ -52,6 +52,7 @@ class TurnToAngle(StateMachine):
     @state
     def calcHeading(self):
         self.running = True
+        self.starting = False
         self.nextHeading = self.initialHeading + self.turnAngle
         self.next_state("turn")
         #self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
@@ -88,12 +89,10 @@ class TurnToAngle(StateMachine):
                 self.setSpeed = False
                 self.nextOutput = self.PIDController.calculate(measurement = self.heading, setpoint = self.nextHeading)
                 self.driveTrain.setTank(-1 * self.nextOutput, self.nextOutput)
-                self.next_state("stop")
+                self.stop
 
-    @state
     def stop(self):
         self.nextOutput = 0
-        self.PIDController.reset()
         self.running = False
         self.starting = False
         self.initialHeading = self.heading
