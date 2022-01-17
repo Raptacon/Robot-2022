@@ -1,7 +1,6 @@
 from components.driveTrain import DriveTrain
 from magicbot import tunable, feedback, StateMachine, state
 import logging as log
-from wpilib import controller
 
 import navx
 
@@ -12,22 +11,22 @@ class TurnToAngle(StateMachine):
     driveTrain: DriveTrain
     starting = False
     running = False
-    nextOutput = 0
     initialHeading = 0
     nextHeading = 0
     heading = 0
     originalHeading = 0
     turnAngle = 20
-    dumbSpeed = .5
+    dumbSpeed = .25
+    """
     farMultiplier = tunable(.5)
     midMultiplier = tunable(.4)
     closeMultiplier = tunable(.25)
+    """
     tolerance = tunable(.5)
     change = 0
     setSpeed = True
 
     def setup(self):
-        self.heading = self.navx.getFusedHeading()
         self.originalHeading = self.navx.getFusedHeading()
         self.initialHeading = self.navx.getFusedHeading()
     """
@@ -56,63 +55,57 @@ class TurnToAngle(StateMachine):
         self.running = True
         self.starting = False
         self.nextHeading = self.initialHeading + self.turnAngle
+
+        if self.nextHeading > 360:
+            self.nextHeading -= 360
+        elif self.nextHeading < 0:
+            self.nextHeading += 360
+
+        self.change = self.nextHeading - self.navx.getFusedHeading()
+        if self.change > 180:
+            self.change -= 360
+        elif self.change < -180:
+            self.change += 360
+        self.next_state("setSpeedFunc")
+
+    @state
+    def setSpeedFunc(self):
+        if abs(self.change) > 90:
+            self.speed = self.dumbSpeed 
+        elif abs(self.change) <= 90 and abs(self.change) > 20:
+            self.speed = self.dumbSpeed 
+        elif abs(self.change) <= 20:
+            self.speed = self.dumbSpeed
         self.next_state("turn")
 
     @state
     def turn(self):
-        if self.running == True:
-            if self.nextHeading > 360:
-                self.nextHeading -= 360
-            elif self.nextHeading < 0:
-                self.nextHeading += 360
+        if self.setSpeed == True:
+            if self.change > 0:
+                self.driveTrain.setTank(-1 * self.speed, self.speed)
+            else:
+                self.driveTrain.setTank(self.speed, -1 * self.speed)
 
-
-            self.change = self.nextHeading - self.heading
-            if self.change > 180:
-                self.change -= 360
-            elif self.change < -180:
-                self.change += 360
-
-            if abs(self.change) > 90:
-                self.speed = self.dumbSpeed * self.farMultiplier
-            elif abs(self.change) <= 90 and abs(self.change) > 20:
-                self.speed = self.dumbSpeed * self.midMultiplier
-            elif abs(self.change) <= 20:
-                self.speed = self.dumbSpeed * self.closeMultiplier
-
-            if self.setSpeed == True:
-                if self.change > 0:
-                    self.driveTrain.setTank(-1 * self.speed, self.speed)
-                else:
-                    self.driveTrain.setTank(self.speed, -1 * self.speed)
-
-            if (self.heading <= self.nextHeading + self.tolerance and self.heading >= self.nextHeading - self.tolerance):
-                self.setSpeed = False
-                self.nextOutput = self.PIDController.calculate(measurement = self.heading, setpoint = self.nextHeading)
-                self.driveTrain.setTank(-1 * self.nextOutput, self.nextOutput)
-                self.stop()
-                self.next_state("idling")
+        if (self.heading <= self.nextHeading + self.tolerance and self.heading >= self.nextHeading - self.tolerance):
+            self.setSpeed = False
+            self.driveTrain.setTank(0, 0)
+            self.stop()
+            self.next_state("idling")
+        else:
+            self.stop()
             self.next_state("calcHeading")
+            
 
     def stop(self):
-        self.nextOutput = 0
         self.running = False
         self.starting = False
         self.initialHeading = self.heading
         self.setSpeed = True
-
-
-    @feedback
-    def outputDisplay(self):
-        return self.nextOutput
+        self.done()
 
     @feedback
     def nextHeadingDisplay(self):
         return self.nextHeading
-
-    @feedback
-    def setSpeedDisplay(self):
-        return self.setSpeed
 
     # def execute(self):
     #     self.heading = self.navx.getFusedHeading()
