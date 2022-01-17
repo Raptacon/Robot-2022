@@ -6,8 +6,8 @@ from wpilib import controller
 import navx
 
 class TurnToAngle(StateMachine):
+    compatString = ["doof", "greenChassis"]
 
-    
     navx = navx._navx.AHRS.create_spi()
     driveTrain: DriveTrain
     starting = False
