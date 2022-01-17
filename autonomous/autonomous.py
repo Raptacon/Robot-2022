@@ -15,8 +15,6 @@ class Autonomous(AutonomousStateMachine):
     MODE_NAME = "Basic Autonomous"
     DEFAULT = True
     driveTrain: DriveTrain
-    goToDist: GoToDist
-    turnToAngle: TurnToAngle
     shooter: ShooterLogic
     shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
@@ -85,6 +83,8 @@ class AutonomousAutoStart(AutonomousStateMachine):
     DEFAULT = False
     driveTrain: DriveTrain
     shooter: ShooterLogic
+    goToDist: GoToDist
+    turnToAngle: TurnToAngle
     shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
     autoAlign: AutoAlign
@@ -92,5 +92,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     shooter: ShooterLogic
     drive_speed = tunable(.25)
 
-
-    @state(first = true)
+    @state(first = True)
+    def drive_forwards(self):
+        """Drives the bot forwards for 5 feet"""
+        self.goToDist.setTargetDist(5)
