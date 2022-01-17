@@ -22,64 +22,34 @@ class Autonomous(AutonomousStateMachine):
     pneumatics: Pneumatics
     drive_speed = tunable(.25)
 
-    # @state(first = True)
-    # def engage_shooter(self):
-    #     """Starts shooter and fires"""
-    #     self.pneumatics.deployLoader()
-    #     self.shooter.engage()
-    #     self.shooter.startShooting
-    #     self.next_state('shooter_wait')
-
-    # @timed_state(duration = shootTime, next_state="drive_backwards")
-    # def shooter_wait(self):
-    #     """Waits for shooter to finish, then next state"""
-    #     pass
-
     @state(first = True)
-    def drive_forward(self):
-        """Drives the bot forwards for a time"""
-        self.goToDist.setTargetDist(5)
-        self.goToDist.start()
-        self.goToDist.next_state("idling")
-        self.next_state("turn90DegreesRight")
+    def engage_shooter(self):
+        """Starts shooter and fires"""
+        self.pneumatics.deployLoader()
+        self.shooter.engage()
+        self.shooter.startShooting()
+        self.next_state('shooter_wait')
 
-    @state
-    def turn90DegreesRight(self):
-        """Turns for a time"""
-        # self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
-        self.turnToAngle.turnAngle = 90
-        self.turnToAngle.setup()
-        self.turnToAngle.setIsRunning()
-        self.turnToAngle.output()
-        self.next_state("turn100DegreesLeft")
+    @timed_state(duration = shootTime, next_state="drive_backwards")
+    def shooter_wait(self):
+        """Waits for shooter to finish, then next state"""
+        pass
 
-    @state
-    def turn100DegreesLeft(self):
-        """Turns for a time"""
-        # self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
-        self.turnToAngle.turnAngle = -100
-        self.turnToAngle.setup()
-        self.turnToAngle.setIsRunning()
-        self.turnToAngle.output()
-        self.next_state("turn90DegreesRight")
-
-    @state
+    @timed_state(duration = time, next_state = 'turn')
     def drive_backwards(self):
-        """Drives the bot forwards for a time"""
-        self.goToDist.setTargetDist(-5)
-        self.next_state("stop")
+        """Drives the bot backwards for a time"""
+        self.shooter.doneShooting()
+        self.driveTrain.setTank(self.drive_speed, self.drive_speed)
 
-    # @timed_state(duration = time, next_state = 'turn')
-    # def drive_backwards(self):
-    #     """Drives the bot backwards for a time"""
-    #     self.shooter.doneShooting()
-    #     self.driveTrain.setTank(self.drive_speed, self.drive_speed)
-
+    @timed_state(duration = time, next_state = 'stop')
+    def turn(self):
+        """Turns for a time"""
+        self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
 
     @state(must_finish = True)
     def stop(self):
         """Stops driving bot"""
-        self.goToDist.stop()
+        self.driveTrain.setTank(0, 0)
         self.done()
 
 class AutonomousAutoShoot(AutonomousStateMachine):
