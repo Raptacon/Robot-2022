@@ -71,3 +71,23 @@ class AutonomousAutoShoot(AutonomousStateMachine):
         self.autoShoot.engage()
         self.shooter.engage()
         self.next_state("engage_shooter")
+
+
+
+
+class AutonomousAutoStart(AutonomousStateMachine):
+    """Creates the autonomous code"""
+    time = 1.4
+    MODE_NAME = "AutoShoot Autonomous"
+    DEFAULT = False
+    driveTrain: DriveTrain
+    shooter: ShooterLogic
+    shooterMotors: ShooterMotorCreation
+    pneumatics: Pneumatics
+    autoAlign: AutoAlign
+    autoShoot: AutoShoot
+    shooter: ShooterLogic
+    drive_speed = tunable(.25)
+
+
+    @state(first = true)
