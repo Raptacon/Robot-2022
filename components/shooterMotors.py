@@ -4,8 +4,9 @@ from enum import Enum, auto
 class ShooterMotors:
     """
     Allows you to run motors in the shooter
+    Relies on a config with 2 shooter motors
     """
-    compatString = ["doof"]
+    compatString = []
 
     motors_shooter: dict
 
@@ -13,18 +14,21 @@ class ShooterMotors:
         """
         Sets up shooter motors
         """
-        self.shooterSpeed = 0
+        self.shooterSpeed1 = 0
+        self.shooterSpeed2 = 0
         self.shooter = False
 
-        self.shooterMotor = self.motors_shooter["shooterMotor"]
+        self.shooterMotor1 = self.motors_shooter["shooterMotor1"]
+        self.shooterMotor2 = self.motors_shooter["shooterMotor2"]
 
         log.info("Shooter Motor Component Created")
 
-    def runShooter(self, sSpeed):
+    def runShooter(self, sSpeed1, sSpeed2):
         """
         Sets the shooter to speed sSpeed
         """
-        self.shooterSpeed = sSpeed
+        self.shooterSpeed1 = sSpeed1
+        self.shooterSpeed2 = sSpeed2
         self.shooter = True
 
     def stopShooter(self):
@@ -41,6 +45,8 @@ class ShooterMotors:
         Sets all the motors to previously defined values. If not set by methods, set to 0.
         """
         if self.shooter:
-            self.shooterMotor.set(self.shooterSpeed)
+            self.shooterMotor1.set(self.shooterSpeed1)
+            self.shooterMotor2.set(self.shooterSpeed2)
         elif self.shooter == False:
-            self.shooterMotor.set(0)
+            self.shooterMotor1.set(0)
+            self.shooterMotor2.set(0)
