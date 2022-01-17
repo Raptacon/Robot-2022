@@ -138,6 +138,8 @@ class MyRobot(MagicRobot):
         self.shooter.autonomousDisabled()
         self.prevAState = False
 
+        self.turnToAngle.engage()
+
     def teleopPeriodic(self):
         """
         Must include. Called repeatedly while running teleop.
@@ -156,7 +158,6 @@ class MyRobot(MagicRobot):
 
         self.goToDist.engage()
         self.autoShoot.engage()
-        self.turnToAngle.engage()
         if self.xboxMap.getDriveA() == True:
             executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(True)

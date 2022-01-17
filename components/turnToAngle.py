@@ -92,6 +92,7 @@ class TurnToAngle(StateMachine):
                 self.driveTrain.setTank(-1 * self.nextOutput, self.nextOutput)
                 self.stop()
                 self.next_state("idling")
+            self.next_state("calcHeading")
 
     def stop(self):
         self.nextOutput = 0
