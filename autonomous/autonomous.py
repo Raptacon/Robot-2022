@@ -96,6 +96,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     def drive_forwards(self):
         """Drives the bot forwards for 5 feet"""
         self.goToDist.setTargetDist(5)
+        self.goToDist.start()
         self.next_state("turn")
 
     @state
@@ -108,5 +109,16 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.turnToAngle.turnAngle = turn1
         self.turnToAngle.turnAngle = turn2
         self.turnToAngle.turnAngle = turn3
-        
+        self.next_state("drive_backwards")
 
+    @state
+    def drive_backwards(self):
+        """Drives the bot backwards for 5 feet"""
+        self.goToDist.setTargetDist(-5)
+        self.next_state("stop")
+
+    @state(must_finish = True)
+    def stop(self):
+        """Stops driving bot"""
+        self.driveTrain.setTank(0, 0)
+        self.done()
