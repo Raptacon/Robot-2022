@@ -96,3 +96,17 @@ class AutonomousAutoStart(AutonomousStateMachine):
     def drive_forwards(self):
         """Drives the bot forwards for 5 feet"""
         self.goToDist.setTargetDist(5)
+        self.next_state("turn")
+
+    @state
+    def turn(self):
+        """One method that completes all turns"""
+        turn1 = -90
+        turn2 = 180
+        turn3 = -90
+
+        self.turnToAngle.turnAngle = turn1
+        self.turnToAngle.turnAngle = turn2
+        self.turnToAngle.turnAngle = turn3
+        
+
