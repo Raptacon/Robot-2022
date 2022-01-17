@@ -89,16 +89,16 @@ class AutoAlign(StateMachine):
 
         else:
             log.error("Limelight: No Valid Targets")
-            self.next_state("idling")
 
     @timed_state(duration=time, next_state="start")
-    def adjust_self(self):
-        """Turns the bot"""
-        if(self.DeviationX == self.AbsoluteX):
-            self.hopperMotor.runHopper(self.speed,Direction.kBackwards)
-        else:
-            self.hopperMotor.runHopper(self.speed,Direction.kForwards)
-        self.next_state("start")
+    def adjust_self_right(self):
+        """Turns the bot right"""
+        self.driveTrain.setTank(-1 * self.speed, self.speed)
+
+    @timed_state(duration=time, next_state="start")
+    def adjust_self_left(self):
+        """Turns the bot left"""
+        self.driveTrain.setTank(self.speed, -1 * self.speed)
 
     def calc_PID(self, error):
         """
@@ -130,9 +130,9 @@ class AutoAlign(StateMachine):
     def reset_integral(self):
         self.integral = 0
 
-    def StartautoAlign(self):
-        self.start = True
+    @state
+    def idling(self):
+        pass
 
     def stop(self):
-        #Stops the robot
         self.next_state_now("idling")
