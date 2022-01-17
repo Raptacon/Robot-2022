@@ -97,7 +97,14 @@ class AutonomousAutoStart(AutonomousStateMachine):
         """Drives the bot forwards for 5 feet"""
         self.goToDist.setTargetDist(5)
         self.goToDist.start()
-        self.next_state("turn")
+        self.next_state("stoprunning")
+
+    @state
+    def stoprunning(self):
+        if self.initi
+        if self.goToDist.running == False:
+            while self.goToDist.running == False:
+                self.next_state("turn")
 
     @state
     def turn(self):
@@ -108,29 +115,22 @@ class AutonomousAutoStart(AutonomousStateMachine):
 
         self.turnToAngle.turnAngle = turn1
         self.turnToAngle.setIsRunning
-        self.next_state("stoprunning")
+        self.next_state("check_angle")
 
         self.turnToAngle.turnAngle = turn2
         self.turnToAngle.setIsRunning
-        self.next_state("stoprunning")
+        self.next_state("check_angle")
 
         self.turnToAngle.turnAngle = turn3
         self.turnToAngle.setIsRunning
-        self.next_state("stoprunning")
+        self.next_state("check_angle")
 
     @state
     def check_angle(self):
-
-
-    @state
-    def stoprunning(self):
-        if self.goToDist.running == False:
-            while self.goToDist.running == False:
+        if self.turnToAngle.isRunning == False:
+            while self.turnToAngle.isRunning == False:
                 self.next_state("drive_backwards")
         
-
-        
-
     @state
     def drive_backwards(self):
         """Drives the bot backwards for 5 feet"""
