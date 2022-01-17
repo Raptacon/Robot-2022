@@ -33,8 +33,9 @@ class TurnToAngle():
         self.initialHeading = self.navx.getFusedHeading()
         self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
 
-    def setIsRunning(self):
+    def setAngleAndStart(self, angle):
         self.isRunning = True
+        self.turnAngle = angle
         self.nextHeading = self.initialHeading + self.turnAngle
         #self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
     
