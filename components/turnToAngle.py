@@ -1,28 +1,26 @@
 from components.driveTrain import DriveTrain
-from magicbot import tunable, feedback
+from magicbot import tunable, feedback, StateMachine, state
+import logging as log
 from wpilib import controller
 
 import navx
 
-class TurnToAngle():
+class TurnToAngle(StateMachine):
 
-    #PID
-    P = tunable(0.01)
-    I = tunable(0.01)
-    D = tunable(0)
-    time = 0.01
-    PIDController = None
     
     navx = navx._navx.AHRS.create_spi()
     driveTrain: DriveTrain
-    isRunning = False
+    starting = False
     nextOutput = 0
     initialHeading = 0
     nextHeading = 0
     heading = 0
     originalHeading = 0
-    turnAngle = tunable(10)
-    speed = 0
+    turnAngle = 20
+    dumbSpeed = .5
+    farMultiplier = tunable(.5)
+    midMultiplier = tunable(.4)
+    closeMultiplier = tunable(.25)
     tolerance = tunable(.5)
     change = 0
     setSpeed = True
@@ -31,17 +29,36 @@ class TurnToAngle():
         self.heading = self.navx.getFusedHeading()
         self.originalHeading = self.navx.getFusedHeading()
         self.initialHeading = self.navx.getFusedHeading()
-        self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
 
-    def setAngleAndStart(self, angle):
-        self.isRunning = True
+    def setAngle(self, angle):
+        """Sets the desired turn angle"""
         self.turnAngle = angle
+
+    def start(self):
+        self.starting = True
+
+    @state(first = True)
+    def idling(self):
+        if self.starting and not self.running:
+            if self.turnAngle != 0:
+                self.next_state("calcHeading")
+            else:
+                log.error("Must have an angle to turn to")
+                self.next_state("idling")
+        else:
+            self.next_state("idling")
+
+
+    @state
+    def calcHeading(self):
+        self.running = True
         self.nextHeading = self.initialHeading + self.turnAngle
+        self.next_state("turn")
         #self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
     
-    def output(self):
-        if self.isRunning == True:
-            
+    @state
+    def turn(self):
+        if self.running == True:
             if self.nextHeading > 360:
                 self.nextHeading -= 360
             elif self.nextHeading < 0:
@@ -55,11 +72,11 @@ class TurnToAngle():
                 self.change += 360
             
             if abs(self.change) > 90:
-                self.speed = .25
+                self.speed = self.dumbSpeed * self.farMultiplier
             elif abs(self.change) <= 90 and abs(self.change) > 20:
-                self.speed = .2
+                self.speed = self.dumbSpeed * self.midMultiplier
             elif abs(self.change) <= 20:
-                self.speed = .15
+                self.speed = self.dumbSpeed * self.closeMultiplier
 
             if self.setSpeed == True:
                 if self.change > 0:
@@ -71,6 +88,18 @@ class TurnToAngle():
                 self.setSpeed = False
                 self.nextOutput = self.PIDController.calculate(measurement = self.heading, setpoint = self.nextHeading)
                 self.driveTrain.setTank(-1 * self.nextOutput, self.nextOutput)
+                self.next_state("stop")
+
+    @state
+    def stop(self):
+        self.nextOutput = 0
+        self.PIDController.reset()
+        self.running = False
+        self.starting = False
+        self.initialHeading = self.heading
+        self.setSpeed = True
+        self.next_state("idling")
+
 
     @feedback
     def outputDisplay(self):
@@ -84,19 +113,5 @@ class TurnToAngle():
     def setSpeedDisplay(self):
         return self.setSpeed
     
-    def stop(self):
-        self.nextOutput = 0
-        self.PIDController.reset()
-        
-        if self.nextHeading > 360:
-            self.nextHeading -= 360
-        
-        self.isRunning = False
-        self.initialHeading = self.heading
-        self.setSpeed = True
-
-
     def execute(self):
-        self.output()
-        self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
         self.heading = self.navx.getFusedHeading()

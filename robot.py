@@ -131,6 +131,7 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.navx.reset)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.goToDist.start)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.goToDist.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kX, ButtonEvent.kOnPress, self.turnToAngle.start)
 
         self.driveTrain.setBraking(True)
         self.driveTrain.resetDistTraveled()
@@ -160,11 +161,6 @@ class MyRobot(MagicRobot):
             executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(True)
             self.autoAlign.engage()
-        if self.xboxMap.getDriveX() == True:
-            executingDriveCommand = True
-            self.turnToAngle.setIsRunning()
-        else:
-            self.turnToAngle.stop()
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()
             self.autoShoot.stop()
