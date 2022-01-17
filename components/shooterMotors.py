@@ -1,5 +1,4 @@
 import logging as log
-from enum import Enum, auto
 
 class ShooterMotors:
     """
