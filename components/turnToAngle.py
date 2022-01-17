@@ -114,5 +114,5 @@ class TurnToAngle(StateMachine):
     def setSpeedDisplay(self):
         return self.setSpeed
 
-    def execute(self):
-        self.heading = self.navx.getFusedHeading()
+    # def execute(self):
+    #     self.heading = self.navx.getFusedHeading()
