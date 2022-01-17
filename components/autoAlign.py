@@ -26,7 +26,7 @@ class AutoAlign(StateMachine):
     # Maximum horizontal offset before shooting in degrees
     maxAimOffset = tunable(.25)
     PIDAimOffset = tunable(2.1)
-    DumbSpeed = .5
+    DumbSpeed = .14
 
     # PID
     P = tunable(0.01)
@@ -37,8 +37,6 @@ class AutoAlign(StateMachine):
     speed = 0
     integral = 0
     preverror = 0
-    #starting is false
-    starting = False
 
     limeTable = networktable.getTable("limelight")
     smartTable = networktable.getTable('SmartDashboard')
@@ -57,56 +55,37 @@ class AutoAlign(StateMachine):
         else:
             self.shootAfterComplete = True
         return self.shootAfterComplete
-    #Stops robot from running until starting is true
-    @state
-    def idling(self):
-        if self.starting:
-            self.starting = False
-            log.error("starting")
-            self.next_state("start")
-        else:
-            self.next_state("idling")
 
     @state(first=True)
     def start(self):
         # If limelight can see something
-        self.DeviationX = self.limeTable.getNumber("tx", -50)
-        if self.DeviationX != -50 or self.DeviationX != 0:
+        self.tx = self.limeTable.getNumber("tx", -50)
+        if self.tx != -50 or self.tx != 0:
             # "-50" is the default value, so if that is returned,
             # nothing should be done because there is no connection.
-            values = [
-                     [[self.maxAimOffset, self.PIDAimOffset],self.DumbSpeed],
-                     [[self.PIDAimOffset,"End"],self.DumbSpeed]
-                     ]
-
-            """
-            If DeviationX value is in between the minimum and maximum values
-            then the speed is set to the second array. if only one value needs to be check put
-            "End" as max value.
-            [self.min, self.max],[speed]
-            """
-
-            self.speed = 0
-            self.AbsoluteX = abs(self.DeviationX)
-            for dists, speed in values:
-
-                if (dists[1] == "End"
-                    or len(dists) == 2
-                    and dists[0] < self.AbsoluteX
-                    and self.AbsoluteX < dists[1]):
-                    if speed == "PID":
-                        self.speed = self.calc_PID(self.DeviationX)
+            tx = self.limeTable.getNumber("tx", -50)
+            if tx != -50 and tx != 0:
+                if tx > self.maxAimOffset:
+                    if tx < self.PIDAimOffset:
+                        self.speed = self.calc_PID(tx)
                     else:
-                        self.speed = speed
-                    self.next_state("adjust_self")
-                    break
+                        self.speed = self.DumbSpeed
+                    self.next_state_now("adjust_self_right")
 
-            log.info("Autoalign complete")
-            self.driveTrain.setTank(0, 0)
-            # if self.shootAfterComplete:
-            #     self.autoShoot.startAutoShoot()
-        # If the horizontal offset is within the given tolerance,
-        # finish.
+                elif tx < -1 * self.maxAimOffset:
+                    if tx > -1 * self.PIDAimOffset:
+                        self.speed = -1 * self.calc_PID(tx)
+                    else:
+                        self.speed = self.DumbSpeed
+                    self.next_state_now("adjust_self_left")
+
+                # If the horizontal offset is within the given tolerance,
+                # finish.
+                else:
+                    log.info("Autoalign complete")
+                    self.driveTrain.setTank(0, 0)
+                    if self.shootAfterComplete:
+                        self.autoShoot.startAutoShoot()
 
         else:
             log.error("Limelight: No Valid Targets")
