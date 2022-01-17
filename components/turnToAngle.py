@@ -11,6 +11,7 @@ class TurnToAngle(StateMachine):
     navx = navx._navx.AHRS.create_spi()
     driveTrain: DriveTrain
     starting = False
+    running = False
     nextOutput = 0
     initialHeading = 0
     nextHeading = 0
