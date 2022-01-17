@@ -232,7 +232,7 @@ class MyRobot(MagicRobot):
         NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
         """
         self.driveTrain.setBraking(False)
-    
+
     def disabledPeriodic(self):
         """
         Runs repeatedly while disabled

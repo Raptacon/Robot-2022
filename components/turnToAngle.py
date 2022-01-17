@@ -57,7 +57,7 @@ class TurnToAngle(StateMachine):
         self.starting = False
         self.nextHeading = self.initialHeading + self.turnAngle
         self.next_state("turn")
-    
+
     @state
     def turn(self):
         if self.running == True:
@@ -65,14 +65,14 @@ class TurnToAngle(StateMachine):
                 self.nextHeading -= 360
             elif self.nextHeading < 0:
                 self.nextHeading += 360
-            
-            
+
+
             self.change = self.nextHeading - self.heading
             if self.change > 180:
                 self.change -= 360
             elif self.change < -180:
                 self.change += 360
-            
+
             if abs(self.change) > 90:
                 self.speed = self.dumbSpeed * self.farMultiplier
             elif abs(self.change) <= 90 and abs(self.change) > 20:
@@ -85,7 +85,7 @@ class TurnToAngle(StateMachine):
                     self.driveTrain.setTank(-1 * self.speed, self.speed)
                 else:
                     self.driveTrain.setTank(self.speed, -1 * self.speed)
-            
+
             if (self.heading <= self.nextHeading + self.tolerance and self.heading >= self.nextHeading - self.tolerance):
                 self.setSpeed = False
                 self.nextOutput = self.PIDController.calculate(measurement = self.heading, setpoint = self.nextHeading)
@@ -112,6 +112,6 @@ class TurnToAngle(StateMachine):
     @feedback
     def setSpeedDisplay(self):
         return self.setSpeed
-    
+
     def execute(self):
         self.heading = self.navx.getFusedHeading()
