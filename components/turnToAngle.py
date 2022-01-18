@@ -15,13 +15,11 @@ class TurnToAngle(StateMachine):
     nextHeading = 0
     heading = 0
     originalHeading = 0
-    turnAngle = 20
+    turnAngle = 0
     dumbSpeed = .25
-    """
-    farMultiplier = tunable(.5)
-    midMultiplier = tunable(.4)
-    closeMultiplier = tunable(.25)
-    """
+    farMultiplier = tunable(1)
+    midMultiplier = tunable(.75)
+    closeMultiplier = tunable(.5)
     tolerance = tunable(.5)
     change = 0
     setSpeed = True
@@ -48,7 +46,6 @@ class TurnToAngle(StateMachine):
         else:
             self.next_state("idling")
 
-
     @state
     def calcHeading(self):
         self.running = True
@@ -70,11 +67,11 @@ class TurnToAngle(StateMachine):
     @state
     def setSpeedFunc(self):
         if abs(self.change) > 90:
-            self.speed = self.dumbSpeed
+            self.speed = self.dumbSpeed * self.farMultiplier
         elif abs(self.change) <= 90 and abs(self.change) > 20:
-            self.speed = self.dumbSpeed
+            self.speed = self.dumbSpeed * self.midMultiplier
         elif abs(self.change) <= 20:
-            self.speed = self.dumbSpeed
+            self.speed = self.dumbSpeed * self.closeMultiplier
         self.next_state("turn")
 
     @state
@@ -85,13 +82,10 @@ class TurnToAngle(StateMachine):
             else:
                 self.driveTrain.setTank(self.speed, -1 * self.speed)
 
-        if (self.heading <= self.nextHeading + self.tolerance and self.heading >= self.nextHeading - self.tolerance):
+        if self.navx.getFusedHeading() <= self.nextHeading + self.tolerance and self.navx.getFusedHeading() >= self.nextHeading - self.tolerance:
             self.setSpeed = False
             self.driveTrain.setTank(0, 0)
             self.stop()
-        else:
-            self.next_state("calcHeading")
-
 
     def stop(self):
         self.running = False
