@@ -79,7 +79,7 @@ class AutonomousAutoShoot(AutonomousStateMachine):
 class AutonomousAutoStart(AutonomousStateMachine):
     """Creates the autonomous code"""
     time = 1.4
-    MODE_NAME = "AutoShoot Autonomous"
+    MODE_NAME = "Hallway Autonomous"
     DEFAULT = False
     driveTrain: DriveTrain
     shooter: ShooterLogic
@@ -95,12 +95,17 @@ class AutonomousAutoStart(AutonomousStateMachine):
     @state(first = True)
     def drive_forwards(self):
         """Drives the bot forwards for 5 feet"""
+        self.driveTrain.setup()
+        self.goToDist.engage()
         self.goToDist.setTargetDist(5)
         self.goToDist.start()
+        self.driveTrain.execute()
         self.next_state("stoprunning")
 
     @state
     def stoprunning(self, initial_call):
+        self.goToDist.engage()
+        self.driveTrain.execute()
         if initial_call:
             self.next_state("stoprunning")
         elif self.goToDist.running:
