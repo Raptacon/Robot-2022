@@ -96,6 +96,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     def drive_forwards(self):
         """Drives the bot forwards for 5 feet"""
         self.driveTrain.setup()
+        self.driveTrain.resetDistTraveled()
         self.goToDist.engage()
         self.goToDist.setTargetDist(5)
         self.goToDist.start()
@@ -109,12 +110,9 @@ class AutonomousAutoStart(AutonomousStateMachine):
         if initial_call:
             self.next_state("stoprunning")
         elif self.goToDist.running:
-            while self.goToDist.running:
-                pass
-            if self.goToDist.running:
-                self.next_state("stoprunning")
-            else:
-                self.next_state("turn")
+            self.next_state("stoprunning")
+        else:
+            self.next_state("turn")
 
     @state
     def turn(self):
