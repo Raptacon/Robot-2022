@@ -36,7 +36,6 @@ class TurnToAngle(StateMachine):
     """
     def start(self):
         self.starting = True
-        self.next_state("idling")
 
     @state(first = True)
     def idling(self):
@@ -66,14 +65,14 @@ class TurnToAngle(StateMachine):
             self.change -= 360
         elif self.change < -180:
             self.change += 360
-        self.next_state("setSpeedFunc")
+        self.next_state_now("setSpeedFunc")
 
     @state
     def setSpeedFunc(self):
         if abs(self.change) > 90:
-            self.speed = self.dumbSpeed 
+            self.speed = self.dumbSpeed
         elif abs(self.change) <= 90 and abs(self.change) > 20:
-            self.speed = self.dumbSpeed 
+            self.speed = self.dumbSpeed
         elif abs(self.change) <= 20:
             self.speed = self.dumbSpeed
         self.next_state("turn")
@@ -90,22 +89,20 @@ class TurnToAngle(StateMachine):
             self.setSpeed = False
             self.driveTrain.setTank(0, 0)
             self.stop()
-            self.next_state("idling")
         else:
-            self.stop()
             self.next_state("calcHeading")
-            
+
 
     def stop(self):
         self.running = False
         self.starting = False
-        self.initialHeading = self.heading
+        self.initialHeading = self.navx.getFusedHeading()
         self.setSpeed = True
         self.done()
 
     @feedback
     def nextHeadingDisplay(self):
-        return self.nextHeading
+        return self.navx.getFusedHeading()
 
     # def execute(self):
     #     self.heading = self.navx.getFusedHeading()
