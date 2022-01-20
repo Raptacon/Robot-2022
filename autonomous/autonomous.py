@@ -154,7 +154,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     @state(must_finish = True)
     def stop(self):
         """Stops driving bot"""
-        self.driveTrain.setTank(0, 0)
+        self.driveTrain.setArcade(0, 0)
         self.done()
 
 
