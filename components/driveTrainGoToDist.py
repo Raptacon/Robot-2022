@@ -48,7 +48,7 @@ class GoToDist(StateMachine):
         statemachine if starting.
         """
         self.initDist = 0
-        if self.starting and not self.running:
+        if self.starting:
             if self.targetDist != 0:
                 self.next_state("recordInitDist")
             else:
