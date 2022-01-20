@@ -135,15 +135,14 @@ class AutonomousAutoStart(AutonomousStateMachine):
 
     @state
     def check_angle(self, initial_call):
+        self.turnToAngle.engage()
+        self.driveTrain.execute()
         if initial_call:
             self.next_state("check_angle")
         elif self.turnToAngle.isRunning:
-            while self.turnToAngle.isRunning:
-                pass
-            if self.turnToAngle.isRunning:
-                self.next_state("check_angle")
-            else:
-                self.next_state("drive_backwards")
+            self.next_state("check_angle")
+        else:
+            self.next_state("drive_backwards")
         
     @state
     def drive_backwards(self):
@@ -151,7 +150,6 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.goToDist.setTargetDist(-5)
         self.goToDist.start()
         self.next_state("stop")
-
 
     @state(must_finish = True)
     def stop(self):
