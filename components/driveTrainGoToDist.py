@@ -1,4 +1,4 @@
-from magicbot import StateMachine, state, tunable
+from magicbot import StateMachine, feedback, state, tunable
 from components.driveTrain import DriveTrain
 import logging as log
 
@@ -39,7 +39,7 @@ class GoToDist(StateMachine):
         DO NOT CALL IT AS A METHOD
         """
         self.initDist = 0
-        if self.starting and not self.running:
+        if self.starting:
             if self.targetDist != 0:
                 self.next_state("recordInitDist")
             else:

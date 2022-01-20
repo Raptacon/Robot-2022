@@ -98,7 +98,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.driveTrain.setup()
         self.driveTrain.resetDistTraveled()
         self.goToDist.engage()
-        self.goToDist.setTargetDist(5)
+        self.goToDist.setTargetDist(60)
         self.goToDist.start()
         self.driveTrain.execute()
         self.next_state("stoprunning")
@@ -143,7 +143,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
             self.next_state("check_angle")
         else:
             self.next_state("drive_backwards")
-        
+
     @state
     def drive_backwards(self):
         """Drives the bot backwards for 5 feet"""
