@@ -12,11 +12,12 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
-    dumbSpeeds = [.3, .25, .2, .15]
-    dumbSpeedLimits = [36, 12, 8, 5]
     values = [
              [5, .15],
-             [8, ]
+             [8, .2],
+             [12, .25],
+             [36, .3]
+             ["End", .4]
              ]
 
     def setTargetDist(self, distance):
@@ -81,18 +82,17 @@ class GoToDist(StateMachine):
         totalOffset = self.targetDist - self.dist
 
         self.speed = 0
-        self.AbsoluteX = abs(self.DeviationX)
-        for dists, speed in values:
-
-            if (dists[1] == "End"
-                or len(dists) == 2
-                and dists[0] < self.AbsoluteX
-                and self.AbsoluteX < dists[1]):
-                if speed == "PID":
-                    self.speed = self.calc_PID(self.DeviationX)
-                else:
-                    self.speed = speed
-                self.next_state("adjust_self")
+        absTotalOffset = abs(totalOffset)
+        for dist, speed in self.values:
+            if (dist == "End"
+                or absTotalOffset < dist):
+                # We don't have this implemented for goToDist yet
+                # if speed == "PID":
+                #     self.speed = self.calc_PID(self.DeviationX)
+                self.nextSpeed = speed
+                self.next_state("adjust_drive")
                 break
 
+    @state
+    def adjust_drive(self):
         self.driveTrain.setArcade(self.nextSpeed, 0)
