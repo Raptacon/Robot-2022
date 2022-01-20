@@ -7,14 +7,14 @@ flake8
 coverage
 wheel
 
-robotpy
+robotpy ==2021.*
 
 # If installed on OSX (joystick support) it seems to fail?
-pyfrc
-robotpy-ctre
-robotpy-navx
-robotpy-rev
-robotpy-rev-color
-robotpy-halsim-gui
-robotpy-wpilib-utilities
-pynetworktables
+pyfrc ==2021.*
+robotpy-ctre ==2021.*
+robotpy-navx ==2021.*
+robotpy-rev ==2021.*
+robotpy-rev-color ==2021.*
+robotpy-halsim-gui ==2021.*
+robotpy-wpilib-utilities ==2021.*
+pynetworktables==2021.*
