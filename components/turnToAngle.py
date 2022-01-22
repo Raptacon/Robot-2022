@@ -12,7 +12,7 @@ class TurnToAngle():
     D = tunable(0)
     time = 0.01
     PIDController = None
-    
+
     navx = navx._navx.AHRS.create_spi()
     driveTrain: DriveTrain
     isRunning = False
@@ -37,22 +37,22 @@ class TurnToAngle():
         self.isRunning = True
         self.nextHeading = self.initialHeading + self.turnAngle
         #self.PIDController = controller.PIDController(Kp= self.P, Ki= self.I, Kd= self.D, period = self.time)
-    
+
     def output(self):
         if self.isRunning == True:
-            
+
             if self.nextHeading > 360:
                 self.nextHeading -= 360
             elif self.nextHeading < 0:
                 self.nextHeading += 360
-            
-            
+
+
             self.change = self.nextHeading - self.heading
             if self.change > 180:
                 self.change -= 360
             elif self.change < -180:
                 self.change += 360
-            
+
             if abs(self.change) > 90:
                 self.speed = .25
             elif abs(self.change) <= 90 and abs(self.change) > 20:
@@ -65,7 +65,7 @@ class TurnToAngle():
                     self.driveTrain.setTank(-1 * self.speed, self.speed)
                 else:
                     self.driveTrain.setTank(self.speed, -1 * self.speed)
-            
+
             if (self.heading <= self.nextHeading + self.tolerance and self.heading >= self.nextHeading - self.tolerance):
                 self.setSpeed = False
                 self.nextOutput = self.PIDController.calculate(measurement = self.heading, setpoint = self.nextHeading)
@@ -82,14 +82,14 @@ class TurnToAngle():
     @feedback
     def setSpeedDisplay(self):
         return self.setSpeed
-    
+
     def stop(self):
         self.nextOutput = 0
         self.PIDController.reset()
-        
+
         if self.nextHeading > 360:
             self.nextHeading -= 360
-        
+
         self.isRunning = False
         self.initialHeading = self.heading
         self.setSpeed = True
