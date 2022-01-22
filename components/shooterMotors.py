@@ -1,92 +1,40 @@
 import logging as log
-from enum import Enum, auto
 
-class Direction(Enum):
-    """Enum for intake direction."""
-    kForwards = auto()
-    kBackwards = auto()
-    kDisabled = auto()
-
-class ShooterMotorCreation:
+class ShooterMotors:
     """
     Allows you to run motors in the shooter
+    Relies on a config with 2 shooter motors
     """
-    compatString = ["doof"]
+    compatString = []
 
     motors_shooter: dict
-    motors_loader: dict
 
     def on_enable(self):
         """
         Sets up shooter motors
         """
-        self.intakeSpeed = 0
-        self.loaderSpeed = 0
-        self.shooterSpeed = 0
-        self.intake = False
-        self.loader = False
+        self.shooterSpeed1 = 0
+        self.shooterSpeed2 = 0
         self.shooter = False
 
-        self.hopperMotor1 = self.motors_loader["hopperMotor1"]
-        self.intakeMotor = self.motors_loader["intakeMotor"]
-        self.shooterMotor = self.motors_shooter["shooterMotor"]
+        self.shooterMotor1 = self.motors_shooter["shooterMotor1"]
+        self.shooterMotor2 = self.motors_shooter["shooterMotor2"]
 
         log.info("Shooter Motor Component Created")
 
-    def runIntake(self, iSpeed, direction):
-        """
-        Sets the intake to speed iSpeed
-        """
-        if direction == Direction.kForwards:  # Forwards
-            self.intakeSpeed = iSpeed
-        elif direction == Direction.kBackwards: # Backwards
-            self.intakeSpeed = -iSpeed
-        elif direction == Direction.kDisabled:
-            self.intakeSpeed = 0
-
-        self.intake = True
-
-    def runLoader(self, lSpeed, direction):
-        """
-        Sets the hopper motor to speed lSpeed
-        """
-        if direction == Direction.kForwards: # Forwards
-            self.loaderSpeed = lSpeed
-        elif direction == Direction.kBackwards: # Backwards
-            self.loaderSpeed = -lSpeed
-
-        self.loader = True
-
-    def runShooter(self, sSpeed):
+    def runShooter(self, sSpeed1, sSpeed2):
         """
         Sets the shooter to speed sSpeed
         """
-        self.shooterSpeed = sSpeed
+        self.shooterSpeed1 = sSpeed1
+        self.shooterSpeed2 = sSpeed2
         self.shooter = True
-
-    def stopIntake(self):
-        """
-        Turns the intake off
-        """
-        self.intake = False
-
-    def stopLoader(self):
-        """
-        Turns the loader off
-        """
-        self.loader = False
 
     def stopShooter(self):
         """
         Turns the shooter off
         """
         self.shooter = False
-
-    def isIntakeRunning(self):
-        return self.intake
-
-    def isLoaderRunning(self):
-        return self.loader
 
     def isShooterRunning(self):
         return self.shooter
@@ -95,17 +43,9 @@ class ShooterMotorCreation:
         """
         Sets all the motors to previously defined values. If not set by methods, set to 0.
         """
-        if self.intake:
-            self.intakeMotor.set(self.intakeSpeed)
-        elif self.intake == False:
-            self.intakeMotor.set(0)
-
-        if self.loader:
-            self.hopperMotor1.set(self.loaderSpeed)
-        elif self.loader == False:
-            self.hopperMotor1.set(0)
-
         if self.shooter:
-            self.shooterMotor.set(self.shooterSpeed)
+            self.shooterMotor1.set(self.shooterSpeed1)
+            self.shooterMotor2.set(self.shooterSpeed2)
         elif self.shooter == False:
-            self.shooterMotor.set(0)
+            self.shooterMotor1.set(0)
+            self.shooterMotor2.set(0)
