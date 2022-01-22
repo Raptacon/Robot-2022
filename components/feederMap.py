@@ -1,5 +1,8 @@
 from robotMap import XboxMap
-from components.shooterMotors import ShooterMotorCreation, Direction
+from components.shooterMotors import ShooterMotors
+from components.intakeMotor import IntakeMotor
+from components.hopperMotor import HopperMotor
+from utils.DirectionEnums import Direction
 from enum import Enum, auto
 from magicbot import tunable
 import logging as log
@@ -7,14 +10,16 @@ import logging as log
 class Type(Enum):
     """Enumeration for the two types within the feeder."""
     kIntake = auto()
-    kLoader = auto()
+    kHopper = auto()
 
 class FeederMap:
     """Simple map that holds the logic for running elements of the feeder."""
 
     compatString = ["doof"]
 
-    shooterMotors: ShooterMotorCreation
+    shooterMotors: ShooterMotors
+    intakeMotor: IntakeMotor
+    hopperMotor: HopperMotor
     xboxMap: XboxMap
 
     loaderMotorSpeed = tunable(.4)
@@ -28,27 +33,27 @@ class FeederMap:
         """Called when execution of a feeder element is desired."""
         if loaderFunc == Type.kIntake:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.shooterMotors.runIntake(self.intakeMotorSpeed, Direction.kForwards)
+                self.intakeMotor.runIntake(self.intakeMotorSpeed, Direction.kForwards)
                 log.debug("right trig intake", self.xboxMap.getMechRightTrig())
 
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.shooterMotors.runIntake(self.intakeMotorSpeed, Direction.kBackwards)
+                self.intakeMotor.runIntake(self.intakeMotorSpeed, Direction.kBackwards)
                 log.debug("left trig intake", self.xboxMap.getMechLeftTrig())
 
             else:
-                self.shooterMotors.runIntake(0, Direction.kForwards)
+                self.intakeMotor.runIntake(0, Direction.kForwards)
 
-        if loaderFunc == Type.kLoader:
+        if loaderFunc == Type.kHopper:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kForwards)
+                self.hopperMotor.runHopper(self.loaderMotorSpeed, Direction.kForwards)
                 log.debug("right trig manual", self.xboxMap.getMechRightTrig())
 
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.shooterMotors.runLoader(self.loaderMotorSpeed, Direction.kBackwards)
+                self.hopperMotor.runHopper(self.loaderMotorSpeed, Direction.kBackwards)
                 log.debug("left trig manual", self.xboxMap.getMechLeftTrig())
 
             else:
-                self.shooterMotors.runLoader(0, Direction.kForwards)
+                self.hopperMotor.runHopper(0, Direction.kForwards)
 
 
     def execute(self):
