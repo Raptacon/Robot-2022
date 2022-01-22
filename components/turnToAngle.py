@@ -38,13 +38,10 @@ class TurnToAngle(StateMachine):
     @state(first = True)
     def idling(self):
         """Stays in this state until started"""
-        if self.starting and not self.running:
-            if self.turnAngle != 0:
-                self.next_state("turn")
-            else:
-                log.error("Must have an angle to turn to")
-                self.next_state("idling")
+        if self.turnAngle != 0:
+            self.next_state("turn")
         else:
+            log.error("Must have an angle to turn to")
             self.next_state("idling")
 
 
