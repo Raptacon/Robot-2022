@@ -78,4 +78,12 @@ hopperMotors:
   hopperMotors:
     groups: "motors"
 
+    hopperMotor: #There may be multiple
+    # we don't have information on this yet.
+
+intakeMotors:
+  intakeMotor:
+    groups: "motors"
+
     intakeMotor:
+    # There will probably only be one of these
