@@ -158,9 +158,23 @@ class AutonomousAutoStart(AutonomousStateMachine):
     @state
     def drive_backwards(self):
         """Drives the bot backwards for 5 feet"""
-        self.goToDist.setTargetDist(-60)
+        self.goToDist.engage()
+        self.goToDist.setTargetDist(60)
         self.goToDist.start()
-        self.next_state("stop")
+        self.StopRunningFirstCall = True
+        self.next_state("stoprunning2")
+
+    @state
+    def stoprunning2(self):
+        self.goToDist.engage()
+        self.driveTrain.execute()
+        if self.StopRunningFirstCall:
+            self.StopRunningFirstCall = not self.StopRunningFirstCall
+            self.next_state("stoprunning2")
+        elif self.goToDist.running:
+            self.next_state("stoprunning2")
+        else:
+            self.next_state("stop")
 
     @state(must_finish = True)
     def stop(self):
