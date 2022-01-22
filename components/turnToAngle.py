@@ -95,6 +95,3 @@ class TurnToAngle(StateMachine):
     @feedback
     def nextHeadingDisplay(self):
         return self.navx.getFusedHeading()
-
-    # def execute(self):
-    #     self.heading = self.navx.getFusedHeading()
