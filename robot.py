@@ -29,6 +29,7 @@ from components.turnToAngle import TurnToAngle
 from components.driveTrainGoToDist import GoToDist
 from components.ballCounter import BallCounter
 from components.colorSensor import ColorSensor
+from components.speedSections import SpeedSections
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -68,6 +69,7 @@ class MyRobot(MagicRobot):
     goToDist: GoToDist
     ballCounter: BallCounter
     colorSensor: ColorSensor
+    speedSections: SpeedSections
 
     # Test code:
     testBoard: TestBoard
@@ -102,7 +104,7 @@ class MyRobot(MagicRobot):
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar,
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, SpeedSections,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 

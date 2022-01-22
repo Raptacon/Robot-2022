@@ -1,0 +1,8 @@
+doof:
+  GoToDist:
+    groups: "GoToDist"
+    speedSection:
+      - [36, .3]
+      - [12, .25]
+      - [8, .2]
+      - [5, .15]
