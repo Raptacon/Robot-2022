@@ -1,7 +1,6 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.driveTrain import DriveTrain
 from components.driveTrainGoToDist import GoToDist
-from components.shooterMotors import ShooterMotors
 from components.turnToAngle import TurnToAngle
 from components.shooterLogic import ShooterLogic
 from components.autoAlign import AutoAlign
@@ -115,7 +114,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
         else:
             self.next_state("turn")
 
-        
+
     @state
     def turn(self):
         """One method that completes all turns"""
@@ -151,9 +150,9 @@ class AutonomousAutoStart(AutonomousStateMachine):
             self.next_state("turn")
             if self.TurnsCompleted >= 3:
                 self.next_state("drive_backwards")
-                    
-                
-                
+
+
+
 
     @state
     def drive_backwards(self):
