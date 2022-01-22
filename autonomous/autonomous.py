@@ -145,7 +145,6 @@ class AutonomousAutoStart(AutonomousStateMachine):
             self.next_state("check_angle")
         else:
             self.TurnsCompleted += 1
-            self.turnToAngle.stop()
             self.next_state("turn")
             if self.TurnsCompleted >= 3:
                 self.next_state("drive_backwards")
