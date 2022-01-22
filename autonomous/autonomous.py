@@ -3,7 +3,6 @@ from components.driveTrain import DriveTrain
 from components.driveTrainGoToDist import GoToDist
 from components.turnToAngle import TurnToAngle
 from components.shooterLogic import ShooterLogic
-from components.shooterMotors import ShooterMotorCreation
 from components.autoAlign import AutoAlign
 from components.autoShoot import AutoShoot
 from components.pneumatics import Pneumatics
@@ -16,7 +15,6 @@ class Autonomous(AutonomousStateMachine):
     DEFAULT = True
     driveTrain: DriveTrain
     shooter: ShooterLogic
-    shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
     drive_speed = tunable(.25)
 
@@ -57,7 +55,6 @@ class AutonomousAutoShoot(AutonomousStateMachine):
     DEFAULT = False
     driveTrain: DriveTrain
     shooter: ShooterLogic
-    shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
     autoAlign: AutoAlign
     autoShoot: AutoShoot
