@@ -15,7 +15,7 @@ class TurnToAngle(StateMachine):
     nextHeading = 0
     heading = 0
     originalHeading = 0
-    turnAngle = 10
+    turnAngle = 0
     dumbSpeed = .25
     farMultiplier = tunable(1)
     midMultiplier = tunable(.75)
