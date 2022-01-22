@@ -102,10 +102,10 @@ class MyRobot(MagicRobot):
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, ColorSensor, 
-                         TurnToAngle, oaderLogic, BallCounter, ColorSensor, HopperMotor, 
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, ColorSensor,
+                         TurnToAngle, LoaderLogic, BallCounter, ColorSensor, HopperMotor,
                          IntakeMotor]
-        
+
         testComponentListCompatibility(self, componentList)
 
 
