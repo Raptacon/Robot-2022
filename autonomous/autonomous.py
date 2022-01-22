@@ -150,8 +150,9 @@ class AutonomousAutoStart(AutonomousStateMachine):
         else:
             self.TurnsCompleted += 1
             self.next_state("turn")
-            if self.turns >= 3:
+            if self.TurnsCompleted >= 3:
                 self.next_state("drive_backwards")
+                    
                 
                 
 
