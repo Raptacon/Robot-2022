@@ -1,14 +1,14 @@
 from magicbot import AutonomousStateMachine, state, timed_state, feedback
 from components.driveTrain import DriveTrain
-#from components.breakSensors import S
 from components.colorSensor import ColorSensor
 import logging as log
 
 class SmokeTest(AutonomousStateMachine):
-
+    compatString = ["greenChassis"]
     MODE_NAME= "Smoke Test"
     driveTrain: DriveTrain
     colorSensor: ColorSensor
+    DEFAULT = True
     toDo = None
 
     @feedback
@@ -19,6 +19,7 @@ class SmokeTest(AutonomousStateMachine):
     def drive(self):
         """Tests to see if the motors are working with an input from the driver"""
         self.toDo = "Drive motors forwards"
+        self.driveTrain.setTank(.5, .5)
         if self.driveTrain.tankLeftSpeed > 0 and self.driveTrain.tankRightSpeed > 0:
             self.next_state("colorSensorCheck")
         else:
@@ -27,8 +28,7 @@ class SmokeTest(AutonomousStateMachine):
     @state
     def colorSensorCheck(self):
         """Sets the LED on the color sensor to strobe and requires user input to advance to the next state"""
-        self.toDo = "Check to see if color sensor LED is flashing"
-        self.colorSensor.colorSensor.LEDPulseFrequency(value = 60)
+        pass
 
     @state
     def checkGoToDist(self):
