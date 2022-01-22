@@ -101,11 +101,9 @@ class MyRobot(MagicRobot):
 
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
-                         ButtonManager, Pneumatics, Elevator, ScorpionLoader,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, ColorSensor,
-                         TurnToAngle, LoaderLogic, BallCounter, ColorSensor, HopperMotor,
-                         IntakeMotor]
-
+                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle,
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors,
+                         LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
 
@@ -138,6 +136,7 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.goToDist.start)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.goToDist.stop)
 
+
         self.driveTrain.setBraking(True)
         self.driveTrain.resetDistTraveled()
 
@@ -169,11 +168,6 @@ class MyRobot(MagicRobot):
             executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(True)
             self.autoAlign.engage()
-        if self.xboxMap.getDriveX() == True:
-            executingDriveCommand = True
-            self.turnToAngle.start()
-        else:
-            self.turnToAngle.stop()
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()
             self.autoShoot.stop()
