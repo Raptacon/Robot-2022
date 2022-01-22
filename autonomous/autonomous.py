@@ -1,4 +1,5 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
+import logging as log
 from components.driveTrain import DriveTrain
 from components.driveTrainGoToDist import GoToDist
 from components.turnToAngle import TurnToAngle
@@ -124,9 +125,11 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.turnToAngle.engage()
         self.CheckAngleFirstCall = True
         if self.TurnsCompleted == 0:
+            log.info("States first turn")
             self.turnToAngle.setAngle(turn1)
             self.next_state("check_angle")
         elif self.TurnsCompleted == 1:
+            log.info("States Sencond turn")
             self.turnToAngle.setAngle(turn2)
             self.next_state("check_angle")
         elif self.TurnsCompleted == 2:
@@ -139,7 +142,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.driveTrain.execute()
         #self.turnToAngle.stop()
         if self.CheckAngleFirstCall:
-            self.CheckAngleFirstCall = not self.CheckAngleFirstCall
+            self.CheckAngleFirstCall = False
             self.next_state("check_angle")
         elif self.turnToAngle.running:
             self.next_state("check_angle")
