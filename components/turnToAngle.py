@@ -84,7 +84,7 @@ class TurnToAngle():
         return self.setSpeed
 
     @feedback
-    def isRunning(self):
+    def getIsRunning(self):
         return self.isRunning
 
     def stop(self):
