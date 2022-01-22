@@ -1,6 +1,5 @@
 from components.driveTrain import DriveTrain
 from magicbot import tunable, feedback, StateMachine, state
-import logging as log
 
 import navx
 
