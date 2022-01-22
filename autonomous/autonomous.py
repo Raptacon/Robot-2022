@@ -136,13 +136,13 @@ class AutonomousAutoStart(AutonomousStateMachine):
 
     @state
     def check_angle(self):
-        self.turnToAngle.output()
+        self.turnToAngle.start()
         self.driveTrain.execute()
         #self.turnToAngle.stop()
         if self.CheckAngleFirstCall:
             self.CheckAngleFirstCall = not self.CheckAngleFirstCall
             self.next_state("check_angle")
-        elif self.turnToAngle.isRunning:
+        elif self.turnToAngle.running:
             self.next_state("check_angle")
         else:
             self.TurnsCompleted += 1
