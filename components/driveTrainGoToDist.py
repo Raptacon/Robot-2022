@@ -20,7 +20,8 @@ class GoToDist(StateMachine):
              [12, .25],# under this value and above the last.
              [36, .3]
              ["End", .4]
-             ]
+             ] # The array must end with "End" - this will be the value used
+               # if the target is really far away.
 
     def setTargetDist(self, distance):
         """
@@ -83,17 +84,26 @@ class GoToDist(StateMachine):
         self.nextSpeed = 0
         totalOffset = self.targetDist - self.dist
 
-        self.speed = 0
+        self.nextSpeed = 0
         absTotalOffset = abs(totalOffset)
         for dist, speed in self.values:
             if (dist == "End"
                 or absTotalOffset < dist):
                 # We don't have this implemented for goToDist yet
                 # if speed == "PID":
-                #     self.speed = self.calc_PID(self.DeviationX)
+                #     self.nextSpeed = self.calc_PID(self.DeviationX)
                 self.nextSpeed = speed
                 self.next_state("adjust_drive")
                 break
+
+        # This might be triggered if something is wrong with the
+        # values array.
+        if self.nextSpeed == 0:
+            log.error("Something went wrong with GoToDist!")
+
+        if absTotalOffset < self.tolerance:
+            self.stop()
+            self.next_state("idling")
 
     @state
     def adjust_drive(self):
