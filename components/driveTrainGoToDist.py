@@ -12,10 +12,12 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
+    # This array determines what speed the robot will use
+    # at different distances.
     values = [
-             [5, .15],
-             [8, .2],
-             [12, .25],
+             [5, .15], # The first value is the limit, so it will
+             [8, .2],  # use the included speed if the distance is
+             [12, .25],# under this value and above the last.
              [36, .3]
              ["End", .4]
              ]
