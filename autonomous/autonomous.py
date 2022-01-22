@@ -1,3 +1,5 @@
+from math import fabs
+from typing_extensions import Self
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.driveTrain import DriveTrain
 from components.driveTrainGoToDist import GoToDist
