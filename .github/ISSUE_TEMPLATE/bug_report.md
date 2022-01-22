@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: bug
+assignees: ''
+
+---
+
 ### Description
 
 [Description of the bug]
@@ -19,5 +28,4 @@ For more information, see the `CONTRIBUTING` guide.
 
 - What version of Python are you using? Which OS?
 
-- What tag/branch/release of Robot code are you using?---
-
+- What tag/branch/release of Robot code are you using?
