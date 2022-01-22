@@ -22,7 +22,6 @@ class TurnToAngle(StateMachine):
     closeMultiplier = tunable(.5)
     tolerance = tunable(.5)
     change = 0
-    setSpeed = True
 
     def setup(self):
         self.originalHeading = self.navx.getFusedHeading()
@@ -75,17 +74,15 @@ class TurnToAngle(StateMachine):
     @state
     def turn(self):
         """Turns the robot based off of the speed determined in setSpeedFunc"""
-        if self.setSpeed == True:
-            self.setSpeedFunc()
-            if self.change > 0:
-                self.driveTrain.setTank(-1 * self.speed, self.speed)
-            else:
-                self.driveTrain.setTank(self.speed, -1 * self.speed)
-            self.next_state("turn")
+        self.setSpeedFunc()
+        if self.change > 0:
+            self.driveTrain.setTank(-1 * self.speed, self.speed)
+        else:
+            self.driveTrain.setTank(self.speed, -1 * self.speed)
+        self.next_state("turn")
 
         """Stops the automatic turning if the bot is within the tolerance of the desired angle"""
         if self.navx.getFusedHeading() <= self.nextHeading + self.tolerance and self.navx.getFusedHeading() >= self.nextHeading - self.tolerance:
-            self.setSpeed = False
             self.driveTrain.setTank(0, 0)
             self.stop()
 
@@ -93,7 +90,6 @@ class TurnToAngle(StateMachine):
         self.running = False
         self.starting = False
         self.initialHeading = self.navx.getFusedHeading()
-        self.setSpeed = True
         self.done()
 
     @feedback
