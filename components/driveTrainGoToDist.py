@@ -21,10 +21,14 @@ class GoToDist(StateMachine):
         """
         self.targetDist = distance
 
-    def start(self):
+    def start(self, distance=0):
         """
         Call this to start the process
+        distance: optional argument, include
+        in order to set the target distance.
         """
+        if distance != 0:
+            self.targetDist = distance
         self.starting = True
 
     def stop(self):
@@ -35,8 +39,8 @@ class GoToDist(StateMachine):
     @state(first=True)
     def idling(self):
         """
-        THIS IS A STATE
-        DO NOT CALL IT AS A METHOD
+        Base state, kicks into
+        statemachine if starting.
         """
         self.initDist = 0
         if self.starting and not self.running:
@@ -51,8 +55,7 @@ class GoToDist(StateMachine):
     @state
     def recordInitDist(self):
         """
-        THIS IS A STATE
-        DO NOT CALL IT AS A METHOD
+        First active state.
         """
         self.running = True
         self.starting = False
@@ -63,8 +66,9 @@ class GoToDist(StateMachine):
     @state
     def goToDist(self):
         """
-        THIS IS A STATE
-        DO NOT CALL IT AS A METHOD
+        Feedback loop using the
+        drivetrain in order to travel
+        a certain distance.
         """
         self.dist = self.driveTrain.getEstTotalDistTraveled()
         self.dumbSpeed = 0
