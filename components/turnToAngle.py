@@ -40,7 +40,6 @@ class TurnToAngle(StateMachine):
         if self.turnAngle != 0:
             self.next_state("turn")
         else:
-            log.error("Must have an angle to turn to")
             self.next_state("idling")
 
 
@@ -68,7 +67,7 @@ class TurnToAngle(StateMachine):
             self.speed = self.dumbSpeed * self.farMultiplier
         elif abs(self.change) <= 90 and abs(self.change) > 20:
             self.speed = self.dumbSpeed * self.midMultiplier
-        elif abs(self.change) <= 20:
+        else:
             self.speed = self.dumbSpeed * self.closeMultiplier
 
     @state
@@ -82,14 +81,13 @@ class TurnToAngle(StateMachine):
         self.next_state("turn")
 
         """Stops the automatic turning if the bot is within the tolerance of the desired angle"""
-        if self.navx.getFusedHeading() <= self.nextHeading + self.tolerance and self.navx.getFusedHeading() >= self.nextHeading - self.tolerance:
+        if abs(self.navx.getFusedHeading() - self.nextHeading) < self.tolerance:
             self.driveTrain.setTank(0, 0)
             self.stop()
 
     def stop(self):
         self.running = False
         self.starting = False
-        self.initialHeading = self.navx.getFusedHeading()
         self.done()
 
     @feedback

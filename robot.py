@@ -170,11 +170,6 @@ class MyRobot(MagicRobot):
             executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(True)
             self.autoAlign.engage()
-        if self.xboxMap.getDriveX() == True:
-            executingDriveCommand = True
-            self.turnToAngle.start()
-        else:
-            self.turnToAngle.stop()
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()
             self.autoShoot.stop()
