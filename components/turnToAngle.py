@@ -15,28 +15,25 @@ class TurnToAngle(StateMachine):
     heading = 0
     originalHeading = 0
     turnAngle = 0
-    dumbSpeed = .25
+    dumbSpeed = tunable(.25)
     farMultiplier = tunable(1)
     midMultiplier = tunable(.75)
-    closeMultiplier = tunable(.5)
+    closeMultiplier = tunable(.6)
     tolerance = tunable(.5)
     change = 0
 
     def setup(self):
         self.originalHeading = self.navx.getFusedHeading()
-        self.initialHeading = self.navx.getFusedHeading()
 
     def setAngle(self, angle):
         """Sets the desired turn angle"""
         self.turnAngle = angle
 
-    def start(self):
-        self.starting = True
-
     @state(first = True)
     def idling(self):
         """Stays in this state until started"""
         if self.turnAngle != 0:
+            self.initialHeading = self.navx.getFusedHeading()
             self.next_state("turn")
         else:
             self.next_state("idling")
@@ -82,12 +79,13 @@ class TurnToAngle(StateMachine):
         """Stops the automatic turning if the bot is within the tolerance of the desired angle"""
         if abs(self.navx.getFusedHeading() - self.nextHeading) < self.tolerance:
             self.driveTrain.setTank(0, 0)
+            self.turnAngle = 0
+            self.next_state("idling")
             self.stop()
 
     def stop(self):
         self.running = False
         self.starting = False
-        self.done()
 
     @feedback
     def nextHeadingDisplay(self):
