@@ -12,7 +12,8 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
-    dumbSpeeds = [.2, .15, .12, .15]
+    nextSpeed = 0
+    dumbSpeeds = [.2, .18, .15, .15]
     dumbSpeedLimits = [36, 12, 8, 5]
 
     def setTargetDist(self, distance):
@@ -35,6 +36,14 @@ class GoToDist(StateMachine):
         self.running = False
         self.driveTrain.setArcade(0, 0)
         self.next_state("idling")
+
+    @feedback
+    def getNextSpeed(self):
+        return self.nextSpeed
+
+    @feedback
+    def isRunning(self):
+        return self.running
 
     @state(first=True)
     def idling(self):
