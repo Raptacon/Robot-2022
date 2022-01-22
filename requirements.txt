@@ -6,6 +6,9 @@ modulegraph
 flake8
 coverage
 wheel
+depthai
+opencv-python
+blobconverter
 
 robotpy ==2021.*
 
