@@ -105,8 +105,10 @@ class AutoAlign(StateMachine):
     def adjust_self(self):
         """Turns the bot"""
         if(self.DeviationX == self.AbsoluteX):
+            pass
             #Motors go here
         else:
+            pass
             #Motors go here
         self.next_state("start")
 
