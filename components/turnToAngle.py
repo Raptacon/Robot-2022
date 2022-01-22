@@ -83,6 +83,10 @@ class TurnToAngle():
     def setSpeedDisplay(self):
         return self.setSpeed
 
+    @feedback
+    def isRunning(self):
+        return self.isRunning
+
     def stop(self):
         self.nextOutput = 0
         self.PIDController.reset()
