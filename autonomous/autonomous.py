@@ -83,7 +83,6 @@ class AutonomousAutoStart(AutonomousStateMachine):
     shooter: ShooterLogic
     goToDist: GoToDist
     turnToAngle: TurnToAngle
-    shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
     autoAlign: AutoAlign
     autoShoot: AutoShoot
