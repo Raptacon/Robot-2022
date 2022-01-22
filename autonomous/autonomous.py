@@ -92,6 +92,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     shooter: ShooterLogic
     drive_speed = tunable(.25)
     StopRunningFirstCall = True
+    CheckAngleFirstCall = True
 
     @state(first = True)
     def drive_forwards(self):
@@ -137,10 +138,11 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.next_state("check_angle")
 
     @state
-    def check_angle(self, initial_call):
+    def check_angle(self):
         self.turnToAngle.engage()
         self.driveTrain.execute()
-        if initial_call:
+        if self.CheckAngleFirstCall:
+            self.CheckAngleFirstCall = not self.CheckAngleFirstCall
             self.next_state("check_angle")
         elif self.turnToAngle.isRunning:
             self.next_state("check_angle")
