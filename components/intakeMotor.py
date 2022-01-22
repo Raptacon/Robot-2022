@@ -22,7 +22,7 @@ class IntakeMotor:
 
     def runIntake(self, iSpeed, direction):
         """
-        Sets the intake to speed iSpeed
+        Sets the intake to speed iSpeed in direction
         """
         if direction == Direction.kForwards:  # Forwards
             self.intakeSpeed = iSpeed
@@ -40,6 +40,9 @@ class IntakeMotor:
         self.intake = False
 
     def isIntakeRunning(self):
+        """
+        Returns True if the intake is running.
+        """
         return self.intake
 
     def execute(self):

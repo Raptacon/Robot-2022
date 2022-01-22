@@ -24,7 +24,7 @@ class ShooterMotors:
 
     def runShooter(self, sSpeed1, sSpeed2):
         """
-        Sets the shooter to speed sSpeed
+        Sets the shooter motors to sSpeed1 and 2
         """
         self.shooterSpeed1 = sSpeed1
         self.shooterSpeed2 = sSpeed2
@@ -37,6 +37,9 @@ class ShooterMotors:
         self.shooter = False
 
     def isShooterRunning(self):
+        """
+        Returns True if the shooter is running.
+        """
         return self.shooter
 
     def execute(self):

@@ -22,7 +22,7 @@ class HopperMotor:
 
     def runHopper(self, lSpeed, direction):
         """
-        Sets the hopper motor to speed lSpeed
+        Sets the hopper motor to speed lSpeed in direction
         """
         if direction == Direction.kForwards: # Forwards
             self.hopperSpeed = lSpeed
@@ -38,6 +38,9 @@ class HopperMotor:
         self.hopper = False
 
     def isHopperRunning(self):
+        """
+        Returns True if the hopper is running.
+        """
         return self.hopper
 
     def execute(self):
