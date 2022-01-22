@@ -12,7 +12,7 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
-    dumbSpeeds = [.3, .25, .22, .2]
+    dumbSpeeds = [.2, .15, .12, .15]
     dumbSpeedLimits = [36, 12, 8, 5]
 
     def setTargetDist(self, distance):
@@ -85,7 +85,7 @@ class GoToDist(StateMachine):
         elif self.dist > self.targetDist + self.dumbTolerance:
             self.nextSpeed = self.dumbSpeed
             self.next_state("goToDist")
-        if self.dist > self.targetDist - self.tolerance and self.dist < self.targetDist - self.tolerance:
+        if self.dist > self.targetDist - self.tolerance and self.dist < self.targetDist + self.tolerance:
             self.nextSpeed = 0
             self.stop()
             self.next_state("idling")

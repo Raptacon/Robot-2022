@@ -98,7 +98,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.driveTrain.setup()
         self.driveTrain.resetDistTraveled()
         self.goToDist.engage()
-        self.goToDist.setTargetDist(60)
+        self.goToDist.setTargetDist(-60)
         self.goToDist.start()
         self.driveTrain.execute()
         self.next_state("stoprunning")
