@@ -91,6 +91,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     autoShoot: AutoShoot
     shooter: ShooterLogic
     drive_speed = tunable(.25)
+    StopRunningFirstCall = True
 
     @state(first = True)
     def drive_forwards(self):
@@ -104,16 +105,18 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.next_state("stoprunning")
 
     @state
-    def stoprunning(self, initial_call):
+    def stoprunning(self):
         self.goToDist.engage()
         self.driveTrain.execute()
-        if initial_call:
+        if self.StopRunningFirstCall:
+            self.StopRunningFirstCall = not self.StopRunningFirstCall
             self.next_state("stoprunning")
         elif self.goToDist.running:
             self.next_state("stoprunning")
         else:
             self.next_state("turn")
 
+        
     @state
     def turn(self):
         """One method that completes all turns"""
