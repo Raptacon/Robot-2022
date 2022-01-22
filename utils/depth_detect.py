@@ -12,7 +12,7 @@ Spatial detection network demo.
 '''
 
 # Get argument first
-nnBlobPath = '../nnmodels/mobilenet-ssd_openvino_2021.2_6shave.blob'
+nnBlobPath = './nnmodels/mobilenet-ssd_openvino_2021.2_6shave.blob'
 if len(sys.argv) > 1:
     nnBlobPath = sys.argv[1]
 

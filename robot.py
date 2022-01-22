@@ -37,7 +37,7 @@ from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
 from utils.acturatorFactories import compressorFactory, solenoidFactory
-import utils.math
+import utils.mathtools
 
 # Test imports:
 from components.testBoard import TestBoard
@@ -153,10 +153,10 @@ class MyRobot(MagicRobot):
         #what the component is doing.
         executingDriveCommand = False
 
-        driveLeftY = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveLeftY = utils.mathtools.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveRightY = utils.mathtools.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        # unused for now # driveLeftX = utils.mathtools.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveRightX = utils.mathtools.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
         self.goToDist.engage()
         self.autoShoot.engage()
