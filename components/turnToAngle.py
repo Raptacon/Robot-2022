@@ -15,7 +15,7 @@ class TurnToAngle(StateMachine):
     nextHeading = 0
     heading = 0
     originalHeading = 0
-    turnAngle = 0
+    turnAngle = 10
     dumbSpeed = .25
     farMultiplier = tunable(1)
     midMultiplier = tunable(.75)
@@ -27,27 +27,29 @@ class TurnToAngle(StateMachine):
     def setup(self):
         self.originalHeading = self.navx.getFusedHeading()
         self.initialHeading = self.navx.getFusedHeading()
-    """
+
     def setAngle(self, angle):
-        Sets the desired turn angle
+        """Sets the desired turn angle"""
         self.turnAngle = angle
-    """
+
     def start(self):
         self.starting = True
 
     @state(first = True)
     def idling(self):
+        """Stays in this state until started"""
         if self.starting and not self.running:
             if self.turnAngle != 0:
-                self.next_state("calcHeading")
+                self.next_state("turn")
             else:
                 log.error("Must have an angle to turn to")
                 self.next_state("idling")
         else:
             self.next_state("idling")
 
-    @state
+
     def calcHeading(self):
+        """Calculates how far away from the desired angle the bot is"""
         self.running = True
         self.starting = False
         self.nextHeading = self.initialHeading + self.turnAngle
@@ -62,26 +64,29 @@ class TurnToAngle(StateMachine):
             self.change -= 360
         elif self.change < -180:
             self.change += 360
-        self.next_state_now("setSpeedFunc")
 
-    @state
     def setSpeedFunc(self):
+        """Determines the speed based off of the distance from the desired angle"""
+        self.calcHeading()
         if abs(self.change) > 90:
             self.speed = self.dumbSpeed * self.farMultiplier
         elif abs(self.change) <= 90 and abs(self.change) > 20:
             self.speed = self.dumbSpeed * self.midMultiplier
         elif abs(self.change) <= 20:
             self.speed = self.dumbSpeed * self.closeMultiplier
-        self.next_state("turn")
 
     @state
     def turn(self):
+        """Turns the robot based off of the speed determined in setSpeedFunc"""
         if self.setSpeed == True:
+            self.setSpeedFunc()
             if self.change > 0:
                 self.driveTrain.setTank(-1 * self.speed, self.speed)
             else:
                 self.driveTrain.setTank(self.speed, -1 * self.speed)
+            self.next_state("turn")
 
+        """Stops the automatic turning if the bot is within the tolerance of the desired angle"""
         if self.navx.getFusedHeading() <= self.nextHeading + self.tolerance and self.navx.getFusedHeading() >= self.nextHeading - self.tolerance:
             self.setSpeed = False
             self.driveTrain.setTank(0, 0)

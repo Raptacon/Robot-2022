@@ -138,6 +138,7 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.goToDist.start)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.goToDist.stop)
 
+
         self.driveTrain.setBraking(True)
         self.driveTrain.resetDistTraveled()
 
