@@ -93,6 +93,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     drive_speed = tunable(.25)
     StopRunningFirstCall = True
     CheckAngleFirstCall = True
+    TurnsCompleted = 0
 
     @state(first = True)
     def drive_forwards(self):
@@ -124,18 +125,18 @@ class AutonomousAutoStart(AutonomousStateMachine):
         turn1 = -90
         turn2 = 180
         turn3 = -90
-
-        self.turnToAngle.turnAngle = turn1
-        self.turnToAngle.setIsRunning()
-        self.next_state("check_angle")
-
-        self.turnToAngle.turnAngle = turn2
-        self.turnToAngle.setIsRunning()
-        self.next_state("check_angle")
-
-        self.turnToAngle.turnAngle = turn3
-        self.turnToAngle.setIsRunning()
-        self.next_state("check_angle")
+        if self.TurnsCompleted == 0:
+            self.turnToAngle.turnAngle = turn1
+            self.turnToAngle.setIsRunning()
+            self.next_state("check_angle")
+        elif self.TurnsCompleted == 1:
+            self.turnToAngle.turnAngle = turn2
+            self.turnToAngle.setIsRunning()
+            self.next_state("check_angle")
+        elif self.TurnsCompleted == 2:
+            self.turnToAngle.turnAngle = turn3
+            self.turnToAngle.setIsRunning()
+            self.next_state("check_angle")
 
     @state
     def check_angle(self):
@@ -147,12 +148,17 @@ class AutonomousAutoStart(AutonomousStateMachine):
         elif self.turnToAngle.isRunning:
             self.next_state("check_angle")
         else:
-            self.next_state("drive_backwards")
+            self.TurnsCompleted += 1
+            self.next_state("turn")
+            if self.turns >= 3:
+                self.next_state("drive_backwards")
+                
+                
 
     @state
     def drive_backwards(self):
         """Drives the bot backwards for 5 feet"""
-        self.goToDist.setTargetDist(-5)
+        self.goToDist.setTargetDist(-60)
         self.goToDist.start()
         self.next_state("stop")
 
