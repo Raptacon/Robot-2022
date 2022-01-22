@@ -123,15 +123,15 @@ class AutonomousAutoStart(AutonomousStateMachine):
         turn3 = -90
         if self.TurnsCompleted == 0:
             self.turnToAngle.turnAngle = turn1
-            self.turnToAngle.setIsRunning()
+            self.turnToAngle.setAngle()
             self.next_state("check_angle")
         elif self.TurnsCompleted == 1:
             self.turnToAngle.turnAngle = turn2
-            self.turnToAngle.setIsRunning()
+            self.turnToAngle.setAngle()
             self.next_state("check_angle")
         elif self.TurnsCompleted == 2:
             self.turnToAngle.turnAngle = turn3
-            self.turnToAngle.setIsRunning()
+            self.turnToAngle.setAngle()
             self.next_state("check_angle")
 
     @state
