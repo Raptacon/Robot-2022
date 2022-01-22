@@ -1,6 +1,5 @@
 doof:
   GoToDist:
-    groups: "GoToDist"
     speedSection:
       - [36, .3]
       - [12, .25]

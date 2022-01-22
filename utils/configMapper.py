@@ -26,7 +26,7 @@ class ConfigMapper(object):
         root["compatibility"] = [x.lower() for x in root["compatibility"]]
 
     def getCompatibility(self):
-        return self.subsystems["/"]["compatibility"]
+        return self.subsystems["/"]["compatibility"][0]
 
     def getSubsystem(self, subsystem):
         """

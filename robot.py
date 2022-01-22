@@ -83,6 +83,7 @@ class MyRobot(MagicRobot):
         """
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
+        self.currentRobot = self.map.configMapper.getCompatibility()
 
         ReadBufferValue = 18
 
