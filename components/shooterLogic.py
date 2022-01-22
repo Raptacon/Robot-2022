@@ -71,7 +71,8 @@ class ShooterLogic(StateMachine):
             shootSpeed = self.teleShootingSpeed - self.speedTolerance
         if not self.isSetup:
             return False
-        atSpeed = bool(self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= shootSpeed)
+        atSpeed = (bool(self.shooterMotors.shooterMotor1.getEncoder().getVelocity() >= shootSpeed)
+                    and bool(self.shooterMotors.shooterMotor2.getEncoder().getVelocity() >= shootSpeed)
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
