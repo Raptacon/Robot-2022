@@ -21,7 +21,7 @@ class GoToDist(StateMachine):
              [36, .3]
              ["End", .4]
              ]  # The array must end with "End" - this will be the value used
-# if the target is really far away.
+    # if the target is really far away.
 
     def setTargetDist(self, distance):
         """
@@ -40,6 +40,10 @@ class GoToDist(StateMachine):
         self.starting = True
 
     def stop(self):
+        """
+        This is guaranteed to end whatever
+        GoToDist is doing.
+        """
         self.running = False
         self.driveTrain.setArcade(0, 0)
         self.next_state("idling")
@@ -64,6 +68,7 @@ class GoToDist(StateMachine):
     def recordInitDist(self):
         """
         First active state.
+        Sets the target variables for the loop
         """
         self.running = True
         self.starting = False
@@ -86,6 +91,9 @@ class GoToDist(StateMachine):
 
         self.nextSpeed = 0
         absTotalOffset = abs(totalOffset)
+
+        # Loops through our speed limits in order to find the correct speed.
+        # We aren't using PID, though that would be a good idea for maximum accuracy.
         for dist, speed in self.values:
             if (dist == "End"
                 or absTotalOffset < dist):
@@ -107,4 +115,11 @@ class GoToDist(StateMachine):
 
     @state
     def adjust_drive(self):
+        """
+        This state takes the speed set by the goToDist
+        state and sets the driveTrain to go forwards/
+        backwards at that speed. It then goes back to
+        goToDist.
+        """
         self.driveTrain.setArcade(self.nextSpeed, 0)
+        self.next_state("goToDist")
