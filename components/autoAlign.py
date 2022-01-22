@@ -2,9 +2,6 @@ from networktables import NetworkTables as networktable
 from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 import logging as log
-from components.shooterMotors import ShooterMotorCreation, Direction
-from components.driveTrain import DriveTrain
-from components.autoShoot import AutoShoot
 
 class AutoAlign(StateMachine):
     """
@@ -15,8 +12,6 @@ class AutoAlign(StateMachine):
 
     compatString = ["doof"]
     time = 0.01
-    driveTrain: DriveTrain
-    shooterMotors: ShooterMotorCreation
 
     # Auto Align variables
     shootAfterComplete = False
@@ -41,8 +36,6 @@ class AutoAlign(StateMachine):
     smartTable = networktable.getTable('SmartDashboard')
     smartTable.putNumber("PIDspeed", 0)
     smartTable.putNumber("Integral", 0)
-
-    autoShoot: AutoShoot
 
     def setShootAfterComplete(self, input: bool):
         self.shootAfterComplete = input
@@ -112,9 +105,9 @@ class AutoAlign(StateMachine):
     def adjust_self(self):
         """Turns the bot"""
         if(self.DeviationX == self.AbsoluteX):
-            self.shooterMotors.runLoader(self.speed,Direction.kBackwards)
+            #Motors go here
         else:
-            self.shooterMotors.runLoader(self.speed,Direction.kForwards)
+            #Motors go here
         self.next_state("start")
 
     def calc_PID(self, error):
