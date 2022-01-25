@@ -99,8 +99,8 @@ hopperMotors:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
-        
-loaderSensors:
+
+loaderSensors: #likely to be multiple.
   subsystem: "breaksensors"
   description: "All IR break sensors used for the loader live here for the loader/LED component"
   loaderSensors:
@@ -173,3 +173,7 @@ shooterMotors:
         stallLimit: 30
         stallLimitRPM: 50
         secondaryLimit: 35
+        
+pneumatics:
+  type: "yaml"
+  file: "pneumatics.yml"
