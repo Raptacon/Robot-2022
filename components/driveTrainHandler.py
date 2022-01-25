@@ -16,6 +16,7 @@ class DriveTrainHandler():
 
     currentSource = None
     prevSource = None
+    controlMode = None
 
     def requestControl(self, requestSource):
         """
@@ -88,7 +89,7 @@ class DriveTrainHandler():
         If not, returns false. You must request control (through this method) every frame.
         (Yes this is wide open to abuse, but I trust you)
         """
-        self.setDriveTrain(self, requestSource, ControlMode.kArcadeDrive, speed, rotation)
+        self.setDriveTrain(requestSource, ControlMode.kArcadeDrive, speed, rotation)
 
     def setTank(self, requestSource, leftSpeed, rightSpeed):
         """
@@ -99,7 +100,7 @@ class DriveTrainHandler():
         If not, returns false. You must request control (through this method) every frame.
         (Yes this is wide open to abuse, but I trust you)
         """
-        self.setDriveTrain(self, requestSource, ControlMode.kTankDrive, leftSpeed, rightSpeed)
+        self.setDriveTrain(requestSource, ControlMode.kTankDrive, leftSpeed, rightSpeed)
 
     def execute(self):
         # Pass through inputs to drivetrain

@@ -6,7 +6,6 @@ import wpilib
 from wpilib import XboxController
 from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
-import math
 
 # Component imports:
 from components.driveTrain import DriveTrain
@@ -75,7 +74,7 @@ class MyRobot(MagicRobot):
     # Test code:
     testBoard: TestBoard
 
-    controllerDeadzone = tunable(.04)
+    controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
 
@@ -166,11 +165,11 @@ class MyRobot(MagicRobot):
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
         # deadzone clamping
-        if math.abs(driveLeftY) < self.controllerDeadzone:
+        if abs(driveLeftY) < self.controllerDeadzone:
             driveLeftY = 0
-        if math.abs(driveRightY) < self.controllerDeadzone:
+        if abs(driveRightY) < self.controllerDeadzone:
             driveRightY = 0
-        if math.abs(driveRightX) < self.controllerDeadzone:
+        if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
 
         self.goToDist.engage()
