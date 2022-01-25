@@ -7,63 +7,74 @@ from components.hopperMotor import HopperMotor
 from components.shooterMotors import ShooterMotors
 from components.breakSensors import Sensors, State
 import logging as log
+from utils.DirectionEnums import Direction
 
 class SmokeTest(AutonomousStateMachine):
     compatString = ["doof"]
     MODE_NAME = "Smoke Test"
+    DEFAULT = True
     driveTrain: DriveTrain
     intakeMotor: IntakeMotor
     colorSensor: ColorSensor
     hopperMotor: HopperMotor
     shooterMotors: ShooterMotors
-    breakSensors: Sensors
-
-    #DEFAULT = True
+    sensors: Sensors
+    dumbSpeed = .25
+    time = 2
     toDo = None
 
     @feedback
     def getToDo(self):
         return self.toDo
 
-    @timed_state(first = True, time = 2)
+    @timed_state(first = True, duration = time, next_state = "testEncoders")
     def drive(self):
         """Tests to see if the motors are working with an input from the driver"""
         self.toDo = "Motor should be driving forwards"
-        self.driveTrain.setTank(.25, .25)
+        self.driveTrain.setTank(self.dumbSpeed, self.dumbSpeed)
 
-    @timed_state(time = 2)
+    @timed_state(duration = time, next_state = "testEncoders")
     def runIntakeMotor(self):
         """Runs intake motor"""
         self.toDo = "The intake motor should be running"
-        self.intakeMotor.intakeSpeed = .25
-        self.intakeMotor.intake = True
-        self.next_state("runHopperMotor")
+        self.driveTrain.setTank(0, 0)
+        self.intakeMotor.intakeSpeed = self.dumbSpeed
+        self.intakeMotor.runIntake(direction = Direction.kForwards, iSpeed = self.dumbSpeed)
 
-    @timed_state(time = 2)
+    """
+    @timed_state(duration = time, next_state = "runShooterMotor1")
     def runHopperMotor(self):
-        """Runs the hopper motor if there is a seperate motor for the hopper"""
+        Runs the hopper motor if there is a seperate motor for the hopper
         self.toDo = "The hopper motor should be running"
         self.intakeMotor.intake = False
-        self.hopperMotor.hopperSpeed = .25
+        self.hopperMotor.hopperSpeed = self.dumbSpeed
         self.hopperMotor.hopper = True
-        self.next_state("runShooterMotor1")
 
-
-    @timed_state(time = 2)
+    @timed_state(duration = time, next_state = "runShooterMotor2")
     def runShooterMotor1(self):
         self.toDo = "The upper/lower shooter motor should be running"
         self.hopperMotor.hopper = False
         self.shooterMotors.shooter = True
-        self.shooterMotors.shooterSpeed1 = .25
-        self.next_state("runShooterMotor2")
+        self.shooterMotors.shooterSpeed1 = self.dumbSpeed
 
-    @timed_state(time = 2)
+
+    @timed_state(duration = time, next_state = "colorSensorCheck")
     def runShooterMotor2(self):
         self.toDo = "The other shooter motor should be running"
         self.shooterMotors.shooterSpeed1 = 0
-        self.shooterMotors.shooterSpeed2 = .25
-        self.next_state("colorSensorCheck")
-    
+        self.shooterMotors.shooterSpeed2 = self.dumbSpeed
+    """
+
+    @state
+    def testEncoders(self):
+        self.toDo = "Drives robot forwards until"
+        self.driveTrain.setTank(self.dumbSpeed, self.dumbSpeed)
+        if (self.driveTrain.getLeftSideDistTraveled() + self.driveTrain.getRightSideDistTraveled()) / 2 == 1:
+            self.driveTrain.setTank(0, 0)
+            self.next_state("colorSensorCheck")
+        else:
+            self.next_state("testEncoders")
+
     @state
     def colorSensorCheck(self):
         self.toDo = "Put up a red ball to the color sensor"
@@ -80,7 +91,7 @@ class SmokeTest(AutonomousStateMachine):
     def checkIntakeSensor(self):
         """Checks to see if the intake break sensor is broken"""
         self.toDo = "Break the break sensor on the intake"
-        if self.breakSensors.loadingSensor(State.kTripped):
+        if self.sensors.loadingSensor(State.kTripped):
             self.next_state("checkShooterSensor")
         else:
             log.error("Sensor not broken")
@@ -95,7 +106,7 @@ class SmokeTest(AutonomousStateMachine):
     def checkShooterSensor(self):
         """Checks to see if the shooter break sensor is broken"""
         self.toDo = "Break the break sensor on the shooter"
-        if self.breakSensors.shootingSensor(State.kTripped):
+        if self.sensors.shootingSensor(State.kTripped):
             log.error("Done")
             self.done()
         else:
