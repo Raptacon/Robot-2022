@@ -80,7 +80,7 @@ hopperMotors:
 
     hopperMotor: #Approximately 2 min, 4 max.
     # we don't have information on this yet.
-        hopperMotor1:
+    hopperMotor1:
       channel: 60
       type: "CANTalonSRX"
       inverted: True
