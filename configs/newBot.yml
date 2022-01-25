@@ -99,6 +99,16 @@ hopperMotors:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
+        
+loaderSensors:
+  subsystem: "breaksensors"
+  description: "All IR break sensors used for the loader live here for the loader/LED component"
+  loaderSensors:
+    groups: "digitalInput"
+    sensor3:
+      type: "RIODigitalIn"
+      channel: 3
+      description: "Loading sensor"
 
 intakeMotors:
   intakeMotor:
