@@ -13,7 +13,6 @@ class ControlMode(Enum):
     """
     kArcadeDrive = auto()
     kTankDrive = auto()
-    kAngleTurning = auto()
     kDisabled = auto()
 
 class DriveTrain():
