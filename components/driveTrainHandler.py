@@ -1,11 +1,8 @@
 import logging as log
 from bcrypt import re
+from magicbot import MagicRobot
 from networktables import NetworkTables
 from components.driveTrain import DriveTrain, ControlMode
-
-from magicbot import MagicRobot
-
-from robot import MyRobot
 
 class DriveTrainHandler():
     """
@@ -41,7 +38,10 @@ class DriveTrainHandler():
         (Therefor, control is given to components who request control first immediately after
         driver control is relinquished. Play nice, I guess.)
         """
-        if requestSource == MyRobot:
+        # If the request comes from a descendant of MagicRobot
+        # (If the request comes from robot.py)
+        # give it control
+        if issubclass(type(requestSource), MagicRobot):
             self.currentSource = requestSource
             return True
 
