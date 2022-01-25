@@ -2,8 +2,8 @@ from networktables import NetworkTables as networktable
 from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 import logging as log
-from components.driveTrain import DriveTrain
 from components.autoShoot import AutoShoot
+from components.driveTrainHandler import DriveTrainHandler
 
 class AutoAlign(StateMachine):
     """
@@ -14,7 +14,7 @@ class AutoAlign(StateMachine):
 
     compatString = ["doof"]
     time = 0.01
-    driveTrain: DriveTrain
+    driveTrainHandler: DriveTrainHandler
 
     # Auto Align variables
     shootAfterComplete = False
@@ -78,7 +78,7 @@ class AutoAlign(StateMachine):
                 # finish.
                 else:
                     log.info("Autoalign complete")
-                    self.driveTrain.setTank(0, 0)
+                    self.driveTrainHandler.setTank(self, 0, 0)
                     if self.shootAfterComplete:
                         self.autoShoot.startAutoShoot()
 
@@ -88,12 +88,12 @@ class AutoAlign(StateMachine):
     @timed_state(duration=time, next_state="start")
     def adjust_self_right(self):
         """Turns the bot right"""
-        self.driveTrain.setTank(-1 * self.speed, self.speed)
+        self.driveTrainHandler.setTank(self, -1 * self.speed, self.speed)
 
     @timed_state(duration=time, next_state="start")
     def adjust_self_left(self):
         """Turns the bot left"""
-        self.driveTrain.setTank(self.speed, -1 * self.speed)
+        self.driveTrainHandler.setTank(self, self.speed, -1 * self.speed)
 
     def calc_PID(self, error):
         """

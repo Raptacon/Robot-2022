@@ -1,15 +1,18 @@
 import logging as log
+from bcrypt import re
 from networktables import NetworkTables
 from components.driveTrain import DriveTrain, ControlMode
-# import all components that might request control of drivetrain
-from components.autoAlign import AutoAlign
-from components.autoShoot import AutoShoot
-from components.turnToAngle import TurnToAngle
-from components.driveTrainGoToDist import GoToDist
 
 from magicbot import MagicRobot
 
-class DriveTrain():
+from robot import MyRobot
+
+class DriveTrainHandler():
+    """
+    This class is how we're going to control the drivetrain
+    during teleop. It gives priority to drivers.
+    We shouldn't be calling the drivetrain's control methods directly now.
+    """
     compatString = ["doof","scorpion", "greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     driveTrain: DriveTrain
@@ -38,7 +41,7 @@ class DriveTrain():
         (Therefor, control is given to components who request control first immediately after
         driver control is relinquished. Play nice, I guess.)
         """
-        if requestSource == MagicRobot:
+        if requestSource == MyRobot:
             self.currentSource = requestSource
             return True
 
@@ -75,6 +78,28 @@ class DriveTrain():
             return True
         else:
             return False
+
+    def setArcade(self, requestSource, speed, rotation):
+        """
+        Sets the drivetrain in arcade mode (if you deserve control)
+
+        If you do not have control, this will request it for you.
+        Sets drivetrain values and returns true if your control is valid.
+        If not, returns false. You must request control (through this method) every frame.
+        (Yes this is wide open to abuse, but I trust you)
+        """
+        self.setDriveTrain(self, requestSource, ControlMode.kArcadeDrive, speed, rotation)
+
+    def setTank(self, requestSource, leftSpeed, rightSpeed):
+        """
+        Sets the drivetrain in tank mode (if you deserve control)
+
+        If you do not have control, this will request it for you.
+        Sets drivetrain values and returns true if your control is valid.
+        If not, returns false. You must request control (through this method) every frame.
+        (Yes this is wide open to abuse, but I trust you)
+        """
+        self.setDriveTrain(self, requestSource, ControlMode.kTankDrive, leftSpeed, rightSpeed)
 
     def execute(self):
         # Pass through inputs to drivetrain

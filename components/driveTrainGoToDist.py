@@ -1,12 +1,12 @@
 from magicbot import StateMachine, state, tunable
-from components.driveTrain import DriveTrain
+from components.driveTrainHandler import DriveTrainHandler
 import logging as log
 
 class GoToDist(StateMachine):
 
     compatString = ["doof"]
 
-    driveTrain: DriveTrain
+    driveTrainHandler: DriveTrainHandler
     dumbTolerance = tunable(.25)
     tolerance = tunable(.25)
     starting = False
@@ -33,7 +33,7 @@ class GoToDist(StateMachine):
 
     def stop(self):
         self.running = False
-        self.driveTrain.setArcade(0, 0)
+        self.driveTrainHandler.setArcade(self, 0, 0)
         self.next_state("idling")
 
     @state(first=True)
@@ -94,4 +94,4 @@ class GoToDist(StateMachine):
             self.stop()
             self.next_state("idling")
 
-        self.driveTrain.setArcade(self.nextSpeed, 0)
+        self.driveTrainHandler.setArcade(self, self.nextSpeed, 0)

@@ -6,6 +6,7 @@ import wpilib
 from wpilib import XboxController
 from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
+import math
 
 # Component imports:
 from components.driveTrain import DriveTrain
@@ -29,6 +30,7 @@ from components.turnToAngle import TurnToAngle
 from components.driveTrainGoToDist import GoToDist
 from components.ballCounter import BallCounter
 from components.colorSensor import ColorSensor
+from components.driveTrainHandler import DriveTrainHandler
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -68,10 +70,12 @@ class MyRobot(MagicRobot):
     goToDist: GoToDist
     ballCounter: BallCounter
     colorSensor: ColorSensor
+    driveTrainHandler: DriveTrainHandler
 
     # Test code:
     testBoard: TestBoard
 
+    controllerDeadzone = tunable(.04)
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
 
@@ -102,7 +106,7 @@ class MyRobot(MagicRobot):
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors,
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
@@ -161,11 +165,18 @@ class MyRobot(MagicRobot):
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
+        # deadzone clamping
+        if math.abs(driveLeftY) < self.controllerDeadzone:
+            driveLeftY = 0
+        if math.abs(driveRightY) < self.controllerDeadzone:
+            driveRightY = 0
+        if math.abs(driveRightX) < self.controllerDeadzone:
+            driveRightX = 0
+
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
         if self.xboxMap.getDriveA() == True:
-            executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(True)
             self.autoAlign.engage()
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
@@ -175,12 +186,13 @@ class MyRobot(MagicRobot):
             self.hopperMotor.stopHopper()
         self.prevAState = self.xboxMap.getDriveA()
 
-        if not executingDriveCommand:
+        # If the drivers have any input outside deadzone, take control.
+        if driveRightY + driveLeftY + driveRightX != 0:
             if self.arcadeMode:
-                self.driveTrain.setArcade(driveLeftY, -1 * driveRightX)
+                self.driveTrainHandler.setArcade(self, driveLeftY, -1 * driveRightX)
             else:
-                self.driveTrain.setTank(driveLeftY, driveRightY)
-            self.autoAlign.reset_integral()
+                self.driveTrainHandler.setTank(self, driveLeftY, driveRightY)
+        self.autoAlign.reset_integral()
 
         self.scorpionLoader.checkController()
 
