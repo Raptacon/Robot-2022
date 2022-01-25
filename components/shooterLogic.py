@@ -1,14 +1,19 @@
 from robotMap import XboxMap
-from components.shooterMotors import ShooterMotorCreation, Direction
+from components.shooterMotors import ShooterMotors
+from components.hopperMotor import HopperMotor
+from components.intakeMotor import IntakeMotor
 from components.breakSensors import Sensors, State
+from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
 class ShooterLogic(StateMachine):
     """StateMachine-based shooter. Has both manual and automatic modes."""
-    compatString = ["doof"]
+    compatString = []
 
     # Component/module related things
-    shooterMotors: ShooterMotorCreation
+    shooterMotors: ShooterMotors
+    hopperMotor: HopperMotor
+    intakeMotor: IntakeMotor
     sensors: Sensors
     xboxMap: XboxMap
     speedTolerance = tunable(75)
@@ -21,6 +26,7 @@ class ShooterLogic(StateMachine):
     # Other variables
     isSetup = False
     isAutonomous = False
+    shooting = False
     shooterStoppingDelay = 3
 
     def on_enable(self):
@@ -46,7 +52,7 @@ class ShooterLogic(StateMachine):
         """Executes smart shooter."""
         self.start = False
         self.running = True
-        if self.shooterMotors.isLoaderRunning() or self.shooterMotors.isShooterRunning():
+        if self.hopperMotor.isHopperRunning() or self.shooterMotors.isShooterRunning():
             return False
         self.next_state('initShooting')
         return True
@@ -66,7 +72,8 @@ class ShooterLogic(StateMachine):
             shootSpeed = self.teleShootingSpeed - self.speedTolerance
         if not self.isSetup:
             return False
-        atSpeed = bool(self.shooterMotors.shooterMotor.getEncoder().getVelocity() >= shootSpeed)
+        atSpeed = (bool(self.shooterMotors.shooterMotor1.getEncoder().getVelocity() >= shootSpeed)
+                and bool(self.shooterMotors.shooterMotor2.getEncoder().getVelocity() >= shootSpeed))
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
@@ -78,20 +85,12 @@ class ShooterLogic(StateMachine):
     def initShooting(self):
         """Smart shooter initialization (reversing if necessary)."""
         if self.sensors.shootingSensor(State.kTripped):
-            self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kBackwards)
+            self.hopperMotor.runHopper(self.shootingLoaderSpeed, Direction.kBackwards)
             self.next_state('initShooting')
 
         else:
-            self.shooterMotors.stopLoader()
-            self.next_state('alignToTarget')
-
-    @state
-    def alignToTarget(self):
-        """Aligns turret and/or drive train to the goal."""
-        self.next_state('runShooter')
-        #NOTE: This is a temporary placeholder until we can get limelight alignment successfully implemented.
-        #      Useful logic would include: determining if the limelight can see the target before attempting
-        #      alignment, especially for autonomous.
+            self.hopperMotor.stopHopper()
+            self.next_state('runShooter')
 
     @state
     def runShooter(self):
@@ -103,9 +102,9 @@ class ShooterLogic(StateMachine):
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed)
             if self.isShooterUpToSpeed():
-                self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
+                self.hopperMotor.runHopper(self.shootingLoaderSpeed, Direction.kForwards)
             else:
-                self.shooterMotors.runLoader(0, Direction.kForwards)
+                self.hopperMotor.runHopper(0, Direction.kForwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
@@ -117,16 +116,16 @@ class ShooterLogic(StateMachine):
     def autonomousShoot(self):
         """Shoot balls when shooter is up to speed. Strictly for autonomous use."""
         if self.isShooterUpToSpeed():
-            self.shooterMotors.runLoader(self.shootingLoaderSpeed, Direction.kForwards)
+            self.hopperMotor.runHopper(self.shootingLoaderSpeed, Direction.kForwards)
         else:
-            self.shooterMotors.runLoader(0, Direction.kForwards)
+            self.hopperMotor.runHopper(0, Direction.kForwards)
             self.next_state('autonomousShoot')
 
     @state
     def finishShooting(self):
         """Stops shooter-related motors and moves to idle state."""
         self.running = False
-        self.shooterMotors.stopLoader()
+        self.hopperMotor.stopHopper()
         self.shooterMotors.stopShooter()
         self.next_state('idling')
 
