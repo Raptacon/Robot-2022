@@ -157,7 +157,6 @@ class MyRobot(MagicRobot):
         #This variable determines whether to use controller input for the drivetrain or not.
         #If we are using a command (such as auto align) that uses the drivetrain, we don't want to use the controller's input because it would overwrite
         #what the component is doing.
-        executingDriveCommand = False
 
         driveLeftY = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier

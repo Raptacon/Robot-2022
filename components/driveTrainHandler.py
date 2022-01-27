@@ -1,6 +1,5 @@
 import logging as log
 from magicbot import MagicRobot
-from networktables import NetworkTables
 from components.driveTrain import DriveTrain, ControlMode
 
 class DriveTrainHandler():
