@@ -2,7 +2,8 @@ from robotMap import XboxMap
 from components.intakeMotor import IntakeMotor
 from components.hopperMotor import HopperMotor
 from components.breakSensors import Sensors, State
-from components.feederMap import FeederMap, Type
+from components.feederMap import FeederMap
+from components.colorSensor import ColorSensor
 from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
@@ -16,6 +17,7 @@ class LoaderLogic(StateMachine):
     feeder: FeederMap
     sensors: Sensors
     xboxMap: XboxMap
+    ColorSensor: ColorSensor
 
     # Tunable
     automaticLoaderSpeed = tunable(.4)
@@ -23,6 +25,7 @@ class LoaderLogic(StateMachine):
     # Other variables
     isAutomatic = True
     loaderStoppingDelay = .16
+    egect = False
 
     def on_enable(self):
         self.isAutomatic = True
@@ -44,6 +47,9 @@ class LoaderLogic(StateMachine):
 
     def determineNextAction(self):
         self.next_state('nextAction')
+
+    def egectBall(self):
+        eject = True
 
     @feedback
     def isRunningAutomatic(self):
