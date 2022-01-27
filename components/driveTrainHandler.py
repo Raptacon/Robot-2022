@@ -1,5 +1,4 @@
 import logging as log
-from bcrypt import re
 from magicbot import MagicRobot
 from networktables import NetworkTables
 from components.driveTrain import DriveTrain, ControlMode
@@ -115,5 +114,5 @@ class DriveTrainHandler():
             self.driveTrain.setTank(0, 0)
 
         # You must request control every frame.
-        self.prevSource == self.currentSource
-        self.currentSource == None
+        self.prevSource = self.currentSource
+        self.currentSource = None
