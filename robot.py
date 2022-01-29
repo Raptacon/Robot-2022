@@ -85,7 +85,6 @@ class MyRobot(MagicRobot):
         self.driverStation = DriverStation.getInstance()
 
         self.allianceColor = self.driverStation.getAlliance()
-        print("ALLIANCE COLOR:   ",self.allianceColor)
 
         ReadBufferValue = 18
 
