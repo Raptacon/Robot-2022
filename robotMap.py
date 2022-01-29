@@ -1,5 +1,5 @@
 from utils import configMapper
-from wpilib import XboxController
+from wpilib import XboxController, Joystick
 
 class RobotMap():
     """
