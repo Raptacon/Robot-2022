@@ -113,7 +113,7 @@ class JoystickMap():
         self.driveX = self.drive.getX()
         self.driveY = self.drive.getY()
         self.driveZ = self.drive.getZ()        
-        self.button1 = Joystick.getTrigger()
+        self.trigger = Joystick.getTrigger()
         self.button2 = GenericHID.getRawButton(2)
         self.button3 = GenericHID.getRawButton(3)
         self.button4 = GenericHID.getRawButton(4)
@@ -124,6 +124,7 @@ class JoystickMap():
         self.button9 = GenericHID.getRawButton(9)
         self.button10 = GenericHID.getRawButton(10)
         self.button11 = GenericHID.getRawButton(11)
+        self.POV = GenericHID.getPOV()
 
     def getDriveJoystick(self):
         return self.drive
@@ -138,7 +139,7 @@ class JoystickMap():
         return self.driveZ
 
     def getTrigger(self):
-        return self.button1
+        return self.trigger
 
     def getButton2(self):
         return self.button2
@@ -169,3 +170,6 @@ class JoystickMap():
 
     def getButton11(self):
         return self.button11
+
+    def getPOV(self):
+        return self.POV
