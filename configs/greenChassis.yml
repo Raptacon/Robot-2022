@@ -61,3 +61,54 @@ driveTrain:
         triggerThresholdTime: 50
         currentLimit: 40
       inverted: False
+
+shooterMotors:
+  subsystem: "shooter"
+  description: "All motors used in the robot shooter mechanism live here for the shooter component"
+  shooterMotors2:
+    groups: "motors"
+    shooterMotor:
+      channel: 11
+      type: "SparkMax"
+      inverted: True
+      motorType: "kBrushless"
+
+      pid:
+        controlType: "Velocity"
+        kP: 0.0004
+        kI: 0
+        kD: 0
+        kF: 0.000175
+        feedbackDevice: 1
+        kPreScale: 1
+        coastOnZero: True
+
+      currentLimits:
+        freeLimit: 30
+        stallLimit: 30
+        stallLimitRPM: 50
+        secondaryLimit: 35
+
+  shooterMotors1:
+    groups: "motors"
+    shooterMotor:
+      channel: 10
+      type: "SparkMax"
+      inverted: True
+      motorType: "kBrushless"
+
+      pid:
+        controlType: "Velocity"
+        kP: 0.0004
+        kI: 0
+        kD: 0
+        kF: 0.000175
+        feedbackDevice: 1
+        kPreScale: 1
+        coastOnZero: True
+
+      currentLimits:
+        freeLimit: 30
+        stallLimit: 30
+        stallLimitRPM: 50
+        secondaryLimit: 35

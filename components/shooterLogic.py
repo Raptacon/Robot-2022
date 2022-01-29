@@ -133,7 +133,7 @@ class ShooterLogic(StateMachine):
     def idling(self):
         """First state. Does nothing here. StateMachine returns to this state when not shooting."""
         self.shooting = False
-        if self.start == True and self.running == False:
+        if self.start == True:
             self.next_state('shootBalls')
 
     def execute(self):
