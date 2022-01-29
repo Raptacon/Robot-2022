@@ -1,5 +1,4 @@
 from math import fabs
-from typing_extensions import Self
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 import logging as log
 from components.driveTrain import DriveTrain
@@ -94,6 +93,7 @@ class AutonomousAutoStart(AutonomousStateMachine):
     CheckAngleFirstCall = True
     TurnsCompleted = 0
     stateTurn = "turn"
+
     @state(first = True)
     def drive_forwards(self):
         """Drives the bot forwards for 5 feet"""
@@ -102,18 +102,19 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.goToDist.engage()
         self.goToDist.start(-60)
         self.driveTrain.execute()
-        self.next_state("waitToTurn")
+        self.stateTurn = "turn"
+        self.next_state("GoToDistRunning")
 
     @state
-    def waitToTurn(self):
+    def GoToDistRunning(self):
         """Waits for goToDist to stop running, and then passes to turn"""
         self.goToDist.engage()
         self.driveTrain.execute()
         if self.StopRunningFirstCall:
             self.StopRunningFirstCall = not self.StopRunningFirstCall
-            self.next_state("waitToTurn")
+            self.next_state("GoToDistRunning")
         elif self.goToDist.running:
-            self.next_state("waitToTurn")
+            self.next_state("GoToDistRunning")
         else:
             self.next_state(self.stateTurn)
 
@@ -161,10 +162,11 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.goToDist.start(60)
         self.StopRunningFirstCall = True
         self.stateTurn = "stop"
-        self.next_state("waitToTurn")
+        self.next_state("GoToDistRunning")
 
     @state(must_finish = True)
     def stop(self):
         """Stops driving bot"""
         self.driveTrain.setArcade(0, 0)
         self.done()
+     

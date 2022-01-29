@@ -12,6 +12,7 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
+    nextSpeed = 0
     # This array determines what speed the robot will use
     # at different distances.
     values = [
