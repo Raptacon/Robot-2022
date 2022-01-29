@@ -88,10 +88,11 @@ class AutoAlign(StateMachine):
                         self.speed = speed
                     self.next_state("adjust_self")
                     break
-                else:
+                elif (self.AbsoluteX < self.maxAimOffset):
                     log.info("Autoalign complete")
-                    self.driveTrain.setTank(0, 0)
+                    #stop turet motors
                     self.next_state("idling")
+                    break
             # if self.shootAfterComplete:
             #     self.autoShoot.startAutoShoot()
         # If the horizontal offset is within the given tolerance,
