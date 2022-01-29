@@ -1,11 +1,11 @@
 from math import fabs
 from typing_extensions import Self
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
+import logging as log
 from components.driveTrain import DriveTrain
 from components.driveTrainGoToDist import GoToDist
 from components.turnToAngle import TurnToAngle
 from components.shooterLogic import ShooterLogic
-from components.shooterMotors import ShooterMotorCreation
 from components.autoAlign import AutoAlign
 from components.autoShoot import AutoShoot
 from components.pneumatics import Pneumatics
@@ -18,7 +18,6 @@ class Autonomous(AutonomousStateMachine):
     DEFAULT = True
     driveTrain: DriveTrain
     shooter: ShooterLogic
-    shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
     drive_speed = tunable(.25)
 
@@ -59,7 +58,6 @@ class AutonomousAutoShoot(AutonomousStateMachine):
     DEFAULT = False
     driveTrain: DriveTrain
     shooter: ShooterLogic
-    shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
     autoAlign: AutoAlign
     autoShoot: AutoShoot
@@ -87,7 +85,6 @@ class AutonomousAutoStart(AutonomousStateMachine):
     shooter: ShooterLogic
     goToDist: GoToDist
     turnToAngle: TurnToAngle
-    shooterMotors: ShooterMotorCreation
     pneumatics: Pneumatics
     autoAlign: AutoAlign
     autoShoot: AutoShoot
@@ -120,49 +117,66 @@ class AutonomousAutoStart(AutonomousStateMachine):
         else:
             self.next_state("turn")
 
-        
+
     @state
     def turn(self):
         """One method that completes all turns"""
         turn1 = -90
         turn2 = 180
         turn3 = -90
+        self.turnToAngle.engage()
+        self.CheckAngleFirstCall = True
         if self.TurnsCompleted == 0:
-            self.turnToAngle.turnAngle = turn1
-            self.turnToAngle.setIsRunning()
+            log.info("States first turn")
+            self.turnToAngle.setAngle(turn1)
             self.next_state("check_angle")
         elif self.TurnsCompleted == 1:
-            self.turnToAngle.turnAngle = turn2
-            self.turnToAngle.setIsRunning()
+            log.info("States Sencond turn")
+            self.turnToAngle.setAngle(turn2)
             self.next_state("check_angle")
         elif self.TurnsCompleted == 2:
-            self.turnToAngle.turnAngle = turn3
-            self.turnToAngle.setIsRunning()
+            self.turnToAngle.setAngle(turn3)
             self.next_state("check_angle")
 
     @state
     def check_angle(self):
-        self.turnToAngle.output()
+        self.turnToAngle.engage()
         self.driveTrain.execute()
+        #self.turnToAngle.stop()
         if self.CheckAngleFirstCall:
-            self.CheckAngleFirstCall = not self.CheckAngleFirstCall
+            self.CheckAngleFirstCall = False
             self.next_state("check_angle")
-        elif self.turnToAngle.isRunning:
+        elif self.turnToAngle.running:
             self.next_state("check_angle")
         else:
             self.TurnsCompleted += 1
             self.next_state("turn")
-            if self.turns >= 3:
+            if self.TurnsCompleted >= 3:
                 self.next_state("drive_backwards")
-                
-                
+
+
+
 
     @state
     def drive_backwards(self):
         """Drives the bot backwards for 5 feet"""
-        self.goToDist.setTargetDist(-60)
+        self.goToDist.engage()
+        self.goToDist.setTargetDist(60)
         self.goToDist.start()
-        self.next_state("stop")
+        self.StopRunningFirstCall = True
+        self.next_state("stoprunning2")
+
+    @state
+    def stoprunning2(self):
+        self.goToDist.engage()
+        self.driveTrain.execute()
+        if self.StopRunningFirstCall:
+            self.StopRunningFirstCall = not self.StopRunningFirstCall
+            self.next_state("stoprunning2")
+        elif self.goToDist.running:
+            self.next_state("stoprunning2")
+        else:
+            self.next_state("stop")
 
     @state(must_finish = True)
     def stop(self):
