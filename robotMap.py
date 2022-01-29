@@ -106,11 +106,20 @@ class JoystickMap():
     def __init__(self, joystick1: Joystick, joystick2: Joystick):
         #initializes joysticks
         self.drive = joystick1
-        self.drive = joystick2
+        self.mech = joystick2
         self.JoystickInput()
         
-
     def JoystickInput(self):
         self.driveX = self.drive.getX()
         self.driveY = self.drive.getY()
         self.driveZ = self.drive.getZ()
+        #Mechanism controller inputs
+        self.mechX = self.mech.getX()
+        self.mechY = self.mech.getY()
+        self.mechZ = self.mech.getZ()
+
+    def getDriveJoystick(self):
+        return self.drive
+
+    def getMechJoystick(self):
+        return self.mech
