@@ -80,7 +80,7 @@ class LoaderLogic(StateMachine):
         if self.sensors.loadingSensor(State.kNotTripped) and self.eject == False:
             self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kForwards)
             self.next_state('stopBall')
-        elif self.eject == True and ColorSensor.getColor() != self.allianceColor:
+        elif self.eject and ColorSensor.getColor() != self.allianceColor:
             self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kBackwards)
             self.next_state('eject_ball')
 
