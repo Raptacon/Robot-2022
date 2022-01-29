@@ -49,7 +49,7 @@ class LoaderLogic(StateMachine):
         self.next_state('nextAction')
 
     def egectBall(self):
-        eject = True
+        self.eject = True
 
     @feedback
     def isRunningAutomatic(self):
@@ -80,8 +80,10 @@ class LoaderLogic(StateMachine):
     @state
     def waitForBallIntake(self):
         """Checks for intake to be completed."""
-        if self.sensors.loadingSensor(State.kNotTripped):
+        if self.sensors.loadingSensor(State.kNotTripped) and self.eject == False:
             self.next_state('stopBall')
+        elif self.eject == True and ColorSensor.getColor == 'Blue':
+            pass
 
     @timed_state(duration = loaderStoppingDelay, next_state = 'checkForBall')
     def stopBall(self):
