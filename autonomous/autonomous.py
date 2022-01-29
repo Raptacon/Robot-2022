@@ -1,4 +1,3 @@
-from math import fabs
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 import logging as log
 from components.driveTrain import DriveTrain
@@ -102,7 +101,6 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.goToDist.engage()
         self.goToDist.start(-60)
         self.driveTrain.execute()
-        self.stateTurn = "turn"
         self.next_state("GoToDistRunning")
 
     @state
