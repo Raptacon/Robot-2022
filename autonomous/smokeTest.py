@@ -42,9 +42,10 @@ class SmokeTest(AutonomousStateMachine):
         else:
             self.next_state("drive")
 
+    """
     @timed_state(duration = time, next_state = "testEncoders")
     def runIntakeMotor(self):
-        """Runs intake motor"""
+        Runs intake motor
         self.toDo = "The intake motor should be running"
         self.driveTrain.setTank(0, 0)
         self.intakeMotor.intakeSpeed = self.dumbSpeed
@@ -53,7 +54,7 @@ class SmokeTest(AutonomousStateMachine):
 
     @timed_state(duration = time, next_state = "runShooterMotor1")
     def runHopperMotor(self):
-        """Runs the hopper motor if there is a seperate motor for the hopper"""
+        Runs the hopper motor if there is a seperate motor for the hopper
         self.toDo = "The hopper motor should be running"
         self.intakeMotor.intake = False
         self.hopperMotor.hopperSpeed = self.dumbSpeed
@@ -73,6 +74,7 @@ class SmokeTest(AutonomousStateMachine):
         self.shooterMotors.shooterSpeed1 = 0
         self.shooterMotors.shooterSpeed2 = self.dumbSpeed
 
+    """
     @state
     def colorSensorCheck(self):
         self.toDo = "Put up a red ball to the color sensor"
