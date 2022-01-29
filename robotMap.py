@@ -1,5 +1,3 @@
-
-from hal import JoystickButtons
 from utils import configMapper
 from wpilib import XboxController, Joystick
 from wpilib.interfaces import GenericHID
