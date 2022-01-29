@@ -29,7 +29,7 @@ from components.turnToAngle import TurnToAngle
 from components.driveTrainGoToDist import GoToDist
 from components.ballCounter import BallCounter
 from components.colorSensor import ColorSensor
-from components.speedSections import SpeedSections
+from components.speedSections import SpeedSections, speedFactory
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -101,6 +101,7 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("digitalInput", breaksensorFactory)
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
+        self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
