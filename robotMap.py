@@ -98,7 +98,10 @@ class XboxMap():
 
     def getMechDPad(self):
         return self.mechDPad
-class GenricMap():
+class JoystickMap():
     """
     Holds the mappings for a generic joystick
     """
+    def __init__(self, joystick1: Joystick):
+        #initializes joysticks
+        self.drive = joystick1
