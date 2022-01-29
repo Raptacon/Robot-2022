@@ -25,9 +25,11 @@ class ShooterMotors:
     def runShooter(self, sSpeed1, sSpeed2):
         """
         Sets the shooter motors to sSpeed1 and 2
-        sSpeed(1,2): RPMs if we're using PID. OR
+        :param sSpeed1: RPMs if we're using PID. OR
         double/float 0 to 1, where 0 is nothing and 1 is full speed
         if we're not using PID.
+        :param sSpeed2: The speed for the second motor.
+        Follows the same convention as the first.
         """
         self.shooterSpeed1 = sSpeed1
         self.shooterSpeed2 = sSpeed2
