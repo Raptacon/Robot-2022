@@ -10,14 +10,16 @@ class AutoAlign(StateMachine):
     currently has in its view.
     """
 
-    compatString = ["doof"]
+    compatString = ["doof", "greenChassis"]
     time = 0.01
+
+    motors_turret: dict
 
     # Auto Align variables
     shootAfterComplete = False
     # Maximum horizontal offset before shooting in degrees
-    maxAimOffset = tunable(.25)
-    PIDAimOffset = tunable(2.1)
+    maxAimOffset = tunable(7)
+    PIDAimOffset = tunable(7)
     DumbSpeed = .5
 
     # PID
@@ -36,6 +38,9 @@ class AutoAlign(StateMachine):
     smartTable = networktable.getTable('SmartDashboard')
     smartTable.putNumber("PIDspeed", 0)
     smartTable.putNumber("Integral", 0)
+
+    def setup(self):
+        self.turretMotor = self.motors_turret["turretMotor"]
 
     def setShootAfterComplete(self, input: bool):
         self.shootAfterComplete = input
@@ -83,14 +88,14 @@ class AutoAlign(StateMachine):
                     or (self.AbsoluteX < dists
                     and self.AbsoluteX > self.maxAimOffset)):
                     if speed == "PID":
-                        self.speed = self.calc_PID(self.DeviationX)
+                        self.speed = self.DumbSpeed
                     else:
                         self.speed = speed
                     self.next_state("adjust_self")
                     break
                 else:
                     log.info("Autoalign complete")
-                    self.driveTrain.setTank(0, 0)
+                    self.turretMotor.set(0)
                     self.next_state("idling")
             # if self.shootAfterComplete:
             #     self.autoShoot.startAutoShoot()
@@ -105,11 +110,9 @@ class AutoAlign(StateMachine):
     def adjust_self(self):
         """Turns the bot"""
         if(self.DeviationX == self.AbsoluteX):
-            pass
-            #Motors go here
+            self.turretMotor.set(self.speed)
         else:
-            pass
-            #Motors go here
+            self.turretMotor.set(self.speed * -1)
         self.next_state("start")
 
     def calc_PID(self, error):
