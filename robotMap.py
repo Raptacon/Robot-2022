@@ -98,3 +98,7 @@ class XboxMap():
 
     def getMechDPad(self):
         return self.mechDPad
+class GenricMap():
+    """
+    Holds the mappings for a generic joystick
+    """
