@@ -105,3 +105,8 @@ class JoystickMap():
     def __init__(self, joystick1: Joystick):
         #initializes joysticks
         self.drive = joystick1
+    
+    def JoystickInput(self):
+        self.driveX = self.drive.getX(Joystick.AxisType.kXAxis)
+        self.driveY = self.drive.getY(Joystick.AxisType.kYAxis)
+        self.driveZ = self.drive.getZ(Joystick.AxisType.kZAxis)
