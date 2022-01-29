@@ -137,3 +137,35 @@ class JoystickMap():
     def getDriveZAxis(self): 
         return self.driveZ
 
+    def getTrigger(self):
+        return self.button1
+
+    def getButton2(self):
+        return self.button2
+    
+    def getButton3(self):
+        return self.button3
+
+    def getButton4(self):
+        return self.button4
+
+    def getButton5(self):
+        return self.button5
+
+    def getButton6(self):
+        return self.button6
+
+    def getButton7(self):
+        return self.button7
+
+    def getButton8(self):
+        return self.button8
+
+    def getButton9(self):
+        return self.button9
+
+    def getButton10(self):
+        return self.button10
+
+    def getButton11(self):
+        return self.button11
