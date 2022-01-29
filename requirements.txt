@@ -1,11 +1,11 @@
-cryptography==3.2.1
-pyflakes
-py2app
-macholib
-modulegraph
-flake8
-coverage
-wheel
+#cryptography==3.2.1
+#pyflakes
+#py2app
+#macholib
+#modulegraph
+#flake8
+#coverage
+#wheel
 
 robotpy ==2022.*
 
@@ -14,6 +14,6 @@ pyfrc == 2022.*
 robotpy-ctre == 2022.*
 robotpy-navx == 2022.*
 robotpy-rev == 2022.*
-robotpy-halsim-gui == 2022.*
+robotpy-halsim-gui
 robotpy-wpilib-utilities == 2022.*
 pynetworktables
