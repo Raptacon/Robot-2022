@@ -119,9 +119,9 @@ class GoToDist(StateMachine):
                 # if speed == "PID":
                 #     self.nextSpeed = self.calc_PID(self.DeviationX)
                 if absTotalOffset == totalOffset:
-                    self.nextSpeed = speed
-                else:
                     self.nextSpeed = -1 * speed
+                else:
+                    self.nextSpeed = speed
                 self.next_state("adjust_drive")
                 break
 
