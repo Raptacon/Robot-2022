@@ -10,6 +10,9 @@
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
 
+## Associated Issue(s)
+Issue: <issue-XX or #X > Describe the issue you're working on here so it ties to the issue and Kanban (IMPORTANT FOR TRACKING). Make sure to create an issue if one doesn't already exist!
+
 ## Steps to Test
 [ Describe how to run your AUTOMATED TESTS and any manual tests that may be need to prove your fix/feature ]
 1. [First Step]
@@ -29,6 +32,5 @@ Explain the technical implementation of what you're doing.
 Explain why you're making this change and what benefits from it. 
 
 
-## Automation
-Issue: <issue-XX> Describe the issue you're working on here so it ties to the issue and Kanban. 
+
 
