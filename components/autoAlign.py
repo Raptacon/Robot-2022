@@ -2,8 +2,6 @@ from networktables import NetworkTables as networktable
 from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 import logging as log
-from components.driveTrain import DriveTrain
-from components.autoShoot import AutoShoot
 
 class AutoAlign(StateMachine):
     """
@@ -14,14 +12,13 @@ class AutoAlign(StateMachine):
 
     compatString = ["doof"]
     time = 0.01
-    driveTrain: DriveTrain
 
     # Auto Align variables
     shootAfterComplete = False
     # Maximum horizontal offset before shooting in degrees
     maxAimOffset = tunable(.25)
     PIDAimOffset = tunable(2.1)
-    DumbSpeed = .14
+    DumbSpeed = .5
 
     # PID
     P = tunable(0.01)
@@ -32,13 +29,13 @@ class AutoAlign(StateMachine):
     speed = 0
     integral = 0
     preverror = 0
+    #starting is false
+    starting = False
 
     limeTable = networktable.getTable("limelight")
     smartTable = networktable.getTable('SmartDashboard')
     smartTable.putNumber("PIDspeed", 0)
     smartTable.putNumber("Integral", 0)
-
-    autoShoot: AutoShoot
 
     def setShootAfterComplete(self, input: bool):
         self.shootAfterComplete = input
@@ -50,50 +47,70 @@ class AutoAlign(StateMachine):
         else:
             self.shootAfterComplete = True
         return self.shootAfterComplete
+    #Stops robot from running until starting is true
+    @state
+    def idling(self):
+        if self.starting:
+            self.starting = False
+            log.error("starting")
+            self.next_state("start")
+        else:
+            self.next_state("idling")
 
     @state(first=True)
     def start(self):
         # If limelight can see something
-        self.tx = self.limeTable.getNumber("tx", -50)
-        if self.tx != -50 or self.tx != 0:
+        self.DeviationX = self.limeTable.getNumber("tx", -50)
+        if self.DeviationX != -50 or self.DeviationX != 0:
             # "-50" is the default value, so if that is returned,
             # nothing should be done because there is no connection.
-            tx = self.limeTable.getNumber("tx", -50)
-            if tx != -50 and tx != 0:
-                if tx > self.maxAimOffset:
-                    if tx < self.PIDAimOffset:
-                        self.speed = self.calc_PID(tx)
-                    else:
-                        self.speed = self.DumbSpeed
-                    self.next_state_now("adjust_self_right")
+            values = [
+                     [self.PIDAimOffset,"PID"],
+                     ["End",self.DumbSpeed]
+                     ]
 
-                elif tx < -1 * self.maxAimOffset:
-                    if tx > -1 * self.PIDAimOffset:
-                        self.speed = -1 * self.calc_PID(tx)
-                    else:
-                        self.speed = self.DumbSpeed
-                    self.next_state_now("adjust_self_left")
+            """
+            If DeviationX value is in between the minimum and maximum values
+            then the speed is set to the second array. if only one value needs to be check put
+            "End" as max value.
+            [self.min, self.max],[speed]
+            """
 
-                # If the horizontal offset is within the given tolerance,
-                # finish.
+            self.speed = 0
+            self.AbsoluteX = abs(self.DeviationX)
+            for dists, speed in values:
+                if (dists == "End"
+                    or (self.AbsoluteX < dists
+                    and self.AbsoluteX > self.maxAimOffset)):
+                    if speed == "PID":
+                        self.speed = self.calc_PID(self.DeviationX)
+                    else:
+                        self.speed = speed
+                    self.next_state("adjust_self")
+                    break
                 else:
                     log.info("Autoalign complete")
                     self.driveTrain.setTank(0, 0)
-                    if self.shootAfterComplete:
-                        self.autoShoot.startAutoShoot()
+                    self.next_state("idling")
+            # if self.shootAfterComplete:
+            #     self.autoShoot.startAutoShoot()
+        # If the horizontal offset is within the given tolerance,
+        # finish.
 
         else:
             log.error("Limelight: No Valid Targets")
+            self.next_state("idling")
 
     @timed_state(duration=time, next_state="start")
-    def adjust_self_right(self):
-        """Turns the bot right"""
-        self.driveTrain.setTank(-1 * self.speed, self.speed)
-
-    @timed_state(duration=time, next_state="start")
-    def adjust_self_left(self):
-        """Turns the bot left"""
-        self.driveTrain.setTank(self.speed, -1 * self.speed)
+    def adjust_self(self):
+        """Turns the bot"""
+        if(self.DeviationX == self.AbsoluteX):
+            pass
+            #Motors go here
+        else:
+            pass
+            #Motors go here
+        self.next_state("start")
 
     def calc_PID(self, error):
         """
@@ -125,9 +142,9 @@ class AutoAlign(StateMachine):
     def reset_integral(self):
         self.integral = 0
 
-    @state
-    def idling(self):
-        pass
+    def StartautoAlign(self):
+        self.start = True
 
     def stop(self):
+        #Stops the robot
         self.next_state_now("idling")
