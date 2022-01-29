@@ -1,4 +1,4 @@
-from magicbot import AutonomousStateMachine, state, timed_state, feedback
+from magicbot import AutonomousStateMachine, state, feedback
 from components.driveTrain import DriveTrain
 from components.colorSensor import ColorSensor
 from components.intakeMotor import IntakeMotor
@@ -6,7 +6,6 @@ from components.hopperMotor import HopperMotor
 from components.shooterMotors import ShooterMotors
 from components.breakSensors import Sensors, State
 import logging as log
-from utils.DirectionEnums import Direction
 
 class SmokeTest(AutonomousStateMachine):
     compatString = ["doof"]
