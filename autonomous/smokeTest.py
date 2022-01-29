@@ -37,6 +37,7 @@ class SmokeTest(AutonomousStateMachine):
         self.driveTrain.setTank(-self.dumbSpeed, -self.dumbSpeed)
         if int(self.driveTrain.getEstTotalDistTraveled()) >= 100 and int(self.driveTrain.getEstTotalDistTraveled()) <=115:
             self.driveTrain.setTank(0, 0)
+            log.error("Drove forwards about 100 inches")
             self.next_state("colorSensorCheck")
         else:
             self.next_state("drive")
@@ -78,6 +79,7 @@ class SmokeTest(AutonomousStateMachine):
     def colorSensorCheck(self):
         self.toDo = "Put up a red ball to the color sensor"
         if self.colorSensor.colorMatched == "red":
+            log.error("The ball is red")
             self.next_state("checkIntakeSensor")
         elif self.colorSensor.colorMatched == "blue":
             log.error("The ball is not red idiot")
@@ -91,6 +93,7 @@ class SmokeTest(AutonomousStateMachine):
         """Checks to see if the intake break sensor is broken"""
         self.toDo = "Break the break sensor on the intake"
         if self.sensors.loadingSensor(State.kTripped):
+            log.error("Tripped")
             self.next_state("checkShooterSensor")
         else:
             log.error("Sensor not broken")
@@ -106,7 +109,9 @@ class SmokeTest(AutonomousStateMachine):
         """Checks to see if the shooter break sensor is broken"""
         self.toDo = "Break the break sensor on the shooter"
         if self.sensors.shootingSensor(State.kTripped):
+            log.error("Tripped")
             log.error("Done")
             self.done()
         else:
+            log.error("Sensor not broken")
             self.next_state("checkShooterSensor")
