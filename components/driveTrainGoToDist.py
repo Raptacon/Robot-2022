@@ -19,7 +19,7 @@ class GoToDist(StateMachine):
              [8, .2],  # use the included speed if the distance is
              [12, .25],# under this value and above the last.
              [36, .3],
-             ["End", .4],
+             ["End", .4]
              ]  # The array must end with "End" - this will be the value used
     # if the target is really far away.
 
