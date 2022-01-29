@@ -123,3 +123,21 @@ class JoystickMap():
 
     def getMechJoystick(self):
         return self.mech
+
+    def getDriveXAxis(self): 
+        return self.driveX
+
+    def getDriveYAxis(self): 
+        return self.driveY
+
+    def getDriveZAxis(self): 
+        return self.driveZ
+
+    def getMechXAxis(self):
+        return self.mechX
+
+    def getMechYAxis(self):
+        return self.mechY
+
+    def getMechZAxis(self):
+        return self.mechZ
