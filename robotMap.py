@@ -1,6 +1,9 @@
 
+from hal import JoystickButtons
 from utils import configMapper
 from wpilib import XboxController, Joystick
+from wpilib.interfaces import GenericHID
+
 
 class RobotMap():
     """
@@ -111,7 +114,18 @@ class JoystickMap():
     def JoystickInput(self):
         self.driveX = self.drive.getX()
         self.driveY = self.drive.getY()
-        self.driveZ = self.drive.getZ()
+        self.driveZ = self.drive.getZ()        
+        self.button1 = Joystick.getTrigger()
+        self.button2 = GenericHID.getRawButton(2)
+        self.button3 = GenericHID.getRawButton(3)
+        self.button4 = GenericHID.getRawButton(4)
+        self.button5 = GenericHID.getRawButton(5)
+        self.button6 = GenericHID.getRawButton(6)
+        self.button7 = GenericHID.getRawButton(7)
+        self.button8 = GenericHID.getRawButton(8)
+        self.button9 = GenericHID.getRawButton(9)
+        self.button10 = GenericHID.getRawButton(10)
+        self.button11 = GenericHID.getRawButton(11)
 
     def getDriveJoystick(self):
         return self.drive
@@ -124,3 +138,4 @@ class JoystickMap():
 
     def getDriveZAxis(self): 
         return self.driveZ
+
