@@ -2,6 +2,7 @@
 Team 3200 Robot base class
 """
 # Module imports:
+from logging.config import dictConfig
 import wpilib
 from wpilib import XboxController
 from wpilib import SerialPort
@@ -71,6 +72,7 @@ class MyRobot(MagicRobot):
 
     # Test code:
     testBoard: TestBoard
+    motors_turret: dict
 
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
@@ -98,6 +100,9 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("digitalInput", breaksensorFactory)
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
+
+        #TEST CODE
+        self.turretMotor = self.motors_turret["turretMotor"]
 
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
@@ -164,12 +169,14 @@ class MyRobot(MagicRobot):
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
+        self.autoAlign.engage()
         if self.xboxMap.getDriveA() == True:
             executingDriveCommand = True
-            self.autoAlign.setShootAfterComplete(False)
-            self.autoAlign.engage()
+            self.autoAlign.startAutoAlign()
+
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()
+            self.turretMotor.set(0)
             self.autoShoot.stop()
             self.shooterMotors.stopShooter()
             self.hopperMotor.stopHopper()
@@ -196,7 +203,8 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        pass
+        self.turretMotor.set(-0.5)
+        #neg counterclockwise, pos clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """

@@ -10,8 +10,10 @@ class AutoAlign(StateMachine):
     currently has in its view.
     """
 
-    compatString = ["doof"]
+    compatString = ["doof", "greenChassis"]
     time = 0.01
+
+    motors_turret: dict
 
     # Auto Align variables
     shootAfterComplete = False
@@ -37,6 +39,9 @@ class AutoAlign(StateMachine):
     smartTable.putNumber("PIDspeed", 0)
     smartTable.putNumber("Integral", 0)
 
+    def setup(self):
+        self.turretMotor = self.motors_turret["turretMotor"]
+
     def setShootAfterComplete(self, input: bool):
         self.shootAfterComplete = input
         return self.shootAfterComplete
@@ -47,8 +52,12 @@ class AutoAlign(StateMachine):
         else:
             self.shootAfterComplete = True
         return self.shootAfterComplete
+
+    def startAutoAlign(self):
+        self.starting = True
+
     #Stops robot from running until starting is true
-    @state
+    @state(first=True)
     def idling(self):
         if self.starting:
             self.starting = False
@@ -57,7 +66,7 @@ class AutoAlign(StateMachine):
         else:
             self.next_state("idling")
 
-    @state(first=True)
+    @state
     def start(self):
         # If limelight can see something
         self.DeviationX = self.limeTable.getNumber("tx", -50)
@@ -83,14 +92,14 @@ class AutoAlign(StateMachine):
                     or (self.AbsoluteX < dists
                     and self.AbsoluteX > self.maxAimOffset)):
                     if speed == "PID":
-                        self.speed = self.calc_PID(self.DeviationX)
+                        self.speed = self.DumbSpeed
                     else:
                         self.speed = speed
                     self.next_state("adjust_self")
                     break
                 elif (self.AbsoluteX < self.maxAimOffset):
                     log.info("Autoalign complete")
-                    #stop turet motors
+                    self.turretMotor.set(0)
                     self.next_state("idling")
                     break
             # if self.shootAfterComplete:
@@ -106,11 +115,9 @@ class AutoAlign(StateMachine):
     def adjust_self(self):
         """Turns the bot"""
         if(self.DeviationX == self.AbsoluteX):
-            pass
-            #Motors go here
+            self.turretMotor.set(self.speed)
         else:
-            pass
-            #Motors go here
+            self.turretMotor.set(self.speed * -1)
         self.next_state("start")
 
     def calc_PID(self, error):
