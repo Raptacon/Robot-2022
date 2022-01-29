@@ -1,3 +1,4 @@
+
 from utils import configMapper
 from wpilib import XboxController, Joystick
 
@@ -102,10 +103,12 @@ class JoystickMap():
     """
     Holds the mappings for a generic joystick
     """
-    def __init__(self, joystick1: Joystick):
+    def __init__(self, joystick1: Joystick, joystick2: Joystick):
         #initializes joysticks
         self.drive = joystick1
+        self.drive = joystick2
         self.JoystickInput()
+        
 
     def JoystickInput(self):
         self.driveX = self.drive.getX()
