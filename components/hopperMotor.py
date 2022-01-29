@@ -23,6 +23,8 @@ class HopperMotor:
     def runHopper(self, lSpeed, direction):
         """
         Sets the hopper motor to speed lSpeed in direction
+        lSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
+        direction: Enum Direction from utils.DirectionEnums (forwards or backwards)
         """
         if direction == Direction.kForwards: # Forwards
             self.hopperSpeed = lSpeed
