@@ -107,6 +107,6 @@ class JoystickMap():
         self.drive = joystick1
     
     def JoystickInput(self):
-        self.driveX = self.drive.getX(Joystick.AxisType.kXAxis)
-        self.driveY = self.drive.getY(Joystick.AxisType.kYAxis)
-        self.driveZ = self.drive.getZ(Joystick.AxisType.kZAxis)
+        self.driveX = self.drive.getX()
+        self.driveY = self.drive.getY()
+        self.driveZ = self.drive.getZ()
