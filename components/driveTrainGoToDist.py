@@ -13,6 +13,7 @@ class GoToDist(StateMachine):
     running = False
     targetDist = 0
     nextSpeed = 0
+    totalOffset = 0
     # This array determines what speed the robot will use
     # at different distances.
     values = [
@@ -57,6 +58,14 @@ class GoToDist(StateMachine):
     def isRunning(self):
         return self.running
 
+    @feedback
+    def getTotalOffset(self):
+        return self.totalOffset
+
+    @feedback
+    def getTargetDist(self):
+        return self.targetDist
+
     @state(first=True)
     def idling(self):
         """
@@ -97,8 +106,8 @@ class GoToDist(StateMachine):
 
         self.nextSpeed = 0
         totalOffset = self.targetDist - self.dist
+        self.totalOffset = totalOffset
 
-        self.nextSpeed = 0
         absTotalOffset = abs(totalOffset)
 
         # Loops through our speed limits in order to find the correct speed.
@@ -109,7 +118,10 @@ class GoToDist(StateMachine):
                 # We don't have this implemented for goToDist yet
                 # if speed == "PID":
                 #     self.nextSpeed = self.calc_PID(self.DeviationX)
-                self.nextSpeed = speed
+                if absTotalOffset == totalOffset:
+                    self.nextSpeed = speed
+                else:
+                    self.nextSpeed = -1 * speed
                 self.next_state("adjust_drive")
                 break
 
@@ -117,6 +129,7 @@ class GoToDist(StateMachine):
         # values array.
         if self.nextSpeed == 0:
             log.error("Something went wrong with GoToDist!")
+            self.stop()
 
         if absTotalOffset < self.tolerance:
             self.stop()
