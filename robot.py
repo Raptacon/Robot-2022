@@ -178,7 +178,6 @@ class MyRobot(MagicRobot):
         self.autoShoot.engage()
         self.turnToAngle.engage()
         if self.xboxMap.getDriveA() == True:
-            self.autoAlign.setShootAfterComplete(True)
             self.autoAlign.engage()
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()
