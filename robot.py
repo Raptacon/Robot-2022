@@ -74,6 +74,9 @@ class MyRobot(MagicRobot):
     # Test code:
     testBoard: TestBoard
 
+    # If controller input is below this value, it will be set to zero.
+    # This avoids accidental input, as we are now overriding autonomous
+    # components on controller input.
     controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
@@ -185,7 +188,7 @@ class MyRobot(MagicRobot):
         self.prevAState = self.xboxMap.getDriveA()
 
         # If the drivers have any input outside deadzone, take control.
-        if driveRightY + driveLeftY + driveRightX != 0:
+        if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
             if self.arcadeMode:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveLeftY, driveRightX)
             else:
