@@ -30,5 +30,5 @@ Explain why you're making this change and what benefits from it.
 
 
 ## Automation
-Issue: <issue-XX> Describe the issue you're working on here so it ties to the issue and Kanban. 
+Issue: <issue-XX> Describe the issue you're working on here so it ties to the issue and Kanban (IMPORTANT FOR TRACKING). Make sure to create an issue if one doesn't already exist!
 
