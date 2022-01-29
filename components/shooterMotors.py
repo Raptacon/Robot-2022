@@ -28,7 +28,6 @@ class ShooterMotors:
         sSpeed(1,2): RPMs if we're using PID. OR
         double/float 0 to 1, where 0 is nothing and 1 is full speed
         if we're not using PID.
-
         """
         self.shooterSpeed1 = sSpeed1
         self.shooterSpeed2 = sSpeed2
