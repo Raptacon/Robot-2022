@@ -8,7 +8,7 @@ from wpilib import SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
-from components.driveTrain import DriveTrain
+from components.driveTrain import DriveTrain, ControlMode
 from components.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
 from components.breakSensors import Sensors
@@ -187,9 +187,9 @@ class MyRobot(MagicRobot):
         # If the drivers have any input outside deadzone, take control.
         if driveRightY + driveLeftY + driveRightX != 0:
             if self.arcadeMode:
-                self.driveTrainHandler.setArcade(self, driveLeftY, -1 * driveRightX)
+                self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveLeftY, driveRightX)
             else:
-                self.driveTrainHandler.setTank(self, driveLeftY, driveRightY)
+                self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
         self.autoAlign.reset_integral()
 
         self.scorpionLoader.checkController()

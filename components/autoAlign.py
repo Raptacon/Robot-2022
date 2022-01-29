@@ -3,6 +3,7 @@ from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 import logging as log
 from components.autoShoot import AutoShoot
+from components.driveTrain import ControlMode
 from components.driveTrainHandler import DriveTrainHandler
 
 class AutoAlign(StateMachine):
@@ -78,7 +79,7 @@ class AutoAlign(StateMachine):
                 # finish.
                 else:
                     log.info("Autoalign complete")
-                    self.driveTrainHandler.setTank(self, 0, 0)
+                    self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
                     if self.shootAfterComplete:
                         self.autoShoot.startAutoShoot()
 
@@ -88,12 +89,12 @@ class AutoAlign(StateMachine):
     @timed_state(duration=time, next_state="start")
     def adjust_self_right(self):
         """Turns the bot right"""
-        self.driveTrainHandler.setTank(self, -1 * self.speed, self.speed)
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, -1 * self.speed, self.speed)
 
     @timed_state(duration=time, next_state="start")
     def adjust_self_left(self):
         """Turns the bot left"""
-        self.driveTrainHandler.setTank(self, self.speed, -1 * self.speed)
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
 
     def calc_PID(self, error):
         """

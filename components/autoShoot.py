@@ -1,6 +1,7 @@
 from networktables import NetworkTables as networktable
 from magicbot import StateMachine
 from magicbot.state_machine import state
+from components.driveTrain import ControlMode
 from components.shooterLogic import ShooterLogic
 from components.driveTrainHandler import DriveTrainHandler
 from utils.guessDistance import guessDistanceTrig
@@ -185,7 +186,7 @@ class AutoShoot(StateMachine):
     @state
     def stop_shoot(self):
         # stop
-        self.driveTrainHandler.setTank(self, 0, 0)
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
         # set rpm
         self.shooter.setRPM(self.rpm)
         # shoot

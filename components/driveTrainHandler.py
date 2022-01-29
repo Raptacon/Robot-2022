@@ -78,28 +78,6 @@ class DriveTrainHandler():
         else:
             return False
 
-    def setArcade(self, requestSource, speed, rotation):
-        """
-        Sets the drivetrain in arcade mode (if you deserve control)
-
-        If you do not have control, this will request it for you.
-        Sets drivetrain values and returns true if your control is valid.
-        If not, returns false. You must request control (through this method) every frame.
-        (Yes this is wide open to abuse, but I trust you)
-        """
-        self.setDriveTrain(requestSource, ControlMode.kArcadeDrive, speed, rotation)
-
-    def setTank(self, requestSource, leftSpeed, rightSpeed):
-        """
-        Sets the drivetrain in tank mode (if you deserve control)
-
-        If you do not have control, this will request it for you.
-        Sets drivetrain values and returns true if your control is valid.
-        If not, returns false. You must request control (through this method) every frame.
-        (Yes this is wide open to abuse, but I trust you)
-        """
-        self.setDriveTrain(requestSource, ControlMode.kTankDrive, leftSpeed, rightSpeed)
-
     def execute(self):
         # Pass through inputs to drivetrain
         if self.controlMode == ControlMode.kArcadeDrive:
