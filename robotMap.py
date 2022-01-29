@@ -103,26 +103,18 @@ class JoystickMap():
     """
     Holds the mappings for a generic joystick
     """
-    def __init__(self, joystick1: Joystick, joystick2: Joystick):
+    def __init__(self, joystick1: Joystick):
         #initializes joysticks
         self.drive = joystick1
-        self.mech = joystick2
         self.JoystickInput()
         
     def JoystickInput(self):
         self.driveX = self.drive.getX()
         self.driveY = self.drive.getY()
         self.driveZ = self.drive.getZ()
-        #Mechanism controller inputs
-        self.mechX = self.mech.getX()
-        self.mechY = self.mech.getY()
-        self.mechZ = self.mech.getZ()
 
     def getDriveJoystick(self):
         return self.drive
-
-    def getMechJoystick(self):
-        return self.mech
 
     def getDriveXAxis(self): 
         return self.driveX
@@ -132,12 +124,3 @@ class JoystickMap():
 
     def getDriveZAxis(self): 
         return self.driveZ
-
-    def getMechXAxis(self):
-        return self.mechX
-
-    def getMechYAxis(self):
-        return self.mechY
-
-    def getMechZAxis(self):
-        return self.mechZ
