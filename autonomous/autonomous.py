@@ -102,24 +102,25 @@ class AutonomousAutoStart(AutonomousStateMachine):
         self.goToDist.engage()
         self.goToDist.start(-60)
         self.driveTrain.execute()
-        self.next_state("stoprunning")
+        self.next_state("waitToTurn")
 
     @state
-    def stoprunning(self):
+    def waitToTurn(self):
+        """Waits for goToDist to stop running, and then passes to turn"""
         self.goToDist.engage()
         self.driveTrain.execute()
         if self.StopRunningFirstCall:
             self.StopRunningFirstCall = not self.StopRunningFirstCall
-            self.next_state("stoprunning")
+            self.next_state("waitToTurn")
         elif self.goToDist.running:
-            self.next_state("stoprunning")
+            self.next_state("waitToTurn")
         else:
             self.next_state("turn")
-
 
     @state
     def turn(self):
         """One method that completes all turns"""
+        # Could configure into a sate machine instead of an if tree
         turn1 = -90
         turn2 = 180
         turn3 = -90
@@ -153,26 +154,24 @@ class AutonomousAutoStart(AutonomousStateMachine):
             if self.TurnsCompleted >= 3:
                 self.next_state("drive_backwards")
 
-
-
-
     @state
     def drive_backwards(self):
         """Drives the bot backwards for 5 feet"""
         self.goToDist.engage()
         self.goToDist.start(60)
         self.StopRunningFirstCall = True
-        self.next_state("stoprunning2")
+        self.next_state("stoprunning")
 
     @state
-    def stoprunning2(self):
+    def stoprunning(self):
+        """Waits for goToDist to stop running, and then passes to stop """
         self.goToDist.engage()
         self.driveTrain.execute()
         if self.StopRunningFirstCall:
             self.StopRunningFirstCall = not self.StopRunningFirstCall
-            self.next_state("stoprunning2")
+            self.next_state("stoprunning")
         elif self.goToDist.running:
-            self.next_state("stoprunning2")
+            self.next_state("stoprunning")
         else:
             self.next_state("stop")
 
@@ -181,5 +180,3 @@ class AutonomousAutoStart(AutonomousStateMachine):
         """Stops driving bot"""
         self.driveTrain.setArcade(0, 0)
         self.done()
-
-
