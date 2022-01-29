@@ -1,4 +1,4 @@
-from rev.color import ColorSensorV3, ColorMatch
+from rev import ColorSensorV3, ColorMatch
 import wpilib
 from magicbot import tunable, feedback
 
