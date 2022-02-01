@@ -3,8 +3,7 @@ Team 3200 Robot base class
 """
 # Module imports:
 import wpilib
-from wpilib import XboxController
-from wpilib import SerialPort
+from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -70,6 +69,7 @@ class MyRobot(MagicRobot):
     ballCounter: BallCounter
     colorSensor: ColorSensor
     speedSections: SpeedSections
+    allianceColor: DriverStation.Alliance
 
     # Test code:
     testBoard: TestBoard
@@ -84,6 +84,10 @@ class MyRobot(MagicRobot):
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
         self.currentRobot = self.map.configMapper.getCompatibility()
+
+        self.driverStation = DriverStation.getInstance()
+
+        self.allianceColor = self.driverStation.getAlliance()
 
         ReadBufferValue = 18
 
@@ -170,7 +174,7 @@ class MyRobot(MagicRobot):
         self.turnToAngle.engage()
         if self.xboxMap.getDriveA() == True:
             executingDriveCommand = True
-            self.autoAlign.setShootAfterComplete(True)
+            self.autoAlign.setShootAfterComplete(False)
             self.autoAlign.engage()
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()

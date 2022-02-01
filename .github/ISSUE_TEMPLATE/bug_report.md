@@ -9,10 +9,8 @@ assignees: ''
 
 ### Description
 
-[Description of the bug]
-A clear and concise description of what the bug is.
-
-For more information, see the `CONTRIBUTING` guide.
+[Description of the bug REMOVE THIS WHEN DONE ]
+[ A clear and concise description of what the bug is. REMOVE THIS WHEN DONE]
 
 ### Steps to Reproduce
 

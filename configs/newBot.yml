@@ -78,14 +78,51 @@ hopperMotors:
   hopperMotors:
     groups: "motors"
 
-    hopperMotor: #There may be multiple
+    hopperMotor: #Approximately 2 min, 4 max.
     # we don't have information on this yet.
+    hopperMotor1:
+      channel: 60
+      type: "CANTalonSRX"
+      inverted: True
+      pid: Null
+      currentLimits:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
+
+    hopperMotor2:
+      channel: 61
+      type: "CANTalonSRX"
+      inverted: False
+      pid: Null
+      currentLimits:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
+
+loaderSensors: #likely to be multiple.
+  subsystem: "breaksensors"
+  description: "All IR break sensors used for the loader live here for the loader/LED component"
+  loaderSensors:
+    groups: "digitalInput"
+    sensor3:
+      type: "RIODigitalIn"
+      channel: 3
+      description: "Loading sensor"
 
 intakeMotors:
   intakeMotor:
     groups: "motors"
 
     intakeMotor:
+      channel: 51
+      type: "CANTalonSRX"
+      inverted: False
+      pid: Null
+      currentLimits:
+        absMax: 60
+        absMaxTimeMs: 50
+        maxNominal: 40
     # There will probably only be one of these
 
 shooterMotors:
@@ -136,3 +173,7 @@ shooterMotors:
         stallLimit: 30
         stallLimitRPM: 50
         secondaryLimit: 35
+        
+pneumatics:
+  type: "yaml"
+  file: "pneumatics.yml"

@@ -12,8 +12,16 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
-    dumbSpeeds = [.3, .25, .2, .15]
-    dumbSpeedLimits = [36, 12, 8, 5]
+    # This array determines what speed the robot will use
+    # at different distances.
+    values = [
+             [5, .15], # The first value is the limit, so it will
+             [8, .2],  # use the included speed if the distance is
+             [12, .25],# under this value and above the last.
+             [36, .3],
+             ["End", .4]
+             ]  # The array must end with "End" - this will be the value used
+    # if the target is really far away.
 
     def setTargetDist(self, distance):
         """
@@ -32,6 +40,10 @@ class GoToDist(StateMachine):
         self.starting = True
 
     def stop(self):
+        """
+        This is guaranteed to end whatever
+        GoToDist is doing.
+        """
         self.running = False
         self.driveTrain.setArcade(0, 0)
         self.next_state("idling")
@@ -43,7 +55,7 @@ class GoToDist(StateMachine):
         statemachine if starting.
         """
         self.initDist = 0
-        if self.starting and not self.running:
+        if self.starting:
             if self.targetDist != 0:
                 self.next_state("recordInitDist")
             else:
@@ -56,6 +68,7 @@ class GoToDist(StateMachine):
     def recordInitDist(self):
         """
         First active state.
+        Sets the target variables for the loop
         """
         self.running = True
         self.starting = False
@@ -75,23 +88,38 @@ class GoToDist(StateMachine):
 
         self.nextSpeed = 0
         totalOffset = self.targetDist - self.dist
-        for i, limit in enumerate(self.dumbSpeedLimits):
-            if abs(totalOffset) > limit:
-                self.dumbSpeed = self.dumbSpeeds[i]
+
+        self.nextSpeed = 0
+        absTotalOffset = abs(totalOffset)
+
+        # Loops through our speed limits in order to find the correct speed.
+        # We aren't using PID, though that would be a good idea for maximum accuracy.
+        for dist, speed in self.values:
+            if (dist == "End"
+                or absTotalOffset < dist):
+                # We don't have this implemented for goToDist yet
+                # if speed == "PID":
+                #     self.nextSpeed = self.calc_PID(self.DeviationX)
+                self.nextSpeed = speed
+                self.next_state("adjust_drive")
                 break
 
-        if self.dumbSpeed == 0:
-            self.dumbSpeed = self.dumbSpeeds[-1]
+        # This might be triggered if something is wrong with the
+        # values array.
+        if self.nextSpeed == 0:
+            log.error("Something went wrong with GoToDist!")
 
-        if self.dist < self.targetDist - self.dumbTolerance:
-            self.nextSpeed = -1 * self.dumbSpeed
-            self.next_state("goToDist")
-        elif self.dist > self.targetDist + self.dumbTolerance:
-            self.nextSpeed = self.dumbSpeed
-            self.next_state("goToDist")
-        if self.dist > self.targetDist - self.tolerance and self.dist < self.targetDist - self.tolerance:
-            self.nextSpeed = 0
+        if absTotalOffset < self.tolerance:
             self.stop()
             self.next_state("idling")
 
+    @state
+    def adjust_drive(self):
+        """
+        This state takes the speed set by the goToDist
+        state and sets the driveTrain to go forwards/
+        backwards at that speed. It then goes back to
+        goToDist.
+        """
         self.driveTrain.setArcade(self.nextSpeed, 0)
+        self.next_state("goToDist")
