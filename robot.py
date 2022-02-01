@@ -12,7 +12,7 @@ from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
 from components.breakSensors import Sensors
-from components.winch import Winch
+from components.Actuators.LowLevel.winch import Winch
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.LowLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
