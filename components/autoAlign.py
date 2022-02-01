@@ -10,7 +10,8 @@ class AutoAlign(StateMachine):
     currently has in its view.
     """
 
-    compatString = ["doof", "greenChassis"]
+    #Must have a robot which has a turret
+    compatString = []
     time = 0.01
 
     motors_turret: dict

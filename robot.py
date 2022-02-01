@@ -71,7 +71,6 @@ class MyRobot(MagicRobot):
 
     # Test code:
     testBoard: TestBoard
-    motors_turret: dict
 
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
@@ -99,9 +98,6 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("digitalInput", breaksensorFactory)
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
-
-        #TEST CODE
-        self.turretMotor = self.motors_turret["turretMotor"]
 
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
@@ -175,7 +171,6 @@ class MyRobot(MagicRobot):
 
         if self.xboxMap.getDriveA() == False and self.prevAState == True:
             self.autoAlign.stop()
-            self.turretMotor.set(0)
             self.autoShoot.stop()
             self.shooterMotors.stopShooter()
             self.hopperMotor.stopHopper()
@@ -202,7 +197,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        self.turretMotor.set(-0.5)
+        pass
         #neg counterclockwise, pos clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
