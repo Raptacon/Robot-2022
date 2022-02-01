@@ -21,15 +21,15 @@ Issue: <issue-XX or #X > Describe the issue you're working on here so it ties to
 
 ## Changelog
 
-A brief description of the problem statement. 
+[ A brief description of the problem statement. ]
 
 ## What?
 
-Explain the technical implementation of what you're doing.
+[ Explain the technical implementation of what you're doing. ]
 
 ## Why?
 
-Explain why you're making this change and what benefits from it. 
+[ Explain why you're making this change and what benefits from it. ]
 
 
 
