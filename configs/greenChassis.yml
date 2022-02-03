@@ -65,9 +65,9 @@ driveTrain:
 shooterMotors:
   subsystem: "shooter"
   description: "All motors used in the robot shooter mechanism live here for the shooter component"
-  shooterMotors2:
+  shooterMotors:
     groups: "motors"
-    shooterMotor:
+    shooterMotor1:
       channel: 11
       type: "SparkMax"
       inverted: True
@@ -75,7 +75,7 @@ shooterMotors:
 
       pid:
         controlType: "Velocity"
-        kP: 0.0004
+        kP: 0.0002
         kI: 0
         kD: 0
         kF: 0.000175
@@ -89,9 +89,7 @@ shooterMotors:
         stallLimitRPM: 50
         secondaryLimit: 35
 
-  shooterMotors1:
-    groups: "motors"
-    shooterMotor:
+    shooterMotor2:
       channel: 10
       type: "SparkMax"
       inverted: True
@@ -99,7 +97,7 @@ shooterMotors:
 
       pid:
         controlType: "Velocity"
-        kP: 0.0004
+        kP: 0.0002
         kI: 0
         kD: 0
         kF: 0.000175
