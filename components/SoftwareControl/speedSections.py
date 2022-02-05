@@ -10,7 +10,7 @@ class SpeedSections():
     def setup(self):
         self.speedSections = self.configuredValues_speedSections
         self.PIDs = self.speedSections["PID"]
-        self.PIDControllers = []
+        self.PIDControllers = {}
         for PIDset in self.PIDs.keys():
             PID = self.PIDs[PIDset]
             P = PID["P"]

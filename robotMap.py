@@ -1,5 +1,7 @@
 from utils import configMapper
-from wpilib import XboxController
+from wpilib import XboxController, Joystick
+from wpilib.interfaces import GenericHID
+
 
 class RobotMap():
     """
@@ -98,3 +100,76 @@ class XboxMap():
 
     def getMechDPad(self):
         return self.mechDPad
+class JoystickMap():
+    """
+    Holds the mappings for a generic joystick
+    """
+    def __init__(self, joystick1: Joystick):
+        #initializes joysticks
+        self.drive = joystick1
+        self.JoystickInput()
+        
+    def JoystickInput(self):
+        self.driveX = self.drive.getX()
+        self.driveY = self.drive.getY()
+        self.driveZ = self.drive.getZ()
+        self.trigger = Joystick.getTrigger()
+        self.button2 = GenericHID.getRawButton(2)
+        self.button3 = GenericHID.getRawButton(3)
+        self.button4 = GenericHID.getRawButton(4)
+        self.button5 = GenericHID.getRawButton(5)
+        self.button6 = GenericHID.getRawButton(6)
+        self.button7 = GenericHID.getRawButton(7)
+        self.button8 = GenericHID.getRawButton(8)
+        self.button9 = GenericHID.getRawButton(9)
+        self.button10 = GenericHID.getRawButton(10)
+        self.button11 = GenericHID.getRawButton(11)
+        self.POV = GenericHID.getPOV()
+
+    def getDriveJoystick(self):
+        return self.drive
+
+    def getDriveXAxis(self):
+        return self.driveX
+
+    def getDriveYAxis(self):
+        return self.driveY
+
+    def getDriveZAxis(self):
+        return self.driveZ
+
+    def getTrigger(self):
+        return self.trigger
+
+    def getButton2(self):
+        return self.button2
+    
+    def getButton3(self):
+        return self.button3
+
+    def getButton4(self):
+        return self.button4
+
+    def getButton5(self):
+        return self.button5
+
+    def getButton6(self):
+        return self.button6
+
+    def getButton7(self):
+        return self.button7
+
+    def getButton8(self):
+        return self.button8
+
+    def getButton9(self):
+        return self.button9
+
+    def getButton10(self):
+        return self.button10
+
+    def getButton11(self):
+        return self.button11
+
+    def getPOV(self):
+        return self.POV
