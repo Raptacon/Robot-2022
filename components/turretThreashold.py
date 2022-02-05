@@ -1,17 +1,17 @@
 import navx
 from magicbot import tunable, feedback, StateMachine, state
 from components.turnToAngle import TurnToAngle
+from components.shooterMotors import ShooterMotors
 class getPosition(navx):
     compatString = ["doof", "greenChassis"]
     turnToangle: TurnToAngle
     navx = navx._navx.AHRS.create_spi()
-
+    Deadzones = [[-45, -405] [360, 360] [45, 405]]
+    shooterMotor: ShooterMotors
 
     def getOriginalheading(self):
-        self.originalHeading = self.navx.getFusedHeading()
         self.shooterMotor.shooterMotor1.getencoder().getPosition()
-        self.leftLimit = self.originalHeading - 45
-        self.rightLimit = self.originalHeading + 45
+
 
     def stop(self):
         self.running = False
@@ -19,6 +19,8 @@ class getPosition(navx):
         #self.done()
 
     def checkClamp(self):
+        for leftLim, right in self.Deadzones:
+            if self.shooterMotor.shooterMotor1.getencoder().getPosition() < leftLim or self.shooterMotor.shooterMotor1.getencoder().getPosition() > right:
+                self.stop()
 
-        if abs(self.navx.getFusedHeading() - self.nextHeading) < self.leftLimit or abs(self.navx.getFusedHeading() + self.rightLimit):
-            self.stop()
+
