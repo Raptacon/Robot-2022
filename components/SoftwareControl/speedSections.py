@@ -23,6 +23,18 @@ class SpeedSections():
             log.error(component+"'s speed sections aren't present in current data")
             return
 
+    def getSpeed(self, offset, component:str):
+        """
+        """
+        section = self.getSpeedSection(component)
+        for dist, speed in section:
+            if (dist == "End"
+                or offset < dist):
+                if speed == "PID":
+                    return NotImplementedError
+                    # Sorry
+                return speed
+
     def execute(self):
         """
         This component doesn't need to update anything on every frame.
