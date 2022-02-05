@@ -35,10 +35,10 @@ class SmokeTest(AutonomousStateMachine):
     def drive(self):
         """Tests to see if the motors are working with an input from the driver"""
         self.toDo = "Drives robot forwards until it reaches a certain distance"
-        self.driveTrain.setTank(-self.dumbSpeed, -self.dumbSpeed)
+        self.driveTrain.setTank(-self.dumbSpeed, self.dumbSpeed)
         if int(self.driveTrain.getEstTotalDistTraveled()) >= 100 and int(self.driveTrain.getEstTotalDistTraveled()) <=115:
             self.driveTrain.setTank(0, 0)
-            self.next_state("colorSensorCheck")
+            self.next_state("checkIntakeSensor")
         else:
             self.next_state("drive")
 
