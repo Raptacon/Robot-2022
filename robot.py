@@ -8,6 +8,7 @@ from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
+from components.SoftwareControl.speedSections import SpeedSections, speedFactory
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
@@ -68,6 +69,7 @@ class MyRobot(MagicRobot):
     goToDist: GoToDist
     ballCounter: BallCounter
     colorSensor: ColorSensor
+    speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
 
     # Test code:
@@ -83,6 +85,7 @@ class MyRobot(MagicRobot):
         """
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
+        self.currentRobot = self.map.configMapper.getCompatibility()
 
         self.driverStation = DriverStation.getInstance()
 
@@ -104,6 +107,7 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("digitalInput", breaksensorFactory)
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
+        self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         #TEST CODE
         self.turretMotor = self.motors_turret["turretMotor"]
@@ -111,7 +115,7 @@ class MyRobot(MagicRobot):
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors,
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
