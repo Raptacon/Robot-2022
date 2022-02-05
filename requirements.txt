@@ -1,11 +1,11 @@
-#cryptography==3.2.1
-#pyflakes
-#py2app
-#macholib
-#modulegraph
-#flake8
-#coverage
-#wheel
+cryptography==3.2.1
+pyflakes
+py2app
+macholib
+modulegraph
+flake8
+coverage
+wheel
 
 robotpy ==2022.*
 

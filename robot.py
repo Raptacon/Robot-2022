@@ -177,7 +177,7 @@ class MyRobot(MagicRobot):
 
         if not executingDriveCommand:
             if self.arcadeMode:
-                self.driveTrain.setArcade(driveLeftY, -1 * driveRightX)
+                self.driveTrain.setArcade(-1 *driveLeftY, driveRightX)
             else:
                 self.driveTrain.setTank(driveLeftY, driveRightY)
             self.autoAlign.reset_integral()
