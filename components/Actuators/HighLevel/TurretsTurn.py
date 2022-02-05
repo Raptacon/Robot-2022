@@ -21,3 +21,11 @@ class turretTurn:
             self.next_state("")
         else:
             self.next_state("idling")
+
+    def setSpeed(self, angle):
+        self.pos = self.turretMotor.getEncoder().getPosition()
+        if self.pos < (self.setAngle + angle) or self.pos > (self.setAngle - angle):
+            getPosition.runTurret(0.5)
+        else:
+            getPosition.runTurret(1)
+
