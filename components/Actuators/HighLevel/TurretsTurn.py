@@ -1,4 +1,4 @@
-
+from magicbot import state_machine, state, timed_state
 
 class turretTurn:
     compatString = ["doof", "greenChassis"]
