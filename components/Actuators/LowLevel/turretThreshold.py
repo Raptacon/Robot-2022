@@ -11,13 +11,16 @@ class turretThreshold:
     speed = 0
 
     def setup(self):
+        #connects moters and gets position
         self.turretMotor = self.motors_turret["turretMotor"]
         self.pos = self.turretMotor.getEncoder().getPosition()
 
-    def runTurret(self, tSpeed):
+    def setTurretspeed(self, tSpeed):
+        #sets speed
         self.speed = tSpeed
 
     def stopTurret(self):
+        #stops turret
         self.speed = 0
 
     def angleCheck(self, angle):
@@ -37,6 +40,7 @@ class turretThreshold:
         return self.pos
 
     def execute(self):
+        #gets position, sets speed for every frames
         self.pos = self.turretMotor.getEncoder().getPosition()
 
         self.turretMotor.set(self.speed)
