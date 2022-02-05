@@ -4,8 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 from logging.config import dictConfig
 import wpilib
-from wpilib import XboxController
-from wpilib import SerialPort
+from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -69,6 +68,7 @@ class MyRobot(MagicRobot):
     goToDist: GoToDist
     ballCounter: BallCounter
     colorSensor: ColorSensor
+    allianceColor: DriverStation.Alliance
 
     # Test code:
     testBoard: TestBoard
@@ -83,6 +83,10 @@ class MyRobot(MagicRobot):
         """
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
+
+        self.driverStation = DriverStation.getInstance()
+
+        self.allianceColor = self.driverStation.getAlliance()
 
         ReadBufferValue = 18
 

@@ -22,7 +22,9 @@ class IntakeMotor:
 
     def runIntake(self, iSpeed, direction):
         """
-        Sets the intake to speed iSpeed
+        Sets the intake to speed iSpeed in direction
+        :param iSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
+        :param direction: Enum Direction from utils.DirectionEnums (forwards or backwards)
         """
         if direction == Direction.kForwards:  # Forwards
             self.intakeSpeed = iSpeed
@@ -40,6 +42,9 @@ class IntakeMotor:
         self.intake = False
 
     def isIntakeRunning(self):
+        """
+        Returns True if the intake is running.
+        """
         return self.intake
 
     def execute(self):
