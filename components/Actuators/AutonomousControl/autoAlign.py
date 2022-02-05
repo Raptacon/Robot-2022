@@ -95,7 +95,6 @@ class AutoAlign(StateMachine):
                     break
                 else:
                     log.info("Autoalign complete")
-                    self.turretMotor.set(0)
                     self.next_state("idling")
             # if self.shootAfterComplete:
             #     self.autoShoot.startAutoShoot()
