@@ -9,6 +9,14 @@ class turretTurn:
     TurretThreshold: turretThreshold
     turnAngle = 0
     tolerance = tunable(0.5)
+    values = [
+             [20, .15], # The first value is the limit, so it will
+             [45, .2],  # use the included speed if the distance is
+             [90, .25],# under this value and above the last.
+             [180, .3],
+             ["End", .4]
+             ]  # The array must end with "End" - this will be the value used
+    # if the target is really far away.
 
     def on_enable(self):
         self.turretMotor = self.motors_turret["turretMotor"]
@@ -27,10 +35,11 @@ class turretTurn:
 
     def setSpeed(self, angle):
         self.pos = self.turretMotor.getEncoder().getPosition()
-        if self.pos < (self.setAngle + angle) or self.pos > (self.setAngle - angle):
-            turretThreshold.runTurret(0.5)
-        else:
-            turretThreshold.runTurret(1)
+        for distTotargetAngle, speed in self.values:
+            if (distTotargetAngle == "End"
+                or self.pos < distTotargetAngle):
+                self.TurretThreshold.runTurret(speed)
+                break
 
     @state
     def turn(self, angle):
