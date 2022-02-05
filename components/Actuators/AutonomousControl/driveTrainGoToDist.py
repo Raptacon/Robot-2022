@@ -1,10 +1,5 @@
-<<<<<<< HEAD:components/driveTrainGoToDist.py
-from magicbot import StateMachine, feedback, state, tunable
-from components.driveTrain import DriveTrain
-=======
-from magicbot import StateMachine, state, tunable
+from magicbot import StateMachine, state, tunable, feedback
 from components.Actuators.LowLevel.driveTrain import DriveTrain
->>>>>>> 5a364aaa727c2b5edd0ba5d5f0c9af5a7ad1ed08:components/Actuators/AutonomousControl/driveTrainGoToDist.py
 import logging as log
 
 class GoToDist(StateMachine):
