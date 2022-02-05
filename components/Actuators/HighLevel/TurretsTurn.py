@@ -10,12 +10,7 @@ class turretTurn:
     def on_enable(self):
         self.turretMotor = self.motors_turret["turretMotor"]
         self.GetPosition.setup()
-        self.turret = False
 
-
-    def execute(self):
-        pass
-
-
-
+    def setAngle(self, angle):
+        getPosition.angleCheck(angle)
 
