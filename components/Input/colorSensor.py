@@ -1,6 +1,6 @@
 from rev import ColorSensorV3, ColorMatch
 import wpilib
-from magicbot import tunable, feedback
+from magicbot import feedback
 
 class ColorSensor():
 
