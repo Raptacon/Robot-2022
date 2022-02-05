@@ -1,7 +1,7 @@
 from magicbot import feedback
 import navx
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
-class getPosition(navx):
+class turretThreshold:
     compatString = ["doof", "greenChassis"]
     turnToangle: TurnToAngle
     navx = navx._navx.AHRS.create_spi()
