@@ -1,9 +1,9 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
-from components.driveTrain import DriveTrain
-from components.shooterLogic import ShooterLogic
-from components.autoAlign import AutoAlign
-from components.autoShoot import AutoShoot
-from components.pneumatics import Pneumatics
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.AutonomousControl.autoAlign import AutoAlign
+from components.Actuators.AutonomousControl.autoShoot import AutoShoot
+from components.Actuators.LowLevel.pneumatics import Pneumatics
 
 class Autonomous(AutonomousStateMachine):
     """Creates the autonomous code"""

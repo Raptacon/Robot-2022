@@ -7,6 +7,7 @@ from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
+<<<<<<< HEAD
 from components.driveTrain import DriveTrain, ControlMode
 from components.pneumatics import Pneumatics
 from components.buttonManager import ButtonManager, ButtonEvent
@@ -29,6 +30,29 @@ from components.driveTrainGoToDist import GoToDist
 from components.ballCounter import BallCounter
 from components.colorSensor import ColorSensor
 from components.driveTrainHandler import DriveTrainHandler
+=======
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.LowLevel.pneumatics import Pneumatics
+from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
+from components.Input.breakSensors import Sensors
+from components.Actuators.LowLevel.winch import Winch
+from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.HighLevel.loaderLogic import LoaderLogic
+from components.Actuators.LowLevel.elevator import Elevator
+from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
+from components.Actuators.HighLevel.feederMap import FeederMap
+from components.Actuators.AutonomousControl.autoAlign import AutoAlign
+from components.Actuators.AutonomousControl.autoShoot import AutoShoot
+from components.Input.lidar import Lidar
+from components.Input.navx import Navx
+from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
+from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
+from components.Input.ballCounter import BallCounter
+from components.Input.colorSensor import ColorSensor
+>>>>>>> 941b75f710dd408f3bdddfd82ab28e289d3f0818
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -40,7 +64,7 @@ from utils.acturatorFactories import compressorFactory, solenoidFactory
 import utils.math
 
 # Test imports:
-from components.testBoard import TestBoard
+from components.Test.testBoard import TestBoard
 
 
 class MyRobot(MagicRobot):

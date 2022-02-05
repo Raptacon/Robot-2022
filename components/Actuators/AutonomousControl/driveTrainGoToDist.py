@@ -1,6 +1,10 @@
 from magicbot import StateMachine, state, tunable
+<<<<<<< HEAD:components/driveTrainGoToDist.py
 from components.driveTrain import ControlMode
 from components.driveTrainHandler import DriveTrainHandler
+=======
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+>>>>>>> 941b75f710dd408f3bdddfd82ab28e289d3f0818:components/Actuators/AutonomousControl/driveTrainGoToDist.py
 import logging as log
 
 class GoToDist(StateMachine):

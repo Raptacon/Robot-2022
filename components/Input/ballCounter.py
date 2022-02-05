@@ -1,6 +1,6 @@
 import logging as log
-from components.breakSensors import Sensors, State
-from components.shooterLogic import ShooterLogic
+from components.Input.breakSensors import Sensors, State
+from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from networktables import NetworkTables
 
 class BallCounter:

@@ -1,9 +1,14 @@
 from networktables import NetworkTables as networktable
 from magicbot import StateMachine
 from magicbot.state_machine import state
+<<<<<<< HEAD:components/autoShoot.py
 from components.driveTrain import ControlMode
 from components.shooterLogic import ShooterLogic
 from components.driveTrainHandler import DriveTrainHandler
+=======
+from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+>>>>>>> 941b75f710dd408f3bdddfd82ab28e289d3f0818:components/Actuators/AutonomousControl/autoShoot.py
 from utils.guessDistance import guessDistanceTrig
 
 import logging as log
