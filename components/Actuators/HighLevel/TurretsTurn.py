@@ -1,12 +1,10 @@
-from webbrowser import get
-from magicbot import state_machine, state, timed_state, tunable
-from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
-from components.Actuators.LowLevel.turretThreshold import turretThreshold
+from magicbot import StateMachine, state, tunable
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 
-class turretTurn:
+class turretTurn(StateMachine):
     compatString = ["doof", "greenChassis"]
     motors_turret: dict
-    TurretThreshold: turretThreshold
+    turretThreshold: TurretThreshold
     turnAngle = 0
     tolerance = tunable(0.5)
     values = [
@@ -21,11 +19,10 @@ class turretTurn:
     def on_enable(self):
         #sets up position and connects motors
         self.turretMotor = self.motors_turret["turretMotor"]
-        self.TurretThreshold.setup()
 
     def setAngle(self, angle):
         #gets angle turret is turning to
-        self.turnAngle = turretThreshold.angleCheck(angle)
+        self.turnAngle = self.turretThreshold.angleCheck(angle)
 
     @state(first = True)
     def idling(self):
@@ -41,17 +38,19 @@ class turretTurn:
         for distTotargetAngle, speed in self.values:
             if (distTotargetAngle == "End"
                 or self.pos < distTotargetAngle):
-                self.TurretThreshold.setTurretspeed(speed)
+                self.turretThreshold.setTurretspeed(speed)
                 break
 
     @state
     def turn(self, angle):
         #Starts turning process, if in tolerance it will stop
         self.setSpeed()
-        turretThreshold.execute()
         if self.pos < (self.turnAngle + self.tolerance) and self.pos > (self.turnAngle - self.tolerance):
             self.stop()
+        else:
+            self.next_state("turn")
 
     def stop(self):
         #stops turret
-        turretThreshold.stopTurret()
+        self.next_state("idling")
+        self.turretThreshold.stopTurret()
