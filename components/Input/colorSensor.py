@@ -1,4 +1,4 @@
-from rev.color import ColorSensorV3, ColorMatch
+from rev import ColorSensorV3, ColorMatch
 import wpilib
 from magicbot import tunable, feedback
 
@@ -40,7 +40,7 @@ class ColorSensor():
     def getBlue(self):
         """Returns True if the closest color is blue"""
         return True if self.colorMatch.matchClosestColor(self.color, self.confidence) == self.colors["blue"] else False
-    
+
     @feedback
     def displayColor(self):
         """Displays the matching color"""
@@ -55,7 +55,7 @@ class ColorSensor():
     @feedback
     def displayRed(self):
         return self.getColor().red
-        
+
     @feedback
     def displayRedMatch(self):
         return self.getColorMatch().red
@@ -63,7 +63,7 @@ class ColorSensor():
     @feedback
     def displayBlue(self):
         return self.getColor().blue
-    
+
     @feedback
     def displayBlueMatch(self):
         return self.getColorMatch().blue
