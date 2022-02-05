@@ -1,8 +1,10 @@
 from robotMap import XboxMap
-from components.intakeMotor import IntakeMotor
-from components.hopperMotor import HopperMotor
-from components.breakSensors import Sensors, State
-from components.feederMap import FeederMap, Type
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Input.breakSensors import Sensors, State
+from components.Actuators.HighLevel.feederMap import FeederMap, Type
+from components.Input.colorSensor import ColorSensor
+from wpilib import DriverStation
 from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
@@ -16,6 +18,8 @@ class LoaderLogic(StateMachine):
     feeder: FeederMap
     sensors: Sensors
     xboxMap: XboxMap
+    colorSensor: ColorSensor
+    allianceColor: DriverStation.Alliance
 
     # Tunable
     automaticLoaderSpeed = tunable(.4)
@@ -23,6 +27,8 @@ class LoaderLogic(StateMachine):
     # Other variables
     isAutomatic = True
     loaderStoppingDelay = .16
+    ballEjectTime = .3
+    eject = False
 
     def on_enable(self):
         self.isAutomatic = True
@@ -45,6 +51,9 @@ class LoaderLogic(StateMachine):
     def determineNextAction(self):
         self.next_state('nextAction')
 
+    def setEjectBall(self, boolEject: bool):
+        self.eject = boolEject
+
     @feedback
     def isRunningAutomatic(self):
         return self.isAutomatic
@@ -63,19 +72,24 @@ class LoaderLogic(StateMachine):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
         self.hopperMotor.stopHopper()
         if self.sensors.loadingSensor(State.kTripped):
-            self.next_state('loadBall')
-
-    @state
-    def loadBall(self):
-        """Loads ball if ball has entered."""
-        self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kForwards)
-        self.next_state('waitForBallIntake')
+            self.next_state('waitForBallIntake')
 
     @state
     def waitForBallIntake(self):
         """Checks for intake to be completed."""
-        if self.sensors.loadingSensor(State.kNotTripped):
+        if self.sensors.loadingSensor(State.kNotTripped) and self.eject == False:
+            self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kForwards)
             self.next_state('stopBall')
+        elif self.eject and ColorSensor.getColor() != self.allianceColor:
+            self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kBackwards)
+            self.next_state('eject_ball')
+
+    @timed_state(duration = ballEjectTime, next_state = 'checkforBall')
+    def eject_ball(self):
+        """
+        Runs the loader backwards for a set time
+        """
+        pass
 
     @timed_state(duration = loaderStoppingDelay, next_state = 'checkForBall')
     def stopBall(self):
