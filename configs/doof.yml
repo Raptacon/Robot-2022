@@ -110,6 +110,23 @@ loaderMotors:
         absMaxTimeMs: 50
         maxNominal: 40
 
+speedSections:
+  subsystem: "speedSections"
+  description: "Speed Sections (tables used to determine speeds based on distances)"
+  speedSections:
+    groups: "configuredValues"
+    GoToDist:
+      - [36, .3]
+      - [12, .25]
+      - [8, .2]
+      - [5, .15]
+    PID:
+      GoToDist:
+        P: 0.01
+        I: 0
+        D: 0
+        SpeedFloor: .17
+
 loaderSensors:
   subsystem: "breaksensors"
   description: "All IR break sensors used for the loader live here for the loader/LED component"

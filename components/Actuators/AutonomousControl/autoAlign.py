@@ -90,7 +90,6 @@ class AutoAlign(StateMachine):
                     break
                 else:
                     log.info("Autoalign complete")
-                    self.driveTrain.setTank(0, 0)
                     self.next_state("idling")
             # if self.shootAfterComplete:
             #     self.autoShoot.startAutoShoot()

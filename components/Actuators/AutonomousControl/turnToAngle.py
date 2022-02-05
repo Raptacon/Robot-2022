@@ -1,4 +1,4 @@
-from components.driveTrain import DriveTrain
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 from magicbot import tunable, feedback, StateMachine, state
 
 import navx
