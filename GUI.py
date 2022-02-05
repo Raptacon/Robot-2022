@@ -61,21 +61,15 @@ def calc_tri(canvasNametri,root):
     x3 = x2
     y3 = y1 *2
     canvasNametri.create_polygon(x1,y1, x2,y2, x3,y3)
-class calc_triagle(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self,parent)
-        tri = tk.Canvas(self)
-        tri.pack(pady=10,padx=10)
-        FOV = 81.3
-        x1 = window.winfo_width()
-        y1 = window.winfo_height()/2
-        x2 = (math.tan((180 - FOV)/2) * y1)
-        y2 = 0
-        x3 = x2
-        y3 = window.winfo_height()
-        tri.create_polygon(x1,y1, x2,y2, x3,y3)
-
+def destroy(root):
+    root.destroy()
+def create(root):
+    root = window()
+    root.after(1, calc_tri, Window.frames[Calc_circle].label, Window)
 Window = window()
-Window.geometry("400x300")
+Window.geometry('400x300')
 Window.after(1, calc_tri, Window.frames[Calc_circle].label, Window)
-Window.mainloop()
+while True:
+    Window.after(100,destroy,Window)
+    Window.after(1,create,Window)
+    Window.mainloop()
