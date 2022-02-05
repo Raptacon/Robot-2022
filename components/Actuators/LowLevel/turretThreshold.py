@@ -1,14 +1,13 @@
 from magicbot import feedback
-import navx
-from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
+
 class TurretThreshold:
     compatString = ["doof", "greenChassis"]
-    turnToangle: TurnToAngle
-    navx = navx._navx.AHRS.create_spi()
     Deadzones = [[0, 90],
                 [90, 180]]
     motors_turret: dict
     speed = 0
+    safetySpeed = .07
+    safetyThreshold = 5
 
     def setup(self):
         #connects moters and gets position
@@ -42,5 +41,13 @@ class TurretThreshold:
     def execute(self):
         #gets position, sets speed for every frames
         self.pos = self.turretMotor.getEncoder().getPosition()
+
+        #Final safety check
+        if self.speed > self.safetySpeed:
+            for lLimit, rLimit in self.Deadzones:
+                if abs(lLimit - self.pos) < self.safetyThreshold:
+                    self.speed = -1*self.safetySpeed
+                elif abs(rLimit - self.pos) < self.safetyThreshold:
+                    self.speed = self.safetySpeed
 
         self.turretMotor.set(self.speed)
