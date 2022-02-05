@@ -22,13 +22,14 @@ class getPosition(navx):
 
     def angleCheck(self, angle):
         """
+        Checks if desired angle is within the deadzone.Then, returns closest point to the angle it can reach.
         """
-        for leftLim, right in self.Deadzones:
-            if angle > leftLim and angle < right:
-                if abs(leftLim - angle) < abs(right - angle):
+        for leftLim, rightLim in self.Deadzones:
+            if angle > leftLim and angle < rightLim:
+                if abs(leftLim - angle) < abs(rightLim - angle):
                     return leftLim
                 else:
-                    return right
+                    return rightLim
         return angle
 
     @feedback
