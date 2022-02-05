@@ -2,7 +2,7 @@ from networktables import NetworkTables as networktable
 from magicbot import StateMachine, tunable
 from magicbot.state_machine import state, timed_state
 import logging as log
-from components.driveTrainHandler import DriveTrainHandler
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 
 class AutoAlign(StateMachine):
     """

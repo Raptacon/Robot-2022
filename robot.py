@@ -7,30 +7,6 @@ from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
-<<<<<<< HEAD
-from components.driveTrain import DriveTrain, ControlMode
-from components.pneumatics import Pneumatics
-from components.buttonManager import ButtonManager, ButtonEvent
-from components.breakSensors import Sensors
-from components.winch import Winch
-from components.shooterMotors import ShooterMotors
-from components.hopperMotor import HopperMotor
-from components.intakeMotor import IntakeMotor
-from components.shooterLogic import ShooterLogic
-from components.loaderLogic import LoaderLogic
-from components.elevator import Elevator
-from components.scorpionLoader import ScorpionLoader
-from components.feederMap import FeederMap
-from components.autoAlign import AutoAlign
-from components.autoShoot import AutoShoot
-from components.lidar import Lidar
-from components.navx import Navx
-from components.turnToAngle import TurnToAngle
-from components.driveTrainGoToDist import GoToDist
-from components.ballCounter import BallCounter
-from components.colorSensor import ColorSensor
-from components.driveTrainHandler import DriveTrainHandler
-=======
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
@@ -52,7 +28,7 @@ from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
->>>>>>> 941b75f710dd408f3bdddfd82ab28e289d3f0818
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 
 # Other imports:
 from robotMap import RobotMap, XboxMap

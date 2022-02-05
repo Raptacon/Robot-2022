@@ -1,6 +1,6 @@
 import logging as log
 from magicbot import MagicRobot
-from components.driveTrain import DriveTrain, ControlMode
+from components.Actuators.LowLevel.driveTrain import DriveTrain, ControlMode
 
 class DriveTrainHandler():
     """
