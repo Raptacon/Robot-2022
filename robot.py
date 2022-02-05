@@ -71,8 +71,6 @@ class MyRobot(MagicRobot):
 
     # Test code:
     testBoard: TestBoard
-    speed1 = tunable(2350)
-    speed2 = tunable(1900)
 
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
