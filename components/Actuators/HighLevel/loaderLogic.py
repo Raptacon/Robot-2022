@@ -1,10 +1,10 @@
 from robotMap import XboxMap
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Input.breakSensors import Sensors, State
+from components.Actuators.HighLevel.feederMap import FeederMap, Type
+from components.Input.colorSensor import ColorSensor
 from wpilib import DriverStation
-from components.intakeMotor import IntakeMotor
-from components.hopperMotor import HopperMotor
-from components.breakSensors import Sensors, State
-from components.feederMap import FeederMap, Type
-from components.colorSensor import ColorSensor
 from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
