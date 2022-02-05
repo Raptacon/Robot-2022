@@ -69,7 +69,7 @@ TurretMotor:
     groups:
      - "motors"
     turretMotor:
-      channel: 10
+      channel: 12
       type: "SparkMax"
       inverted: True
       motorType: "kBrushless"

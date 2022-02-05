@@ -30,6 +30,8 @@ from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
+from components.Actuators.HighLevel.turretTurn import TurretTurn
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -71,6 +73,8 @@ class MyRobot(MagicRobot):
     colorSensor: ColorSensor
     speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
+    turretThreshold: TurretThreshold
+    turretTurn: TurretTurn
 
     # Test code:
     testBoard: TestBoard
@@ -108,9 +112,6 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
-
-        #TEST CODE
-        self.turretMotor = self.motors_turret["turretMotor"]
 
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
@@ -158,6 +159,8 @@ class MyRobot(MagicRobot):
 
         self.turnToAngle.engage()
 
+        self.turretTurn.setAngle(0)
+
     def teleopPeriodic(self):
         """
         Must include. Called repeatedly while running teleop.
@@ -173,6 +176,8 @@ class MyRobot(MagicRobot):
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+
+        self.turretTurn.engage()
 
         self.goToDist.engage()
         self.autoShoot.engage()
@@ -210,7 +215,6 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        self.turretMotor.set(-0.5)
         #neg counterclockwise, pos clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
