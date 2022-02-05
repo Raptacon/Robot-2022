@@ -93,7 +93,7 @@ class AutoAlign(StateMachine):
                     break
                 else:
                     log.info("Autoalign complete")
-                    self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
+                    # Motor stop goes here
                     self.next_state("idling")
             # if self.shootAfterComplete:
             #     self.autoShoot.startAutoShoot()
