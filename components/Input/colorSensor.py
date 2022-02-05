@@ -1,13 +1,12 @@
 from rev import ColorSensorV3, ColorMatch
 import wpilib
-from magicbot import tunable, feedback
+from magicbot import feedback
 
 class ColorSensor():
 
     colorSensor = ColorSensorV3(wpilib.I2C.Port.kOnboard)
     colorMatch = ColorMatch()
     # The closer this is to 0, the closer the color has to be to the color.
-    confidence = tunable(.1)
     colors = {"red":wpilib.Color(.4, .15, .05),
              "blue":wpilib.Color(.1, .2, .4),
              "white":wpilib.Color(.5, .5, .5),
@@ -31,11 +30,11 @@ class ColorSensor():
         to the current input.
         Either red, blue, white or black.
         """
-        return self.colorMatch.matchClosestColor(self.color, self.confidence)
+        return self.colorMatch.matchClosestColor(self.color)
     
     def getRed(self):
         """Returns True if the closest color is red"""
-        return True if self.colorMatch.matchClosestColor(self.color, self.confidence) == self.colors["red"] else False
+        return True if self.colorMatch.matchClosestColor(self.color) == self.colors["red"] else False
 
     def getBlue(self):
         """Returns True if the closest color is blue"""
