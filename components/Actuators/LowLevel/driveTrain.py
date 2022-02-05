@@ -4,7 +4,7 @@ import ctre
 import math
 import wpilib.drive
 import logging as log
-from networktables import NetworkTablesInstance, NetworkTable
+from networktables import NetworkTables
 
 from magicbot import tunable, feedback
 class ControlMode(Enum):
@@ -25,7 +25,7 @@ class DriveTrain():
     gearRatio = 10
     wheelCircumference = 6 * math.pi
 
-    smartDashTable = NetworkTablesInstance.getTable(NetworkTablesInstance, "SmartDashboard")
+    smartDashTable = NetworkTables.getTable("SmartDashboard")
 
     # Encoder variables
     leftSideSensorInverted = True
