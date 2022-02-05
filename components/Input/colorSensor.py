@@ -38,9 +38,10 @@ class ColorSensor():
 
     def getBlue(self):
         """Returns True if the closest color is blue"""
-        return True if self.colorMatch.matchClosestColor(self.color) == self.colors["blue"] else False
+        return True if self.colorMatch.matchClosestColor(self.color, self.confidence) == self.colors["blue"] else False
 
-    def matchColor(self):
+    @feedback
+    def displayColor(self):
         """Displays the matching color"""
         if self.getRed():
             self.colorMatched = "red"
@@ -51,8 +52,20 @@ class ColorSensor():
         return self.colorMatched
 
     @feedback
-    def displayColor(self):
-        return self.matchColor()
+    def displayRed(self):
+        return self.getColor().red
+
+    @feedback
+    def displayRedMatch(self):
+        return self.getColorMatch().red
+
+    @feedback
+    def displayBlue(self):
+        return self.getColor().blue
+
+    @feedback
+    def displayBlueMatch(self):
+        return self.getColorMatch().blue
 
     def execute(self):
         self.updateColor()

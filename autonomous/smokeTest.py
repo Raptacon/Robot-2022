@@ -1,4 +1,4 @@
-from magicbot import AutonomousStateMachine, state, timed_state, feedback
+from magicbot import AutonomousStateMachine, state, feedback
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
@@ -6,7 +6,6 @@ from components.Actuators.LowLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Input.breakSensors import Sensors, State
 import logging as log
-from utils.DirectionEnums import Direction
 
 class SmokeTest(AutonomousStateMachine):
     compatString = ["doof"]
@@ -35,16 +34,18 @@ class SmokeTest(AutonomousStateMachine):
     def drive(self):
         """Tests to see if the motors are working with an input from the driver"""
         self.toDo = "Drives robot forwards until it reaches a certain distance"
-        self.driveTrain.setTank(-self.dumbSpeed, self.dumbSpeed)
+        self.driveTrain.setTank(-self.dumbSpeed, -self.dumbSpeed)
         if int(self.driveTrain.getEstTotalDistTraveled()) >= 100 and int(self.driveTrain.getEstTotalDistTraveled()) <=115:
             self.driveTrain.setTank(0, 0)
-            self.next_state("checkIntakeSensor")
+            log.error("Drove forwards about 100 inches")
+            self.next_state("colorSensorCheck")
         else:
             self.next_state("drive")
 
+    """
     @timed_state(duration = time, next_state = "testEncoders")
     def runIntakeMotor(self):
-        """Runs intake motor"""
+        Runs intake motor
         self.toDo = "The intake motor should be running"
         self.driveTrain.setTank(0, 0)
         self.intakeMotor.intakeSpeed = self.dumbSpeed
@@ -53,7 +54,7 @@ class SmokeTest(AutonomousStateMachine):
 
     @timed_state(duration = time, next_state = "runShooterMotor1")
     def runHopperMotor(self):
-        """Runs the hopper motor if there is a seperate motor for the hopper"""
+        Runs the hopper motor if there is a seperate motor for the hopper
         self.toDo = "The hopper motor should be running"
         self.intakeMotor.intake = False
         self.hopperMotor.hopperSpeed = self.dumbSpeed
@@ -73,10 +74,12 @@ class SmokeTest(AutonomousStateMachine):
         self.shooterMotors.shooterSpeed1 = 0
         self.shooterMotors.shooterSpeed2 = self.dumbSpeed
 
+    """
     @state
     def colorSensorCheck(self):
         self.toDo = "Put up a red ball to the color sensor"
         if self.colorSensor.colorMatched == "red":
+            log.error("The ball is red")
             self.next_state("checkIntakeSensor")
         elif self.colorSensor.colorMatched == "blue":
             log.error("The ball is not red idiot")
@@ -90,6 +93,7 @@ class SmokeTest(AutonomousStateMachine):
         """Checks to see if the intake break sensor is broken"""
         self.toDo = "Break the break sensor on the intake"
         if self.sensors.loadingSensor(State.kTripped):
+            log.error("Tripped")
             self.next_state("checkShooterSensor")
         else:
             log.error("Sensor not broken")
@@ -105,7 +109,9 @@ class SmokeTest(AutonomousStateMachine):
         """Checks to see if the shooter break sensor is broken"""
         self.toDo = "Break the break sensor on the shooter"
         if self.sensors.shootingSensor(State.kTripped):
+            log.error("Tripped")
             log.error("Done")
             self.done()
         else:
+            log.error("Sensor not broken")
             self.next_state("checkShooterSensor")
