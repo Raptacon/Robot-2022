@@ -2,17 +2,19 @@ from magicbot import feedback
 
 class TurretThreshold:
     compatString = ["doof", "greenChassis"]
-    Deadzones = [[0, 90],
-                [90, 180]]
+    Deadzones = [[90, 180]]
     motors_turret: dict
     speed = 0
     safetySpeed = .07
     safetyThreshold = 5
+    gearRatio = 5
+    sprocketRatio = 13.3
 
     def setup(self):
         #connects moters and gets position
         self.turretMotor = self.motors_turret["turretMotor"]
-        self.pos = self.turretMotor.getEncoder().getPosition()
+        self.encoder = self.turretMotor.getEncoder()
+        self.pos = self.encoder.getPosition()
 
     def setTurretspeed(self, tSpeed):
         #sets speed
@@ -38,9 +40,12 @@ class TurretThreshold:
     def getPosition(self):
         return self.pos
 
+    def calc_Position(self):
+        self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
+
     def execute(self):
         #gets position, sets speed for every frames
-        self.pos = self.turretMotor.getEncoder().getPosition()
+        self.calc_Position()
 
         #Final safety check
         if self.speed > self.safetySpeed:

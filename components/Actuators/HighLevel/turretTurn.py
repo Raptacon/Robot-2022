@@ -2,22 +2,31 @@ from magicbot import StateMachine, state, tunable
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.SoftwareControl.speedSections import SpeedSections
 
-class turretTurn(StateMachine):
+class TurretTurn(StateMachine):
     compatString = ["doof", "greenChassis"]
     motors_turret: dict
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
-    turnAngle = 0
+    turnAngle = None
     tolerance = tunable(0.5)
 
+    def setup(self):
+        self.pos = self.turretThreshold.getPosition()
+
     def setAngle(self, angle):
-        """gets angle turret is turning to"""
+        """sets angle turret is turning to"""
         self.turnAngle = self.turretThreshold.angleCheck(angle)
+
+    def setRelAngle(self, relangle):
+        """
+        Sets target angle (relative to current position)
+        """
+        self.turnAngle = self.pos + relangle
 
     @state(first = True)
     def idling(self):
         """Stays in this state until started"""
-        if self.turnAngle != 0:
+        if self.turnAngle != None:
             self.next_state("turn")
         else:
             self.next_state("idling")
@@ -26,7 +35,10 @@ class turretTurn(StateMachine):
         """
         Sets speed of turret based on what angle we are turning to
         """
-        speed = self.speedSections.getSpeed(self.turretThreshold.getPosition(), "TurretsTurn")
+        offset = self.turnAngle - self.pos
+        speed = self.speedSections.getSpeed(offset, "TurretTurn")
+        if abs(offset) < self.tolerance:
+            speed = 0
         self.turretThreshold.setTurretspeed(speed)
 
     @state
@@ -36,12 +48,4 @@ class turretTurn(StateMachine):
         """
         self.pos = self.turretThreshold.getPosition()
         self.setSpeed()
-        if self.pos < (self.turnAngle + self.tolerance) and self.pos > (self.turnAngle - self.tolerance):
-            self.stop()
-        else:
-            self.next_state("turn")
-
-    def stop(self):
-        """stops turret"""
-        self.next_state("idling")
-        self.turretThreshold.stopTurret()
+        self.next_state("turn")
