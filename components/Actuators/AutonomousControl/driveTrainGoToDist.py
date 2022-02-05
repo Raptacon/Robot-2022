@@ -1,5 +1,5 @@
 from magicbot import StateMachine, state, tunable
-from components.driveTrain import DriveTrain
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 import logging as log
 
 class GoToDist(StateMachine):

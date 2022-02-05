@@ -7,27 +7,28 @@ from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
-from components.driveTrain import DriveTrain
-from components.pneumatics import Pneumatics
-from components.buttonManager import ButtonManager, ButtonEvent
-from components.breakSensors import Sensors
-from components.winch import Winch
-from components.shooterMotors import ShooterMotors
-from components.hopperMotor import HopperMotor
-from components.intakeMotor import IntakeMotor
-from components.shooterLogic import ShooterLogic
-from components.loaderLogic import LoaderLogic
-from components.elevator import Elevator
-from components.scorpionLoader import ScorpionLoader
-from components.feederMap import FeederMap
-from components.autoAlign import AutoAlign
-from components.autoShoot import AutoShoot
-from components.lidar import Lidar
-from components.navx import Navx
-from components.turnToAngle import TurnToAngle
-from components.driveTrainGoToDist import GoToDist
-from components.ballCounter import BallCounter
-from components.colorSensor import ColorSensor
+from components.SoftwareControl.speedSections import SpeedSections, speedFactory
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.LowLevel.pneumatics import Pneumatics
+from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
+from components.Input.breakSensors import Sensors
+from components.Actuators.LowLevel.winch import Winch
+from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.HighLevel.loaderLogic import LoaderLogic
+from components.Actuators.LowLevel.elevator import Elevator
+from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
+from components.Actuators.HighLevel.feederMap import FeederMap
+from components.Actuators.AutonomousControl.autoAlign import AutoAlign
+from components.Actuators.AutonomousControl.autoShoot import AutoShoot
+from components.Input.lidar import Lidar
+from components.Input.navx import Navx
+from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
+from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
+from components.Input.ballCounter import BallCounter
+from components.Input.colorSensor import ColorSensor
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -39,7 +40,7 @@ from utils.acturatorFactories import compressorFactory, solenoidFactory
 import utils.math
 
 # Test imports:
-from components.testBoard import TestBoard
+from components.Test.testBoard import TestBoard
 
 
 class MyRobot(MagicRobot):
@@ -67,6 +68,7 @@ class MyRobot(MagicRobot):
     goToDist: GoToDist
     ballCounter: BallCounter
     colorSensor: ColorSensor
+    speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
 
     # Test code:
@@ -81,6 +83,7 @@ class MyRobot(MagicRobot):
         """
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
+        self.currentRobot = self.map.configMapper.getCompatibility()
 
         self.driverStation = DriverStation.getInstance()
 
@@ -102,11 +105,12 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("digitalInput", breaksensorFactory)
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
+        self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors,
+                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
@@ -126,19 +130,19 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.elevator.setRaise)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnRelease, self.elevator.stop)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.elevator.setLower)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.elevator.stop)
-        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnPress, self.elevator.setRaise)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnRelease, self.elevator.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.elevator.setLower)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnRelease, self.elevator.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.autoShoot.stop)
-        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperRight, ButtonEvent.kOnPress, self.navx.reset)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnPress, self.goToDist.start)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kBumperLeft, ButtonEvent.kOnRelease, self.goToDist.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kLeftBumper, ButtonEvent.kOnRelease, self.driveTrain.disableCreeperMode)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnPress, self.navx.reset)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.goToDist.start)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnRelease, self.goToDist.stop)
 
 
         self.driveTrain.setBraking(True)
@@ -182,7 +186,7 @@ class MyRobot(MagicRobot):
 
         if not executingDriveCommand:
             if self.arcadeMode:
-                self.driveTrain.setArcade(driveLeftY, -1 * driveRightX)
+                self.driveTrain.setArcade(-1 *driveLeftY, driveRightX)
             else:
                 self.driveTrain.setTank(driveLeftY, driveRightY)
             self.autoAlign.reset_integral()

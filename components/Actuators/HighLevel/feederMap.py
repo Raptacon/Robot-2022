@@ -1,7 +1,7 @@
 from robotMap import XboxMap
-from components.shooterMotors import ShooterMotors
-from components.intakeMotor import IntakeMotor
-from components.hopperMotor import HopperMotor
+from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.LowLevel.hopperMotor import HopperMotor
 from utils.DirectionEnums import Direction
 from enum import Enum, auto
 from magicbot import tunable

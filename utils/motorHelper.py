@@ -44,7 +44,7 @@ def createMotor(motorDescp, motors = {}):
 
     elif motorDescp['type'] == 'SparkMax':
         '''This is where SparkMax motor controllers are set up'''
-        motorDescp['motorType'] = getattr(rev.MotorType, motorDescp['motorType'])
+        motorDescp['motorType'] = getattr(rev.CANSparkMax.MotorType, motorDescp['motorType'])
 
         if 'pid' in motorDescp and motorDescp['pid'] != None:
             motor = SparkMaxFeedback(motorDescp, motors)
@@ -221,7 +221,7 @@ class WPI_TalonFXFeedback(ctre.WPI_TalonFX):
         self.configNominalOutputReverse(0, 10)
         self.configPeakOutputForward(1, 10)
         self.configPeakOutputReverse(-1, 10)
-        self.configVelocityMeasurementPeriod(ctre.VelocityMeasPeriod(1), 10)
+        self.configVelocityMeasurementPeriod(ctre.SensorVelocityMeasPeriod(1), 10)
         #/* set closed loop gains in slot 0 */
         self.config_kF(0, self.pid['kF'], 10)
         self.config_kP(0, self.pid['kP'], 10)
@@ -312,9 +312,9 @@ class SparkMaxFeedback(rev.CANSparkMax):
 
         #Turns strings from pid dictionary in config into enums from rev library for control type
         if self.ControlType == "Position":
-            self.ControlType = rev.ControlType.kPosition
+            self.ControlType = rev.CANSparkMaxLowLevel.ControlType.kPosition
         elif self.ControlType == "Velocity":
-            self.ControlType = rev.ControlType.kVelocity
+            self.ControlType = rev.CANSparkMaxLowLevel.ControlType.kVelocity
         else:
             print("Unrecognized control type: ",self.ControlType)
 
@@ -339,9 +339,9 @@ class SparkMaxFeedback(rev.CANSparkMax):
 
         #Generally just a way to overwrite previous settings on any motor controller - We don't brake often.
         if 'IdleBrake' in self.motorDescription.keys() and self.motorDescription['IdleBrake'] == True:
-            self.setIdleMode(rev.IdleMode.kBrake)
+            self.setIdleMode(rev.CANSparkMax.IdleMode.kBrake)
         else:
-            self.setIdleMode(rev.IdleMode.kCoast)
+            self.setIdleMode(rev.CANSparkMax.IdleMode.kCoast)
 
         #Configures output range - that's what Spark Maxes accept
         self.PIDController.setOutputRange(-1, 1, pid['feedbackDevice'])
