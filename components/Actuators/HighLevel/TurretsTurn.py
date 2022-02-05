@@ -19,10 +19,12 @@ class turretTurn:
     # if the target is really far away.
 
     def on_enable(self):
+        #sets up position and connects motors
         self.turretMotor = self.motors_turret["turretMotor"]
         self.TurretThreshold.setup()
 
     def setAngle(self, angle):
+        #gets angle turret is turning to
         self.turnAngle = turretThreshold.angleCheck(angle)
 
     @state(first = True)
@@ -34,6 +36,7 @@ class turretTurn:
             self.next_state("idling")
 
     def setSpeed(self, angle):
+        #Sets speed of turret based on what angle we are turning to
         self.pos = self.turretMotor.getEncoder().getPosition()
         for distTotargetAngle, speed in self.values:
             if (distTotargetAngle == "End"
@@ -43,10 +46,12 @@ class turretTurn:
 
     @state
     def turn(self, angle):
+        #Starts turning process, if in tolerance it will stop
         self.setSpeed()
         turretThreshold.execute()
         if self.pos < (self.turnAngle + self.tolerance) and self.pos > (self.turnAngle - self.tolerance):
             self.stop()
 
     def stop(self):
+        #stops turret
         turretThreshold.stopTurret()
