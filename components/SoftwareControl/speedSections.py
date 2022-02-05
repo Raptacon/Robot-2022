@@ -12,7 +12,11 @@ class SpeedSections():
         self.PIDs = self.speedSections["PID"]
         self.PIDControllers = []
         for PIDset in self.PIDs.keys():
-            self.PIDControllers[PIDset] = PIDController()
+            PID = self.PIDs[PIDset]
+            P = PID["P"]
+            I = PID["I"]
+            D = PID["D"]
+            self.PIDControllers[PIDset] = PIDController(P, I, D)
 
 
     def getSpeedSection(self, component:str):
@@ -49,8 +53,21 @@ class SpeedSections():
             if (dist == "End"
                 or offset < dist):
                 if speed == "PID":
-                    return 0
+                    return self.calc_PID(offset, component)
                 return speed
+
+    def calc_PID(self, offset, component:str):
+        controller = self.PIDControllers[component]
+        speed = controller.calculate(offset)
+
+        speedFloor = self.PIDs[component]["SpeedFloor"]
+
+        if speed > 0:
+            return speed + speedFloor
+        elif speed < 0:
+            return speed - speedFloor
+        else:
+            return 0
 
     def execute(self):
         """
