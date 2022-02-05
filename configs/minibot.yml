@@ -20,18 +20,18 @@ speedSections:
   speedSections:
     groups: "configuredValues"
     TurretTurn:
-      - [15, .04]
+      - [15, .03]
       - [30, .15]
       - [45, .3]
-      - [90, .4]
-      - [180, .5]
-      - ["End", .6]
+      - [90, .55]
+      - [180, .7]
+      - ["End", 1]
     PID:
-     TurretTurn:
-      - P: 0
-      - I: 0
-      - D: 0
-      - SpeedFloor: 0.01
+      TurretTurn:
+        P: 0
+        I: 0
+        D: 0
+        SpeedFloor: 0.01
 
 # Test code
 TurretMotor:
