@@ -30,10 +30,11 @@ class turretTurn(StateMachine):
         self.turretThreshold.setTurretspeed(speed)
 
     @state
-    def turn(self, angle):
+    def turn(self):
         """
         Starts turning process, if in tolerance it will stop
         """
+        self.pos = self.turretThreshold.getPosition()
         self.setSpeed()
         if self.pos < (self.turnAngle + self.tolerance) and self.pos > (self.turnAngle - self.tolerance):
             self.stop()
