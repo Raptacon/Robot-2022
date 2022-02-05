@@ -18,7 +18,7 @@ class turretTurn:
     def idling(self):
         """Stays in this state until started"""
         if self.turnAngle != 0:
-            self.next_state("")
+            self.next_state("turn")
         else:
             self.next_state("idling")
 
@@ -28,4 +28,9 @@ class turretTurn:
             getPosition.runTurret(0.5)
         else:
             getPosition.runTurret(1)
+
+    @state
+    def turn(self):
+        self.setSpeed()
+        getPosition.execute()
 
