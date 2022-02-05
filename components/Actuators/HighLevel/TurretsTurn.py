@@ -41,7 +41,7 @@ class turretTurn:
         for distTotargetAngle, speed in self.values:
             if (distTotargetAngle == "End"
                 or self.pos < distTotargetAngle):
-                self.TurretThreshold.runTurret(speed)
+                self.TurretThreshold.setTurretspeed(speed)
                 break
 
     @state
