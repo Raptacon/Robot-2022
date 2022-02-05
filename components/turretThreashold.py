@@ -8,6 +8,10 @@ class getPosition(navx):
     navx = navx._navx.AHRS.create_spi()
     Deadzones = [[-45, -405] [360, 360] [45, 405]]
     shooterMotor: ShooterMotors
+    motors_turret: dict
+
+    def setup(self):
+        self.turretMotor = self.motors_turret["turretMotor"]
 
     def getOriginalheading(self):
         self.shooterMotor.shooterMotor1.getencoder().getPosition()
