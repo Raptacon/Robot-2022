@@ -120,6 +120,12 @@ speedSections:
       - [12, .25]
       - [8, .2]
       - [5, .15]
+    PID:
+      GoToDist:
+        P: 0.01
+        I: 0
+        D: 0
+        SpeedFloor: .17
 
 loaderSensors:
   subsystem: "breaksensors"
