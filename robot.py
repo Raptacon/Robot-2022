@@ -7,7 +7,7 @@ from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
-from components.speedSections import SpeedSections, speedFactory
+from components.SoftwareControl.speedSections import SpeedSections, speedFactory
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
