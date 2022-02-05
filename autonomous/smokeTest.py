@@ -1,10 +1,10 @@
 from magicbot import AutonomousStateMachine, state, feedback
-from components.driveTrain import DriveTrain
-from components.colorSensor import ColorSensor
-from components.intakeMotor import IntakeMotor
-from components.hopperMotor import HopperMotor
-from components.shooterMotors import ShooterMotors
-from components.breakSensors import Sensors, State
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Input.colorSensor import ColorSensor
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Input.breakSensors import Sensors, State
 import logging as log
 
 class SmokeTest(AutonomousStateMachine):
