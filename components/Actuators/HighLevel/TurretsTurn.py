@@ -1,4 +1,6 @@
-from magicbot import state_machine, state, timed_state
+from webbrowser import get
+from magicbot import state_machine, state, timed_state, tunable
+from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.LowLevel.turretThreshold import getPosition
 
 class turretTurn:
@@ -6,6 +8,7 @@ class turretTurn:
     motors_turret: dict
     GetPosition: getPosition
     turnAngle = 0
+    tolerance = tunable(0.5)
 
     def on_enable(self):
         self.turretMotor = self.motors_turret["turretMotor"]
@@ -30,7 +33,11 @@ class turretTurn:
             getPosition.runTurret(1)
 
     @state
-    def turn(self):
+    def turn(self, angle):
         self.setSpeed()
         getPosition.execute()
+        if self.pos < (self.turnAngle + self.tolerance) and self.pos > (self.turnAngle - self.tolerance):
+            self.stop()
 
+    def stop(self):
+        getPosition.stopTurret()
