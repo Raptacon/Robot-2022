@@ -7,28 +7,28 @@ from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
 
 # Component imports:
-from components.driveTrain import DriveTrain
-from components.pneumatics import Pneumatics
-from components.buttonManager import ButtonManager, ButtonEvent
-from components.breakSensors import Sensors
-from components.winch import Winch
-from components.shooterMotors import ShooterMotors
-from components.hopperMotor import HopperMotor
-from components.intakeMotor import IntakeMotor
-from components.shooterLogic import ShooterLogic
-from components.loaderLogic import LoaderLogic
-from components.elevator import Elevator
-from components.scorpionLoader import ScorpionLoader
-from components.feederMap import FeederMap
-from components.autoAlign import AutoAlign
-from components.autoShoot import AutoShoot
-from components.lidar import Lidar
-from components.navx import Navx
-from components.turnToAngle import TurnToAngle
-from components.driveTrainGoToDist import GoToDist
-from components.ballCounter import BallCounter
-from components.colorSensor import ColorSensor
 from components.speedSections import SpeedSections, speedFactory
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.LowLevel.pneumatics import Pneumatics
+from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
+from components.Input.breakSensors import Sensors
+from components.Actuators.LowLevel.winch import Winch
+from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.HighLevel.loaderLogic import LoaderLogic
+from components.Actuators.LowLevel.elevator import Elevator
+from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
+from components.Actuators.HighLevel.feederMap import FeederMap
+from components.Actuators.AutonomousControl.autoAlign import AutoAlign
+from components.Actuators.AutonomousControl.autoShoot import AutoShoot
+from components.Input.lidar import Lidar
+from components.Input.navx import Navx
+from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
+from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
+from components.Input.ballCounter import BallCounter
+from components.Input.colorSensor import ColorSensor
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -40,7 +40,7 @@ from utils.acturatorFactories import compressorFactory, solenoidFactory
 import utils.math
 
 # Test imports:
-from components.testBoard import TestBoard
+from components.Test.testBoard import TestBoard
 
 
 class MyRobot(MagicRobot):

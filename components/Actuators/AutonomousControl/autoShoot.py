@@ -1,8 +1,8 @@
 from networktables import NetworkTables as networktable
 from magicbot import StateMachine
 from magicbot.state_machine import state
-from components.shooterLogic import ShooterLogic
-from components.driveTrain import DriveTrain
+from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 from utils.guessDistance import guessDistanceTrig
 
 import logging as log
