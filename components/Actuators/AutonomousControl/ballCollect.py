@@ -44,6 +44,7 @@ class BallCollect(StateMachine):
         and then starts driving towards it.
         """
         # Placeholder, we need to get angle offset
+        self.next_state("align")
         self.DeviationX = 90
         if self.DeviationX != 0:
             self.AbsoluteX = abs(self.DeviationX)
@@ -59,11 +60,11 @@ class BallCollect(StateMachine):
                 log.error("Missed the ball")
                 self.forwardTurnSpeed = 0
                 self.next_state("idling")
+
             if not self.DeviationX < self.angleTolerance:
                 self.turnSpeed = self.speedSections.getSpeed(self.AbsoluteX, "AutoAlign")
                 if self.DeviationX < 0:
                     self.turnSpeed *= -1
-                self.next_state("align")
             self.driveTrain.setArcade(self.forwardTurnSpeed, self.turnSpeed)
 
         else:
@@ -79,14 +80,3 @@ class BallCollect(StateMachine):
         # Placeholder, will need to get data from camera
         self.dist = self.getBallDist()
         self.maxDist = self.dist + self.distTolerance + self.initDist
-
-    @state
-    def travel(self):
-        """
-        Takes input from ballCounter to determine
-        if we have picked up a ball or not.
-        If a ball collection hasn't happened after a few feet,
-        disengage.
-        """
-        # Placeholder, we need a visible ball check
-        ballVisible = True
