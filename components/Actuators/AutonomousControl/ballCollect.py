@@ -16,12 +16,22 @@ class BallCollect(StateMachine):
     angleTolerance = .25
     # In feet
     distTolerance = 1
+    travelFirstCall = False
 
     def startRunning(self):
         self.start = True
 
-    @state
+    def getBallDist(self):
+        # Placeholder, figure this out later.
+        return 5
+
+    @state(first=True)
     def idling(self):
+        """
+        Starts the statemachine if requested.
+        Otherwise stays here.
+        """
+        self.next_state("idling")
         if self.start:
             self.start = False
             self.forwardTurnSpeed = 0
@@ -29,33 +39,49 @@ class BallCollect(StateMachine):
 
     @state
     def align(self):
-        # Placeholder, we aren't planning to use limelight
-        self.DeviationX = self.limeTable.getNumber("tx", -50)
-        if self.DeviationX != -50 or self.DeviationX != 0:
-            # "-50" is the default value, so if that is returned,
-            # nothing should be done because there is no connection.
-
+        """
+        Turns the drive base towards a detected ball
+        and then starts driving towards it.
+        """
+        # Placeholder, we need to get angle offset
+        self.DeviationX = 90
+        if self.DeviationX != 0:
             self.AbsoluteX = abs(self.DeviationX)
             if self.AbsoluteX < self.angleTolerance:
-                self.speed = 0
-                self.initTravel()
-                self.next_state("travel")
+                if self.travelFirstCall:
+                    self.initTravel()
+                self.travelFirstCall = False
+                self.forwardTurnSpeed = 0
+                offset = self.maxDist - self.driveTrain.getEstTotalDistTraveled()
+                self.forwardTurnSpeed = self.speedSections.getSpeed(offset, "GoToDist")
+
+                if self.ballCounter.getBallCount() != self.initBallCount:
+                    self.forwardTurnSpeed = 0
+                    self.next_state("idling")
+                if self.driveTrain.getEstTotalDistTraveled() > self.maxDist:
+                    log.error("Missed the ball")
+                    self.forwardTurnSpeed = 0
+                    self.next_state("idling")
             else:
-                self.speed = self.speedSections.getSpeed(self.AbsoluteX, "AutoAlign")
+                self.travelFirstCall = True
+                self.turnSpeed = self.speedSections.getSpeed(self.AbsoluteX, "AutoAlign")
                 if self.DeviationX < 0:
-                    self.speed *= -1
+                    self.turnSpeed *= -1
                 self.next_state("align")
-            self.driveTrain.setArcade(self.forwardTurnSpeed, self.speed)
+            self.driveTrain.setArcade(self.forwardTurnSpeed, self.turnSpeed)
 
         else:
             log.error("Limelight: No Valid Targets")
             self.next_state("idling")
 
     def initTravel(self):
+        """
+        Sets initial values for forward movement
+        """
         self.initBallCount = self.ballCounter.getBallCount()
         self.initDist = self.driveTrain.getEstTotalDistTraveled()
         # Placeholder, will need to get data from camera
-        self.dist = 9
+        self.dist = self.getBallDist()
         self.maxDist = self.dist + self.distTolerance + self.initDist
 
     @state
@@ -68,22 +94,3 @@ class BallCollect(StateMachine):
         """
         # Placeholder, we need a visible ball check
         ballVisible = True
-
-        self.next_state("travel")
-        offset = self.maxDist - self.driveTrain.getEstTotalDistTraveled()
-        self.speed = self.speedSections.getSpeed(offset, "GoToDist")
-
-        if not ballVisible:
-            self.forwardTurnSpeed = .1
-            self.speed = 0
-            self.next_state("align")
-
-        if self.ballCounter.getBallCount() != self.initBallCount:
-            self.speed = 0
-            self.next_state("idling")
-        if self.driveTrain.getEstTotalDistTraveled() > self.maxDist:
-            log.error("Missed the ball")
-            self.speed = 0
-            self.next_state("idling")
-
-        self.driveTrain.setArcade(self.speed, 0)
