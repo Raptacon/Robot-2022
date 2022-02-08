@@ -1,4 +1,3 @@
-from turtle import pos
 from magicbot import feedback
 
 class TurretThreshold:
@@ -32,20 +31,10 @@ class TurretThreshold:
         for leftLim, rightLim in self.Deadzones:
             if angle > leftLim and angle < rightLim:
                 if abs(leftLim - angle) < abs(rightLim - angle):
-                    smallestLeftAngle = self.smallestAngle(self.pos, leftLim)
-                    return smallestLeftAngle
+                    return leftLim
                 else:
-                    smallestRightAngle = self.smallestAngle(self.pos, rightLim)
-                    return smallestRightAngle
-        smallestAngle = self.smallestAngle(self.pos, angle)
-        return smallestAngle
-
-    def smallestAngle(self, currentAngle, targetAngle) -> int:
-        diff = ( targetAngle - currentAngle) % 360
-
-        if diff > targetAngle :
-            diff = -(360 - diff)
-            return diff
+                    return rightLim
+        return angle
 
     @feedback
     def getPosition(self):
