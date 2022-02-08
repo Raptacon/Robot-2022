@@ -54,5 +54,7 @@ class TurretThreshold:
                     self.speed = -1*self.safetySpeed
                 elif abs(rLimit - self.pos) < self.safetyThreshold:
                     self.speed = self.safetySpeed
-
+        for leftLim, rightLim in self.Deadzones:
+            if self.pos > leftLim and self.pos < rightLim:
+                self.stopTurret()
         self.turretMotor.set(self.speed)
