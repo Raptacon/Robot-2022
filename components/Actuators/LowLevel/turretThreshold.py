@@ -36,14 +36,20 @@ class TurretThreshold:
                     return leftLim
                 else:
                     return rightLim
+
+            # Check paths
+            if leftLim > self.pos and leftLim < angle:
+                return leftLim
+            elif rightLim < self.pos and rightLim > angle:
+                return rightLim
         return angle
 
-    def DetermineShortestPath(self, angle, leftLim, rightLim):
-        self.DegreeToAngle = self.pos
-        while self.DegreeToAngle != angle:
-            self.DegreeToAngle += 0.1
-            if self.DegreeToAngle > leftLim and self.DegreeToAngle < rightLim:
-                return self.DegreeToAngle
+    # def DetermineShortestPath(self, angle, leftLim, rightLim):
+    #     self.DegreeToAngle = self.pos
+    #     while self.DegreeToAngle != angle:
+    #         self.DegreeToAngle += 0.1
+    #         if self.DegreeToAngle > leftLim and self.DegreeToAngle < rightLim:
+    #             return self.DegreeToAngle
 
     @feedback
     def getPosition(self):
