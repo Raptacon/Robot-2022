@@ -159,7 +159,8 @@ class MyRobot(MagicRobot):
 
         self.turnToAngle.engage()
 
-        self.turretTurn.setAngle(0)
+        # self.turretTurn.setAngle(0)
+        self.turretTurn.setAngle(360)
 
     def teleopPeriodic(self):
         """
