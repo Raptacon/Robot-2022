@@ -9,6 +9,7 @@ class TurretThreshold:
     safetyThreshold = 5
     gearRatio = 10
     sprocketRatio = 120/18
+    DegreeToAngle = 0
 
     def setup(self):
         #connects moters and gets position
@@ -35,6 +36,13 @@ class TurretThreshold:
                 else:
                     return rightLim
         return angle
+
+    def DetermineShortestPath(self, angle, leftLim, rightLim):
+        self.DegreeToAngle = self.pos
+        while self.DegreeToAngle != angle:
+            self.DegreeToAngle += 0.1
+            if self.DegreeToAngle > leftLim and self.DegreeToAngle < rightLim:
+                return self.DegreeToAngle
 
     @feedback
     def getPosition(self):
