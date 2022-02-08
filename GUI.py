@@ -61,15 +61,8 @@ def calc_tri(canvasNametri,root):
     x3 = x2
     y3 = y1 *2
     canvasNametri.create_polygon(x1,y1, x2,y2, x3,y3)
-def destroy(root):
-    root.destroy()
-def create(root):
-    root = window()
-    root.after(1, calc_tri, Window.frames[Calc_circle].label, Window)
 Window = window()
-Window.geometry('400x300')
+Window.geometry('400x300+0+0')
+Window.resizable(0,0)
 Window.after(1, calc_tri, Window.frames[Calc_circle].label, Window)
-while True:
-    Window.after(100,destroy,Window)
-    Window.after(1,create,Window)
-    Window.mainloop()
+Window.mainloop()
