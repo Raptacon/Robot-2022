@@ -7,7 +7,7 @@ class BallCounter:
     """Class meant to keep track of the number of balls currently in the hopper"""
 
     SmartTable = NetworkTables.getTable("SmartDashboard")
-    compatString = ["doof"]
+    compatString = ["doof", "teapot"]
     sensors: Sensors
     shooter: ShooterLogic
     maxBalls = 4
