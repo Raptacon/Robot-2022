@@ -7,8 +7,8 @@ class TurretThreshold:
     speed = 0
     safetySpeed = .07
     safetyThreshold = 5
-    gearRatio = 5
-    sprocketRatio = 13.3
+    gearRatio = 10
+    sprocketRatio = 120/18
 
     def setup(self):
         #connects moters and gets position
