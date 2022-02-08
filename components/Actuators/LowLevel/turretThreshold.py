@@ -5,6 +5,7 @@ class TurretThreshold:
     Deadzones = [[90, 180]]
     motors_turret: dict
     speed = 0
+    exitSpeed = .3
     safetySpeed = .07
     safetyThreshold = 5
     gearRatio = 10
@@ -48,6 +49,10 @@ class TurretThreshold:
     def getPosition(self):
         return self.pos
 
+    @feedback
+    def getSpeed(self):
+        return self.speed
+
     def calc_Position(self):
         self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
 
@@ -56,16 +61,18 @@ class TurretThreshold:
         self.calc_Position()
 
         #Final safety check
-        if self.speed > self.safetySpeed:
-            for lLimit, rLimit in self.Deadzones:
-                if abs(lLimit - self.pos) < self.safetyThreshold:
-                    self.speed = -1*self.safetySpeed
-                elif abs(rLimit - self.pos) < self.safetyThreshold:
-                    self.speed = self.safetySpeed
-        for leftLim, rightLim in self.Deadzones:
-            if self.pos > leftLim and self.pos < rightLim:
-                if abs(leftLim - self.pos) < abs(rightLim - self.pos):
-                    return leftLim
+        # if self.speed > self.safetySpeed:
+        #     for lLimit, rLimit in self.Deadzones:
+        #         if abs(lLimit - self.pos) < self.safetyThreshold:
+        #             self.speed = -1*self.safetySpeed
+        #         elif abs(rLimit - self.pos) < self.safetyThreshold:
+        #             self.speed = self.safetySpeed
+
+        for lLimit, rLimit in self.Deadzones:
+            if self.pos > lLimit and self.pos < rLimit:
+                if abs(lLimit - self.pos) < abs(rLimit - self.pos):
+                    self.speed = -1*self.exitSpeed
                 else:
-                    return rightLim
+                    self.speed = self.exitSpeed
+
         self.turretMotor.set(self.speed)
