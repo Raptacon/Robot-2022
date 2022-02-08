@@ -37,32 +37,44 @@ class Calc_circle(tk.Frame):
         tk.Frame.__init__(self,parent)
         self.label = tk.Canvas(self)
         self.label.pack(fill = 'both',expand= True)
-        x = 0
-        y = 0
-        numball = 5
+        position = [[5,0.5],[10,1],[15,-11],[54,0]]
+        numball = len(position)
+        HightOffSet = 2
         ball = 0
-        while(ball <= numball):
+        self.calc_tri(self.label)
+        #self.label.tkraise()
+        print(position[ball][0])
+        while(ball < numball):
+            if position[ball][0] <= 10:
+                hyp = math.sqrt(position[ball][0] ** 2 - HightOffSet ** 2)
+                xft = hyp * math.cos(position[ball][1])
+                yft = hyp * math.sin(position[ball][1])
+                x = 400 - (xft * 40)
+                y = 150 + (yft * 15)
+                self.create_circle(x, y, 5, self.label)
+            else:
+                x = 0
+                yft = hyp * math.sin(position[ball][1])
+                y = 150 + (yft * 15)
+                self.create_circle(x, y, 5, self.label)
             ball += 1
-            x += 20
-            y += 20
-            self.create_circle(x, y, 20, self.label)
     def create_circle(self,x, y, r, canvasName): #center coordinates, radius
         x0 = x - r
         y0 = y - r
         x1 = x + r
         y1 = y + r
         canvasName.create_oval(x0, y0, x1, y1, fill='blue')
-def calc_tri(canvasNametri,root):
-    FOV = 81.3
-    x1 = root.winfo_width()
-    y1 = root.winfo_height()/2
-    x2 = (math.tan((180 - FOV)/2) * y1)
-    y2 = 0
-    x3 = x2
-    y3 = y1 *2
-    canvasNametri.create_polygon(x1,y1, x2,y2, x3,y3)
+    def calc_tri(self,canvasNametri):
+        FOV = 81.3
+        x1 = 400
+        y1 = 300/2
+        x2 = (math.tan((180 - FOV)/2) * y1)
+        y2 = 0
+        x3 = x2
+        y3 = 300
+        canvasNametri.create_polygon(x1,y1, x2,y2, x3,y3)
+
 Window = window()
 Window.geometry('400x300+0+0')
 Window.resizable(0,0)
-Window.after(1, calc_tri, Window.frames[Calc_circle].label, Window)
 Window.mainloop()
