@@ -47,23 +47,19 @@ class BallCollect(StateMachine):
         self.DeviationX = 90
         if self.DeviationX != 0:
             self.AbsoluteX = abs(self.DeviationX)
-            if self.AbsoluteX < self.angleTolerance:
-                if self.travelFirstCall:
-                    self.initTravel()
-                self.travelFirstCall = False
-                self.forwardTurnSpeed = 0
-                offset = self.maxDist - self.driveTrain.getEstTotalDistTraveled()
-                self.forwardTurnSpeed = self.speedSections.getSpeed(offset, "GoToDist")
+            self.travelFirstCall = False
+            self.forwardTurnSpeed = 0
+            offset = self.maxDist - self.driveTrain.getEstTotalDistTraveled()
+            self.forwardTurnSpeed = self.speedSections.getSpeed(offset, "GoToDist")
 
-                if self.ballCounter.getBallCount() != self.initBallCount:
-                    self.forwardTurnSpeed = 0
-                    self.next_state("idling")
-                if self.driveTrain.getEstTotalDistTraveled() > self.maxDist:
-                    log.error("Missed the ball")
-                    self.forwardTurnSpeed = 0
-                    self.next_state("idling")
-            else:
-                self.travelFirstCall = True
+            if self.ballCounter.getBallCount() != self.initBallCount:
+                self.forwardTurnSpeed = 0
+                self.next_state("idling")
+            if self.driveTrain.getEstTotalDistTraveled() > self.maxDist:
+                log.error("Missed the ball")
+                self.forwardTurnSpeed = 0
+                self.next_state("idling")
+            if not self.DeviationX < self.angleTolerance:
                 self.turnSpeed = self.speedSections.getSpeed(self.AbsoluteX, "AutoAlign")
                 if self.DeviationX < 0:
                     self.turnSpeed *= -1
