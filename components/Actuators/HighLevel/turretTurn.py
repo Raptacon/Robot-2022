@@ -1,6 +1,7 @@
 from magicbot import StateMachine, state, tunable
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.SoftwareControl.speedSections import SpeedSections
+import logging as log
 
 class TurretTurn(StateMachine):
     compatString = ["doof", "greenChassis"]
@@ -15,6 +16,8 @@ class TurretTurn(StateMachine):
 
     def setAngle(self, angle):
         """sets angle turret is turning to"""
+        if self.turretThreshold.angleCheck(angle) != angle:
+            log.error("Turret angle check failed")
         self.turnAngle = self.turretThreshold.angleCheck(angle)
 
     def setRelAngle(self, relangle):
