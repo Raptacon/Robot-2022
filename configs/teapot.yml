@@ -1,4 +1,4 @@
-compatibility: "newBot"
+compatibility: "teapot"
 
 system:
   subsystem: "system"
@@ -77,9 +77,6 @@ hopperMotors:
   description: "All motors used in the hopper live here"
   hopperMotors:
     groups: "motors"
-
-    hopperMotor: #Approximately 2 min, 4 max.
-    # we don't have information on this yet.
     hopperMotor1:
       channel: 60
       type: "CANTalonSRX"
@@ -100,14 +97,14 @@ hopperMotors:
         absMaxTimeMs: 50
         maxNominal: 40
 
-loaderSensors: #likely to be multiple.
+loaderSensors:
   subsystem: "breaksensors"
   description: "All IR break sensors used for the loader live here for the loader/LED component"
   loaderSensors:
     groups: "digitalInput"
-    sensor3:
+    sensor1:
       type: "RIODigitalIn"
-      channel: 3
+      channel: 1
       description: "Loading sensor"
 
 intakeMotors:
@@ -123,7 +120,6 @@ intakeMotors:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
-    # There will probably only be one of these
 
 shooterMotors:
   subsystem: "shooter"
