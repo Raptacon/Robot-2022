@@ -198,9 +198,19 @@ speedSections:
       - [90, .55]
       - [180, .7]
       - ["End", 1]
+    GoToDist:
+      - [36, .3]
+      - [12, .25]
+      - [8, .2]
+      - [5, .15]
     PID:
       TurretTurn:
         P: 0
         I: 0
         D: 0
         SpeedFloor: 0.01
+      GoToDist:
+        P: 0.01
+        I: 0
+        D: 0
+        SpeedFloor: .11
