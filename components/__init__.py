@@ -3,5 +3,5 @@ class Dummy:
     def execute(self):
         pass
 
-def dummyFunc(self):
+def dummyFunc(*args):
     pass
