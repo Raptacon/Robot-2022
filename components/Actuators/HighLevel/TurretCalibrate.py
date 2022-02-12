@@ -34,7 +34,10 @@ class CalibrateTurret(StateMachine):
             self.turretThreshold.setTurretspeed()
             if self.clicked == True:
                 self.limitL = self.turretThreshold.getPosition()
-                self.next_state('findLeftdeadzone')
+                self.next_state('foundDeadzones')
 
+    @state
+    def foundDeadzones(self):
+        self.done()
 
 
