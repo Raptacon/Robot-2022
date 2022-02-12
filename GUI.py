@@ -6,9 +6,8 @@ import tkinter as tk
 from turtle import bgcolor, width
 from networktables import NetworkTables as networktable
 import math
-limeTable = networktable.getTable("limelight")
-
 class window(tk.Tk):
+    CamTable = networktable.getTable("ML")
     width = round((math.tan(math.radians((180 - 81.3)/2)) * 200))
     maxFT = 10
     def __init__(self):
