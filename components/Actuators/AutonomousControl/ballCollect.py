@@ -1,4 +1,3 @@
-from networktables import NetworkTables as networktable
 from components.SoftwareControl.speedSections import SpeedSections
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Input.ballCounter import BallCounter
