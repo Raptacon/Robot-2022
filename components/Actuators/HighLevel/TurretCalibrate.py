@@ -3,10 +3,10 @@ from magicbot import state_machine, state
 class CalibrateTurret(state_machine):
     compatString = ["doof", "greenChassis", "newBot"]
     clicked = False
-    #a dummy variable until
+    #a dummy variable until we find something else
 
     @state(first = True)
-    def findReftdeadzone(self):
+    def findRightdeadzone(self):
         pass
 
 
