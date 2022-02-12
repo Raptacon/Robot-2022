@@ -63,14 +63,6 @@ class TurretThreshold:
         #gets position, sets speed for every frames
         self.calc_Position()
 
-        #Final safety check
-        # if self.speed > self.safetySpeed:
-        #     for lLimit, rLimit in self.Deadzones:
-        #         if abs(lLimit - self.pos) < self.safetyThreshold:
-        #             self.speed = -1*self.safetySpeed
-        #         elif abs(rLimit - self.pos) < self.safetyThreshold:
-        #             self.speed = self.safetySpeed
-
         for lLimit, rLimit in self.Deadzones:
             if self.pos > lLimit and self.pos < rLimit:
                 if abs(lLimit - self.pos) < abs(rLimit - self.pos):
