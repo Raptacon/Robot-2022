@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 compatibility: "greenChassis"
 
 driveTrain:
@@ -73,3 +74,69 @@ TurretMotor:
       type: "SparkMax"
       inverted: True
       motorType: "kBrushless"
+=======
+compatibility: "greenChassis"
+
+driveTrain:
+  subsystem: "driveTrain"
+  description: "All motors used in the drive train live here"
+  motors:
+    groups:
+      - "motors"
+    rightMotor:
+      channel: 30
+      type: "CANTalonFX"
+      inverted: False
+      pid:
+        kP: 0.001
+        kI: 0
+        kD: 0
+        kF: 0
+        controlType: "PercentOutput"
+        sensorPhase: True
+        kPreScale: 2
+        feedbackDevice: "IntegratedSensor"
+      currentLimits:
+        triggerThresholdCurrent: 60
+        triggerThresholdTime: 50
+        currentLimit: 40
+
+    rightFollower:
+      channel: 31
+      masterChannel: 30
+      type: "CANTalonFXFollower"
+      inverted: False
+      currentLimits:
+        triggerThresholdCurrent: 60
+        triggerThresholdTime: 50
+        currentLimit: 40
+
+    leftMotor:
+      channel: 20
+      type: "CANTalonFX"
+      inverted: False
+      pid:
+        kP: 0.001
+        kI: 0
+        kD: 0
+        kF: 0
+        controlType: "PercentOutput"
+        sensorPhase: True
+        kPreScale: 2
+        feedbackDevice: "IntegratedSensor"
+      currentLimits:
+        triggerThresholdCurrent: 60
+        triggerThresholdTime: 50
+        currentLimit: 40
+
+    leftFollower:
+      channel: 21
+      masterChannel: 20
+      type: "CANTalonFXFollower"
+      currentLimits:
+        triggerThresholdCurrent: 60
+        triggerThresholdTime: 50
+        currentLimit: 40
+      inverted: False
+
+>>>>>>> 455ca312e2e77b46cbba451d4c4ca8f66fdc325f
