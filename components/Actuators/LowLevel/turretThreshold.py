@@ -2,10 +2,10 @@ from magicbot import feedback
 
 class TurretThreshold:
     compatString = ["doof", "greenChassis"]
-    Deadzones = [[90, 180]]
+    Deadzones = [[-90, 0]]
     motors_turret: dict
     speed = 0
-    exitSpeed = .3
+    exitSpeed = .02
     safetySpeed = .07
     safetyThreshold = 5
     gearRatio = 10
@@ -51,14 +51,17 @@ class TurretThreshold:
         for lLim, rLim in self.Deadzones:
             # If we're jumping the deadzone in either direction
             # or the angle is inside of the deadzone
-            if ((lLim > self.pos and rLim < angle)
-                or (lLim > angle and rLim < self.pos)
-                or (angle > lLim and angle < rLim)):
-
-                # Return the limit on the nearest side of the deadzone
-                if lLim > self.pos:
+            if ((lLim >= self.pos and rLim <= angle)
+                or (lLim >= angle and rLim <= self.pos)):
+                if lLim >= self.pos:
                     return lLim
-                if rLim < self.pos:
+                if lLim >= angle:
+                    return rLim
+                # Return the limit on the nearest side of the deadzone
+            if (angle >= lLim and angle <= rLim):
+                if lLim >= self.pos:
+                    return lLim
+                if rLim <= self.pos:
                     return rLim
         return angle
 
@@ -85,7 +88,8 @@ class TurretThreshold:
         return self.speed
 
     def calc_Position(self):
-        self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
+        # self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
+        self.pos = 360 * self.encoder.getPosition() / (self.gearRatio)
 
     def execute(self):
         #gets position, sets speed for every frames

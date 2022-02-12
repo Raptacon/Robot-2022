@@ -9,7 +9,7 @@ class TurretTurn(StateMachine):
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
     turnAngle = None
-    tolerance = tunable(0.5)
+    tolerance = tunable(3)
 
     def setup(self):
         self.pos = self.turretThreshold.getPosition()
