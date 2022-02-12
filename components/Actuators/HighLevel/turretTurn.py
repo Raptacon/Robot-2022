@@ -1,7 +1,7 @@
 from magicbot import StateMachine, state, tunable
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.SoftwareControl.speedSections import SpeedSections
-from networktables import NetworkTable, NetworkTables as networktable
+from networktables import NetworkTables as networktable
 import logging as log
 
 class TurretTurn(StateMachine):
