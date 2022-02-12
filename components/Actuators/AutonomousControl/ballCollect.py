@@ -18,6 +18,10 @@ class BallCollect(StateMachine):
     distTolerance = 1
     travelFirstCall = False
 
+    # This is the multiplier we use on forward speed if we're not fully aligned
+    # with the ball.
+    safetyMult = .3
+
     def startRunning(self):
         self.start = True
 
@@ -34,7 +38,6 @@ class BallCollect(StateMachine):
         self.next_state("idling")
         if self.start:
             self.start = False
-            self.forwardTurnSpeed = 0
             self.next_state("align")
 
     @state
@@ -44,6 +47,7 @@ class BallCollect(StateMachine):
         and then starts driving towards it.
         """
         # Placeholder, we need to get angle offset
+        # We also don't check to see if there is a ball or not (not my job)
         self.next_state("align")
         self.DeviationX = 90
         if self.DeviationX != 0:
@@ -56,15 +60,18 @@ class BallCollect(StateMachine):
             if self.ballCounter.getBallCount() != self.initBallCount:
                 self.forwardTurnSpeed = 0
                 self.next_state("idling")
+                return
             if self.driveTrain.getEstTotalDistTraveled() > self.maxDist:
                 log.error("Missed the ball")
                 self.forwardTurnSpeed = 0
                 self.next_state("idling")
+                return
 
-            if not self.DeviationX < self.angleTolerance:
+            if self.AbsoluteX > self.angleTolerance:
                 self.turnSpeed = self.speedSections.getSpeed(self.AbsoluteX, "AutoAlign")
                 if self.DeviationX < 0:
                     self.turnSpeed *= -1
+                self.forwardTurnSpeed *= self.safetyMult
             self.driveTrain.setArcade(self.forwardTurnSpeed, self.turnSpeed)
 
         else:
