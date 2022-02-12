@@ -12,6 +12,9 @@ class TurretThreshold:
     sprocketRatio = 120/18
     DegreeToAngle = 0
 
+    def calibrate(self, Deadzones):
+        self.Deadzones = self.pos
+
     def setup(self):
         #connects moters and gets position
         self.turretMotor = self.motors_turret["turretMotor"]
