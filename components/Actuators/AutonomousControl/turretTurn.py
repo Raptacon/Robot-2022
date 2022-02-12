@@ -5,7 +5,7 @@ from networktables import NetworkTables as networktable
 import logging as log
 
 class TurretTurn(StateMachine):
-    compatString = ["doof", "greenChassis"]
+    compatString = ["newBot"]
     motors_turret: dict
     limeTable = networktable.getTable("limelight")
     turretThreshold: TurretThreshold
@@ -21,6 +21,7 @@ class TurretTurn(StateMachine):
         if self.turretThreshold.angleCheck(angle) != angle:
             log.error("Turret angle check failed")
         self.turnAngle = self.turretThreshold.angleCheck(angle)
+        self.next_state("turn")
 
     def setLimeLightControl(self):
         """Determines if turret is using limelight input."""
@@ -51,15 +52,12 @@ class TurretTurn(StateMachine):
         """
         Sets target angle (relative to current position)
         """
-        self.turnAngle = self.pos + relangle
+        self.setAngle(self.pos + relangle)
 
     @state(first = True)
     def idling(self):
         """Stays in this state until started"""
-        if self.turnAngle != None:
-            self.next_state("turn")
-        else:
-            self.next_state("idling")
+        pass
 
     def setSpeed(self):
         """
