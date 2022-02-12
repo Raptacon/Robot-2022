@@ -1,18 +1,21 @@
 
-from magicbot import state_machine, state
+from magicbot import StateMachine, state
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
-class CalibrateTurret(state_machine):
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
+class CalibrateTurret(StateMachine):
     compatString = ["doof", "greenChassis", "newBot"]
     clicked = False
     #a dummy variable until we find something else
     turretTurn: TurretTurn
+    turretThreshold: TurretThreshold
+    const_turnAngle = 5
 
     @state(first = True)
     def findRightdeadzone(self):
         while self.clicked == False:
-            self.turretTurn()
+            self.turretTurn.engage()
             if self.clicked == True:
-                self.limitR = self.turretTurn.setup()
+                self.limitR = self.turretThreshold.getPosition()
                 self.next_state('findLeftdeadzone')
                 self.clicked = False
                 break
@@ -21,9 +24,9 @@ class CalibrateTurret(state_machine):
     @state
     def findLeftdeadzone(self):
         while self.clicked == False:
-            self.turretTurn()
+            self.turretTurn.engage()
             if self.clicked == True:
-                self.limitR = self.turretTurn.setup()
+                self.limitL = self.turretThreshold.getPosition()
                 self.next_state('findLeftdeadzone')
 
 
