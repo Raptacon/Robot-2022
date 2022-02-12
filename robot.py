@@ -180,6 +180,7 @@ class MyRobot(MagicRobot):
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
+        self.shooter.engage()
         if self.xboxMap.getDriveA() == True:
             executingDriveCommand = True
             self.autoAlign.setShootAfterComplete(False)
