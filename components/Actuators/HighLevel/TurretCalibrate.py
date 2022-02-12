@@ -20,7 +20,11 @@ class CalibrateTurret(state_machine):
 
     @state
     def findLeftdeadzone(self):
-
+        while self.clicked == False:
+            self.turretTurn()
+            if self.clicked == True:
+                self.limitR = self.turretTurn.setup()
+                self.next_state('findLeftdeadzone')
 
 
 
