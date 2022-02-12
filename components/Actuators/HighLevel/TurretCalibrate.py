@@ -14,6 +14,8 @@ class CalibrateTurret(state_machine):
             if self.clicked == True:
                 self.limitR = self.turretTurn.setup()
                 self.next_state('findLeftdeadzone')
+                self.clicked = False
+                break
 
 
     @state
