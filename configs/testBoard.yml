@@ -1,5 +1,13 @@
 compatibility: "testBoard"
 
+speedSections:
+  subsystem: "speedSections"
+  description: "Speed Sections (tables used to determine speeds based on distances)"
+  speedSections:
+    groups: "configuredValues"
+    GenericSection:
+      - ["End", 1]
+
 testMotors:
   subsystem: "testMotors"
   description: "All motors used for testing live here"

@@ -13,3 +13,11 @@ driveTrain:
       channel: 20
       type: "CANTalonSRX"
       inverted: False
+
+speedSections:
+  subsystem: "speedSections"
+  description: "Speed Sections (tables used to determine speeds based on distances)"
+  speedSections:
+    groups: "configuredValues"
+    GenericSection:
+      - ["End", 1]
