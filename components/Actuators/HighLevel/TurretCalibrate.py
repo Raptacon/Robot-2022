@@ -38,6 +38,8 @@ class CalibrateTurret(StateMachine):
 
     @state
     def foundDeadzones(self):
+        self.limitSwitchTable = self.limitSwitchTable.getNumber(self.limitL, self.limitR)
         self.done()
+        return self.limitSwitchTable
 
 
