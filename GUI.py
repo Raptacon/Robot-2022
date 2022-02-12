@@ -1,15 +1,17 @@
 from cgitb import enable
+from time import sleep
 from struct import pack
 from telnetlib import X3PAD
 from tkinter import CENTER, E, NW, Canvas,Tk
 import tkinter as tk
-from turtle import bgcolor, width
+from turtle import pos
 from networktables import NetworkTables as networktable
 import math
 class window(tk.Tk):
     CamTable = networktable.getTable("ML")
     width = round((math.tan(math.radians((180 - 81.3)/2)) * 200))
     maxFT = 10
+    position = [[3,40.65],[11,40.65],[13,-40.65],[9,40.65]]
     def __init__(self):
         tk.Tk.__init__(self)
         myCanvas = tk.Frame(self, background= 'white')
@@ -40,22 +42,25 @@ class Calc_circle(tk.Frame):
         self.calc_tri(self.label)
         self.calc_cir(self.label)
     def calc_cir(self,canvas):
-        position = [[3,40.65],[11,40.65],[13,-40.65],[9,40.65]]
-        numball = len(position)
+        
+        numball = len(window.position)
         HightOffSet = 2
         ball = 0
         max = window.maxFT
         maxAngle = math.radians(40.65)
         #self.label.tkraise()
         while(ball < numball):
-            angle = math.radians(position[ball][1])
-            hyp = position[ball][0] #math.sqrt(position[ball][0] ** 2 - HightOffSet ** 2) 
+            num = window.position[ball][0]
+            angle = math.radians(window.position[ball][1])
+            hyp = math.sqrt(window.position[ball][0] ** 2 - HightOffSet ** 2) 
             xft = max / math.cos(angle)
             dist = min(hyp, xft)
             yft = dist * math.sin(angle)
             x = window.width - (dist * (window.width/max))*math.cos(angle)
             y = 200 + (yft*(400/(2*max*math.tan(maxAngle))))
             self.create_circle(x, y, 5, canvas)
+            print(window.position[ball][0])
+            window.position[ball][0] = 1 + window.position[ball][0]
             ball += 1
     def create_circle(self,x, y, r, canvasName): #center coordinates, radius
         x0 = x - r
@@ -72,11 +77,14 @@ class Calc_circle(tk.Frame):
         x3 = x2
         y3 = 400
         canvasNametri.create_polygon(x1,y1, x2,y2, x3,y3, tags = 'rect')
-
+def delete():
+    Window.frames[Calc_circle].label.delete('circle')
+    Window.frames[Calc_circle].calc_cir(Window.frames[Calc_circle].label)
+    Window.after(1000, delete)
 Window = window()
 Window.geometry(str(Window.width)+'x400+0+0')
 Window.resizable(0,0)
-while True:
-    Window.after(1000,Window.frames[Calc_circle].label.delete("circle"))
-    Window.after(1, Window.frames[Calc_circle].calc_cir(Window.frames[Calc_circle].label))
-    Window.mainloop()
+#while True:
+    #Window.after(1000,delete)
+delete()
+Window.mainloop()
