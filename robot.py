@@ -78,6 +78,7 @@ class MyRobot(MagicRobot):
     # Test code:
     testBoard: TestBoard
     motors_turret: dict
+    turretTurnAngle = tunable(180)
 
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
@@ -158,9 +159,6 @@ class MyRobot(MagicRobot):
 
         self.turnToAngle.engage()
 
-        # self.turretTurn.setAngle(0)
-        self.turretTurn.setAngle(145)
-
     def teleopPeriodic(self):
         """
         Must include. Called repeatedly while running teleop.
@@ -178,6 +176,8 @@ class MyRobot(MagicRobot):
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
         self.turretTurn.engage()
+
+        self.turretTurn.setAngle(self.turretTurnAngle)
 
         self.goToDist.engage()
         self.autoShoot.engage()

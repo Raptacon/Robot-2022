@@ -2,10 +2,10 @@ from magicbot import feedback
 
 class TurretThreshold:
     compatString = ["doof", "greenChassis"]
-    Deadzones = [[90, 180]]
+    Deadzones = [[-90, 0]]
     motors_turret: dict
     speed = 0
-    exitSpeed = .3
+    exitSpeed = .02
     safetySpeed = .07
     safetyThreshold = 5
     gearRatio = 10
@@ -30,19 +30,47 @@ class TurretThreshold:
         """
         Checks if desired angle is within the deadzone.Then, returns closest point to the angle it can reach.
         """
-        for leftLim, rightLim in self.Deadzones:
-            if angle > leftLim and angle < rightLim:
-                if abs(leftLim - angle) < abs(rightLim - angle):
-                    return leftLim
-                else:
-                    return rightLim
+        # for leftLim, rightLim in self.Deadzones:
+        #     if angle > leftLim and angle < rightLim:
+        #         if 270 < angle < 360:
+        #             if rightLim < (angle -180) < leftLim:
+        #                 angle = leftLim
+        #         elif 180 < angle < 269.9:
+        #             if rightLim < (angle - 90) < leftLim:
+        #                 angle = leftLim
+        #         elif 0 < angle < 89.9:
+        #             if rightLim < (angle + 90) < leftLim:
+        #                 angle = rightLim
 
-            # Check paths
-            if leftLim > self.pos and leftLim < angle:
-                return leftLim
-            elif rightLim < self.pos and rightLim > angle:
-                return rightLim
+
+        #         if abs(leftLim - angle) < abs(rightLim - angle):
+        #             return leftLim
+        #         else:
+        #             return rightLim
+
+        for lLim, rLim in self.Deadzones:
+            # If we're jumping the deadzone in either direction
+            # or the angle is inside of the deadzone
+            if ((lLim >= self.pos and rLim <= angle)
+                or (lLim >= angle and rLim <= self.pos)):
+                if lLim >= self.pos:
+                    return lLim
+                if lLim >= angle:
+                    return rLim
+                # Return the limit on the nearest side of the deadzone
+            if (angle >= lLim and angle <= rLim):
+                if lLim >= self.pos:
+                    return lLim
+                if rLim <= self.pos:
+                    return rLim
         return angle
+
+        #     # Check paths
+        #     if leftLim > self.pos and leftLim < angle:
+        #         return leftLim
+        #     elif rightLim < self.pos and rightLim > angle:
+        #         return rightLim
+        # return angle
 
     # def DetermineShortestPath(self, angle, leftLim, rightLim):
     #     self.DegreeToAngle = self.pos
@@ -60,7 +88,8 @@ class TurretThreshold:
         return self.speed
 
     def calc_Position(self):
-        self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
+        # self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
+        self.pos = 360 * self.encoder.getPosition() / (self.gearRatio)
 
     def execute(self):
         #gets position, sets speed for every frames

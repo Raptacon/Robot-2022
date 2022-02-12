@@ -11,13 +11,15 @@ class TurretTurn(StateMachine):
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
     turnAngle = None
-    tolerance = tunable(0.5)
+    tolerance = tunable(3)
 
     def setup(self):
         self.pos = self.turretThreshold.getPosition()
 
     def setAngle(self, angle):
         """sets angle turret is turning to"""
+        if self.turretThreshold.angleCheck(angle) != angle:
+            log.error("Turret angle check failed")
         self.turnAngle = self.turretThreshold.angleCheck(angle)
 
     def setLimeLightControl(self):
