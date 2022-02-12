@@ -22,7 +22,7 @@ class BallCollect(StateMachine):
     safetyMult = .3
 
     def startRunning(self):
-        self.start = True
+        self.next_state("align")
 
     def getBallDist(self):
         # Placeholder, figure this out later.
@@ -34,10 +34,7 @@ class BallCollect(StateMachine):
         Starts the statemachine if requested.
         Otherwise stays here.
         """
-        self.next_state("idling")
-        if self.start:
-            self.start = False
-            self.next_state("align")
+        pass
 
     @state
     def align(self):
