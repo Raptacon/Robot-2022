@@ -137,6 +137,7 @@ dmypy.json
 raptaconVenv
 
 #FRC files
+simgui*
 imgui.ini
 .deploy_cfg
 .installer_config
