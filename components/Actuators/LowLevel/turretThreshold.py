@@ -1,4 +1,6 @@
 from magicbot import feedback
+from networktables import NetworkTables as networktable
+import logging as log
 class TurretThreshold:
     compatString = ["teapot"]
     Deadzones = [[-90, 0]]
@@ -10,12 +12,17 @@ class TurretThreshold:
     gearRatio = 10
     sprocketRatio = 120/18
     DegreeToAngle = 0
-
-    def calibrate(self, Deadzones):
-        self.Deadzones = self.pos
+    limitSwitchTable = networktable.getTable("SmartDashboard")
+    Deadzones = []
 
     def setup(self):
         #connects moters and gets position
+        self.Deadzones[0] = [self.limitSwitchTable.getNumber("Left Limit", None), self.limitSwitchTable.getNumber("Right Limit", None)]
+        if self.Deadzones[0][0] == None or self.Deadzones[0][1] == None:
+            log.error("MUST CALIBRATE TURRET")
+            self.calibrated = False
+        else:
+            self.calibrated = True
         self.turretMotor = self.motors_turret["turretMotor"]
         self.encoder = self.turretMotor.getEncoder()
         self.pos = self.encoder.getPosition()
@@ -65,11 +72,15 @@ class TurretThreshold:
         #gets position, sets speed for every frames
         self.calc_Position()
 
-        for lLimit, rLimit in self.Deadzones:
-            if self.pos > lLimit and self.pos < rLimit:
-                if abs(lLimit - self.pos) < abs(rLimit - self.pos):
-                    self.speed = -1*self.exitSpeed
-                else:
-                    self.speed = self.exitSpeed
+        if self.calibrated:
 
-        self.turretMotor.set(self.speed)
+            for lLimit, rLimit in self.limitSwitchTable:
+                if self.pos > lLimit and self.pos < rLimit:
+                    if abs(lLimit - self.pos) < abs(rLimit - self.pos):
+                        self.speed = -1*self.exitSpeed
+                    else:
+                        self.speed = self.exitSpeed
+
+            self.turretMotor.set(self.speed)
+        else:
+            log.error("Calibrate the turret bud.")

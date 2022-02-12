@@ -1,5 +1,6 @@
 
 from magicbot import StateMachine, state
+from wpilib import SmartDashboard
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
@@ -9,7 +10,7 @@ class CalibrateTurret(StateMachine):
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     const_turnAngle = 5
-    limitSwitchTable = networktable.getTable("LimitSwitch")
+    limitTable = networktable.getTable("SmartDashboard")
 
     def getLClicked(self):
         return 0
