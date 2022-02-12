@@ -181,16 +181,6 @@ class MyRobot(MagicRobot):
         self.autoShoot.engage()
         self.turnToAngle.engage()
         self.shooter.engage()
-        if self.xboxMap.getDriveA() == True:
-            executingDriveCommand = True
-            self.autoAlign.setShootAfterComplete(False)
-            self.autoAlign.engage()
-        if self.xboxMap.getDriveA() == False and self.prevAState == True:
-            self.autoAlign.stop()
-            self.turretMotor.set(0)
-            self.autoShoot.stop()
-            self.shooterMotors.stopShooter()
-            self.hopperMotor.stopHopper()
         self.prevAState = self.xboxMap.getDriveA()
 
         if not executingDriveCommand:
@@ -198,7 +188,6 @@ class MyRobot(MagicRobot):
                 self.driveTrain.setArcade(-1 *driveLeftY, driveRightX)
             else:
                 self.driveTrain.setTank(driveLeftY, driveRightY)
-            self.autoAlign.reset_integral()
 
         self.scorpionLoader.checkController()
 
