@@ -1,5 +1,5 @@
 from magicbot import feedback
-
+from components.Actuators.HighLevel.TurretCalibrate import CalibrateTurret
 class TurretThreshold:
     compatString = ["teapot"]
     Deadzones = [[-90, 0]]
@@ -11,6 +11,7 @@ class TurretThreshold:
     gearRatio = 10
     sprocketRatio = 120/18
     DegreeToAngle = 0
+    calibrateturret: CalibrateTurret
 
     def calibrate(self, Deadzones):
         self.Deadzones = self.pos
