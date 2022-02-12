@@ -9,7 +9,8 @@ import math
 limeTable = networktable.getTable("limelight")
 
 class window(tk.Tk):
-    width  = round((math.tan(math.radians((180 - 81.3)/2)) * 200))
+    width = round((math.tan(math.radians((180 - 81.3)/2)) * 200))
+    maxFT = 10
     def __init__(self):
         tk.Tk.__init__(self)
         myCanvas = tk.Frame(self, background= 'white')
@@ -37,35 +38,32 @@ class Calc_circle(tk.Frame):
         tk.Frame.__init__(self,parent)
         self.label = tk.Canvas(self)
         self.label.pack(fill = 'both',expand= True)
-        position = [[5,40.65],[10,40.65],[15,0],[54,40.65]]
+        self.calc_tri(self.label)
+        self.calc_cir(self.label)
+    def calc_cir(self,canvas):
+        position = [[3,40.65],[11,40.65],[13,-40.65],[9,40.65]]
         numball = len(position)
         HightOffSet = 2
         ball = 0
-        winx = self.calc_tri(self.label)
+        max = window.maxFT
+        maxAngle = math.radians(40.65)
         #self.label.tkraise()
         while(ball < numball):
-            if position[ball][0] <= 10:
-                hyp = math.sqrt(position[ball][0] ** 2 - HightOffSet ** 2)
-                xft = hyp * math.cos(math.radians(position[ball][1]))
-                yft = hyp * math.sin(math.radians(position[ball][1]))
-                x = window.width - (xft * (window.width/10))
-                y = 200 + (yft * 20)
-                print(y,yft)
-                self.create_circle(x, y, 5, self.label)
-            else:
-                hyp = math.sqrt(position[ball][0] ** 2 - HightOffSet ** 2)
-                x = 0
-                yft = hyp * math.sin(math.radians(position[ball][1]))
-                y = 200 + (yft * 20)
-                print(y,yft)
-                self.create_circle(x, y, 5, self.label)
+            angle = math.radians(position[ball][1])
+            hyp = position[ball][0] #math.sqrt(position[ball][0] ** 2 - HightOffSet ** 2) 
+            xft = max / math.cos(angle)
+            dist = min(hyp, xft)
+            yft = dist * math.sin(angle)
+            x = window.width - (dist * (window.width/max))*math.cos(angle)
+            y = 200 + (yft*(400/(2*max*math.tan(maxAngle))))
+            self.create_circle(x, y, 5, canvas)
             ball += 1
     def create_circle(self,x, y, r, canvasName): #center coordinates, radius
         x0 = x - r
         y0 = y - r
         x1 = x + r
         y1 = y + r
-        canvasName.create_oval(x0, y0, x1, y1, fill='blue')
+        canvasName.create_oval(x0, y0, x1, y1, fill='blue',tags = 'circle')
     def calc_tri(self,canvasNametri):
         FOV = 81.3
         x1 = window.width
@@ -74,10 +72,12 @@ class Calc_circle(tk.Frame):
         y2 = 0
         x3 = x2
         y3 = 400
-        canvasNametri.create_polygon(x1,y1, x2,y2, x3,y3)
-        return x2
+        canvasNametri.create_polygon(x1,y1, x2,y2, x3,y3, tags = 'rect')
 
 Window = window()
 Window.geometry(str(Window.width)+'x400+0+0')
 Window.resizable(0,0)
-Window.mainloop()
+while True:
+    Window.after(1000,Window.frames[Calc_circle].label.delete("circle"))
+    Window.after(1, Window.frames[Calc_circle].calc_cir(Window.frames[Calc_circle].label))
+    Window.mainloop()
