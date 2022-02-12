@@ -232,7 +232,20 @@ speedSections:
       - [12, .25]
       - [8, .2]
       - [5, .15]
+    AutoAlign:
+      - [2.1, "PID"]
+      - [15, .3]
+      - [30, .5]
     PID:
+      GoToDist:
+        P: 0.01
+        I: 0
+        D: 0
+        SpeedFloor: .17
+      AutoAlign:
+        P: 0.01
+        I: 0.08
+        D: 0
       TurretTurn:
         P: 0
         I: 0
