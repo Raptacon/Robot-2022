@@ -30,8 +30,10 @@ class CalibrateTurret(StateMachine):
     @state
     def findLeftdeadzone(self):
         while self.clicked == False:
-            self.turretTurn.engage()
+            self.turretThreshold.angleCheck(self.const_turnAngle)
+            self.const_turnAngle -= 1
             self.turretThreshold.setTurretspeed()
+            self.turretTurn.engage()
             if self.clicked == True:
                 self.limitL = self.turretThreshold.getPosition()
                 self.next_state('foundDeadzones')
