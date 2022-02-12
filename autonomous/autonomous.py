@@ -1,8 +1,6 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
-from components.Actuators.AutonomousControl.autoAlign import AutoAlign
-from components.Actuators.AutonomousControl.autoShoot import AutoShoot
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 
 class Autonomous(AutonomousStateMachine):
@@ -46,24 +44,24 @@ class Autonomous(AutonomousStateMachine):
         self.driveTrain.setTank(0, 0)
         self.done()
 
-class AutonomousAutoShoot(AutonomousStateMachine):
-    """Creates the autonomous code"""
-    time = 1.4
-    MODE_NAME = "AutoShoot Autonomous"
-    DEFAULT = False
-    driveTrain: DriveTrain
-    shooter: ShooterLogic
-    pneumatics: Pneumatics
-    autoAlign: AutoAlign
-    autoShoot: AutoShoot
-    shooter: ShooterLogic
-    drive_speed = tunable(.25)
+# class AutonomousAutoShoot(AutonomousStateMachine):
+#     """Creates the autonomous code"""
+#     time = 1.4
+#     MODE_NAME = "AutoShoot Autonomous"
+#     DEFAULT = False
+#     driveTrain: DriveTrain
+#     shooter: ShooterLogic
+#     pneumatics: Pneumatics
+#     autoAlign: AutoAlign
+#     autoShoot: AutoShoot
+#     shooter: ShooterLogic
+#     drive_speed = tunable(.25)
 
-    @state(first = True)
-    def engage_shooter(self):
-        """Starts shooter and fires"""
-        self.autoAlign.setShootAfterComplete(True)
-        self.autoAlign.engage()
-        self.autoShoot.engage()
-        self.shooter.engage()
-        self.next_state("engage_shooter")
+#     @state(first = True)
+#     def engage_shooter(self):
+#         """Starts shooter and fires"""
+#         self.autoAlign.setShootAfterComplete(True)
+#         self.autoAlign.engage()
+#         self.autoShoot.engage()
+#         self.shooter.engage()
+#         self.next_state("engage_shooter")
