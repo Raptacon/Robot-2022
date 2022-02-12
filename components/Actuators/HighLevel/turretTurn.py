@@ -23,11 +23,17 @@ class TurretTurn(StateMachine):
     def setLimeLightControl(self):
         """Determines if turret is using limelight input."""
         self.controlMode = "Limelight"
+
     def setEncoderControl(self):
         """Determines if turret is using encoder input."""
         self.controlMode = "Encoder"
+
     def getOffset(self):
-        """Gives difference between current position and target angle."""
+        """
+        Gives difference between current position and target angle.
+        Based on self.controlMode - if in limelight control and it doesn't
+        have a target returns false
+        """
         if self.controlMode == "Limelight":
             limePosition = self.limeTable.getNumber("tx", -50)
             if limePosition != -50:
@@ -37,9 +43,6 @@ class TurretTurn(StateMachine):
                 return False
         elif self.controlMode == "Encoder":
             return self.turnAngle - self.pos
-        # Figure out if taking input from lime/encoder
-        # Get input from lime/encoder
-        # Give offset
 
 
     def setRelAngle(self, relangle):
@@ -61,7 +64,9 @@ class TurretTurn(StateMachine):
         Sets speed of turret based on what angle we are turning to
         """
         offset = self.getOffset()
-        # Check to see if offset is false
+        if offset != True:
+            self.setEncoderControl()
+            offset = self.getOffset()
         speed = self.speedSections.getSpeed(offset, "TurretTurn")
         if abs(offset) < self.tolerance:
             speed = 0
