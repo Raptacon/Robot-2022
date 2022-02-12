@@ -5,43 +5,41 @@ from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
 class CalibrateTurret(StateMachine):
     compatString = ["doof", "greenChassis", "newBot"]
-    clicked = False
     #a dummy variable until we find something else
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     const_turnAngle = 5
     limitSwitchTable = networktable.getTable("LimitSwitch")
 
+    def getLClicked(self):
+        return 0
+
+    def getRClicked(self):
+        return 0
+
     @state(first = True)
     def findRightdeadzone(self):
-        while self.clicked == False:
-            self.turretThreshold.angleCheck(self.const_turnAngle)
-            self.const_turnAngle += 1
-            self.turretThreshold.setTurretspeed()
+        if self.getRClicked():
+            self.limitR = self.turretThreshold.getPosition()
+            self.next_state('findLeftdeadzone')
+        else:
             self.turretTurn.engage()
-
-            if self.clicked == True:
-                self.limitR = self.turretThreshold.getPosition()
-                self.next_state('findLeftdeadzone')
-                self.clicked = False
-                break
+            self.turretTurn.setRelAngle(self.const_turnAngle)
+            self.next_state("findRightdeadzone")
 
 
     @state
     def findLeftdeadzone(self):
-        while self.clicked == False:
-            self.turretThreshold.angleCheck(self.const_turnAngle)
-            self.const_turnAngle -= 1
-            self.turretThreshold.setTurretspeed()
+        if self.getLClicked():
+            self.limitL = self.turretThreshold.getPosition()
+            self.next_state('foundDeadzones')
+        else:
             self.turretTurn.engage()
-            if self.clicked == True:
-                self.limitL = self.turretThreshold.getPosition()
-                self.next_state('foundDeadzones')
+            self.turretTurn.setRelAngle(-1*self.const_turnAngle)
+            self.next_state("findLeftdeadzone")
 
     @state
     def foundDeadzones(self):
-        self.limitSwitchTable = self.limitSwitchTable.getNumber(self.limitL, self.limitR)
-        self.done()
-        return self.limitSwitchTable
-
-
+        self.turretThreshold.setDeadzones(self.limitL, self.limitR)
+        self.limitTable.putNumber("Left Limit", self.limitL)
+        self.limitTable.putNumber("Right Limit", self.limitR)

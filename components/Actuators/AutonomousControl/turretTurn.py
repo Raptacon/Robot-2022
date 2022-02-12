@@ -77,6 +77,5 @@ class TurretTurn(StateMachine):
         """
         Starts turning process, if in tolerance it will stop
         """
-        self.pos = self.turretThreshold.getPosition()
         self.setSpeed()
         self.next_state("turn")
