@@ -52,6 +52,6 @@ def testComponentListCompatibility(robot, componentList):
 
         #First pass this will not always work can expand to make better
         #This will let the component not use the real ones.
-        component_type.execute = components.dummyFunc
-        component_type.on_enable = components.dummyFunc
-        component_type.setup = components.dummyFunc
+        method_list = [attribute for attribute in dir(component_type) if callable(getattr(component_type, attribute)) and attribute.startswith('__') is False]
+        for method in method_list:
+            setattr(component_type, method, components.dummyFunc)

@@ -21,7 +21,6 @@ from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.LowLevel.elevator import Elevator
 from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
 from components.Actuators.HighLevel.feederMap import FeederMap
-from components.Actuators.AutonomousControl.autoAlign import AutoAlign
 from components.Actuators.AutonomousControl.autoShoot import AutoShoot
 from components.Input.lidar import Lidar
 from components.Input.navx import Navx
@@ -29,6 +28,8 @@ from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 
 
 
@@ -62,7 +63,6 @@ class MyRobot(MagicRobot):
     pneumatics: Pneumatics
     elevator: Elevator
     scorpionLoader: ScorpionLoader
-    autoAlign: AutoAlign
     autoShoot: AutoShoot
     navx: Navx
     turnToAngle: TurnToAngle
@@ -72,9 +72,12 @@ class MyRobot(MagicRobot):
     colorSensor: ColorSensor
     speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
+    turretThreshold: TurretThreshold
+    turretTurn: TurretTurn
 
     # Test code:
     testBoard: TestBoard
+    turretTurnAngle = tunable(180)
 
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
@@ -110,9 +113,9 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
-        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
-                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections,
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
+                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
+                         TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
@@ -171,18 +174,14 @@ class MyRobot(MagicRobot):
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
+        self.turretTurn.engage()
+
+        self.turretTurn.setAngle(self.turretTurnAngle)
+
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
-        if self.xboxMap.getDriveA() == True:
-            executingDriveCommand = True
-            self.autoAlign.setShootAfterComplete(False)
-            self.autoAlign.engage()
-        if self.xboxMap.getDriveA() == False and self.prevAState == True:
-            self.autoAlign.stop()
-            self.autoShoot.stop()
-            self.shooterMotors.stopShooter()
-            self.hopperMotor.stopHopper()
+        self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 
         if not executingDriveCommand:
@@ -190,7 +189,6 @@ class MyRobot(MagicRobot):
                 self.driveTrain.setArcade(-1 *driveLeftY, driveRightX)
             else:
                 self.driveTrain.setTank(driveLeftY, driveRightY)
-            self.autoAlign.reset_integral()
 
         self.scorpionLoader.checkController()
 
@@ -206,7 +204,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        pass
+        #neg counterclockwise, pos clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """

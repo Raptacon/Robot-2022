@@ -20,8 +20,10 @@ class ShooterLogic(StateMachine):
 
     # Tunables
     shootingLoaderSpeed = tunable(.4)
-    autoShootingSpeed = tunable(4800)
-    teleShootingSpeed = tunable(5100)
+    autoShootingSpeed1 = tunable(2200)
+    autoShootingSpeed2 = tunable(2200)
+    teleShootingSpeed1 = tunable(2350)
+    teleShootingSpeed2 = tunable(1900)
 
     # Other variables
     isSetup = False
@@ -44,8 +46,12 @@ class ShooterLogic(StateMachine):
         """Indicates if the robot is not in autonomous mode."""
         self.isAutonomous = False
 
-    def setRPM(self, rpm):
-        self.teleShootingSpeed = rpm
+    def setRPM(self, rpm1, rpm2=0):
+        self.teleShootingSpeed1 = rpm1
+        if rpm2 != 0:
+            self.teleShootingSpeed2 = rpm2
+        else:
+            self.teleShootingSpeed2 = rpm1
 
     @state
     def shootBalls(self):
@@ -67,13 +73,15 @@ class ShooterLogic(StateMachine):
     def isShooterUpToSpeed(self):
         """Determines if the shooter is up to speed, then rumbles controller and publishes to NetworkTables."""
         if self.isAutonomous:
-            shootSpeed = self.autoShootingSpeed - self.speedTolerance
+            shootSpeed1 = self.autoShootingSpeed1 - self.speedTolerance
+            shootSpeed2 = self.autoShootingSpeed2 - self.speedTolerance
         elif not self.isAutonomous:
-            shootSpeed = self.teleShootingSpeed - self.speedTolerance
+            shootSpeed1 = self.teleShootingSpeed1 - self.speedTolerance
+            shootSpeed2 = self.teleShootingSpeed2 - self.speedTolerance
         if not self.isSetup:
             return False
-        atSpeed = (bool(self.shooterMotors.shooterMotor1.getEncoder().getVelocity() >= shootSpeed)
-                and bool(self.shooterMotors.shooterMotor2.getEncoder().getVelocity() >= shootSpeed))
+        atSpeed = (bool(self.shooterMotors.shooterMotor1.getEncoder().getVelocity() >= shootSpeed1)
+                and bool(self.shooterMotors.shooterMotor2.getEncoder().getVelocity() >= shootSpeed2))
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
@@ -100,7 +108,7 @@ class ShooterLogic(StateMachine):
         """
         self.shooting = True
         if not self.isAutonomous:
-            self.shooterMotors.runShooter(self.teleShootingSpeed)
+            self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
             if self.isShooterUpToSpeed():
                 self.hopperMotor.runHopper(self.shootingLoaderSpeed, Direction.kForwards)
             else:
@@ -108,7 +116,7 @@ class ShooterLogic(StateMachine):
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
-            self.shooterMotors.runShooter(self.autoShootingSpeed)
+            self.shooterMotors.runShooter(self.autoShootingSpeed1, self.autoShootingSpeed2)
             if self.isShooterUpToSpeed():
                 self.next_state('autonomousShoot')
 
@@ -133,7 +141,7 @@ class ShooterLogic(StateMachine):
     def idling(self):
         """First state. Does nothing here. StateMachine returns to this state when not shooting."""
         self.shooting = False
-        if self.start == True and self.running == False:
+        if self.start == True:
             self.next_state('shootBalls')
 
     def execute(self):
