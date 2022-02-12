@@ -2,7 +2,6 @@
 Team 3200 Robot base class
 """
 # Module imports:
-
 import wpilib
 from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
