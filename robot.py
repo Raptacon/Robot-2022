@@ -75,7 +75,6 @@ class MyRobot(MagicRobot):
 
     # Test code:
     testBoard: TestBoard
-    motors_turret: dict
     turretTurnAngle = tunable(180)
 
     sensitivityExponent = tunable(1.8)
@@ -112,8 +111,8 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
-        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain,
-                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle,
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
+                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)

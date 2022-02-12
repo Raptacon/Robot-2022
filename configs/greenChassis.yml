@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 compatibility: "greenChassis"
 
 driveTrain:
@@ -80,6 +78,14 @@ TurretMotor:
 >>>>>>> af766ec396058fb828157df8864248cd9a69cdee
 compatibility: "greenChassis"
 
+speedSections:
+  subsystem: "speedSections"
+  description: "Speed Sections (tables used to determine speeds based on distances)"
+  speedSections:
+    groups: "configuredValues"
+    GenericSection:
+      - ["End", 1]
+
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
@@ -141,8 +147,3 @@ driveTrain:
         triggerThresholdTime: 50
         currentLimit: 40
       inverted: False
-<<<<<<< HEAD
-
->>>>>>> 455ca312e2e77b46cbba451d4c4ca8f66fdc325f
-=======
->>>>>>> af766ec396058fb828157df8864248cd9a69cdee
