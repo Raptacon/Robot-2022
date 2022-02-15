@@ -38,7 +38,7 @@ class TurretTurn(StateMachine):
         """
         if self.controlMode == "Limelight":
             limePosition = self.limeTable.getNumber("tx", -50)
-            if limePosition != -50:
+            if limePosition != 0 and limePosition != -50:
                 return limePosition
             else:
                 log.error("Limelight missing target")
