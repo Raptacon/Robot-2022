@@ -15,6 +15,9 @@ class TurretThreshold:
     limitSwitchTable = networktable.getTable("SmartDashboard")
     Deadzones = []
 
+    calibrating = False
+    calibSpeed = .1
+
     def setup(self):
         #connects moters and gets position
         self.Deadzones[0] = [self.limitSwitchTable.getNumber("Left Limit", None), self.limitSwitchTable.getNumber("Right Limit", None)]
@@ -26,6 +29,13 @@ class TurretThreshold:
         self.turretMotor = self.motors_turret["turretMotor"]
         self.encoder = self.turretMotor.getEncoder()
         self.pos = self.encoder.getPosition()
+
+    def setDeadzones(self, lLimit, rLimit):
+        self.Deadzones[0] = [lLimit, rLimit]
+        self.calibrated = True
+
+    def setCalibrating(self, calib):
+        self.calibrating = calib
 
     def setTurretspeed(self, tSpeed):
         #sets speed
@@ -81,6 +91,11 @@ class TurretThreshold:
                     else:
                         self.speed = self.exitSpeed
 
+            self.turretMotor.set(self.speed)
+
+        elif self.calibrating:
+            if self.speed > self.calibSpeed:
+                self.speed = self.calibSpeed
             self.turretMotor.set(self.speed)
         else:
             log.error("Calibrate the turret bud.")
