@@ -1,4 +1,4 @@
-compatibility: "newBot"
+compatibility: "teapot"
 
 system:
   subsystem: "system"
@@ -77,9 +77,6 @@ hopperMotors:
   description: "All motors used in the hopper live here"
   hopperMotors:
     groups: "motors"
-
-    hopperMotor: #Approximately 2 min, 4 max.
-    # we don't have information on this yet.
     hopperMotor1:
       channel: 60
       type: "CANTalonSRX"
@@ -100,15 +97,27 @@ hopperMotors:
         absMaxTimeMs: 50
         maxNominal: 40
 
-loaderSensors: #likely to be multiple.
+loaderSensors:
   subsystem: "breaksensors"
   description: "All IR break sensors used for the loader live here for the loader/LED component"
   loaderSensors:
     groups: "digitalInput"
-    sensor3:
+    sensor1:
       type: "RIODigitalIn"
-      channel: 3
+      channel: 1
       description: "Loading sensor"
+
+TurretMotor:
+  subsystem: "turret"
+  description: "motor for turret goes here"
+  motors:
+    groups:
+     - "motors"
+    turretMotor:
+      channel: 12
+      type: "SparkMax"
+      inverted: False
+      motorType: "kBrushless"
 
 intakeMotors:
   intakeMotor:
@@ -123,7 +132,6 @@ intakeMotors:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
-    # There will probably only be one of these
 
 shooterMotors:
   subsystem: "shooter"
@@ -173,7 +181,65 @@ shooterMotors:
         stallLimit: 30
         stallLimitRPM: 50
         secondaryLimit: 35
-        
+
+speedSections:
+  subsystem: "speedSections"
+  description: "Speed Sections (tables used to determine speeds based on distances)"
+  speedSections:
+    groups: "configuredValues"
+    TurretTurn:
+      - [45, .013]
+      - [90, .015]
+      - [180, .03]
+      - ["End", 1]
+    PID:
+      TurretTurn:
+        P: 0
+        I: 0
+        D: 0
+        SpeedFloor: 0.01
+
+TurretMotor:
+  subsystem: "turret"
+  description: "motor for turret goes here"
+  motors:
+    groups:
+     - "motors"
+    turretMotor:
+      channel: 12
+      type: "SparkMax"
+      inverted: False
+      motorType: "kBrushless"
+
 pneumatics:
   type: "yaml"
   file: "pneumatics.yml"
+
+speedSections:
+  subsystem: "speedSections"
+  description: "Speed Sections (tables used to determine speeds based on distances)"
+  speedSections:
+    groups: "configuredValues"
+    TurretTurn:
+      - [15, .03]
+      - [30, .15]
+      - [45, .3]
+      - [90, .55]
+      - [180, .7]
+      - ["End", 1]
+    GoToDist:
+      - [36, .3]
+      - [12, .25]
+      - [8, .2]
+      - [5, .15]
+    PID:
+      TurretTurn:
+        P: 0
+        I: 0
+        D: 0
+        SpeedFloor: 0.01
+      GoToDist:
+        P: 0.01
+        I: 0
+        D: 0
+        SpeedFloor: .11
