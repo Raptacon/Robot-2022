@@ -35,6 +35,13 @@ class TurretThreshold:
         self.calibrated = True
 
     def setCalibrating(self, calib):
+        """
+        SHOULD ONLY BE USED IF YOU KNOW
+        /EXACTLY/ WHAT YOU ARE DOING
+        DO NOT USE
+        Sets calibrating to true, overriding
+        safety checks so that we can calibrate the turret.
+        """
         self.calibrating = calib
 
     def setTurretspeed(self, tSpeed):
