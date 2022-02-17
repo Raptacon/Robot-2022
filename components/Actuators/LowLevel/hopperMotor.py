@@ -23,7 +23,7 @@ class HopperMotor:
 
         log.info("Hopper Motor Component Created")
 
-    def runHopper(self, lSpeed, direction):
+    def runHopperMotor1(self, lSpeed, direction):
         """
         Sets the hopper motor to speed lSpeed in direction
         :param lSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
@@ -34,19 +34,30 @@ class HopperMotor:
         elif direction == Direction.kBackwards: # Backwards
             self.hopperSpeed1 = -lSpeed
 
+        self.hopper1 = True
+
+    def RunHopperMotor2(self, lSpeed, direction):
+        """
+        Sets the hopper motor to speed lSpeed in direction
+        :param lSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
+        :param direction: Enum Direction from utils.DirectionEnums (forwards or backwards)
+        """
         if direction == Direction.kForwards: # Forwards
             self.hopperSpeed2 = lSpeed
         elif direction == Direction.kBackwards: # Backwards
             self.hopperSpeed2 = -lSpeed
-
-        self.hopper1 = True
         self.hopper2 = True
 
-    def stopHopper(self):
+    def stopHopperMotor1(self):
         """
         Turns the hopper off
         """
         self.hopper1 = False
+
+    def stopHopperMotor2(self):
+        """
+        Turns the hopper off
+        """
         self.hopper2 = False
 
     def isHopper1Running(self):
