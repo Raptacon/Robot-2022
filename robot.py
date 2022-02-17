@@ -8,6 +8,7 @@ from magicbot import MagicRobot, tunable
 
 # Component imports:
 from components.SoftwareControl.speedSections import SpeedSections, speedFactory
+from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.LowLevel.winch import Winch
@@ -21,7 +22,6 @@ from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
-from components.Actuators.AutonomousControl.autoAlign import AutoAlign
 from components.Actuators.AutonomousControl.autoShoot import AutoShoot
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
@@ -30,7 +30,8 @@ from components.Input.lidar import Lidar
 from components.Input.navx import Navx
 from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
-from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -62,7 +63,6 @@ class MyRobot(MagicRobot):
     pneumatics: Pneumatics
     elevator: Elevator
     scorpionLoader: ScorpionLoader
-    autoAlign: AutoAlign
     autoShoot: AutoShoot
     navx: Navx
     turnToAngle: TurnToAngle
@@ -73,9 +73,12 @@ class MyRobot(MagicRobot):
     driveTrainHandler: DriveTrainHandler
     speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
+    turretThreshold: TurretThreshold
+    turretTurn: TurretTurn
 
     # Test code:
     testBoard: TestBoard
+    turretTurnAngle = tunable(180)
 
     # If controller input is below this value, it will be set to zero.
     # This avoids accidental input, as we are now overriding autonomous
@@ -115,8 +118,9 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
-        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, DriveTrainHandler,
-                         AutoAlign, TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections,
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
+                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
+                         TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
@@ -181,17 +185,14 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
+        self.turretTurn.engage()
+
+        self.turretTurn.setAngle(self.turretTurnAngle)
 
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
-        if self.xboxMap.getDriveA() == True:
-            self.autoAlign.engage()
-        if self.xboxMap.getDriveA() == False and self.prevAState == True:
-            self.autoAlign.stop()
-            self.autoShoot.stop()
-            self.shooterMotors.stopShooter()
-            self.hopperMotor.stopHopper()
+        self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 
         # If the drivers have any input outside deadzone, take control.
@@ -200,7 +201,6 @@ class MyRobot(MagicRobot):
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*driveLeftY, driveRightX)
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
-        self.autoAlign.reset_integral()
 
         self.scorpionLoader.checkController()
 
@@ -216,7 +216,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        pass
+        #neg counterclockwise, pos clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """
