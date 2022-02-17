@@ -22,7 +22,7 @@ class LoaderLogic(StateMachine):
     allianceColor: DriverStation.Alliance
 
     # Tunable
-    automaticHopperMotor2Speed = tunable(.4)
+    automaticHopperMotor1Speed = tunable(.4)
     automaticHopperMotor2Speed = tunable(.4)
     # Other variables
     isAutomatic = True
@@ -79,13 +79,13 @@ class LoaderLogic(StateMachine):
     def waitForBallIntake(self):
         """Checks for intake to be completed."""
         if self.sensors.loadingSensor(State.kNotTripped) and self.eject == False:
-            self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kForwards)
+            self.hopperMotor.runHopperMotor1(self.automaticHopperMotor1Speed, Direction.kForwards)
             self.next_state('stopBall')
         elif self.eject and ColorSensor.getColor() != self.allianceColor:
             self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kBackwards)
             self.next_state('eject_ball')
         if self.sensors.middleSensor(State.kTripped):
-            self.hopperMotor.RunHopperMotor2(self.automaticHopperMotor2Speed, Direction.kForwards)
+            self.hopperMotor.RunHopperMotor2(self.automaticHopperMotor1Speed, Direction.kForwards)
             self.hopperMotor.stopHopperMotor1()
             self.next_state('stopBall')
 
