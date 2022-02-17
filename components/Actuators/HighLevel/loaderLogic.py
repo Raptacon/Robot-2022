@@ -22,8 +22,8 @@ class LoaderLogic(StateMachine):
     allianceColor: DriverStation.Alliance
 
     # Tunable
-    automaticLoaderSpeed = tunable(.4)
-
+    automaticHopperMotor2Speed = tunable(.4)
+    automaticHopperMotor2Speed = tunable(.4)
     # Other variables
     isAutomatic = True
     loaderStoppingDelay = .16
@@ -44,7 +44,7 @@ class LoaderLogic(StateMachine):
         self.next_state('runHopperManually')
 
     def stopLoading(self):
-        if self.hopperMotor.isHopperRunning():
+        if self.hopperMotor.isHopper1Running or self.hopperMotor.isHopper2Running():
             return
         self.next_state('shooting')
 
@@ -70,7 +70,8 @@ class LoaderLogic(StateMachine):
     @state(first = True)
     def checkForBall(self):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
-        self.hopperMotor.stopHopper()
+        self.hopperMotor.stopHopperMotor1()
+        self.hopperMotor.stopHopperMotor2()
         if self.sensors.loadingSensor(State.kTripped):
             self.next_state('waitForBallIntake')
 
@@ -78,10 +79,14 @@ class LoaderLogic(StateMachine):
     def waitForBallIntake(self):
         """Checks for intake to be completed."""
         if self.sensors.loadingSensor(State.kNotTripped) and self.eject == False:
-            self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kForwards)
+            self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kForwards)
+            self.next_state('stopBall')
+        elif self.sensors.middleSensor(State.kTripped):
+            self.hopperMotor.RunHopperMotor2(self.automaticHopperMotor2Speed, Direction.kForwards)
+            self.hopperMotor.stopHopperMotor1()
             self.next_state('stopBall')
         elif self.eject and ColorSensor.getColor() != self.allianceColor:
-            self.hopperMotor.runHopper(self.automaticLoaderSpeed, Direction.kBackwards)
+            self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kBackwards)
             self.next_state('eject_ball')
 
     @timed_state(duration = ballEjectTime, next_state = 'checkforBall')
