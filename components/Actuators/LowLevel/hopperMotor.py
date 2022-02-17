@@ -17,6 +17,7 @@ class HopperMotor:
         self.hopper = False
 
         self.hopperMotor1 = self.motors_loader["hopperMotor1"]
+        self.hopperMotor2 = self.motors_loader["hopperMotor2"]
 
         log.info("Hopper Motor Component Created")
 
