@@ -13,8 +13,10 @@ class HopperMotor:
         """
         Sets up hopper motors
         """
-        self.hopperSpeed = 0
-        self.hopper = False
+        self.hopperSpeed1 = 0
+        self.hopper1 = False
+        self.hopperSpeed2 = 0
+        self.hopper2 = False
 
         self.hopperMotor1 = self.motors_loader["hopperMotor1"]
         self.hopperMotor2 = self.motors_loader["hopperMotor2"]
@@ -28,26 +30,45 @@ class HopperMotor:
         :param direction: Enum Direction from utils.DirectionEnums (forwards or backwards)
         """
         if direction == Direction.kForwards: # Forwards
-            self.hopperSpeed = lSpeed
+            self.hopperSpeed1 = lSpeed
         elif direction == Direction.kBackwards: # Backwards
-            self.hopperSpeed = -lSpeed
+            self.hopperSpeed1 = -lSpeed
 
-        self.hopper = True
+        if direction == Direction.kForwards: # Forwards
+            self.hopperSpeed2 = lSpeed
+        elif direction == Direction.kBackwards: # Backwards
+            self.hopperSpeed2 = -lSpeed
+
+        self.hopper1 = True
+        self.hopper2 = True
 
     def stopHopper(self):
         """
         Turns the hopper off
         """
-        self.hopper = False
+        self.hopper1 = False
+        self.hopper2 = False
 
-    def isHopperRunning(self):
+    def isHopper1Running(self):
         """
         Returns True if the hopper is running.
         """
-        return self.hopper
+        return self.hopper1
+
+    def isHopper2Running(self):
+        """
+        Returns True if the hopper is running.
+        """
+        return self.hopper2
+
 
     def execute(self):
-        if self.hopper:
+        if self.hopper1:
             self.hopperMotor1.set(self.hopperSpeed)
-        elif self.hopper == False:
+        elif self.hopper1 == False:
             self.hopperMotor1.set(0)
+        if self.hopper2:
+            self.hopperMotor2.set(self.hopperSpeed)
+        elif self.hopper2 == False:
+            self.hopperMotor2.set(0)
+
