@@ -75,12 +75,12 @@ class LoaderLogic(StateMachine):
         if self.sensors.loadingSensor(State.kTripped):
             self.next_state('checkEject')
         if type(ballCount[0]) == Ball and ballCount[1] == None:
-            self.hopperMotor.runHopperMotor1(self.hopperMotor.movingSpeed, Direction.kForwards)
+            self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
             self.next_state('move_ball')
 
     @state
     def move_ball(self):
-        self.hopperMotor.runHopperMotor1(self.hopperMotor.movingSpeed, Direction.kForwards)
+        self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
         self.next_state('checkForBall')
 
     @state
@@ -105,7 +105,7 @@ class LoaderLogic(StateMachine):
         """
         Runs the loader backwards for a set time
         """
-        self.hopperMotor.runHopperMotor1(self.automaticHopperMotor1Speed, Direction.kBackwards)
+        self.hopperMotor.runHopperMotorForeside(self.automaticHopperMotor1Speed, Direction.kBackwards)
 
     @state(first = True)
     def nextAction(self):

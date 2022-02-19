@@ -98,9 +98,9 @@ class ShooterLogic(StateMachine):
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
             if self.isShooterUpToSpeed():
-                self.hopperMotor.runHopperMotor2(self.shootingLoaderSpeed, Direction.kForwards)
+                self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.stopHopperMotor2()
+                self.hopperMotor.stopHopperMotorBackside()
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
@@ -112,9 +112,9 @@ class ShooterLogic(StateMachine):
     def autonomousShoot(self):
         """Shoot balls when shooter is up to speed. Strictly for autonomous use."""
         if self.isShooterUpToSpeed():
-            self.hopperMotor.runHopperMotor2(self.shootingLoaderSpeed, Direction.kForwards)
+            self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
         else:
-            self.hopperMotor.stopHopperMotor2()
+            self.hopperMotor.stopHopperMotorBackside()
             self.next_state('autonomousShoot')
 
     @state

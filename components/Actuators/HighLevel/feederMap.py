@@ -45,15 +45,18 @@ class FeederMap:
 
         if loaderFunc == Type.kHopper:
             if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
-                self.hopperMotor.runHopper(self.loaderMotorSpeed, Direction.kForwards)
+                self.hopperMotor.runHopperMotorForeside(self.loaderMotorSpeed, Direction.kForwards)
+                self.hopperMotor.runHopperMotorBackside(self.loaderMotorSpeed, Direction.kForwards)
                 log.debug("right trig manual", self.xboxMap.getMechRightTrig())
 
             elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
-                self.hopperMotor.runHopper(self.loaderMotorSpeed, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorForeside(self.loaderMotorSpeed, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorBackside(self.loaderMotorSpeed, Direction.kBackwards)
                 log.debug("left trig manual", self.xboxMap.getMechLeftTrig())
 
             else:
-                self.hopperMotor.runHopper(0, Direction.kForwards)
+                self.hopperMotor.stopHopperMotorBackside()
+                self.hopperMotor.stopHopperMotorForeside()
 
 
     def execute(self):
