@@ -199,18 +199,6 @@ speedSections:
         D: 0
         SpeedFloor: 0.01
 
-TurretMotor:
-  subsystem: "turret"
-  description: "motor for turret goes here"
-  motors:
-    groups:
-     - "motors"
-    turretMotor:
-      channel: 12
-      type: "SparkMax"
-      inverted: False
-      motorType: "kBrushless"
-
 pneumatics:
   type: "yaml"
   file: "pneumatics.yml"
