@@ -93,7 +93,7 @@ class LoaderLogic(StateMachine):
         If we're ejecting balls of the other team's color,
         makes sure that the ball is our color
         """
-        if self.eject and ColorSensor.getColor() != self.allianceColor:
+        if self.eject and ColorSensor.getColorMatch() != self.allianceColor:
             self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kBackwards)
             self.next_state('eject_ball')
 

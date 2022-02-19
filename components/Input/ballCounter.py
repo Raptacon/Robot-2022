@@ -11,6 +11,9 @@ class BallCounter:
     sensors: Sensors
     shooter: ShooterLogic
 
+    def setup(self):
+        self.SmartTable.putNumberArray("BallCount", [0, 0])
+
     def on_enable(self):
         self.prevLoadingSensorTripped = State.kNotTripped
         self.prevMiddleSensorTripped = State.kNotTripped
@@ -78,4 +81,6 @@ class BallCounter:
         self.prevMiddleSensorTripped = self.currentMiddleSensorTripped
         self.prevOutputSensorTripped = self.currentOutputSensorTripped
         self.SmartTable.putNumberArray("BallCount", self.ballArr)
+        self.SmartTable.putNumber("SFLKJSLKDFJLK", 5)
+        log.error(self.ballArr)
         pass

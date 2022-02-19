@@ -4,7 +4,7 @@ import logging as log
 class SensorKey(IntEnum):
     kLoadingSensor = 1
     kMiddleSensor = 2
-    kPostShootSensor = 4
+    kPostShootSensor = 3
 class State:
     kTripped = False
     kNotTripped = True

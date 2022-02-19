@@ -11,6 +11,7 @@ class TurretTurn(StateMachine):
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
     turnAngle = None
+    controlMode = None
     tolerance = tunable(3)
 
     def setup(self):

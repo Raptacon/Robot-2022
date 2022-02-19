@@ -108,6 +108,14 @@ loaderSensors:
       type: "RIODigitalIn"
       channel: 1
       description: "Loading sensor"
+    sensor2:
+      type: "RIODigitalIn"
+      channel: 2
+      description: "Middle sensor"
+    sensor3:
+      type: "RIODigitalIn"
+      channel: 3
+      description: "Post-shooter sensor"
 
 TurretMotor:
   subsystem: "turret"
