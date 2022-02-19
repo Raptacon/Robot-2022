@@ -63,7 +63,7 @@ class SmokeTest(AutonomousStateMachine):
         log.error("Running intake motor")
 
     @timed_state(duration = time, next_state = "runHopperMotor2")
-    def runHopperMotor2(self):
+    def runHopperMotor1(self):
         """Runs the first hopper motor for 2 seconds"""
         self.toDo = "Check to see if the front hopper motor is running"
         self.intakeMotor.stopIntake()
@@ -71,7 +71,7 @@ class SmokeTest(AutonomousStateMachine):
         log.error("Running hopper motor 1")
         pass
 
-    @timed_state(duration = time, next_state = "runShooterMotor1s")
+    @timed_state(duration = time, next_state = "runShooterMotors")
     def runHopperMotor2(self):
         """Stops the first hopper motor adn runs the second motor for 2 seconds"""
         self.toDo = "Check to see if the back hopper motor is running"
@@ -92,6 +92,7 @@ class SmokeTest(AutonomousStateMachine):
     def calibrateTurret(self):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
+        self.shooterMotors.stopShooter()
         self.next_state = "colorSensorCheck"
 
     @state
