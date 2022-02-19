@@ -1,30 +1,60 @@
 import logging as log
 from components.Input.breakSensors import Sensors, State
+from components.Input.colorSensor import ColorSensor
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from networktables import NetworkTables
+
+class Ball:
+    """
+    Has position and color information
+    """
+    def __init__(self, color:str="None", pos=None):
+        self.color = color
+        self.pos = pos
+
+    def setColor(self, color:str):
+        """
+        Red or Blue
+        """
+        self.color = color
+    def setPosition(self, pos):
+        """
+        Either 1 or 2
+        """
+        self.pos = pos
+
+    def getColor(self):
+        return self.color
+    def getPosition(self):
+        return self.pos
 
 class BallCounter:
     """Class meant to keep track of the number of balls currently in the hopper"""
     compatString = ["doof", "teapot"]
     sensors: Sensors
+    colorSensor: ColorSensor
     shooter: ShooterLogic
+
+    def setup(self):
+        self.SmartTable = NetworkTables.getTable("SmartDashboard")
+        self.hopperTable = NetworkTables.getTable("components").getSubTable("hopperMotor")
+        readableArr = ["None", "None"]
+        self.SmartTable.putStringArray("BallCount", readableArr)
 
     def on_enable(self):
         self.prevLoadingSensorTripped = State.kNotTripped
         self.prevMiddleSensorTripped = State.kNotTripped
         self.prevOutputSensorTripped = State.kNotTripped
-        self.SmartTable = NetworkTables.getTable("SmartDashboard")
-        self.hopperTable = NetworkTables.getTable("components").getSubTable("hopperMotor")
-        self.SmartTable.putNumberArray("BallCount", [0, 0])
-        self.ballArr = [0, 0]
+        self.ballArr = [None, None]
 
-    def addBall(self, pos):
+    def addBall(self, pos, color:str):
         """
         Add ball at position pos (1 or 2, where 1 is the forward position)
         """
+        ball = Ball(color, pos)
         pos -= 1
-        if self.ballArr[pos] == 0:
-            self.ballArr[pos] = 1
+        if self.ballArr[pos] == None:
+            self.ballArr[pos] = ball
         else:
             log.error("Too many balls added")
 
@@ -33,24 +63,33 @@ class BallCounter:
         Subtract ball at position pos (1 or 2, where 1 is the forward position)
         """
         pos -= 1
-        if self.ballArr[pos] == 1:
-            self.ballArr[pos] = 0
+        if type(self.ballArr[pos]) == Ball:
+            self.ballArr[pos] = None
         else:
             log.error("Too many balls subtracted")
+
+    def moveBall(self, initPos, finPos):
+        """
+        Moves ball from initPos to finPos
+        if there is a ball in initPos
+        """
+        if self.ballArr[initPos] != None:
+            self.ballArr[finPos] = self.ballArr[initPos]
+            self.subtractBall(initPos)
 
     def resetBallCount(self):
         """
         Resets all positions to 0 balls
         """
-        self.ballArr = [0, 0]
+        self.ballArr = [None, None]
 
     def getBallCount(self):
         """
         Returns array of balls in the format
         [pos1, pos2]
-        where pos1 and pos2 are 0 or 1,
-        1 if there is a ball
-        0 if there is not
+        where pos1 and pos2 are
+        Ball class if there is a ball
+        None if there is not
         """
         return self.ballArr
 
@@ -66,12 +105,12 @@ class BallCounter:
         if(self.currentLoadingSensorTripped != self.prevLoadingSensorTripped
         and self.currentLoadingSensorTripped == False
         and self.hopperTable.getEntry("isLoading")):
-            self.addBall(1)
+            color = self.colorSensor.displayColor()
+            self.addBall(1, color)
 
         if(self.currentMiddleSensorTripped != self.prevMiddleSensorTripped
         and self.currentMiddleSensorTripped == False):
-            self.subtractBall(1)
-            self.addBall(2)
+            self.moveBall(1, 2)
 
         if(self.currentOutputSensorTripped != self.prevOutputSensorTripped
         and self.currentOutputSensorTripped == False):
@@ -80,5 +119,16 @@ class BallCounter:
         self.prevLoadingSensorTripped = self.currentLoadingSensorTripped
         self.prevMiddleSensorTripped = self.currentMiddleSensorTripped
         self.prevOutputSensorTripped = self.currentOutputSensorTripped
-        self.SmartTable.putNumberArray("BallCount", self.ballArr)
+
+        # Generate readable array
+        readableArr = []
+        for ball in self.ballArr:
+            if ball == None:
+                readableArr.append("None")
+            elif type(ball) == Ball:
+                readableArr.append(ball.getColor())
+            else:
+                readableArr.append("???")
+
+        self.SmartTable.putStringArray("BallCount", readableArr)
         pass

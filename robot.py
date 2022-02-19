@@ -92,7 +92,11 @@ class MyRobot(MagicRobot):
 
         self.allianceColor = self.driverStation.getAlliance()
         if self.allianceColor == self.driverStation.Alliance.kBlue:
-            self.allianceColor = "Blue"
+            self.allianceColor = "blue"
+        elif self.allianceColor == self.driverStation.Alliance.kRed:
+            self.allianceColor = "red"
+        else:
+            self.allianceColor = "???"
 
         ReadBufferValue = 18
 

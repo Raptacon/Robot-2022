@@ -21,7 +21,7 @@ class LoaderLogic(StateMachine):
     ballCounter: BallCounter
     xboxMap: XboxMap
     colorSensor: ColorSensor
-    allianceColor: DriverStation.Alliance
+    allianceColor: str
 
     # Tunable
     automaticHopperMotor1Speed = tunable(.4)
@@ -69,7 +69,7 @@ class LoaderLogic(StateMachine):
         """Trigger-based manual loader."""
         self.feeder.run(Type.kHopper)
 
-    @state(first = True)
+    @state
     def checkForBall(self):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
         if self.sensors.loadingSensor(State.kTripped):
@@ -94,18 +94,25 @@ class LoaderLogic(StateMachine):
         makes sure that the ball is our color
         """
         self.next_state('checkForBall')
-        if self.eject and ColorSensor.getColorMatch() != self.allianceColor:
+
+        opposingColor = ""
+        if self.allianceColor == "red":
+            opposingColor = "blue"
+        elif self.allianceColor == "blue":
+            opposingColor = "red"
+
+        if self.eject and self.colorSensor.displayColor() == opposingColor:
             self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kBackwards)
             self.next_state('eject_ball')
 
-    @timed_state(duration = ballEjectTime, next_state = 'checkforBall')
+    @timed_state(duration = ballEjectTime, next_state = 'checkForBall')
     def eject_ball(self):
         """
         Runs the loader backwards for a set time
         """
         pass
 
-    @state
+    @state(first = True)
     def nextAction(self):
         """Determine what to do after shooting."""
         if self.isAutomatic:
