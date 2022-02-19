@@ -5,12 +5,13 @@ from networktables import NetworkTables as networktable
 import logging as log
 
 class TurretTurn(StateMachine):
-    compatString = ["teapot"]
+    compatString = ["teapot", "minibot"]
     motors_turret: dict
     limeTable = networktable.getTable("limelight")
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
     turnAngle = None
+    controlMode = None
     tolerance = tunable(3)
 
     def setup(self):

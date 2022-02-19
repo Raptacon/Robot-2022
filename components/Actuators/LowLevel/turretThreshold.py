@@ -2,7 +2,7 @@ from magicbot import feedback
 from networktables import NetworkTables as networktable
 import logging as log
 class TurretThreshold:
-    compatString = ["teapot"]
+    compatString = ["teapot", "minibot"]
     motors_turret: dict
     speed = 0
     exitSpeed = .02
@@ -12,7 +12,7 @@ class TurretThreshold:
     sprocketRatio = 120/18
     DegreeToAngle = 0
     limitSwitchTable = networktable.getTable("SmartDashboard")
-    Deadzones = []
+    Deadzones = [[]]
 
     calibrating = False
     calibSpeed = .1
@@ -20,6 +20,7 @@ class TurretThreshold:
     def setup(self):
         #connects moters and gets position
         self.Deadzones[0] = [self.limitSwitchTable.getNumber("Left Limit", None), self.limitSwitchTable.getNumber("Right Limit", None)]
+
         if self.Deadzones[0][0] == None or self.Deadzones[0][1] == None:
             log.error("MUST CALIBRATE TURRET")
             self.calibrated = False
@@ -60,6 +61,10 @@ class TurretThreshold:
         Checks if desired angle is within the deadzone. Then, returns closest point to the angle it can reach.
         Also checks if the desired angle jumps over the deadzone relative to where you are now.
         """
+        if self.calibrated == False and self.calibrating:
+            return angle
+        elif self.calibrated == False:
+            return False
         for lLim, rLim in self.Deadzones:
             # If we're jumping the deadzone in either direction
             # or the angle is inside of the deadzone
@@ -100,7 +105,7 @@ class TurretThreshold:
 
         if self.calibrated:
 
-            for lLimit, rLimit in self.limitSwitchTable:
+            for lLimit, rLimit in self.Deadzones:
                 if self.pos > lLimit and self.pos < rLimit:
                     if abs(lLimit - self.pos) < abs(rLimit - self.pos):
                         self.speed = -1*self.exitSpeed
