@@ -80,6 +80,9 @@ class LoaderLogic(StateMachine):
 
     @state
     def move_ball(self):
+        """
+        Moves the ball forewards, goes back so we can eject if need be
+        """
         self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
         self.next_state('checkForBall')
 

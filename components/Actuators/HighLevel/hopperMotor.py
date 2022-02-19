@@ -35,9 +35,15 @@ class HopperMotor:
 
     @feedback
     def getSpeedFore(self):
+        """
+        Gets the speed of the foreside hopper motor
+        """
         return self.hopperSpeedFore
     @feedback
     def getSpeedBack(self):
+        """
+        Gets the speed of the backside hopper motor
+        """
         return self.hopperSpeedBack
 
     @feedback
@@ -112,6 +118,9 @@ class HopperMotor:
             self.runHopperMotorBackside(self.movingSpeed, Direction.kForwards)
 
     def execute(self):
+        """
+        Runs motors with set values, checks sensors
+        """
         if self.hopperFore:
             self.hopperMotorForeside.set(self.hopperSpeedFore)
         elif self.hopperFore == False:
