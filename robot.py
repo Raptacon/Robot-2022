@@ -14,7 +14,7 @@ from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
 from components.Input.breakSensors import Sensors
 from components.Actuators.LowLevel.winch import Winch
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
-from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic

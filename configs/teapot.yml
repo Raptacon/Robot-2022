@@ -78,6 +78,7 @@ hopperMotors:
   hopperMotors:
     groups: "motors"
     hopperMotor1:
+      # This is the forward motor
       channel: 60
       type: "CANTalonSRX"
       inverted: True
@@ -88,6 +89,7 @@ hopperMotors:
         maxNominal: 40
 
     hopperMotor2:
+      # This is the feeder wheel for the shooter
       channel: 61
       type: "CANTalonSRX"
       inverted: False

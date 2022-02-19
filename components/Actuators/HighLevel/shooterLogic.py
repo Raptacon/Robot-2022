@@ -1,6 +1,6 @@
 from robotMap import XboxMap
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
-from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Input.breakSensors import Sensors, State
 from utils.DirectionEnums import Direction

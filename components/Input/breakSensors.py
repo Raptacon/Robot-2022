@@ -2,9 +2,9 @@ from enum import IntEnum
 import logging as log
 
 class SensorKey(IntEnum):
-    kLoadingSensor = 3
-    kShootingSensor = 0
-    kMiddleSensor = 4
+    kLoadingSensor = 1
+    kMiddleSensor = 2
+    kPostShootSensor = 4
 class State:
     kTripped = False
     kNotTripped = True
@@ -26,15 +26,15 @@ class Sensors:
             return True
         return False
 
-    def shootingSensor(self, state):
-        """Gets the shooting sensor state and checks if it matches the requested state."""
-        if self.SensorArray[SensorKey.kShootingSensor].get() == state:
+    def postShootingSensor(self, state):
+        """Gets the shooting sensor after the shooter state and checks if it matches the requested state."""
+        if self.SensorArray[SensorKey.kPostShootSensor].get() == state:
             return True
         return False
 
     def middleSensor(self, state):
         """Gets the middle sensor state and checks if it matches the requested state."""
-        if self.SensorArray[SensorKey.kShootingSensor].get() == state:
+        if self.SensorArray[SensorKey.kMiddleSensor].get() == state:
             return True
         return False
 
