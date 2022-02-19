@@ -1,8 +1,9 @@
 from networktables import NetworkTables as networktable
 from magicbot import StateMachine
 from magicbot.state_machine import state
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
-from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.LowLevel.driveTrain import ControlMode
 from utils.guessDistance import guessDistanceTrig
 
 import logging as log
@@ -137,7 +138,7 @@ class AutoShoot(StateMachine):
     # CROSSHAIR MUST BE ON HORIZONTAL IN LIMELIGHT
 
     shooter: ShooterLogic
-    driveTrain: DriveTrain
+    driveTrainHandler: DriveTrainHandler
 
     starting = False
     stopping = False
@@ -185,7 +186,7 @@ class AutoShoot(StateMachine):
     @state
     def stop_shoot(self):
         # stop
-        self.driveTrain.setTank(0, 0)
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
         # set rpm
         self.shooter.setRPM(self.rpm)
         # shoot
