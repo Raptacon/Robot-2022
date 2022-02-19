@@ -28,8 +28,8 @@ class HopperMotor:
         """
         Creates hopper motors
         """
-        self.hopperMotorForeward = self.motors_hopper["hopperMotorForeward"]
-        self.hopperMotorBackward = self.motors_hopper["hopperMotorBackward"]
+        self.hopperMotorForeside = self.motors_hopper["hopperMotorForeside"]
+        self.hopperMotorBackside = self.motors_hopper["hopperMotorBackside"]
 
         log.info("Hopper Motor Component Created")
 
@@ -43,7 +43,7 @@ class HopperMotor:
     @feedback
     def isLoading(self):
         """
-        Returns true if the forward hopper motor is
+        Returns true if the foreside hopper motor is
         moving forward (bringing a ball in)
         false otherwise
         """
@@ -51,7 +51,7 @@ class HopperMotor:
             return True
         return False
 
-    def runHopperMotorForeward(self, lSpeed, direction):
+    def runHopperMotorForeside(self, lSpeed, direction):
         """
         Sets the hopper motor to speed lSpeed in direction
         :param lSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
@@ -64,7 +64,7 @@ class HopperMotor:
 
         self.hopperFore = True
 
-    def runHopperMotorBackward(self, lSpeed, direction):
+    def runHopperMotorBackside(self, lSpeed, direction):
         """
         Sets the hopper motor to speed lSpeed in direction
         :param lSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
@@ -76,25 +76,25 @@ class HopperMotor:
             self.hopperSpeedBack = -lSpeed
         self.hopperBack = True
 
-    def stopHopperMotorForeward(self):
+    def stopHopperMotorForeside(self):
         """
         Turns the hopper off
         """
         self.hopperFore = False
 
-    def stopHopperMotorBackward(self):
+    def stopHopperMotorBackside(self):
         """
         Turns the hopper off
         """
         self.hopperBack = False
 
-    def isHopperForewardRunning(self):
+    def isHopperForesideRunning(self):
         """
         Returns True if the hopper is running.
         """
         return self.hopperFore
 
-    def isHopperBackwardRunning(self):
+    def isHopperBacksideRunning(self):
         """
         Returns True if the hopper is running.
         """
@@ -107,19 +107,19 @@ class HopperMotor:
         Only changes motor speeds if they are 0
         """
         if self.hopperSpeedFore == 0 and self.sensors.loadingSensor(State.kTripped):
-            self.runHopperMotorForeward(self.intakeSpeed, Direction.kForwards)
+            self.runHopperMotorForeside(self.intakeSpeed, Direction.kForwards)
         if self.hopperSpeedBack == 0 and self.sensors.middleSensor(State.kTripped):
-            self.runHopperMotorBackward(self.movingSpeed, Direction.kForwards)
+            self.runHopperMotorBackside(self.movingSpeed, Direction.kForwards)
 
     def execute(self):
         if self.hopperFore:
-            self.hopperMotorForeward.set(self.hopperSpeedFore)
+            self.hopperMotorForeside.set(self.hopperSpeedFore)
         elif self.hopperFore == False:
-            self.hopperMotorForeward.set(0)
+            self.hopperMotorForeside.set(0)
         if self.hopperBack:
-            self.hopperMotorBackward.set(self.hopperSpeedBack)
+            self.hopperMotorBackside.set(self.hopperSpeedBack)
         elif self.hopperBack == False:
-            self.hopperMotorBackward.set(0)
+            self.hopperMotorBackside.set(0)
 
         # Reset speeds to give checkSensors() a chance
         # and to avoid motors running without input
