@@ -2,10 +2,9 @@ from robotMap import XboxMap
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Input.breakSensors import Sensors, State
-from components.Input.ballCounter import BallCounter
+from components.Input.ballCounter import BallCounter, Ball
 from components.Actuators.HighLevel.feederMap import FeederMap, Type
 from components.Input.colorSensor import ColorSensor
-from wpilib import DriverStation
 from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
@@ -72,20 +71,17 @@ class LoaderLogic(StateMachine):
     @state
     def checkForBall(self):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
+        ballCount = self.ballCounter.getBallCount()
         if self.sensors.loadingSensor(State.kTripped):
             self.next_state('checkEject')
-        if self.ballCounter.getBallCount() == [1, 0]:
+        if type(ballCount[0]) == Ball and ballCount[1] == None:
+            self.hopperMotor.runHopperMotor1(self.hopperMotor.movingSpeed, Direction.kForwards)
             self.next_state('move_ball')
 
     @state
     def move_ball(self):
-        ballArr = self.ballCounter.getBallCount()
-        movingSpeed = self.hopperMotor.movingSpeed
-        self.hopperMotor.runHopperMotor1(movingSpeed, Direction.kForwards)
-        if ballArr[1] == 1:
-            self.next_state('checkForBall')
-        else:
-            self.next_state('move_ball')
+        self.hopperMotor.runHopperMotor1(self.hopperMotor.movingSpeed, Direction.kForwards)
+        self.next_state('checkForBall')
 
     @state
     def checkEject(self):
@@ -102,7 +98,6 @@ class LoaderLogic(StateMachine):
             opposingColor = "red"
 
         if self.eject and self.colorSensor.displayColor() == opposingColor:
-            self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kBackwards)
             self.next_state('eject_ball')
 
     @timed_state(duration = ballEjectTime, next_state = 'checkForBall')
@@ -110,7 +105,7 @@ class LoaderLogic(StateMachine):
         """
         Runs the loader backwards for a set time
         """
-        pass
+        self.hopperMotor.runHopperMotor1(self.automaticHopperMotor1Speed, Direction.kBackwards)
 
     @state(first = True)
     def nextAction(self):

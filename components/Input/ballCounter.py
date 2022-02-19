@@ -42,9 +42,9 @@ class BallCounter:
         self.SmartTable.putStringArray("BallCount", readableArr)
 
     def on_enable(self):
-        self.prevLoadingSensorTripped = State.kNotTripped
-        self.prevMiddleSensorTripped = State.kNotTripped
-        self.prevOutputSensorTripped = State.kNotTripped
+        self.prevLoadingSensorTripped = False
+        self.prevMiddleSensorTripped = False
+        self.prevOutputSensorTripped = False
         self.ballArr = [None, None]
 
     def addBall(self, pos, color:str):
@@ -73,8 +73,9 @@ class BallCounter:
         Moves ball from initPos to finPos
         if there is a ball in initPos
         """
-        if self.ballArr[initPos] != None:
-            self.ballArr[finPos] = self.ballArr[initPos]
+        if self.ballArr[initPos-1] != None:
+            self.ballArr[finPos-1] = self.ballArr[initPos-1]
+            self.ballArr[finPos-1].setPosition(finPos)
             self.subtractBall(initPos)
 
     def resetBallCount(self):
@@ -126,7 +127,10 @@ class BallCounter:
             if ball == None:
                 readableArr.append("None")
             elif type(ball) == Ball:
-                readableArr.append(ball.getColor())
+                if ball.getColor() == "none":
+                    readableArr.append("Unknown Color")
+                else:
+                    readableArr.append(ball.getColor())
             else:
                 readableArr.append("???")
 
