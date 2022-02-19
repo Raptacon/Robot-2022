@@ -45,16 +45,21 @@ class TurretThreshold:
         self.calibrating = calib
 
     def setTurretspeed(self, tSpeed):
-        #sets speed
+        """
+        sets speed
+        """
         self.speed = tSpeed
 
     def stopTurret(self):
-        #stops turret
+        """
+        stops turret
+        """
         self.speed = 0
 
     def angleCheck(self, angle):
         """
-        Checks if desired angle is within the deadzone.Then, returns closest point to the angle it can reach.
+        Checks if desired angle is within the deadzone. Then, returns closest point to the angle it can reach.
+        Also checks if the desired angle jumps over the deadzone relative to where you are now.
         """
         for lLim, rLim in self.Deadzones:
             # If we're jumping the deadzone in either direction
@@ -82,11 +87,16 @@ class TurretThreshold:
         return self.speed
 
     def calc_Position(self):
+        """
+        Returns position based on encoder + gear ratios.
+        """
         # self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
         self.pos = 360 * self.encoder.getPosition() / (self.gearRatio)
 
     def execute(self):
-        #gets position, sets speed for every frames
+        """
+        gets position, sets speed for every frames
+        """
         self.calc_Position()
 
         if self.calibrated:
