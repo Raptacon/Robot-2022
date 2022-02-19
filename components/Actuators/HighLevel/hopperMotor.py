@@ -2,7 +2,7 @@ import logging as log
 
 from magicbot import tunable
 from utils.DirectionEnums import Direction
-from components.Input.breakSensors import Sensors
+from components.Input.breakSensors import Sensors, State
 
 class HopperMotor:
     """
@@ -84,9 +84,9 @@ class HopperMotor:
         set its corresponding motor speed
         Only changes motor speeds if they are 0
         """
-        if self.hopperSpeed1 == 0 and self.sensors.loadingSensor(True):
+        if self.hopperSpeed1 == 0 and self.sensors.loadingSensor(State.kTripped):
             self.runHopperMotor1(self.intakeSpeed, Direction.kForwards)
-        if self.hopperSpeed2 == 0 and self.sensors.middleSensor(True):
+        if self.hopperSpeed2 == 0 and self.sensors.middleSensor(State.kTripped):
             self.runHopperMotor2(self.movingSpeed, Direction.kForwards)
 
     def execute(self):

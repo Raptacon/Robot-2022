@@ -1,7 +1,8 @@
 from robotMap import XboxMap
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
-from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Input.breakSensors import Sensors, State
+from components.Input.ballCounter import BallCounter
 from components.Actuators.HighLevel.feederMap import FeederMap, Type
 from components.Input.colorSensor import ColorSensor
 from wpilib import DriverStation
@@ -17,6 +18,7 @@ class LoaderLogic(StateMachine):
     hopperMotor: HopperMotor
     feeder: FeederMap
     sensors: Sensors
+    ballCounter: BallCounter
     xboxMap: XboxMap
     colorSensor: ColorSensor
     allianceColor: DriverStation.Alliance
@@ -70,40 +72,36 @@ class LoaderLogic(StateMachine):
     @state(first = True)
     def checkForBall(self):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
-        self.hopperMotor.stopHopperMotor1()
-        self.hopperMotor.stopHopperMotor2()
         if self.sensors.loadingSensor(State.kTripped):
-            self.next_state('waitForBallIntake')
+            self.next_state('checkEject')
+        if self.ballCounter.getBallCount() == [1, 0]:
+            self.next_state('move_ball')
 
     @state
-    def waitForBallIntake(self):
-        """Checks for intake to be completed."""
-        if self.sensors.loadingSensor(State.kNotTripped) and self.eject == False:
-            self.hopperMotor.runHopperMotor1(self.automaticHopperMotor1Speed, Direction.kForwards)
-            self.next_state('stopBall')
-        elif self.eject and ColorSensor.getColor() != self.allianceColor:
+    def move_ball(self):
+        ballArr = self.ballCounter.getBallCount()
+        movingSpeed = self.hopperMotor.movingSpeed
+        self.hopperMotor.stopHopperMotor1(movingSpeed, Direction.kForwards)
+        if ballArr[1] == 1:
+            self.next_state('checkForBall')
+        else:
+            self.next_state('move_ball')
+
+    @state
+    def checkEject(self):
+        """
+        If we're ejecting balls of the other team's color,
+        makes sure that the ball is our color
+        """
+        if self.eject and ColorSensor.getColor() != self.allianceColor:
             self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kBackwards)
             self.next_state('eject_ball')
-        if self.sensors.middleSensor(State.kTripped):
-            self.hopperMotor.RunHopperMotor2(self.automaticHopperMotor1Speed, Direction.kForwards)
-            self.hopperMotor.stopHopperMotor1()
-            self.next_state('stopBall')
 
     @timed_state(duration = ballEjectTime, next_state = 'checkforBall')
     def eject_ball(self):
         """
         Runs the loader backwards for a set time
         """
-        pass
-
-    @timed_state(duration = loaderStoppingDelay, next_state = 'checkForBall')
-    def stopBall(self):
-        """Stops ball after a short delay."""
-        pass
-
-    @state
-    def shooting(self):
-        """While shooting, do nothing with the loader."""
         pass
 
     @state
