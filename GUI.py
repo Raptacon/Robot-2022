@@ -9,6 +9,7 @@ from networktables import NetworkTables as networktable
 import math
 class window(tk.Tk):
     CamTable = networktable.getTable("ML")
+    NumBall = CamTable.getString("ML/detections").len()
     width = round((math.tan(math.radians((180 - 81.3)/2)) * 200))
     maxFT = 10
     position = [[3,40.65],[11,40.65],[13,-40.65],[9,40.65]]
@@ -43,7 +44,7 @@ class Calc_circle(tk.Frame):
         self.calc_cir(self.label)
     def calc_cir(self,canvas):
         
-        numball = len(window.position)
+        numball = window.NumBall
         HightOffSet = 2
         ball = 0
         max = window.maxFT
@@ -58,11 +59,20 @@ class Calc_circle(tk.Frame):
             yft = dist * math.sin(angle)
             x = window.width - (dist * (window.width/max))*math.cos(angle)
             y = 200 + (yft*(400/(2*max*math.tan(maxAngle))))
-            self.create_circle(x, y, 5, canvas)
+            if window.CamTable.getString("label") == 'blue':
+                self.create_circle_blue(x, y, 5, canvas)
+            else:
+                self.create_circle_red(x, y, 5, canvas)
             print(window.position[ball][0])
             window.position[ball][0] = 1 + window.position[ball][0]
             ball += 1
-    def create_circle(self,x, y, r, canvasName): #center coordinates, radius
+    def create_circle_blue(self,x, y, r, canvasName): #center coordinates, radius
+        x0 = x - r
+        y0 = y - r
+        x1 = x + r
+        y1 = y + r
+        canvasName.create_oval(x0, y0, x1, y1, fill='blue',tags = 'circle')
+    def create_circle_red(self,x, y, r, canvasName): #center coordinates, radius
         x0 = x - r
         y0 = y - r
         x1 = x + r
