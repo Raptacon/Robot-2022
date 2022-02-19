@@ -1,6 +1,6 @@
 
 from magicbot import StateMachine, state
-from wpilib import SmartDashboard, _wpilib
+from wpilib import  _wpilib
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable

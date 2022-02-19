@@ -21,3 +21,15 @@ speedSections:
     groups: "configuredValues"
     GenericSection:
       - ["End", 1]
+
+TurretMotor:
+  subsystem: "turret"
+  description: "motor for turret goes here"
+  motors:
+    groups:
+     - "motors"
+    turretMotor:
+      channel: 12
+      type: "SparkMax"
+      inverted: False
+      motorType: "kBrushless"

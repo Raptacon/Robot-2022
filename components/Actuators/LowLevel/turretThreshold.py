@@ -3,7 +3,6 @@ from networktables import NetworkTables as networktable
 import logging as log
 class TurretThreshold:
     compatString = ["teapot"]
-    Deadzones = [[-90, 0]]
     motors_turret: dict
     speed = 0
     exitSpeed = .02
