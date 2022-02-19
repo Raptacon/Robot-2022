@@ -104,17 +104,17 @@ loaderSensors:
   description: "All IR break sensors used for the loader live here for the loader/LED component"
   loaderSensors:
     groups: "digitalInput"
+    sensor0:
+      type: "RIODigitalIn"
+      channel: 0
+      description: "Loading sensor"
     sensor1:
       type: "RIODigitalIn"
       channel: 1
-      description: "Loading sensor"
+      description: "Middle sensor"
     sensor2:
       type: "RIODigitalIn"
       channel: 2
-      description: "Middle sensor"
-    sensor3:
-      type: "RIODigitalIn"
-      channel: 3
       description: "Post-shooter sensor"
 
 TurretMotor:

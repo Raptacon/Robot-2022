@@ -5,19 +5,17 @@ from networktables import NetworkTables
 
 class BallCounter:
     """Class meant to keep track of the number of balls currently in the hopper"""
-
-    SmartTable = NetworkTables.getTable("SmartDashboard")
-    compatString = ["doof"]
+    compatString = ["doof", "teapot"]
     sensors: Sensors
     shooter: ShooterLogic
-
-    def setup(self):
-        self.SmartTable.putNumberArray("BallCount", [0, 0])
 
     def on_enable(self):
         self.prevLoadingSensorTripped = State.kNotTripped
         self.prevMiddleSensorTripped = State.kNotTripped
         self.prevOutputSensorTripped = State.kNotTripped
+        self.SmartTable = NetworkTables.getTable("SmartDashboard")
+        self.hopperTable = NetworkTables.getTable("components").getSubTable("hopperMotor")
+        self.SmartTable.putNumberArray("BallCount", [0, 0])
         self.ballArr = [0, 0]
 
     def addBall(self, pos):
@@ -34,6 +32,7 @@ class BallCounter:
         """
         Subtract ball at position pos (1 or 2, where 1 is the forward position)
         """
+        pos -= 1
         if self.ballArr[pos] == 1:
             self.ballArr[pos] = 0
         else:
@@ -65,7 +64,8 @@ class BallCounter:
         # we assume a ball has entered/left and passed a break sensor
         # and so a ball is added/subtracted
         if(self.currentLoadingSensorTripped != self.prevLoadingSensorTripped
-        and self.currentLoadingSensorTripped == False):
+        and self.currentLoadingSensorTripped == False
+        and self.hopperTable.getEntry("isLoading")):
             self.addBall(1)
 
         if(self.currentMiddleSensorTripped != self.prevMiddleSensorTripped
@@ -81,6 +81,4 @@ class BallCounter:
         self.prevMiddleSensorTripped = self.currentMiddleSensorTripped
         self.prevOutputSensorTripped = self.currentOutputSensorTripped
         self.SmartTable.putNumberArray("BallCount", self.ballArr)
-        self.SmartTable.putNumber("SFLKJSLKDFJLK", 5)
-        log.error(self.ballArr)
         pass

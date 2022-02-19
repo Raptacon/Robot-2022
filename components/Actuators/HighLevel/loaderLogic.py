@@ -11,7 +11,7 @@ from magicbot import StateMachine, state, timed_state, tunable, feedback
 
 class LoaderLogic(StateMachine):
     """StateMachine-based loader. Has both automatic and manual modes."""
-    compatString = ["doof"]
+    compatString = ["doof", "teapot"]
 
     # Component/module related things
     intakeMotor: IntakeMotor
@@ -30,7 +30,7 @@ class LoaderLogic(StateMachine):
     isAutomatic = True
     loaderStoppingDelay = .16
     ballEjectTime = .3
-    eject = False
+    eject = True
 
     def on_enable(self):
         self.isAutomatic = True
@@ -46,7 +46,7 @@ class LoaderLogic(StateMachine):
         self.next_state('runHopperManually')
 
     def stopLoading(self):
-        if self.hopperMotor.isHopper1Running or self.hopperMotor.isHopper2Running():
+        if self.hopperMotor.isHopper1Running() or self.hopperMotor.isHopper2Running():
             return
         self.next_state('shooting')
 
@@ -81,7 +81,7 @@ class LoaderLogic(StateMachine):
     def move_ball(self):
         ballArr = self.ballCounter.getBallCount()
         movingSpeed = self.hopperMotor.movingSpeed
-        self.hopperMotor.stopHopperMotor1(movingSpeed, Direction.kForwards)
+        self.hopperMotor.runHopperMotor1(movingSpeed, Direction.kForwards)
         if ballArr[1] == 1:
             self.next_state('checkForBall')
         else:
@@ -93,6 +93,7 @@ class LoaderLogic(StateMachine):
         If we're ejecting balls of the other team's color,
         makes sure that the ball is our color
         """
+        self.next_state('checkForBall')
         if self.eject and ColorSensor.getColorMatch() != self.allianceColor:
             self.hopperMotor.runHopperMotor1(self.automaticHopperMotor2Speed, Direction.kBackwards)
             self.next_state('eject_ball')

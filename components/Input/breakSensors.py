@@ -2,21 +2,21 @@ from enum import IntEnum
 import logging as log
 
 class SensorKey(IntEnum):
-    kLoadingSensor = 1
-    kMiddleSensor = 2
-    kPostShootSensor = 3
+    kLoadingSensor = 0
+    kMiddleSensor = 1
+    kPostShootSensor = 2
 class State:
     kTripped = False
     kNotTripped = True
 
 class Sensors:
 
-    compatString = ["doof", "testBoard"]
+    compatString = ["doof", "testBoard", "teapot"]
     digitalInput_breaksensors: dict
     SensorArray = []
 
     def on_enable(self):
-        for x in range(4):
+        for x in range(3):
             self.SensorArray.append(self.digitalInput_breaksensors["sensor" + str(x)])
         log.info("Break sensor component created")
 

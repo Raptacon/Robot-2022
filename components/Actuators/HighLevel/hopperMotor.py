@@ -1,6 +1,6 @@
 import logging as log
 
-from magicbot import tunable
+from magicbot import feedback, tunable
 from utils.DirectionEnums import Direction
 from components.Input.breakSensors import Sensors, State
 
@@ -8,14 +8,14 @@ class HopperMotor:
     """
     Allows you to run motors in the hopper
     """
-    compatString = ["doof"]
+    compatString = ["teapot"]
 
-    motors_loader: dict
+    motors_hopper: dict
     sensors: Sensors
     intakeSpeed = tunable(.3)
     movingSpeed = tunable(.3)
 
-    def on_enable(self):
+    def setup(self):
         """
         Sets up hopper motors
         """
@@ -24,10 +24,27 @@ class HopperMotor:
         self.hopperSpeed2 = 0
         self.hopper2 = False
 
-        self.hopperMotor1 = self.motors_loader["hopperMotor1"]
-        self.hopperMotor2 = self.motors_loader["hopperMotor2"]
+    def on_enable(self):
+        """
+        Creates hopper motors
+        """
+        self.hopperMotor1 = self.motors_hopper["hopperMotor1"]
+        self.hopperMotor2 = self.motors_hopper["hopperMotor2"]
 
         log.info("Hopper Motor Component Created")
+
+    @feedback
+    def getSpeed1(self):
+        return self.hopperSpeed1
+    @feedback
+    def getSpeed2(self):
+        return self.hopperSpeed2
+
+    @feedback
+    def isLoading(self):
+        if self.hopperSpeed1 >= 0:
+            return True
+        return False
 
     def runHopperMotor1(self, lSpeed, direction):
         """
@@ -90,7 +107,6 @@ class HopperMotor:
             self.runHopperMotor2(self.movingSpeed, Direction.kForwards)
 
     def execute(self):
-        self.checkSensors()
         if self.hopper1:
             self.hopperMotor1.set(self.hopperSpeed1)
         elif self.hopper1 == False:
@@ -104,3 +120,4 @@ class HopperMotor:
         # and to avoid motors running without input
         self.hopperSpeed1 = 0
         self.hopperSpeed2 = 0
+        self.checkSensors()
