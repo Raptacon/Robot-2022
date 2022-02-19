@@ -1,20 +1,23 @@
-
 from magicbot import StateMachine, state
-from wpilib import  _wpilib
+from wpilib import _wpilib
+from rev import SparkMaxLimitSwitch
+
+from components.Actuators.HighLevel.feederMap import Type
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
 class CalibrateTurret(StateMachine):
-    compatString = ["doof", "greenChassis", "newBot"]
+    compatString = ["doof", "greenChassis", "teapot"]
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     const_turnAngle = 5
     limitTable = networktable.getTable("SmartDashboard")
     wpilib: _wpilib
 
-    def initLimswitches(self):
-        self.forwardLimitSwitch = self.wpilib.DigitalInput(1)
-        self.reverseLimitSwitch = self.wpilib.DigitalInput(2)
+    def setup(self):
+        turretMotor = self.turretThreshold.turretMotor
+        self.forwardLimitSwitch = turretMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
+        self.reverseLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
 
     def getLClicked(self):
         self.forwardLimitSwitch.get()

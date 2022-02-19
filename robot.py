@@ -32,6 +32,7 @@ from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.TurretCalibrate import CalibrateTurret
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -75,6 +76,7 @@ class MyRobot(MagicRobot):
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
     turretTurn: TurretTurn
+    turretCalibrate: CalibrateTurret
 
     # Test code:
     testBoard: TestBoard
@@ -121,7 +123,7 @@ class MyRobot(MagicRobot):
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
-                         LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
+                         LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
         testComponentListCompatibility(self, componentList)
 
 
@@ -192,6 +194,7 @@ class MyRobot(MagicRobot):
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
+        self.turretCalibrate.engage()
         self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 
