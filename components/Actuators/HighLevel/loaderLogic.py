@@ -29,7 +29,7 @@ class LoaderLogic(StateMachine):
     isAutomatic = True
     loaderStoppingDelay = .16
     ballEjectTime = .3
-    eject = True
+    eject = False
 
     def on_enable(self):
         self.isAutomatic = True

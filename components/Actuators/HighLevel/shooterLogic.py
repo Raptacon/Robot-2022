@@ -8,7 +8,7 @@ from magicbot import StateMachine, state, timed_state, tunable, feedback
 
 class ShooterLogic(StateMachine):
     """StateMachine-based shooter. Has both manual and automatic modes."""
-    compatString = []
+    compatString = ["teapot"]
 
     # Component/module related things
     shooterMotors: ShooterMotors
@@ -58,10 +58,9 @@ class ShooterLogic(StateMachine):
         """Executes smart shooter."""
         self.start = False
         self.running = True
-        if self.hopperMotor.isHopperRunning() or self.shooterMotors.isShooterRunning():
+        if self.hopperMotor.isHopper2Running() or self.shooterMotors.isShooterRunning():
             return False
-        self.next_state('initShooting')
-        return True
+        self.next_state('runShooter')
 
     def doneShooting(self):
         """Finishes shooting process and reverts back to appropriate mode."""
@@ -90,17 +89,6 @@ class ShooterLogic(StateMachine):
         return atSpeed
 
     @state
-    def initShooting(self):
-        """Smart shooter initialization (reversing if necessary)."""
-        if self.sensors.shootingSensor(State.kTripped):
-            self.hopperMotor.runHopper(self.shootingLoaderSpeed, Direction.kBackwards)
-            self.next_state('initShooting')
-
-        else:
-            self.hopperMotor.stopHopper()
-            self.next_state('runShooter')
-
-    @state
     def runShooter(self):
         """
         Runs shooter to a certain speed, then lets drivers control loading if in teleop.
@@ -110,9 +98,9 @@ class ShooterLogic(StateMachine):
         if not self.isAutonomous:
             self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
             if self.isShooterUpToSpeed():
-                self.hopperMotor.runHopper(self.shootingLoaderSpeed, Direction.kForwards)
+                self.hopperMotor.runHopperMotor2(self.shootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.runHopper(0, Direction.kForwards)
+                self.hopperMotor.stopHopperMotor2()
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
@@ -124,16 +112,16 @@ class ShooterLogic(StateMachine):
     def autonomousShoot(self):
         """Shoot balls when shooter is up to speed. Strictly for autonomous use."""
         if self.isShooterUpToSpeed():
-            self.hopperMotor.runHopper(self.shootingLoaderSpeed, Direction.kForwards)
+            self.hopperMotor.runHopperMotor2(self.shootingLoaderSpeed, Direction.kForwards)
         else:
-            self.hopperMotor.runHopper(0, Direction.kForwards)
+            self.hopperMotor.stopHopperMotor2()
             self.next_state('autonomousShoot')
 
     @state
     def finishShooting(self):
         """Stops shooter-related motors and moves to idle state."""
         self.running = False
-        self.hopperMotor.stopHopper()
+        self.hopperMotor.stopHopperMotor2()
         self.shooterMotors.stopShooter()
         self.next_state('idling')
 
