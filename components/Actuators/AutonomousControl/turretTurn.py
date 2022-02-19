@@ -20,7 +20,7 @@ class TurretTurn(StateMachine):
     def setAngle(self, angle):
         """sets angle turret is turning to"""
         if self.turretThreshold.angleCheck(angle) != angle:
-            log.error("Turret angle check failed")
+            log.error("Turret angle check failed: "+str(self.turretThreshold.angleCheck(angle)+" vs. "+str(angle)))
         self.turnAngle = self.turretThreshold.angleCheck(angle)
         self.next_state("turn")
 
