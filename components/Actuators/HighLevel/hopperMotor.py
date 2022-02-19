@@ -19,81 +19,86 @@ class HopperMotor:
         """
         Sets up hopper motors
         """
-        self.hopperSpeed1 = 0
-        self.hopper1 = False
-        self.hopperSpeed2 = 0
-        self.hopper2 = False
+        self.hopperSpeedFore = 0
+        self.hopperFore = False
+        self.hopperSpeedBack = 0
+        self.hopperBack = False
 
     def on_enable(self):
         """
         Creates hopper motors
         """
-        self.hopperMotor1 = self.motors_hopper["hopperMotor1"]
-        self.hopperMotor2 = self.motors_hopper["hopperMotor2"]
+        self.hopperMotorForeward = self.motors_hopper["hopperMotorForeward"]
+        self.hopperMotorBackward = self.motors_hopper["hopperMotorBackward"]
 
         log.info("Hopper Motor Component Created")
 
     @feedback
-    def getSpeed1(self):
-        return self.hopperSpeed1
+    def getSpeedFore(self):
+        return self.hopperSpeedFore
     @feedback
-    def getSpeed2(self):
-        return self.hopperSpeed2
+    def getSpeedBack(self):
+        return self.hopperSpeedBack
 
     @feedback
     def isLoading(self):
-        if self.hopperSpeed1 >= 0:
+        """
+        Returns true if the forward hopper motor is
+        moving forward (bringing a ball in)
+        false otherwise
+        """
+        if self.hopperSpeedFore >= 0:
             return True
         return False
 
-    def runHopperMotor1(self, lSpeed, direction):
+    def runHopperMotorForeward(self, lSpeed, direction):
         """
         Sets the hopper motor to speed lSpeed in direction
         :param lSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
         :param direction: Enum Direction from utils.DirectionEnums (forwards or backwards)
         """
         if direction == Direction.kForwards: # Forwards
-            self.hopperSpeed1 = lSpeed
+            self.hopperSpeedFore = lSpeed
         elif direction == Direction.kBackwards: # Backwards
-            self.hopperSpeed1 = -lSpeed
+            self.hopperSpeedFore = -lSpeed
 
-        self.hopper1 = True
+        self.hopperFore = True
 
-    def runHopperMotor2(self, lSpeed, direction):
+    def runHopperMotorBackward(self, lSpeed, direction):
         """
         Sets the hopper motor to speed lSpeed in direction
         :param lSpeed: double/float 0 to 1, where 0 is nothing and 1 is full speed
         :param direction: Enum Direction from utils.DirectionEnums (forwards or backwards)
         """
         if direction == Direction.kForwards: # Forwards
-            self.hopperSpeed2 = lSpeed
+            self.hopperSpeedBack = lSpeed
         elif direction == Direction.kBackwards: # Backwards
-            self.hopperSpeed2 = -lSpeed
-        self.hopper2 = True
+            self.hopperSpeedBack = -lSpeed
+        self.hopperBack = True
 
-    def stopHopperMotor1(self):
+    def stopHopperMotorForeward(self):
         """
         Turns the hopper off
         """
-        self.hopper1 = False
+        self.hopperFore = False
 
-    def stopHopperMotor2(self):
+    def stopHopperMotorBackward(self):
         """
         Turns the hopper off
         """
-        self.hopper2 = False
+        self.hopperBack = False
 
-    def isHopper1Running(self):
+    def isHopperForewardRunning(self):
         """
         Returns True if the hopper is running.
         """
-        return self.hopper1
+        return self.hopperFore
 
-    def isHopper2Running(self):
+    def isHopperBackwardRunning(self):
         """
         Returns True if the hopper is running.
         """
-        return self.hopper2
+        return self.hopperBack
 
     def checkSensors(self):
         """
@@ -101,23 +106,23 @@ class HopperMotor:
         set its corresponding motor speed
         Only changes motor speeds if they are 0
         """
-        if self.hopperSpeed1 == 0 and self.sensors.loadingSensor(State.kTripped):
-            self.runHopperMotor1(self.intakeSpeed, Direction.kForwards)
-        if self.hopperSpeed2 == 0 and self.sensors.middleSensor(State.kTripped):
-            self.runHopperMotor2(self.movingSpeed, Direction.kForwards)
+        if self.hopperSpeedFore == 0 and self.sensors.loadingSensor(State.kTripped):
+            self.runHopperMotorForeward(self.intakeSpeed, Direction.kForwards)
+        if self.hopperSpeedBack == 0 and self.sensors.middleSensor(State.kTripped):
+            self.runHopperMotorBackward(self.movingSpeed, Direction.kForwards)
 
     def execute(self):
-        if self.hopper1:
-            self.hopperMotor1.set(self.hopperSpeed1)
-        elif self.hopper1 == False:
-            self.hopperMotor1.set(0)
-        if self.hopper2:
-            self.hopperMotor2.set(self.hopperSpeed2)
-        elif self.hopper2 == False:
-            self.hopperMotor2.set(0)
+        if self.hopperFore:
+            self.hopperMotorForeward.set(self.hopperSpeedFore)
+        elif self.hopperFore == False:
+            self.hopperMotorForeward.set(0)
+        if self.hopperBack:
+            self.hopperMotorBackward.set(self.hopperSpeedBack)
+        elif self.hopperBack == False:
+            self.hopperMotorBackward.set(0)
 
         # Reset speeds to give checkSensors() a chance
         # and to avoid motors running without input
-        self.hopperSpeed1 = 0
-        self.hopperSpeed2 = 0
+        self.hopperSpeedFore = 0
+        self.hopperSpeedBack = 0
         self.checkSensors()

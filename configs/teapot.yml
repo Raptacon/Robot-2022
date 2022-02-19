@@ -77,7 +77,7 @@ hopperMotors:
   description: "All motors used in the hopper live here"
   hopperMotors:
     groups: "motors"
-    hopperMotor1:
+    hopperMotorForeward:
       # This is the forward motor
       channel: 60
       type: "CANTalonSRX"
@@ -88,7 +88,7 @@ hopperMotors:
         absMaxTimeMs: 50
         maxNominal: 40
 
-    hopperMotor2:
+    hopperMotorBackward:
       # This is the feeder wheel for the shooter
       channel: 61
       type: "CANTalonSRX"
