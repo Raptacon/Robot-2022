@@ -5,6 +5,7 @@ class TurretThreshold:
     compatString = ["teapot", "minibot"]
     motors_turret: dict
     speed = 0
+    pos = 0
     exitSpeed = .02
     safetySpeed = .07
     safetyThreshold = 5
@@ -16,9 +17,14 @@ class TurretThreshold:
 
     calibrating = False
     calibSpeed = .1
-
     def setup(self):
         #connects moters and gets position
+        self.limitSwitchTable.putNumber("Left Limit", 0)
+        self.limitSwitchTable.putNumber("Right Limit", 0)
+        self.turretMotor = self.motors_turret["turretMotor"]
+
+    def on_enable(self):
+
         self.Deadzones[0] = [self.limitSwitchTable.getNumber("Left Limit", None), self.limitSwitchTable.getNumber("Right Limit", None)]
 
         if self.Deadzones[0][0] == None or self.Deadzones[0][1] == None:
@@ -26,7 +32,7 @@ class TurretThreshold:
             self.calibrated = False
         else:
             self.calibrated = True
-        self.turretMotor = self.motors_turret["turretMotor"]
+
         self.encoder = self.turretMotor.getEncoder()
         self.pos = self.encoder.getPosition()
 
@@ -95,7 +101,7 @@ class TurretThreshold:
         Returns position based on encoder + gear ratios.
         """
         # self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
-        self.pos = 360 * self.encoder.getPosition() / (self.gearRatio)
+        self.pos = self.encoder.getPosition()
 
     def execute(self):
         """

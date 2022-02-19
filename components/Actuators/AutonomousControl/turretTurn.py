@@ -1,4 +1,4 @@
-from magicbot import StateMachine, state, tunable
+from magicbot import StateMachine, feedback, state, tunable
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.SoftwareControl.speedSections import SpeedSections
 from networktables import NetworkTables as networktable
@@ -11,7 +11,7 @@ class TurretTurn(StateMachine):
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
     turnAngle = None
-    controlMode = None
+    controlMode = "Encoder"
     tolerance = tunable(3)
 
     def setup(self):
@@ -55,6 +55,10 @@ class TurretTurn(StateMachine):
         """
         self.setAngle(self.pos + relangle)
 
+    @feedback
+    def getTargetAngle(self):
+        return self.turnAngle
+
     @state(first = True)
     def idling(self):
         """Stays in this state until started"""
@@ -65,7 +69,7 @@ class TurretTurn(StateMachine):
         Sets speed of turret based on what angle we are turning to
         """
         offset = self.getOffset()
-        if offset != True:
+        if offset == False:
             self.setEncoderControl()
             offset = self.getOffset()
         speed = self.speedSections.getSpeed(offset, "TurretTurn")
