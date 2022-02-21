@@ -61,17 +61,36 @@ class TurretTurn(StateMachine):
         else:
             self.next_state("idling")
 
-    def setSpeed(self):
+    def getTurning(self):
         """
-        Sets speed of turret based on what angle we are turning to
+        Returns true if turretTurn is currently moving.
+        """
+        speed = self.getSpeed()
+        if speed != 0:
+            return True
+        else:
+            return False
+
+    def getSpeed(self):
+        """
+        Determines a speed based off of our current offset
+        returns that
         """
         offset = self.getOffset()
         if offset != True:
             self.setEncoderControl()
             offset = self.getOffset()
+
         speed = self.speedSections.getSpeed(offset, "TurretTurn")
         if abs(offset) < self.tolerance:
             speed = 0
+        return speed
+
+    def setSpeed(self):
+        """
+        Sets speed of turret based on what angle we are turning to
+        """
+        speed = self.getSpeed()
         self.turretThreshold.setTurretspeed(speed)
 
     @state
