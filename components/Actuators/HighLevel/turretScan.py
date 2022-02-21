@@ -47,13 +47,13 @@ class TurretScan (StateMachine):
             self.next_state("check")
     @state
     def turnRight(self):
-        self.turnright = self.rightMotor
         if self.tv == 0:
-            self.turnright = random
-            self.next_state("idling")
+            self.turretTurn.setAngle(7)
+            self.next_state("turnLeft")
         else: 
             self.next_state("checkTarget")
     
     @feedback
     def hasTarget(self):
         return self.tv
+
