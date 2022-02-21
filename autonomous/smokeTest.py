@@ -4,6 +4,7 @@ from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.HighLevel.TurretCalibrate import CalibrateTurret
 from components.Input.breakSensors import Sensors, State
 from components.Input.navx import Navx
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
@@ -20,6 +21,7 @@ class SmokeTest(AutonomousStateMachine):
     colorSensor: ColorSensor
     hopperMotor: HopperMotor
     shooterMotors: ShooterMotors
+    turretCalibrate: CalibrateTurret
     sensors: Sensors
     navx: Navx
     turnToAngle: TurnToAngle
@@ -93,6 +95,7 @@ class SmokeTest(AutonomousStateMachine):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
         self.shooterMotors.stopShooter()
+        self.turretCalibrate.engage()
         self.next_state = "colorSensorCheck"
 
     @state
