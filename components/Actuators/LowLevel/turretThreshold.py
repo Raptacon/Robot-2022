@@ -11,6 +11,7 @@ class TurretThreshold:
     safetyThreshold = 5
     gearRatio = 10
     sprocketRatio = 120/18
+    turretMotor = None
     DegreeToAngle = 0
     limitSwitchTable = networktable.getTable("SmartDashboard")
     Deadzones = [[]]
@@ -19,8 +20,10 @@ class TurretThreshold:
     calibSpeed = .1
     def setup(self):
         #connects moters and gets position
-        self.limitSwitchTable.putNumber("Left Limit", 0)
-        self.limitSwitchTable.putNumber("Right Limit", 0)
+        # Clear any existing deadzones (they probably aren't good)
+        self.encoder = self.turretMotor.getEncoder()
+        self.limitSwitchTable.delete("Left Limit")
+        self.limitSwitchTable.delete("Right Limit")
         self.turretMotor = self.motors_turret["turretMotor"]
 
     def on_enable(self):
@@ -32,8 +35,6 @@ class TurretThreshold:
             self.calibrated = False
         else:
             self.calibrated = True
-
-        self.encoder = self.turretMotor.getEncoder()
         self.pos = self.encoder.getPosition()
 
     def setDeadzones(self, lLimit, rLimit):

@@ -6,7 +6,7 @@ from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
 class CalibrateTurret(StateMachine):
-    compatString = ["doof", "greenChassis", "teapot", "minibot"]
+    compatString = ["greenChassis", "teapot", "minibot"]
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     const_turnAngle = 5
