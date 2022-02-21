@@ -21,10 +21,11 @@ class TurretThreshold:
     def setup(self):
         #connects moters and gets position
         # Clear any existing deadzones (they probably aren't good)
-        self.encoder = self.turretMotor.getEncoder()
         self.limitSwitchTable.delete("Left Limit")
         self.limitSwitchTable.delete("Right Limit")
         self.turretMotor = self.motors_turret["turretMotor"]
+        self.encoder = self.turretMotor.getEncoder()
+
 
     def on_enable(self):
 
