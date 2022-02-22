@@ -5,7 +5,7 @@ class IntakeMotor:
     """
     Allows you to run motors in the intake
     """
-    compatString = ["doof"]
+    compatString = ["doof", "teapot"]
 
     def on_enable(self):
         """
@@ -14,11 +14,11 @@ class IntakeMotor:
         self.intakeSpeed = 0
         self.intake = False
 
-        self.intakeMotor = self.motors_loader["intakeMotor"]
+        self.intakeMotor = self.motors_intake["intakeMotor"]
 
         log.info("Intake Motor Component Created")
 
-    motors_loader: dict
+    motors_intake: dict
 
     def runIntake(self, iSpeed, direction):
         """

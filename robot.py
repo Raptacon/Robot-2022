@@ -185,9 +185,9 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
-        self.turretTurn.engage()
+        #self.turretTurn.engage()
 
-        self.turretTurn.setAngle(self.turretTurnAngle)
+        #self.turretTurn.setAngle(self.turretTurnAngle)
 
         self.goToDist.engage()
         self.autoShoot.engage()
