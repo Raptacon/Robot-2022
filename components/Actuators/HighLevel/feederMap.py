@@ -54,10 +54,5 @@ class FeederMap:
                 self.hopperMotor.runHopperMotorBackside(self.loaderMotorSpeed, Direction.kBackwards)
                 log.debug("left trig manual", self.xboxMap.getMechLeftTrig())
 
-            else:
-                self.hopperMotor.stopHopperMotorBackside()
-                self.hopperMotor.stopHopperMotorForeside()
-
-
     def execute(self):
         pass

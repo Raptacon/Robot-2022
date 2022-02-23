@@ -112,10 +112,15 @@ class HopperMotor:
         set its corresponding motor speed
         Only changes motor speeds if they are 0
         """
-        if self.hopperSpeedFore == 0 and self.sensors.loadingSensor(State.kTripped):
+        if self.sensors.loadingSensor(State.kTripped):
             self.runHopperMotorForeside(self.intakeSpeed, Direction.kForwards)
-        if self.hopperSpeedBack == 0 and self.sensors.middleSensor(State.kTripped):
+        else:
+            self.stopHopperMotorForeside()
+
+        if self.sensors.middleSensor(State.kTripped):
             self.runHopperMotorBackside(self.movingSpeed, Direction.kForwards)
+        else:
+            self.stopHopperMotorBackside()
 
     def execute(self):
         """
@@ -130,8 +135,4 @@ class HopperMotor:
         elif self.hopperBack == False:
             self.hopperMotorBackside.set(0)
 
-        # Reset speeds to give checkSensors() a chance
-        # and to avoid motors running without input
-        self.hopperSpeedFore = 0
-        self.hopperSpeedBack = 0
         self.checkSensors()
