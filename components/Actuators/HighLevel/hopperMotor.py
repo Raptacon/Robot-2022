@@ -12,8 +12,8 @@ class HopperMotor:
 
     motors_hopper: dict
     sensors: Sensors
-    intakeSpeed = tunable(.3)
-    movingSpeed = tunable(.3)
+    intakeSpeed = tunable(.1)
+    movingSpeed = tunable(.08)
 
     def setup(self):
         """
@@ -110,7 +110,6 @@ class HopperMotor:
         """
         If either of the break sensors is broken,
         set its corresponding motor speed
-        Only changes motor speeds if they are 0
         """
         if self.sensors.loadingSensor(State.kTripped):
             self.runHopperMotorForeside(self.intakeSpeed, Direction.kForwards)

@@ -2,7 +2,6 @@ from robotMap import XboxMap
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
-from components.Input.breakSensors import Sensors, State
 from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
@@ -14,7 +13,6 @@ class ShooterLogic(StateMachine):
     shooterMotors: ShooterMotors
     hopperMotor: HopperMotor
     intakeMotor: IntakeMotor
-    sensors: Sensors
     xboxMap: XboxMap
     speedTolerance = tunable(75)
 
@@ -103,7 +101,6 @@ class ShooterLogic(StateMachine):
             if self.isShooterUpToSpeed():
                 self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.stopHopperMotorBackside()
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
@@ -117,14 +114,12 @@ class ShooterLogic(StateMachine):
         if self.isShooterUpToSpeed():
             self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
         else:
-            self.hopperMotor.stopHopperMotorBackside()
             self.next_state('autonomousShoot')
 
     @state
     def finishShooting(self):
         """Stops shooter-related motors and moves to idle state."""
         self.running = False
-        self.hopperMotor.stopHopperMotor2()
         self.shooterMotors.stopShooter()
         self.next_state('idling')
 
