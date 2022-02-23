@@ -5,9 +5,15 @@ class ShooterMotors:
     Allows you to run motors in the shooter
     Relies on a config with 2 shooter motors
     """
-    compatString = []
+    compatString = ["teapot"]
 
     motors_shooter: dict
+
+    def setup(self):
+        self.shooterMotor1 = self.motors_shooter["shooterMotor1"]
+        self.shooterMotor2 = self.motors_shooter["shooterMotor2"]
+        self.shooterMotor1Encoder = self.shooterMotor1.encoder
+        self.shooterMotor2Encoder = self.shooterMotor2.encoder
 
     def on_enable(self):
         """
@@ -16,9 +22,6 @@ class ShooterMotors:
         self.shooterSpeed1 = 0
         self.shooterSpeed2 = 0
         self.shooter = False
-
-        self.shooterMotor1 = self.motors_shooter["shooterMotor1"]
-        self.shooterMotor2 = self.motors_shooter["shooterMotor2"]
 
         log.info("Shooter Motor Component Created")
 

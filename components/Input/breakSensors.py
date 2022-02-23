@@ -39,4 +39,5 @@ class Sensors:
         return False
 
     def execute(self):
+        log.error(str(self.loadingSensor(State.kTripped))+str(self.middleSensor(State.kTripped))+str(self.postShootingSensor(State.kTripped)))
         pass

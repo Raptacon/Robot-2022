@@ -38,6 +38,9 @@ class ShooterLogic(StateMachine):
         self.isAutonomous = False
         self.isSetup = True
 
+        self.shooterMotor1Encoder = self.shooterMotors.shooterMotor1Encoder
+        self.shooterMotor2Encoder = self.shooterMotors.shooterMotor2Encoder
+
     def autonomousEnabled(self):
         """Indicates if the robot is in autonomous mode."""
         self.isAutonomous = True
@@ -58,7 +61,7 @@ class ShooterLogic(StateMachine):
         """Executes smart shooter."""
         self.start = False
         self.running = True
-        if self.hopperMotor.isHopper2Running() or self.shooterMotors.isShooterRunning():
+        if self.hopperMotor.isHopperBacksideRunning() or self.shooterMotors.isShooterRunning():
             return False
         self.next_state('runShooter')
 
@@ -79,8 +82,8 @@ class ShooterLogic(StateMachine):
             shootSpeed2 = self.teleShootingSpeed2 - self.speedTolerance
         if not self.isSetup:
             return False
-        atSpeed = (bool(self.shooterMotors.shooterMotor1.getEncoder().getVelocity() >= shootSpeed1)
-                and bool(self.shooterMotors.shooterMotor2.getEncoder().getVelocity() >= shootSpeed2))
+        atSpeed = (bool(self.shooterMotor1Encoder.getVelocity() >= shootSpeed1)
+                and bool(self.shooterMotor2Encoder.getVelocity() >= shootSpeed2))
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3

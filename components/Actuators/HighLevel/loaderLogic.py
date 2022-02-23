@@ -45,7 +45,7 @@ class LoaderLogic(StateMachine):
         self.next_state('runHopperManually')
 
     def stopLoading(self):
-        if self.hopperMotor.isHopper1Running() or self.hopperMotor.isHopper2Running():
+        if self.hopperMotor.isHopperForesideRunning() or self.hopperMotor.isHopperBacksideRunning():
             return
         self.next_state('shooting')
 

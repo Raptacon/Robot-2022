@@ -8,24 +8,26 @@ from magicbot import MagicRobot, tunable
 
 # Component imports:
 from components.SoftwareControl.speedSections import SpeedSections, speedFactory
+from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
-from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
-from components.Input.breakSensors import Sensors
 from components.Actuators.LowLevel.winch import Winch
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.LowLevel.elevator import Elevator
+from components.Actuators.LowLevel.driveTrain import ControlMode
+from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
-from components.Actuators.LowLevel.elevator import Elevator
-from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
 from components.Actuators.HighLevel.feederMap import FeederMap
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.Actuators.AutonomousControl.autoShoot import AutoShoot
-from components.Input.lidar import Lidar
-from components.Input.navx import Navx
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
+from components.Input.breakSensors import Sensors
+from components.Input.lidar import Lidar
+from components.Input.navx import Navx
 from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
@@ -68,6 +70,7 @@ class MyRobot(MagicRobot):
     goToDist: GoToDist
     ballCounter: BallCounter
     colorSensor: ColorSensor
+    driveTrainHandler: DriveTrainHandler
     speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
@@ -77,6 +80,10 @@ class MyRobot(MagicRobot):
     testBoard: TestBoard
     turretTurnAngle = tunable(180)
 
+    # If controller input is below this value, it will be set to zero.
+    # This avoids accidental input, as we are now overriding autonomous
+    # components on controller input.
+    controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
 
@@ -119,7 +126,7 @@ class MyRobot(MagicRobot):
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
-                         TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections,
+                         TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
         testComponentListCompatibility(self, componentList)
 
@@ -171,16 +178,22 @@ class MyRobot(MagicRobot):
         #This variable determines whether to use controller input for the drivetrain or not.
         #If we are using a command (such as auto align) that uses the drivetrain, we don't want to use the controller's input because it would overwrite
         #what the component is doing.
-        executingDriveCommand = False
 
         driveLeftY = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
-        self.turretTurn.engage()
+        # deadzone clamping
+        if abs(driveLeftY) < self.controllerDeadzone:
+            driveLeftY = 0
+        if abs(driveRightY) < self.controllerDeadzone:
+            driveRightY = 0
+        if abs(driveRightX) < self.controllerDeadzone:
+            driveRightX = 0
+        #self.turretTurn.engage()
 
-        self.turretTurn.setAngle(self.turretTurnAngle)
+        #self.turretTurn.setAngle(self.turretTurnAngle)
 
         self.goToDist.engage()
         self.autoShoot.engage()
@@ -188,11 +201,12 @@ class MyRobot(MagicRobot):
         self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 
-        if not executingDriveCommand:
+        # If the drivers have any input outside deadzone, take control.
+        if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
             if self.arcadeMode:
-                self.driveTrain.setArcade(-1 *driveLeftY, driveRightX)
+                self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*driveLeftY, driveRightX)
             else:
-                self.driveTrain.setTank(driveLeftY, driveRightY)
+                self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
 
         self.scorpionLoader.checkController()
 
