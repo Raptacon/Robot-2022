@@ -32,6 +32,7 @@ from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -75,6 +76,7 @@ class MyRobot(MagicRobot):
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
     turretTurn: TurretTurn
+    turretCalibrate: CalibrateTurret
 
     # Test code:
     testBoard: TestBoard
@@ -121,7 +123,7 @@ class MyRobot(MagicRobot):
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
-                         LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor]
+                         LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
         testComponentListCompatibility(self, componentList)
 
 
@@ -178,6 +180,9 @@ class MyRobot(MagicRobot):
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
+        self.turretTurn.engage()
+        self.turretTurn.setRelAngle(0)
+
         # deadzone clamping
         if abs(driveLeftY) < self.controllerDeadzone:
             driveLeftY = 0
@@ -185,13 +190,12 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
+
         self.turretTurn.engage()
-
-        self.turretTurn.setAngle(self.turretTurnAngle)
-
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
+        self.turretCalibrate.engage()
         self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 
@@ -216,7 +220,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        #neg counterclockwise, pos clockwise
+        #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """

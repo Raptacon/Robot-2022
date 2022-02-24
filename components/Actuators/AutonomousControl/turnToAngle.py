@@ -5,7 +5,7 @@ from magicbot import tunable, feedback, StateMachine, state
 import navx
 
 class TurnToAngle(StateMachine):
-    compatString = ["doof", "greenChassis"]
+    compatString = ["doof", "greenChassis", "teapot"]
 
     navx = navx._navx.AHRS.create_spi()
     driveTrainHandler: DriveTrainHandler
