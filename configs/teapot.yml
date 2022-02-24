@@ -77,25 +77,33 @@ hopperMotors:
   description: "All motors used in the hopper live here"
   hopperMotors:
     groups: "motors"
-    hopperMotor1:
+    hopperMotorForeside:
+      # This is the forward motor
       channel: 60
-      type: "CANTalonSRX"
+      type: "SparkMax"
+      motorType: "kBrushless"
       inverted: True
+      IdleBrake: True
       pid: Null
       currentLimits:
-        absMax: 60
-        absMaxTimeMs: 50
-        maxNominal: 40
+        freeLimit: 28
+        stallLimit: 30
+        stallLimitRPM: 100
+        secondaryLimit: 25
 
-    hopperMotor2:
+    hopperMotorBackside:
+      # This is the feeder wheel for the shooter
       channel: 61
-      type: "CANTalonSRX"
+      type: "SparkMax"
+      motorType: "kBrushless"
       inverted: False
+      IdleBrake: True
       pid: Null
       currentLimits:
-        absMax: 60
-        absMaxTimeMs: 50
-        maxNominal: 40
+        freeLimit: 28
+        stallLimit: 30
+        stallLimitRPM: 100
+        secondaryLimit: 25
 
 loaderSensors:
   subsystem: "breaksensors"
@@ -138,7 +146,7 @@ shooterMotors:
     shooterMotor1:
       channel: 40
       type: "SparkMax"
-      inverted: False
+      inverted: True
       motorType: "kBrushless"
 
       pid:
@@ -160,7 +168,7 @@ shooterMotors:
     shooterMotor2:
       channel: 41
       type: "SparkMax"
-      inverted: True
+      inverted: False
       motorType: "kBrushless"
 
       pid:
@@ -212,6 +220,7 @@ TurretMotor:
     turretMotor:
       channel: 12
       type: "SparkMax"
+      IdleBrake: True
       inverted: False
       motorType: "kBrushless"
 
