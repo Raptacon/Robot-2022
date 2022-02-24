@@ -141,7 +141,7 @@ intakeMotors:
     intakeMotor:
       channel: 51
       type: "CANTalonSRX"
-      inverted: False
+      inverted: True
       pid: Null
       currentLimits:
         absMax: 60
@@ -156,7 +156,7 @@ shooterMotors:
     shooterMotor1:
       channel: 40
       type: "SparkMax"
-      inverted: True
+      inverted: False
       motorType: "kBrushless"
 
       pid:

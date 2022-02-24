@@ -8,7 +8,7 @@ class Autonomous(AutonomousStateMachine):
     time = 1.4
     shootTime = 4
     MODE_NAME = "Basic Autonomous"
-    DEFAULT = False
+    DEFAULT = True
     driveTrain: DriveTrain
     shooter: ShooterLogic
     pneumatics: Pneumatics
