@@ -38,7 +38,7 @@ class BallCounter:
     def setup(self):
         self.SmartTable = NetworkTables.getTable("SmartDashboard")
         self.hopperTable = NetworkTables.getTable("components").getSubTable("hopperMotor")
-        readableArr = ["None", "None"]
+        readableArr = ["No Ball", "No Ball"]
         self.SmartTable.putStringArray("BallCount", readableArr)
 
     def on_enable(self):
@@ -125,7 +125,7 @@ class BallCounter:
         readableArr = []
         for ball in self.ballArr:
             if ball == None:
-                readableArr.append("None")
+                readableArr.append("No Ball")
             elif type(ball) == Ball:
                 if ball.getColor() == "none":
                     readableArr.append("Unknown Color")
