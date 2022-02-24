@@ -40,6 +40,10 @@ class TurretThreshold:
         self.speed = 0
 
     def setDeadzones(self, lLimit, rLimit):
+        """
+        Pass deadzones to turret.
+        ONLY DO THIS IF YOU KNOW EXACTLY WHAT YOU ARE DOING
+        """
         self.Deadzones[0] = [lLimit, rLimit]
         self.calibrated = True
 
