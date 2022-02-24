@@ -1,6 +1,5 @@
-from random import random
-from magicbot import StateMachine, state
-from components.Actuators.HighLevel.turretTurn import TurretTurn
+from magicbot import StateMachine, state, feedback
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.SoftwareControl.speedSections import SpeedSections
 from networktables import NetworkTables as networktable
 import logging as log
@@ -13,6 +12,7 @@ class TurretScan (StateMachine):
     limeTable = networktable.getTable("limelight")
     turretTurn: TurretTurn
     speedSections: SpeedSections
+    tv = 0
      
     @state(first=True)
     def check(self):

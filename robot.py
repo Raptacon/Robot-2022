@@ -30,6 +30,7 @@ from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.turretScan import TurretScan
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -72,6 +73,7 @@ class MyRobot(MagicRobot):
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
     turretTurn: TurretTurn
+    turretScan: TurretScan
 
     # Test code:
     testBoard: TestBoard
@@ -175,6 +177,7 @@ class MyRobot(MagicRobot):
         self.turretTurn.engage()
 
         self.turretTurn.setAngle(self.turretTurnAngle)
+        self.turretScan.engage()
 
         self.goToDist.engage()
         self.autoShoot.engage()
