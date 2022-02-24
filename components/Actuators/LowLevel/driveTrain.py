@@ -13,11 +13,10 @@ class ControlMode(Enum):
     """
     kArcadeDrive = auto()
     kTankDrive = auto()
-    kAngleTurning = auto()
     kDisabled = auto()
 
 class DriveTrain():
-    compatString = ["doof","scorpion", "greenChassis"]
+    compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
     driveMotorsMultiplier = tunable(.5)
@@ -46,6 +45,10 @@ class DriveTrain():
         log.info("DriveTrain setup completed")
 
     def setBraking(self, braking:bool):
+        """
+        This isn't incorporated into the handler
+        (I'm not sure if it should be)
+        """
         self.leftMotor.setBraking(braking)
         self.rightMotor.setBraking(braking)
         if braking:
@@ -65,11 +68,19 @@ class DriveTrain():
         pass
 
     def setTank(self, leftSpeed, rightSpeed):
+        """
+        THIS IS CONTROLLED BY THE HANDLER
+        DO NOT CALL THIS
+        """
         self.controlMode = ControlMode.kTankDrive
         self.tankLeftSpeed = leftSpeed
         self.tankRightSpeed = rightSpeed
 
     def setArcade(self, speed, rotation):
+        """
+        THIS IS CONTROLLED BY THE HANDLER
+        DO NOT CALL THIS
+        """
         self.controlMode = ControlMode.kArcadeDrive
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation

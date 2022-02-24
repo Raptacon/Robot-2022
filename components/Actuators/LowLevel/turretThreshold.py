@@ -1,7 +1,7 @@
 from magicbot import feedback
 
 class TurretThreshold:
-    compatString = ["newBot"]
+    compatString = ["teapot"]
     Deadzones = [[-90, 0]]
     motors_turret: dict
     speed = 0

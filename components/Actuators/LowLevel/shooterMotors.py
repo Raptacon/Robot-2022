@@ -5,7 +5,7 @@ class ShooterMotors:
     Allows you to run motors in the shooter
     Relies on a config with 2 shooter motors
     """
-    compatString = []
+    compatString = ["teapot"]
 
     motors_shooter: dict
 

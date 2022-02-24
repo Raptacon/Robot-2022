@@ -6,6 +6,7 @@ class ColorSensor():
 
     colorSensor = ColorSensorV3(wpilib.I2C.Port.kOnboard)
     colorMatch = ColorMatch()
+    compatString = ["teapot"]
     # The closer this is to 0, the closer the color has to be to the color.
     colors = {"red":wpilib.Color(.4, .15, .05),
              "blue":wpilib.Color(.1, .2, .4),

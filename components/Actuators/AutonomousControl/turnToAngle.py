@@ -1,13 +1,14 @@
-from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+from components.Actuators.LowLevel.driveTrain import ControlMode
 from magicbot import tunable, feedback, StateMachine, state
 
 import navx
 
 class TurnToAngle(StateMachine):
-    compatString = ["doof", "greenChassis"]
+    compatString = ["doof", "greenChassis", "teapot"]
 
     navx = navx._navx.AHRS.create_spi()
-    driveTrain: DriveTrain
+    driveTrainHandler: DriveTrainHandler
     starting = False
     running = False
     initialHeading = 0
@@ -71,9 +72,9 @@ class TurnToAngle(StateMachine):
         """Turns the robot based off of the speed determined in setSpeedFunc"""
         self.setSpeedFunc()
         if self.change > 0:
-            self.driveTrain.setTank(-1 * self.speed, self.speed)
+            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, -1 * self.speed, self.speed)
         else:
-            self.driveTrain.setTank(self.speed, -1 * self.speed)
+            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
         self.next_state("turn")
 
         """Stops the automatic turning if the bot is within the tolerance of the desired angle"""

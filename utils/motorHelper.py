@@ -353,11 +353,11 @@ class SparkMaxFeedback(rev.CANSparkMax):
         More can be added as necessary, following previous syntax in this method.
         """
         if type == "Position":
-            self.ControlType = rev.ControlType.kPosition
+            self.ControlType = rev.CANSparkMax.ControlType.kPosition
         elif type == "Velocity":
-            self.ControlType = rev.ControlType.kVelocity
+            self.ControlType = rev.CANSparkMax.ControlType.kVelocity
         elif type == "Duty Cycle":
-            self.ControlType = rev.ControlType.kDutyCycle
+            self.ControlType = rev.CANSparkMax.ControlType.kDutyCycle
         else:
             print("Unrecognized control type: ",self.ControlType)
 

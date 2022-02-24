@@ -1,12 +1,15 @@
+
 from magicbot import StateMachine, state, tunable, feedback
-from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.LowLevel.driveTrain import ControlMode
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+
 import logging as log
 
 class GoToDist(StateMachine):
 
     compatString = ["doof"]
 
-    driveTrain: DriveTrain
+    driveTrainHandler: DriveTrainHandler
     dumbTolerance = tunable(.25)
     tolerance = tunable(.25)
     starting = False
@@ -47,7 +50,7 @@ class GoToDist(StateMachine):
         GoToDist is doing.
         """
         self.running = False
-        self.driveTrain.setArcade(0, 0)
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
         self.next_state("idling")
 
     @feedback
@@ -134,7 +137,8 @@ class GoToDist(StateMachine):
         if absTotalOffset < self.tolerance:
             self.stop()
             self.next_state("idling")
-
+            # Motor stop goes here
+ 
     @state
     def adjust_drive(self):
         """
