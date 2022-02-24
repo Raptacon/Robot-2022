@@ -17,8 +17,8 @@ class Sensors:
     SensorArray = []
 
     def on_enable(self):
-        for x in range(3):
-            self.SensorArray.append(self.digitalInput_breaksensors["sensor" + str(x)])
+        for key in sorted(self.digitalInput_breaksensors.keys()):
+            self.SensorArray.append(self.digitalInput_breaksensors[key])
         log.info("Break sensor component created")
 
     def loadingSensor(self, state):
