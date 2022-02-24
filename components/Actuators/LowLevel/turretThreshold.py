@@ -2,7 +2,7 @@ from magicbot import feedback
 from networktables import NetworkTables as networktable
 import logging as log
 class TurretThreshold:
-    compatString = ["teapot", "minibot"]
+    compatString = ["teapot"]
     motors_turret: dict
     speed = 0
     pos = 0

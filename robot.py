@@ -32,7 +32,7 @@ from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
-from components.Actuators.HighLevel.TurretCalibrate import CalibrateTurret
+from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret
 
 # Other imports:
 from robotMap import RobotMap, XboxMap

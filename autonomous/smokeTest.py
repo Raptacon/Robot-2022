@@ -6,7 +6,7 @@ from components.Actuators.LowLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
-from components.Actuators.HighLevel.TurretCalibrate import CalibrateTurret
+from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret
 from components.Input.breakSensors import Sensors, State
 from components.Input.navx import Navx
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
@@ -17,7 +17,7 @@ from utils.DirectionEnums import Direction
 class SmokeTest(AutonomousStateMachine):
     compatString = ["teapot"]
     MODE_NAME = "Smoke Test"
-    DEFAULT = True
+    DEFAULT = False
     driveTrain: DriveTrain
     intakeMotor: IntakeMotor
     colorSensor: ColorSensor
