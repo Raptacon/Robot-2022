@@ -4,6 +4,9 @@ from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret
 from components.Input.breakSensors import Sensors, State
 from components.Input.navx import Navx
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
@@ -20,6 +23,9 @@ class SmokeTest(AutonomousStateMachine):
     colorSensor: ColorSensor
     hopperMotor: HopperMotor
     shooterMotors: ShooterMotors
+    turretCalibrate: CalibrateTurret
+    turretThreshold: TurretThreshold
+    turretTurn: TurretTurn
     sensors: Sensors
     navx: Navx
     turnToAngle: TurnToAngle
@@ -32,7 +38,7 @@ class SmokeTest(AutonomousStateMachine):
     def getToDo(self):
         return self.toDo
 
-    @state(first = True)
+    @state(first=True)
     def driveSetup(self):
         self.driveTrain.resetDistTraveled()
         self.next_state("drive")
@@ -96,7 +102,12 @@ class SmokeTest(AutonomousStateMachine):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
         self.shooterMotors.stopShooter()
-        self.next_state("colorSensorCheckRed")
+        self.turretCalibrate.engage()
+        self.turretTurn.engage()
+        self.turretThreshold.execute()
+        self.next_state("calibrateTurret")
+        if self.turretThreshold.calibrated == True:
+            self.next_state("colorSensorCheck")
 
     @state
     def colorSensorCheckRed(self):
@@ -146,7 +157,7 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Tripped")
             self.next_state("checkHopperSensor")
         else:
-            log.error("Sensor not broken")
+            log.error("Intake sensor not broken")
             self.next_state("checkIntakeSensor")
 
     @state
@@ -157,7 +168,7 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Tripped")
             self.next_state("checkShooterSensor")
         else:
-            log.error("Sensor not broken")
+            log.error("Hopper sensor not broken")
             self.next_state("checkHopperSensor")
 
     @state
@@ -169,5 +180,5 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Done")
             self.done()
         else:
-            log.error("Sensor not broken")
+            log.error("Shooting sensor not broken")
             self.next_state("checkShooterSensor")

@@ -1,4 +1,4 @@
-from magicbot import StateMachine, state, tunable
+from magicbot import StateMachine, feedback, state, tunable
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.SoftwareControl.speedSections import SpeedSections
 from networktables import NetworkTables as networktable
@@ -11,7 +11,7 @@ class TurretTurn(StateMachine):
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
     turnAngle = None
-    controlMode = None
+    controlMode = "Encoder"
     tolerance = tunable(3)
 
     def setup(self):
@@ -20,7 +20,7 @@ class TurretTurn(StateMachine):
     def setAngle(self, angle):
         """sets angle turret is turning to"""
         if self.turretThreshold.angleCheck(angle) != angle:
-            log.error("Turret angle check failed")
+            log.error("Turret angle check failed: "+str(self.turretThreshold.angleCheck(angle))+" vs. "+str(angle))
         self.turnAngle = self.turretThreshold.angleCheck(angle)
         self.next_state("turn")
 
@@ -44,7 +44,7 @@ class TurretTurn(StateMachine):
                 return limePosition
             else:
                 log.error("Limelight missing target")
-                return False
+                return None
         elif self.controlMode == "Encoder":
             return self.turnAngle - self.pos
 
@@ -54,6 +54,10 @@ class TurretTurn(StateMachine):
         Sets target angle (relative to current position)
         """
         self.setAngle(self.pos + relangle)
+
+    @feedback
+    def getTargetAngle(self):
+        return self.turnAngle
 
     @state(first = True)
     def idling(self):
@@ -65,7 +69,7 @@ class TurretTurn(StateMachine):
         Sets speed of turret based on what angle we are turning to
         """
         offset = self.getOffset()
-        if offset != True:
+        if offset == None:
             self.setEncoderControl()
             offset = self.getOffset()
         speed = self.speedSections.getSpeed(offset, "TurretTurn")
@@ -78,6 +82,5 @@ class TurretTurn(StateMachine):
         """
         Starts turning process, if in tolerance it will stop
         """
-        self.pos = self.turretThreshold.getPosition()
         self.setSpeed()
         self.next_state("turn")
