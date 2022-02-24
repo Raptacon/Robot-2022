@@ -217,7 +217,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        #neg counterclockwise, pos clockwise
+        #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
         """

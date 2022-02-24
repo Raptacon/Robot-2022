@@ -4,6 +4,8 @@ from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.HighLevel.TurretCalibrate import CalibrateTurret
 from components.Input.breakSensors import Sensors, State
 from components.Input.navx import Navx
@@ -15,13 +17,15 @@ from utils.DirectionEnums import Direction
 class SmokeTest(AutonomousStateMachine):
     compatString = ["teapot"]
     MODE_NAME = "Smoke Test"
-    DEFAULT = False
+    DEFAULT = True
     driveTrain: DriveTrain
     intakeMotor: IntakeMotor
     colorSensor: ColorSensor
     hopperMotor: HopperMotor
     shooterMotors: ShooterMotors
     turretCalibrate: CalibrateTurret
+    turretThreshold: TurretThreshold
+    turretTurn: TurretTurn
     sensors: Sensors
     navx: Navx
     turnToAngle: TurnToAngle
@@ -96,7 +100,11 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
         self.shooterMotors.stopShooter()
         self.turretCalibrate.engage()
-        self.next_state = "colorSensorCheck"
+        self.turretTurn.engage()
+        self.turretThreshold.execute()
+        self.next_state("calibrateTurret")
+        if self.turretThreshold.calibrated == True:
+            self.next_state("colorSensorCheck")
 
     @state
     def colorSensorCheck(self):

@@ -117,6 +117,7 @@ TurretMotor:
       channel: 12
       type: "SparkMax"
       inverted: False
+      IdleBrake: True
       motorType: "kBrushless"
 
 intakeMotors:
