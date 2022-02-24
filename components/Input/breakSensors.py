@@ -3,8 +3,9 @@ import logging as log
 
 class SensorKey(IntEnum):
     kLoadingSensor = 0
-    kMiddleSensor = 1
-    kPostShootSensor = 2
+    kHopperSensor = 1
+    kShootingSensor = 2
+
 class State:
     kTripped = False
     kNotTripped = True
@@ -26,15 +27,15 @@ class Sensors:
             return True
         return False
 
-    def postShootingSensor(self, state):
-        """Gets the shooting sensor after the shooter state and checks if it matches the requested state."""
-        if self.SensorArray[SensorKey.kPostShootSensor].get() == state:
+    def hopperSensor(self, state):
+        """Gets the hopper sensor state and checks if it matches the requested state"""
+        if self.SensorArray[SensorKey.kHopperSensor].get() == state:
             return True
         return False
 
-    def middleSensor(self, state):
-        """Gets the middle sensor state and checks if it matches the requested state."""
-        if self.SensorArray[SensorKey.kMiddleSensor].get() == state:
+    def shootingSensor(self, state):
+        """Gets the shooting sensor state and checks if it matches the requested state."""
+        if self.SensorArray[SensorKey.kShootingSensor].get() == state:
             return True
         return False
 
