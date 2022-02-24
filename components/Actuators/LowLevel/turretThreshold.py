@@ -17,7 +17,7 @@ class TurretThreshold:
     Deadzones = [[]]
 
     calibrating = False
-    calibSpeed = .05
+    calibSpeed = .08
     def setup(self):
         #connects moters and gets position
         # Clear any existing deadzones (they probably aren't good)
@@ -127,8 +127,13 @@ class TurretThreshold:
             self.turretMotor.set(self.speed)
 
         elif self.calibrating:
-            if self.speed > self.calibSpeed:
-                self.speed = self.calibSpeed
+            if abs(self.speed) > abs(self.calibSpeed):
+                if self.speed > 0:
+                    self.speed = self.calibSpeed
+                else:
+                    self.speed = -1*self.calibSpeed
             self.turretMotor.set(self.speed)
         else:
+            self.turretMotor.set(0)
             log.error("Calibrate the turret bud.")
+        self.speed = 0
