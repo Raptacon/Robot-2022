@@ -24,6 +24,7 @@ class SmokeTest(AutonomousStateMachine):
     navx: Navx
     turnToAngle: TurnToAngle
     dumbSpeed = .25
+    dumbRPMs = 3000
     time = 2
     toDo = None
 
@@ -55,7 +56,7 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Check to see if intake is deployed"
         pass
 
-    @timed_state(duration = time, next_state = "runHopperMotor1")
+    @timed_state(duration = time, next_state = "runShooterMotors")
     def runIntakeMotor(self):
         """Runs the intake motor for 2 seconds"""
         self.toDo = "Check to see if the intake motor is running"
@@ -85,7 +86,9 @@ class SmokeTest(AutonomousStateMachine):
         """Stops the second hopper motor and runs both shooter motors for 2 seconds"""
         self.toDo = "Check to see if the shooter motors are running"
         #self.hopperMotor.stopHopperMotor2
-        self.shooterMotors.runShooter(sSpeed1 = self.dumbSpeed, sSpeed2 = self.dumbSpeed)
+        self.intakeMotor.stopIntake()
+        self.shooterMotors.runShooter(sSpeed1 = self.dumbRPMs, sSpeed2 = self.dumbRPMs)
+        self.shooterMotors.execute()
         log.error("Running both shooter motors")
 
     @state
@@ -93,21 +96,36 @@ class SmokeTest(AutonomousStateMachine):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
         self.shooterMotors.stopShooter()
-        self.next_state = "colorSensorCheck"
+        self.next_state("colorSensorCheckRed")
 
     @state
-    def colorSensorCheck(self):
+    def colorSensorCheckRed(self):
         """Has the user put up a red ball to the color sensor. Will not move on until the ball is red."""
         self.toDo = "Put up a red ball to the color sensor"
+        self.colorSensor.execute()
         if self.colorSensor.colorMatched == "red":
             log.error("The ball is red")
-            self.next_state("checkIntakeSensor")
+            self.next_state("checkColorSensorBlue")
         elif self.colorSensor.colorMatched == "blue":
             log.error("The ball is not red")
-            self.next_state("colorSensorCheck")
+            self.next_state("colorSensorCheckRed")
         else:
             log.error("There is no ball")
-            self.next_state("colorSensorCheck")
+            self.next_state("colorSensorCheckRed")
+
+    @state
+    def colorSensorCheckBlue(self):
+        self.toDo = "Put up a blue ball to the color sensor"
+        self.colorSensor.execute()
+        if self.colorSensor.colorMatched == "blue":
+            log.error("The ball is blue")
+            self.next_state("checkIntakeSensor")
+        elif self.colorSensor.colorMatched == "red":
+            log.error("The ball is not blue")
+            self.next_state("colorSensorCheckBlue")
+        else:
+            log.error("There is no ball")
+            self.next_state("colorSensorCheckBlue")
 
     @state
     def checkNavx(self):
@@ -126,7 +144,7 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Break the break sensor on the intake"
         if self.sensors.loadingSensor(State.kTripped):
             log.error("Tripped")
-            self.next_state("checkShooterSensor")
+            self.next_state("checkHopperSensor")
         else:
             log.error("Sensor not broken")
             self.next_state("checkIntakeSensor")
@@ -134,7 +152,13 @@ class SmokeTest(AutonomousStateMachine):
     @state
     def checkHopperSensor(self):
         """Checks to see if the hopper break sensor is broken"""
-        pass
+        self.toDo = "Break the break sensor on the hopper"
+        if self.sensors.hopperSensor(State.kTripped):
+            log.error("Tripped")
+            self.next_state("checkShooterSensor")
+        else:
+            log.error("Sensor not broken")
+            self.next_state("checkHopperSensor")
 
     @state
     def checkShooterSensor(self):
