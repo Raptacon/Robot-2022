@@ -53,5 +53,4 @@ class ColorSensor():
         return self.colorMatched
 
     def execute(self):
-        self.displayColor()
         self.updateColor()
