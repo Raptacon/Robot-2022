@@ -36,7 +36,6 @@ from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 # Other imports:
 from robotMap import RobotMap, XboxMap
 from networktables import NetworkTables
-from utils.DirectionEnums import Direction
 from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
