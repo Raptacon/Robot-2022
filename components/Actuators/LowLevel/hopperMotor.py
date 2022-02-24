@@ -5,7 +5,7 @@ class HopperMotor:
     """
     Allows you to run motors in the hopper
     """
-    compatString = ["doof"]
+    compatString = ["teapot"]
 
     motors_loader: dict
 

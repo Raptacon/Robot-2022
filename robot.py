@@ -202,7 +202,7 @@ class MyRobot(MagicRobot):
         # If the drivers have any input outside deadzone, take control.
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
             if self.arcadeMode:
-                self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*driveLeftY, driveRightX)
+                self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
 

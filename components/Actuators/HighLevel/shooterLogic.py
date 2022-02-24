@@ -8,7 +8,7 @@ from magicbot import StateMachine, state, timed_state, tunable, feedback
 
 class ShooterLogic(StateMachine):
     """StateMachine-based shooter. Has both manual and automatic modes."""
-    compatString = []
+    compatString = ["teapot"]
 
     # Component/module related things
     shooterMotors: ShooterMotors

@@ -8,7 +8,7 @@ class DriveTrainHandler():
     during teleop. It gives priority to drivers.
     We shouldn't be calling the drivetrain's control methods directly now.
     """
-    compatString = ["doof","scorpion", "greenChassis"]
+    compatString = ["doof","teapot", "greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     driveTrain: DriveTrain
 
@@ -89,6 +89,9 @@ class DriveTrainHandler():
         else:
             log.error("Unknown control mode")
             self.driveTrain.setTank(0, 0)
+
+        self.input1 = 0
+        self.input2 = 0
 
         # You must request control every frame.
         self.prevSource = self.currentSource
