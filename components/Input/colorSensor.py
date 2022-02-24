@@ -3,6 +3,7 @@ import wpilib
 from magicbot import feedback
 
 class ColorSensor():
+    compatString = ["teapot"]
 
     colorSensor = ColorSensorV3(wpilib.I2C.Port.kOnboard)
     colorMatch = ColorMatch()

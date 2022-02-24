@@ -2,7 +2,7 @@ from magicbot import AutonomousStateMachine, state, feedback, timed_state
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
-from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn

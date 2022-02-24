@@ -13,7 +13,7 @@ from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.LowLevel.winch import Winch
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
-from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.elevator import Elevator
 from components.Actuators.LowLevel.driveTrain import ControlMode
@@ -76,6 +76,7 @@ class MyRobot(MagicRobot):
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
     turretTurn: TurretTurn
+    breakSensors: Sensors
     turretCalibrate: CalibrateTurret
 
     # Test code:
@@ -100,6 +101,12 @@ class MyRobot(MagicRobot):
         self.driverStation = DriverStation.getInstance()
 
         self.allianceColor = self.driverStation.getAlliance()
+        if self.allianceColor == self.driverStation.Alliance.kBlue:
+            self.allianceColor = "blue"
+        elif self.allianceColor == self.driverStation.Alliance.kRed:
+            self.allianceColor = "red"
+        else:
+            self.allianceColor = "???"
 
         ReadBufferValue = 18
 
@@ -220,6 +227,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
+        pass
         #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
