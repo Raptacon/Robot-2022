@@ -14,7 +14,7 @@ from utils.DirectionEnums import Direction
 class SmokeTest(AutonomousStateMachine):
     compatString = ["teapot"]
     MODE_NAME = "Smoke Test"
-    DEFAULT = True
+    DEFAULT = False
     driveTrain: DriveTrain
     intakeMotor: IntakeMotor
     colorSensor: ColorSensor
