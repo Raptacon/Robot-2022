@@ -110,19 +110,33 @@ class SmokeTest(AutonomousStateMachine):
             self.next_state("colorSensorCheck")
 
     @state
-    def colorSensorCheck(self):
+    def colorSensorCheckRed(self):
         """Has the user put up a red ball to the color sensor. Will not move on until the ball is red."""
         self.toDo = "Put up a red ball to the color sensor"
         self.colorSensor.execute()
         if self.colorSensor.colorMatched == "red":
             log.error("The ball is red")
-            self.next_state("checkIntakeSensor")
+            self.next_state("checkColorSensorBlue")
         elif self.colorSensor.colorMatched == "blue":
             log.error("The ball is not red")
-            self.next_state("colorSensorCheck")
+            self.next_state("colorSensorCheckRed")
         else:
             log.error("There is no ball")
-            self.next_state("colorSensorCheck")
+            self.next_state("colorSensorCheckRed")
+
+    @state
+    def colorSensorCheckBlue(self):
+        self.toDo = "Put up a blue ball to the color sensor"
+        self.colorSensor.execute()
+        if self.colorSensor.colorMatched == "blue":
+            log.error("The ball is blue")
+            self.next_state("checkIntakeSensor")
+        elif self.colorSensor.colorMatched == "red":
+            log.error("The ball is not blue")
+            self.next_state("colorSensorCheckBlue")
+        else:
+            log.error("There is no ball")
+            self.next_state("colorSensorCheckBlue")
 
     @state
     def checkNavx(self):

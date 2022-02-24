@@ -115,19 +115,6 @@ loaderSensors:
       channel: 2
       description: "Post-shooting sensor"
 
-TurretMotor:
-  subsystem: "turret"
-  description: "motor for turret goes here"
-  motors:
-    groups:
-     - "motors"
-    turretMotor:
-      channel: 12
-      type: "SparkMax"
-      inverted: False
-      IdleBrake: True
-      motorType: "kBrushless"
-
 intakeMotors:
   subsystem: "intake"
   intakeMotor:
@@ -215,6 +202,18 @@ speedSections:
         I: 0
         D: 0
         SpeedFloor: 0.01
+
+TurretMotor:
+  subsystem: "turret"
+  description: "motor for turret goes here"
+  motors:
+    groups:
+     - "motors"
+    turretMotor:
+      channel: 12
+      type: "SparkMax"
+      inverted: False
+      motorType: "kBrushless"
 
 pneumatics:
   type: "yaml"
