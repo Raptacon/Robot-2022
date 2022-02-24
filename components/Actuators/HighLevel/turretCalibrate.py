@@ -17,18 +17,18 @@ class CalibrateTurret(StateMachine):
         self.reverseLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
 
     @feedback
-    def getLClicked(self):
+    def getLeftClicked(self):
         return self.forwardLimitSwitch.get()
 
     @feedback
-    def getRClicked(self):
+    def getRightClicked(self):
         return self.reverseLimitSwitch.get()
 
 
     @state(first = True)
     def findRightdeadzone(self):
         self.turretThreshold.setCalibrating(True)
-        if self.getRClicked():
+        if self.getRightClicked():
             self.limitR = self.turretThreshold.getPosition()
             self.next_state('findLeftdeadzone')
         else:
@@ -39,7 +39,7 @@ class CalibrateTurret(StateMachine):
 
     @state
     def findLeftdeadzone(self):
-        if self.getLClicked():
+        if self.getLeftClicked():
             self.limitL = self.turretThreshold.getPosition()
             self.next_state('foundDeadzones')
         else:
