@@ -9,8 +9,8 @@ class TurretThreshold:
     exitSpeed = .02
     safetySpeed = .07
     safetyThreshold = 5
-    gearRatio = 10
-    sprocketRatio = 120/18
+    gearRatio = 5
+    sprocketRatio = 175/18
     turretMotor = None
     DegreeToAngle = 0
     limitSwitchTable = networktable.getTable("SmartDashboard")
@@ -37,6 +37,7 @@ class TurretThreshold:
         else:
             self.calibrated = True
         self.pos = self.encoder.getPosition()
+        self.speed = 0
 
     def setDeadzones(self, lLimit, rLimit):
         self.Deadzones[0] = [lLimit, rLimit]
@@ -102,8 +103,7 @@ class TurretThreshold:
         """
         Returns position based on encoder + gear ratios.
         """
-        # self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
-        self.pos = self.encoder.getPosition()
+        self.pos = 360 * self.encoder.getPosition() / (self.gearRatio * self.sprocketRatio)
 
     def execute(self):
         """

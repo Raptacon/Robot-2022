@@ -180,6 +180,9 @@ class MyRobot(MagicRobot):
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
+        self.turretTurn.engage()
+        self.turretTurn.setRelAngle(0)
+
         # deadzone clamping
         if abs(driveLeftY) < self.controllerDeadzone:
             driveLeftY = 0

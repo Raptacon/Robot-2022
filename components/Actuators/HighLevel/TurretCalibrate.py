@@ -51,7 +51,7 @@ class CalibrateTurret(StateMachine):
     @state
     def foundDeadzones(self):
         self.turretThreshold.setCalibrating(False)
-        self.turretThreshold.setDeadzones(self.limitL, self.limitR)
         self.turretTurn.setRelAngle(0)
+        self.turretThreshold.setDeadzones(self.limitL, self.limitR)
         self.limitTable.putNumber("Left Limit", self.limitL)
         self.limitTable.putNumber("Right Limit", self.limitR)
