@@ -83,6 +83,7 @@ hopperMotors:
       type: "SparkMax"
       motorType: "kBrushless"
       inverted: True
+      IdleBrake: True
       pid: Null
       currentLimits:
         freeLimit: 28
@@ -96,6 +97,7 @@ hopperMotors:
       type: "SparkMax"
       motorType: "kBrushless"
       inverted: False
+      IdleBrake: True
       pid: Null
       currentLimits:
         freeLimit: 28
@@ -144,7 +146,7 @@ shooterMotors:
     shooterMotor1:
       channel: 40
       type: "SparkMax"
-      inverted: False
+      inverted: True
       motorType: "kBrushless"
 
       pid:
@@ -166,7 +168,7 @@ shooterMotors:
     shooterMotor2:
       channel: 41
       type: "SparkMax"
-      inverted: True
+      inverted: False
       motorType: "kBrushless"
 
       pid:
@@ -218,6 +220,7 @@ TurretMotor:
     turretMotor:
       channel: 12
       type: "SparkMax"
+      IdleBrake: True
       inverted: False
       motorType: "kBrushless"
 
