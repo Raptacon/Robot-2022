@@ -34,7 +34,6 @@ class SmokeTest(AutonomousStateMachine):
 
     @state(first = True)
     def driveSetup(self):
-        self.driveTrain.setup()
         self.driveTrain.resetDistTraveled()
         self.next_state("drive")
 
