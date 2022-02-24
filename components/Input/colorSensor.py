@@ -3,9 +3,11 @@ import wpilib
 from magicbot import feedback
 
 class ColorSensor():
+    compatString = ["teapot"]
 
     colorSensor = ColorSensorV3(wpilib.I2C.Port.kOnboard)
     colorMatch = ColorMatch()
+    compatString = ["teapot"]
     # The closer this is to 0, the closer the color has to be to the color.
     colors = {"red":wpilib.Color(.4, .15, .05),
              "blue":wpilib.Color(.1, .2, .4),
@@ -30,15 +32,15 @@ class ColorSensor():
         to the current input.
         Either red, blue, white or black.
         """
-        return self.colorMatch.matchClosestColor(self.color)
+        return self.colorMatch.matchClosestColor(self.color)[0]
     
     def getRed(self):
         """Returns True if the closest color is red"""
-        return True if self.colorMatch.matchClosestColor(self.color) == self.colors["red"] else False
+        return True if self.colorMatch.matchClosestColor(self.color)[0] == self.colors["red"] else False
 
     def getBlue(self):
         """Returns True if the closest color is blue"""
-        return True if self.colorMatch.matchClosestColor(self.color) == self.colors["blue"] else False
+        return True if self.colorMatch.matchClosestColor(self.color)[0] == self.colors["blue"] else False
 
     @feedback
     def displayColor(self):
@@ -52,4 +54,5 @@ class ColorSensor():
         return self.colorMatched
 
     def execute(self):
+        self.displayColor()
         self.updateColor()

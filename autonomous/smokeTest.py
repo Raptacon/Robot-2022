@@ -1,14 +1,21 @@
-from magicbot import AutonomousStateMachine, state, feedback
+from magicbot import AutonomousStateMachine, state, feedback, timed_state
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
-from components.Actuators.LowLevel.hopperMotor import HopperMotor
+from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
+from components.Actuators.LowLevel.turretThreshold import TurretThreshold
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret
 from components.Input.breakSensors import Sensors, State
+from components.Input.navx import Navx
+from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 import logging as log
 
+from utils.DirectionEnums import Direction
+
 class SmokeTest(AutonomousStateMachine):
-    compatString = ["doof"]
+    compatString = ["teapot"]
     MODE_NAME = "Smoke Test"
     DEFAULT = False
     driveTrain: DriveTrain
@@ -16,8 +23,14 @@ class SmokeTest(AutonomousStateMachine):
     colorSensor: ColorSensor
     hopperMotor: HopperMotor
     shooterMotors: ShooterMotors
+    turretCalibrate: CalibrateTurret
+    turretThreshold: TurretThreshold
+    turretTurn: TurretTurn
     sensors: Sensors
+    navx: Navx
+    turnToAngle: TurnToAngle
     dumbSpeed = .25
+    dumbRPMs = 3000
     time = 2
     toDo = None
 
@@ -25,7 +38,7 @@ class SmokeTest(AutonomousStateMachine):
     def getToDo(self):
         return self.toDo
 
-    @state(first = True)
+    @state(first=True)
     def driveSetup(self):
         self.driveTrain.resetDistTraveled()
         self.next_state("drive")
@@ -38,55 +51,103 @@ class SmokeTest(AutonomousStateMachine):
         if int(self.driveTrain.getEstTotalDistTraveled()) >= 100 and int(self.driveTrain.getEstTotalDistTraveled()) <=115:
             self.driveTrain.setTank(0, 0)
             log.error("Drove forwards about 100 inches")
-            self.next_state("colorSensorCheck")
+            self.next_state("runIntakeMotor")
         else:
+            log.error("Driving")
             self.next_state("drive")
 
-    """
-    @timed_state(duration = time, next_state = "testEncoders")
-    def runIntakeMotor(self):
-        Runs intake motor
-        self.toDo = "The intake motor should be running"
-        self.driveTrain.setTank(0, 0)
-        self.intakeMotor.intakeSpeed = self.dumbSpeed
-        self.intakeMotor.runIntake(direction = Direction.kForwards, iSpeed = self.dumbSpeed)
-
-
-    @timed_state(duration = time, next_state = "runShooterMotor1")
-    def runHopperMotor(self):
-        Runs the hopper motor if there is a seperate motor for the hopper
-        self.toDo = "The hopper motor should be running"
-        self.intakeMotor.intake = False
-        self.hopperMotor.hopperSpeed = self.dumbSpeed
-        self.hopperMotor.hopper = True
-
-    @timed_state(duration = time, next_state = "runShooterMotor2")
-    def runShooterMotor1(self):
-        self.toDo = "The upper/lower shooter motor should be running"
-        self.hopperMotor.hopper = False
-        self.shooterMotors.shooter = True
-        self.shooterMotors.shooterSpeed1 = self.dumbSpeed
-
-
-    @timed_state(duration = time, next_state = "colorSensorCheck")
-    def runShooterMotor2(self):
-        self.toDo = "The other shooter motor should be running"
-        self.shooterMotors.shooterSpeed1 = 0
-        self.shooterMotors.shooterSpeed2 = self.dumbSpeed
-
-    """
     @state
-    def colorSensorCheck(self):
+    def delpoyIntake(self):
+        """Deploys the intake"""
+        self.toDo = "Check to see if intake is deployed"
+        pass
+
+    @timed_state(duration = time, next_state = "runShooterMotors")
+    def runIntakeMotor(self):
+        """Runs the intake motor for 2 seconds"""
+        self.toDo = "Check to see if the intake motor is running"
+        self.intakeMotor.runIntake(iSpeed = self.dumbSpeed, direction = Direction.kForwards)
+        log.error("Running intake motor")
+
+    @timed_state(duration = time, next_state = "runHopperMotor2")
+    def runHopperMotor1(self):
+        """Runs the first hopper motor for 2 seconds"""
+        self.toDo = "Check to see if the front hopper motor is running"
+        self.intakeMotor.stopIntake()
+        #self.hopperMotor.runHopperMotor1(lSpeed = self.dumbSpeed, direction = Direction.kForwards)
+        log.error("Running hopper motor 1")
+        pass
+
+    @timed_state(duration = time, next_state = "runShooterMotors")
+    def runHopperMotor2(self):
+        """Stops the first hopper motor adn runs the second motor for 2 seconds"""
+        self.toDo = "Check to see if the back hopper motor is running"
+        #self.hopperMotor.stopHopperMotor1()
+        #self.hopperMotor.runHopperMotor2(lSpeed = self.dumbSpeed, direction = Direction.kForwards)
+        log.error("Running hopper motor 2")
+        pass
+
+    @timed_state(duration = time, next_state = "calibrateTurret")
+    def runShooterMotors(self):
+        """Stops the second hopper motor and runs both shooter motors for 2 seconds"""
+        self.toDo = "Check to see if the shooter motors are running"
+        #self.hopperMotor.stopHopperMotor2
+        self.intakeMotor.stopIntake()
+        self.shooterMotors.runShooter(sSpeed1 = self.dumbRPMs, sSpeed2 = self.dumbRPMs)
+        self.shooterMotors.execute()
+        log.error("Running both shooter motors")
+
+    @state
+    def calibrateTurret(self):
+        """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
+        self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
+        self.shooterMotors.stopShooter()
+        self.turretCalibrate.engage()
+        self.turretTurn.engage()
+        self.turretThreshold.execute()
+        self.next_state("calibrateTurret")
+        if self.turretThreshold.calibrated == True:
+            self.next_state("colorSensorCheck")
+
+    @state
+    def colorSensorCheckRed(self):
+        """Has the user put up a red ball to the color sensor. Will not move on until the ball is red."""
         self.toDo = "Put up a red ball to the color sensor"
+        self.colorSensor.execute()
         if self.colorSensor.colorMatched == "red":
             log.error("The ball is red")
-            self.next_state("checkIntakeSensor")
+            self.next_state("checkColorSensorBlue")
         elif self.colorSensor.colorMatched == "blue":
-            log.error("The ball is not red idiot")
-            self.next_state("colorSensorCheck")
+            log.error("The ball is not red")
+            self.next_state("colorSensorCheckRed")
         else:
             log.error("There is no ball")
-            self.next_state("colorSensorCheck")
+            self.next_state("colorSensorCheckRed")
+
+    @state
+    def colorSensorCheckBlue(self):
+        self.toDo = "Put up a blue ball to the color sensor"
+        self.colorSensor.execute()
+        if self.colorSensor.colorMatched == "blue":
+            log.error("The ball is blue")
+            self.next_state("checkIntakeSensor")
+        elif self.colorSensor.colorMatched == "red":
+            log.error("The ball is not blue")
+            self.next_state("colorSensorCheckBlue")
+        else:
+            log.error("There is no ball")
+            self.next_state("colorSensorCheckBlue")
+
+    @state
+    def checkNavx(self):
+        """Has user turn the robot until it gets to a certain angle. Once angle is reached, it moves to the next state. This state uses turnToAngle"""
+        self.toDo = "Turn the bot to the right about 45 degrees"
+        self.turnToAngle.setAngle(angle = 45)
+        if self.turnToAngle.running:
+            log.error("Keep turning")
+        else:
+            log.error("Done turning")
+            self.next_state = "checkIntakeSensor"
 
     @state
     def checkIntakeSensor(self):
@@ -94,15 +155,21 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Break the break sensor on the intake"
         if self.sensors.loadingSensor(State.kTripped):
             log.error("Tripped")
-            self.next_state("checkShooterSensor")
+            self.next_state("checkHopperSensor")
         else:
-            log.error("Sensor not broken")
+            log.error("Intake sensor not broken")
             self.next_state("checkIntakeSensor")
 
     @state
     def checkHopperSensor(self):
         """Checks to see if the hopper break sensor is broken"""
-        pass
+        self.toDo = "Break the break sensor on the hopper"
+        if self.sensors.hopperSensor(State.kTripped):
+            log.error("Tripped")
+            self.next_state("checkShooterSensor")
+        else:
+            log.error("Hopper sensor not broken")
+            self.next_state("checkHopperSensor")
 
     @state
     def checkShooterSensor(self):
@@ -113,5 +180,5 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Done")
             self.done()
         else:
-            log.error("Sensor not broken")
+            log.error("Shooting sensor not broken")
             self.next_state("checkShooterSensor")
