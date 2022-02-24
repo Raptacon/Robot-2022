@@ -1,7 +1,6 @@
 from magicbot import StateMachine, feedback, state
 from rev import SparkMaxLimitSwitch
 
-from components.Actuators.HighLevel.feederMap import Type
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
