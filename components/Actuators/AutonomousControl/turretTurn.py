@@ -44,7 +44,7 @@ class TurretTurn(StateMachine):
                 return limePosition
             else:
                 log.error("Limelight missing target")
-                return False
+                return None
         elif self.controlMode == "Encoder":
             return self.turnAngle - self.pos
 
@@ -69,7 +69,7 @@ class TurretTurn(StateMachine):
         Sets speed of turret based on what angle we are turning to
         """
         offset = self.getOffset()
-        if offset == False:
+        if offset == None:
             self.setEncoderControl()
             offset = self.getOffset()
         speed = self.speedSections.getSpeed(offset, "TurretTurn")
