@@ -38,7 +38,7 @@ class SmokeTest(AutonomousStateMachine):
     def getToDo(self):
         return self.toDo
 
-    @state
+    @state(first=True)
     def driveSetup(self):
         self.driveTrain.setup()
         self.driveTrain.resetDistTraveled()
@@ -136,7 +136,7 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Done turning")
             self.next_state = "checkIntakeSensor"
 
-    @state(first=True)
+    @state
     def checkIntakeSensor(self):
         """Checks to see if the intake break sensor is broken"""
         self.toDo = "Break the break sensor on the intake"
@@ -144,7 +144,7 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Tripped")
             self.next_state("checkHopperSensor")
         else:
-            log.error("Sensor not broken")
+            log.error("Intake sensor not broken")
             self.next_state("checkIntakeSensor")
 
     @state
@@ -155,7 +155,7 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Tripped")
             self.next_state("checkShooterSensor")
         else:
-            log.error("Sensor not broken")
+            log.error("Hopper sensor not broken")
             self.next_state("checkHopperSensor")
 
     @state
@@ -167,5 +167,5 @@ class SmokeTest(AutonomousStateMachine):
             log.error("Done")
             self.done()
         else:
-            log.error("Sensor not broken")
+            log.error("Shooting sensor not broken")
             self.next_state("checkShooterSensor")
