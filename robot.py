@@ -83,7 +83,6 @@ class MyRobot(MagicRobot):
 
     # Test code:
     testBoard: TestBoard
-    turretTurnAngle = tunable(180)
 
     # If controller input is below this value, it will be set to zero.
     # This avoids accidental input, as we are now overriding autonomous
@@ -190,9 +189,6 @@ class MyRobot(MagicRobot):
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
         self.turretTurn.engage()
-        self.turretTurn.setRelAngle(0)
-
-        self.turretTurn.setAngle(self.turretTurnAngle)
         self.turretScan.engage()
         # deadzone clamping
         if abs(driveLeftY) < self.controllerDeadzone:
@@ -201,12 +197,9 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
-
-        self.turretTurn.engage()
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
-        self.turretCalibrate.engage()
         self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 

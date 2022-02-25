@@ -23,24 +23,30 @@ class TurretScan (StateMachine):
         If it doesn't, transitions to scanning between the left limit and right limit
         until the limelight has a target.
         """
-        if self.hasTarget() == False:
-            self.next_state("turnLeft")
-        else:
-            self.next_state("check")
+        if self.turretThreshold.calibrated:
+            if self.hasTarget() == False:
+                self.turretTurn.setEncoderControl()
+                self.next_state("turnLeft")
+            else:
+                self.next_state("check")
 
     @state  
     def turnLeft(self):
         if self.hasTarget() == False:
-            self.turretTurn.setAngle(self.turretThreshold.Deadzones[0][0])
+            self.turretTurn.setAngle(self.turretThreshold.leftLim + 7)
+            self.stateTurn = "turnRight"
             self.next_state("wait")
         else:
             self.next_state("check")
 
     @state
     def wait(self):
+        self.turretTurn.setEncoderControl()
         turn = self.turretTurn.getTurning()
 
-        if turn:
+        if self.hasTarget():
+            self.next_state("foundTarget")
+        elif turn:
             self.next_state("wait")
         else:
             self.next_state(self.stateTurn)
@@ -48,11 +54,16 @@ class TurretScan (StateMachine):
     @state
     def turnRight(self):
         if self.hasTarget() == False:
-            self.turretTurn.setAngle(self.turretThreshold.Deadzones[0][1])
+            self.turretTurn.setAngle(self.turretThreshold.rightLim - 7)
             self.stateTurn = "turnLeft"
             self.next_state("wait")
         else: 
             self.next_state("check")
+
+    @state
+    def foundTarget(self):
+        self.turretTurn.setLimeLightControl()
+        self.next_state("check")
 
     @feedback
     def hasTarget(self):

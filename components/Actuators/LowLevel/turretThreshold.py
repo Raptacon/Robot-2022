@@ -6,18 +6,18 @@ class TurretThreshold:
     motors_turret: dict
     speed = 0
     pos = 0
-    exitSpeed = .02
+    exitSpeed = .05
     safetySpeed = .07
-    safetyThreshold = 5
     gearRatio = 5
     sprocketRatio = 175/18
     turretMotor = None
     DegreeToAngle = 0
     limitSwitchTable = networktable.getTable("SmartDashboard")
-    Deadzones = [[]]
+    leftLim = None
+    rightLim = None
 
     calibrating = False
-    calibSpeed = .08
+    calibSpeed = .09
     def setup(self):
         #connects moters and gets position
         # Clear any existing deadzones (they probably aren't good)
@@ -29,9 +29,10 @@ class TurretThreshold:
 
     def on_enable(self):
 
-        self.Deadzones[0] = [self.limitSwitchTable.getNumber("Left Limit", None), self.limitSwitchTable.getNumber("Right Limit", None)]
+        self.leftLim = self.limitSwitchTable.getNumber("Left Limit", None)
+        self.rightLim = self.limitSwitchTable.getNumber("Right Limit", None)
 
-        if self.Deadzones[0][0] == None or self.Deadzones[0][1] == None:
+        if self.leftLim == None or self.rightLim == None:
             log.error("MUST CALIBRATE TURRET")
             self.calibrated = False
         else:
@@ -44,7 +45,8 @@ class TurretThreshold:
         Pass deadzones to turret.
         ONLY DO THIS IF YOU KNOW EXACTLY WHAT YOU ARE DOING
         """
-        self.Deadzones[0] = [lLimit, rLimit]
+        self.leftLim = lLimit
+        self.rightLim = rLimit
         self.calibrated = True
 
     def setCalibrating(self, calib):
@@ -78,21 +80,15 @@ class TurretThreshold:
             return angle
         elif self.calibrated == False:
             return False
-        for lLim, rLim in self.Deadzones:
-            # If we're jumping the deadzone in either direction
-            # or the angle is inside of the deadzone
-            if ((lLim >= self.pos and rLim <= angle)
-                or (lLim >= angle and rLim <= self.pos)):
-                if lLim >= self.pos:
-                    return lLim
-                if lLim >= angle:
-                    return rLim
-                # Return the limit on the nearest side of the deadzone
-            if (angle >= lLim and angle <= rLim):
-                if lLim >= self.pos:
-                    return lLim
-                if rLim <= self.pos:
-                    return rLim
+
+        lLim = self.leftLim
+        rLim = self.rightLim
+
+        # If angle is beyond limits in either direction
+        if angle < lLim:
+            return lLim
+        if angle > rLim:
+            return rLim
         return angle
 
     @feedback
@@ -117,16 +113,19 @@ class TurretThreshold:
 
         if self.calibrated:
 
-            for lLimit, rLimit in self.Deadzones:
-                if self.pos > lLimit and self.pos < rLimit:
-                    if abs(lLimit - self.pos) < abs(rLimit - self.pos):
-                        self.speed = -1*self.exitSpeed
-                    else:
-                        self.speed = self.exitSpeed
+            # If we are currently outside of deadzones, re-enter
+            if self.pos < self.leftLim:
+                log.error("Too low")
+                self.speed = self.exitSpeed
+            elif self.pos > self.rightLim:
+                log.error("Too high")
+                self.speed = -1*self.exitSpeed
+
 
             self.turretMotor.set(self.speed)
 
         elif self.calibrating:
+            log.error("Calibrating Turret")
             if abs(self.speed) > abs(self.calibSpeed):
                 if self.speed > 0:
                     self.speed = self.calibSpeed
@@ -136,4 +135,4 @@ class TurretThreshold:
         else:
             self.turretMotor.set(0)
             log.error("Calibrate the turret bud.")
-        self.speed = 0
+        log.error(str(self.speed))

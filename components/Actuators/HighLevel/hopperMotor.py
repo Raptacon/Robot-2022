@@ -12,8 +12,8 @@ class HopperMotor:
 
     motors_hopper: dict
     sensors: Sensors
-    intakeSpeed = tunable(.1)
-    movingSpeed = tunable(.08)
+    intakeSpeed = tunable(.15)
+    movingSpeed = tunable(.11)
 
     def setup(self):
         """

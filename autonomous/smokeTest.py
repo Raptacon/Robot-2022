@@ -87,7 +87,7 @@ class SmokeTest(AutonomousStateMachine):
         log.error("Running hopper motor 2")
         pass
 
-    @timed_state(first=True, duration = time, next_state = "calibrateTurret")
+    @timed_state(duration = time, next_state = "finishShooting")
     def runShooterMotors(self):
         """Stops the second hopper motor and runs both shooter motors for 2 seconds"""
         self.toDo = "Check to see if the shooter motors are running"
@@ -98,16 +98,26 @@ class SmokeTest(AutonomousStateMachine):
         log.error("Running both shooter motors")
 
     @state
+    def finishShooting(self):
+        self.shooterMotors.stopShooter()
+        self.shooterMotors.execute()
+        self.next_state("calibrateTurret")
+
+
+    @state(first=True)
     def calibrateTurret(self):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
-        self.shooterMotors.stopShooter()
+        self.turretThreshold.execute()
         self.turretCalibrate.engage()
         self.turretTurn.engage()
-        self.turretThreshold.execute()
         self.next_state("calibrateTurret")
         if self.turretThreshold.calibrated == True:
-            self.next_state("colorSensorCheckRed")
+            self.turretTurn.done()
+            self.turretThreshold.setTurretspeed(0)
+            self.turretThreshold.execute()
+            self.done()
+            # self.next_state("colorSensorCheckRed")
 
     @state
     def colorSensorCheckRed(self):

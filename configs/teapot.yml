@@ -193,12 +193,13 @@ speedSections:
   speedSections:
     groups: "configuredValues"
     TurretTurn:
-      - [10, .1]
+      - [30, .08]
+      - [90, .13]
       # - [45, .2]
       # - [90, .3]
       # - [180, .4]
       # - [270, .7]
-      - ["End", .1]
+      - ["End", .13]
     GoToDist:
       - [36, .3]
       - [12, .25]
@@ -221,7 +222,7 @@ TurretMotor:
       channel: 12
       type: "SparkMax"
       IdleBrake: True
-      inverted: False
+      inverted: True
       motorType: "kBrushless"
 
 pneumatics:

@@ -8,7 +8,7 @@ class CalibrateTurret(StateMachine):
     compatString = ["greenChassis", "teapot"]
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
-    const_turnAngle = 5
+    const_turnAngle = 7
     limitTable = networktable.getTable("SmartDashboard")
 
     def setup(self):
@@ -18,11 +18,11 @@ class CalibrateTurret(StateMachine):
 
     @feedback
     def getLeftClicked(self):
-        return self.forwardLimitSwitch.get()
+        return self.reverseLimitSwitch.get()
 
     @feedback
     def getRightClicked(self):
-        return self.reverseLimitSwitch.get()
+        return self.forwardLimitSwitch.get()
 
 
     @state(first = True)
@@ -32,8 +32,7 @@ class CalibrateTurret(StateMachine):
             self.limitR = self.turretThreshold.getPosition()
             self.next_state('findLeftdeadzone')
         else:
-            self.turretTurn.engage()
-            self.turretTurn.setRelAngle(-1*self.const_turnAngle)
+            self.turretTurn.setRelAngle(self.const_turnAngle)
             self.next_state("findRightdeadzone")
 
 
@@ -43,8 +42,7 @@ class CalibrateTurret(StateMachine):
             self.limitL = self.turretThreshold.getPosition()
             self.next_state('foundDeadzones')
         else:
-            self.turretTurn.engage()
-            self.turretTurn.setRelAngle(self.const_turnAngle)
+            self.turretTurn.setRelAngle(-1*self.const_turnAngle)
             self.next_state("findLeftdeadzone")
 
     @state
@@ -54,3 +52,4 @@ class CalibrateTurret(StateMachine):
         self.turretThreshold.setDeadzones(self.limitL, self.limitR)
         self.limitTable.putNumber("Left Limit", self.limitL)
         self.limitTable.putNumber("Right Limit", self.limitR)
+        self.done()
