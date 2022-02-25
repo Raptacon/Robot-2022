@@ -97,8 +97,8 @@ class BallCounter:
     def execute(self):
 
         self.currentLoadingSensorTripped = self.sensors.loadingSensor(State.kTripped)
-        self.currentMiddleSensorTripped = self.sensors.middleSensor(State.kTripped)
-        self.currentOutputSensorTripped = self.sensors.postShootingSensor(State.kTripped)
+        self.currentMiddleSensorTripped = self.sensors.hopperSensor(State.kTripped)
+        self.currentOutputSensorTripped = self.sensors.shootingSensor(State.kTripped)
 
         # If the state of a loading sensor has changed AND it is unbroken,
         # we assume a ball has entered/left and passed a break sensor

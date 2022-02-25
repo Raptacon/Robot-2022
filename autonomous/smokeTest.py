@@ -38,7 +38,7 @@ class SmokeTest(AutonomousStateMachine):
     def getToDo(self):
         return self.toDo
 
-    @state(first=True)
+    @state
     def driveSetup(self):
         self.driveTrain.resetDistTraveled()
         self.next_state("drive")
@@ -62,7 +62,7 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Check to see if intake is deployed"
         pass
 
-    @timed_state(duration = time, next_state = "runShooterMotors")
+    @timed_state(first=True, duration = time, next_state = "runShooterMotors")
     def runIntakeMotor(self):
         """Runs the intake motor for 2 seconds"""
         self.toDo = "Check to see if the intake motor is running"
@@ -107,7 +107,7 @@ class SmokeTest(AutonomousStateMachine):
         self.turretThreshold.execute()
         self.next_state("calibrateTurret")
         if self.turretThreshold.calibrated == True:
-            self.next_state("colorSensorCheck")
+            self.next_state("colorSensorCheckRed")
 
     @state
     def colorSensorCheckRed(self):
@@ -116,7 +116,7 @@ class SmokeTest(AutonomousStateMachine):
         self.colorSensor.execute()
         if self.colorSensor.colorMatched == "red":
             log.error("The ball is red")
-            self.next_state("checkColorSensorBlue")
+            self.next_state("colorSensorCheckBlue")
         elif self.colorSensor.colorMatched == "blue":
             log.error("The ball is not red")
             self.next_state("colorSensorCheckRed")

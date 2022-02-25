@@ -116,7 +116,7 @@ class HopperMotor:
         else:
             self.stopHopperMotorForeside()
 
-        if self.sensors.middleSensor(State.kTripped):
+        if self.sensors.hopperSensor(State.kTripped):
             self.runHopperMotorBackside(self.movingSpeed, Direction.kForwards)
         else:
             self.stopHopperMotorBackside()

@@ -17,7 +17,7 @@ class TurretThreshold:
     Deadzones = [[]]
 
     calibrating = False
-    calibSpeed = .1
+    calibSpeed = .05
     def setup(self):
         #connects moters and gets position
         # Clear any existing deadzones (they probably aren't good)

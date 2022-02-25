@@ -10,7 +10,7 @@ from magicbot import StateMachine, state, timed_state, tunable, feedback
 
 class LoaderLogic(StateMachine):
     """StateMachine-based loader. Has both automatic and manual modes."""
-    compatString = ["doof", "teapot"]
+    compatString = ["teapot"]
 
     # Component/module related things
     intakeMotor: IntakeMotor
