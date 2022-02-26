@@ -72,11 +72,6 @@ class TurretTurn(StateMachine):
     def getTargetAngle(self):
         return self.turnAngle
 
-    @state(first = True)
-    def idling(self):
-        """Stays in this state until started"""
-        pass
-
     @feedback
     def getSpeed(self):
         offset = self.getOffset()
@@ -95,7 +90,7 @@ class TurretTurn(StateMachine):
         speed = self.getSpeed()
         self.turretThreshold.setTurretspeed(speed)
 
-    @state
+    @state(first = True)
     def turn(self):
         """
         Starts turning process, if in tolerance it will stop

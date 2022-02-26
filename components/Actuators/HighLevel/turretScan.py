@@ -28,6 +28,7 @@ class TurretScan (StateMachine):
                 self.turretTurn.setEncoderControl()
                 self.next_state("turnLeft")
             else:
+                self.turretTurn.setLimeLightControl()
                 self.next_state("check")
 
     @state  

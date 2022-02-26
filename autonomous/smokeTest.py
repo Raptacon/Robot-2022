@@ -110,7 +110,6 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
         self.turretThreshold.execute()
         self.turretCalibrate.engage()
-        self.turretTurn.engage()
         self.next_state("calibrateTurret")
         if self.turretThreshold.calibrated == True:
             self.turretTurn.done()
