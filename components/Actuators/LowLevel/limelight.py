@@ -7,3 +7,5 @@ class Limelight():
         self.limeTable.putNumber('ledMode',1)
     def LEDOn(self):
         self.limeTable.putNumber('ledMode',3)
+    def execute(self):
+        pass
