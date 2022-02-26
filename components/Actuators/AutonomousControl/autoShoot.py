@@ -3,7 +3,6 @@ from magicbot import StateMachine
 from magicbot.state_machine import state
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
-from components.Actuators.LowLevel.driveTrain import ControlMode
 from utils.guessDistance import guessDistanceTrig
 
 import logging as log

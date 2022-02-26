@@ -31,7 +31,7 @@ class TurretScan (StateMachine):
                 self.turretTurn.setLimeLightControl()
                 self.next_state("check")
 
-    @state  
+    @state
     def turnLeft(self):
         if self.hasTarget() == False:
             self.turretTurn.setAngle(self.turretThreshold.leftLim + 7)
@@ -58,7 +58,7 @@ class TurretScan (StateMachine):
             self.turretTurn.setAngle(self.turretThreshold.rightLim - 7)
             self.stateTurn = "turnLeft"
             self.next_state("wait")
-        else: 
+        else:
             self.next_state("check")
 
     @state
