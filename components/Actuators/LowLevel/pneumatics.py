@@ -3,7 +3,7 @@ dsPos = DoubleSolenoid.Value
 import logging as log
 
 class Pneumatics:
-    compatString = []
+    compatString = ["teapot"]
     compressors_pneumatics: dict
     solenoids_pneumatics: dict
 
@@ -23,7 +23,7 @@ class Pneumatics:
         """
         returns the "value" of the solenoid. Boolean, is it on or off?
         """
-        return True if self.solenloaderSolenoidoid.get() == dsPos.kForward else False
+        return True if self.loaderSolenoid.get() == dsPos.kForward else False
     def deployLoader(self):
         """
         Turn the loader to the deployed position

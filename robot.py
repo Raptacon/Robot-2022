@@ -130,7 +130,7 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
-        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold, Limelight,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
@@ -153,9 +153,10 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnPress, self.limelight.LEDOff)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnPress, self.limelight.LEDOn)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnRelease, self.limelight.LEDOn)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.autoShoot.startAutoShoot)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.autoShoot.stop)
