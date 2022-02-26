@@ -2,6 +2,7 @@ from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
+from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 
 class Autonomous(AutonomousStateMachine):
     """Creates the autonomous code"""
@@ -12,6 +13,7 @@ class Autonomous(AutonomousStateMachine):
     driveTrain: DriveTrain
     shooter: ShooterLogic
     pneumatics: Pneumatics
+    turnToAngle: TurnToAngle
     drive_speed = tunable(.25)
 
     @state(first = True)
@@ -22,21 +24,21 @@ class Autonomous(AutonomousStateMachine):
         self.shooter.startShooting()
         self.next_state('shooter_wait')
 
-    @timed_state(duration = shootTime, next_state="drive_backwards")
+    @timed_state(duration = shootTime, next_state="turn")
     def shooter_wait(self):
         """Waits for shooter to finish, then next state"""
         pass
 
-    @timed_state(duration = time, next_state = 'turn')
-    def drive_backwards(self):
+    @state
+    def turn(self):
+        self.turnToAngle.setAngle(angle = -90)
+        self.next_state("drive")
+
+    @timed_state(duration = time, next_state = 'stop')
+    def drive(self):
         """Drives the bot backwards for a time"""
         self.shooter.doneShooting()
         self.driveTrain.setTank(self.drive_speed, self.drive_speed)
-
-    @timed_state(duration = time, next_state = 'stop')
-    def turn(self):
-        """Turns for a time"""
-        self.driveTrain.setTank(-self.drive_speed, self.drive_speed)
 
     @state(must_finish = True)
     def stop(self):
