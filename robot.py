@@ -2,6 +2,7 @@
 Team 3200 Robot base class
 """
 # Module imports:
+import logging
 import wpilib
 from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
@@ -187,6 +188,13 @@ class MyRobot(MagicRobot):
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+
+        if self.xboxMap.getMechDPad() == 180:
+            self.winch.setRaise()
+        elif self.xboxMap.getMechDPad() == 0:
+            self.winch.setLower()
+        else:
+            self.winch.stop()
 
         self.turretTurn.engage()
         self.turretScan.engage()

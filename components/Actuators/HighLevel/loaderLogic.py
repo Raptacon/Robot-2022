@@ -93,7 +93,7 @@ class LoaderLogic(StateMachine):
         If we're ejecting balls of the other team's color,
         makes sure that the ball is our color
         """
-        self.next_state('checkForBall')
+        self.next_state('nextAction')
 
         opposingColor = ""
         if self.allianceColor == "red":
@@ -104,7 +104,7 @@ class LoaderLogic(StateMachine):
         if self.eject and self.colorSensor.displayColor() == opposingColor:
             self.next_state('eject_ball')
 
-    @timed_state(duration = ballEjectTime, next_state = 'checkForBall')
+    @timed_state(duration = ballEjectTime, next_state = 'nextAction')
     def eject_ball(self):
         """
         Runs the loader backwards for a set time

@@ -131,12 +131,22 @@ intakeMotors:
     intakeMotor:
       channel: 51
       type: "CANTalonSRX"
-      inverted: True
+      inverted: False
       pid: Null
       currentLimits:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
+
+winchMotors:
+  subsystem: "winch"
+  winchMotors:
+    groups: "motors"
+    winchMotor:
+      channel: 10
+      type: "SparkMax"
+      inverted: False
+      motorType: "kBrushless"
 
 shooterMotors:
   subsystem: "shooter"
