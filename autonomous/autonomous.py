@@ -32,7 +32,7 @@ class Autonomous(AutonomousStateMachine):
     @state
     def turn(self):
         self.turnToAngle.setAngle(angle = -90)
-        self.next_state("drive")
+        self.next_state("stop")
 
     @timed_state(duration = time, next_state = 'stop')
     def drive(self):

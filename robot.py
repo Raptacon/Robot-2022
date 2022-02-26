@@ -166,6 +166,8 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnRelease, self.goToDist.stop)
 
 
+        self.limelight.LEDOn()
+
         self.driveTrain.setBraking(True)
         self.driveTrain.resetDistTraveled()
 
@@ -270,6 +272,7 @@ class MyRobot(MagicRobot):
         What the robot runs on disabled start
         NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
         """
+        self.limelight.resetLED()
         self.driveTrain.setBraking(False)
 
     def disabledPeriodic(self):
