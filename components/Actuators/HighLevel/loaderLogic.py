@@ -26,7 +26,7 @@ class LoaderLogic(StateMachine):
     automaticHopperMotor1Speed = tunable(.4)
     automaticHopperMotor2Speed = tunable(.4)
     # Other variables
-    isAutomatic = True
+    isAutomatic = False
     loaderStoppingDelay = .16
     ballEjectTime = .3
     eject = False
@@ -103,6 +103,8 @@ class LoaderLogic(StateMachine):
 
         if self.eject and self.colorSensor.displayColor() == opposingColor:
             self.next_state('eject_ball')
+        else:
+            self.next_state('intakeBall')
 
     @timed_state(duration = ballEjectTime, next_state = 'nextAction')
     def eject_ball(self):
@@ -110,6 +112,14 @@ class LoaderLogic(StateMachine):
         Runs the loader backwards for a set time
         """
         self.hopperMotor.runHopperMotorForeside(self.automaticHopperMotor1Speed, Direction.kBackwards)
+
+    @timed_state(duration = ballEjectTime, next_state = 'nextAction')
+    def intakeBall(self):
+        """
+        Runs the backside loader forwards for a set time
+        (alleviates issues with intake deadzones)
+        """
+        self.hopperMotor.runHopperMotorBackside(self.automaticHopperMotor1Speed, Direction.kBackwards)
 
     @state(first = True)
     def nextAction(self):

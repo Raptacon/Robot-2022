@@ -1,7 +1,6 @@
 import logging as log
 from components.Input.breakSensors import Sensors, State
 from components.Input.colorSensor import ColorSensor
-from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from networktables import NetworkTables
 
 class Ball:
@@ -33,7 +32,6 @@ class BallCounter:
     compatString = ["doof", "teapot"]
     sensors: Sensors
     colorSensor: ColorSensor
-    shooter: ShooterLogic
 
     def setup(self):
         self.SmartTable = NetworkTables.getTable("SmartDashboard")

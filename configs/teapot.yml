@@ -203,6 +203,7 @@ speedSections:
   speedSections:
     groups: "configuredValues"
     TurretTurn:
+      - [10, .05]
       - [30, .08]
       - [90, .13]
       - [180, .17]
