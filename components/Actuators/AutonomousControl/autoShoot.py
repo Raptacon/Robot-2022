@@ -12,36 +12,26 @@ from pathlib import Path
 from utils import yaml
 
 
-def findRPM(configName):
+def findRPM(configName, basePath):
     """
     Will determine the correct yml file for the robot. Please run
     'echo (robotCfg.yml) > robotConfig' on the robot. This will tell the
     robot to use robotCfg file remove the () and use file name file.
     Files should be in configs dir
     """
-    configPath = os.path.dirname(__file__) + os.path.sep + ".." + os.path.sep + "configs" + os.path.sep
+    configPath = os.path.join(basePath,"configs")
 
     home = str(Path.home()) + os.path.sep
-    defaultConfig = configName
-    robotConfigFile = home + configName
-
-    if not os.path.isfile(robotConfigFile):
-        log.info("Could not find %s. Using %s", robotConfigFile,
-                 configPath+configName)
-
-        robotConfigFile = configPath + configName
     try:
 
-        if os.path.isfile(robotConfigFile):
-            log.info("Using %s config file", robotConfigFile)
+        if os.path.isfile(os.path.join(configPath,configName)):
+            log.info("Using %s config file", configPath)
             return configPath
-        log.error("No config? Can't find %s", robotConfigFile)
+        log.error("No config? Can't find %s", configPath)
     except Exception as e:
-        log.error("Could not find %s", robotConfigFile)
+        log.error("Could not find %s", configPath)
         log.error(e)
-        log.error(("Please run `echo <robotcfg.yml> >"
-                   + " ~/robotConfig` on the robot"))
-        log.error("Using default %s", defaultConfig)
+        log.error("Using default %s", configPath)
 
     return configPath
 
@@ -60,7 +50,7 @@ def calculateRPM(dist, dir, filename):
     # default value in case nothing is calculated
     rpm = [ShooterLogic.teleShootingSpeed1, ShooterLogic.teleShootingSpeed2]
 
-    values = yaml.load(open(dir+filename))
+    values = yaml.load(open(os.path.join(dir,filename)))
     minDist_x = 9
     maxRPM = 5000
     if dist < minDist_x:
@@ -98,7 +88,7 @@ def calculateRPM(dist, dir, filename):
     else:
         log.error("Given file did not have values at base, using default RPM")
 
-    if rpm > maxRPM:
+    if rpm[0] > maxRPM or rpm[1] > maxRPM:
         log.error("RPM too high. Using max of "+str(maxRPM))
         return [maxRPM, maxRPM]
     else:
@@ -123,9 +113,10 @@ class AutoShoot(StateMachine):
     smartTable.putNumber("Vertical angle offset", 0)
     smartTable.putNumber("Estimated Necessary RPM", 0)
 
+    robotDir: str
+
     # Config file vars
     RPMfilename = "rpmToDistance.yml"
-    RPMdir = findRPM(RPMfilename)
 
     # Distance estimate variables
 
@@ -146,6 +137,9 @@ class AutoShoot(StateMachine):
 
     starting = False
     stopping = False
+
+    def setup(self):
+        self.RPMdir = findRPM(self.RPMfilename, self.robotDir)
 
     @state
     def start(self):
@@ -185,10 +179,9 @@ class AutoShoot(StateMachine):
         # accessable through Smart Dashboard.
         self.smartTable.putNumber("Distance", self.dist)
         self.smartTable.putNumber("Vertical angle offset", self.angle)
-        self.smartTable.putNumber("Estimated Necessary RPM", self.rpm)
+        self.smartTable.putNumberArray("Estimated Necessary RPM", rpms)
 
         self.next_state("stop_shoot")
-
     @state
     def stop_shoot(self):
         # set rpm

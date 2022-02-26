@@ -46,6 +46,7 @@ class XboxMap():
         self.mechRightTrig = self.mech.getRawAxis(XboxController.Axis.kRightTrigger)
         self.mechLeftTrig = self.mech.getRawAxis(XboxController.Axis.kLeftTrigger)
         self.mechDPad = self.mech.getPOV()
+        self.mechLeftBumper = self.mech.getLeftBumper()
 
     def getDriveController(self):
         return self.drive
@@ -100,6 +101,10 @@ class XboxMap():
 
     def getMechDPad(self):
         return self.mechDPad
+
+    def getMechLeftBumper(self):
+        return self.mechLeftBumper
+
 class JoystickMap():
     """
     Holds the mappings for a generic joystick
