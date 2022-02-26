@@ -8,7 +8,7 @@ from networktables import NetworkTables as networktable
 # TODO: Return scan result
 
 class TurretScan (StateMachine):
-    compatString = ["doof", "greenChassis"]
+    compatString = ["teapot", "greenChassis"]
     limeTable = networktable.getTable("limelight")
     turretTurn: TurretTurn
     speedSections: SpeedSections

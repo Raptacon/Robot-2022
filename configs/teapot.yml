@@ -203,14 +203,9 @@ speedSections:
   speedSections:
     groups: "configuredValues"
     TurretTurn:
-      # - [10, "PID"]
       - [30, .08]
       - [90, .13]
       - [180, .17]
-      # - [45, .2]
-      # - [90, .3]
-      # - [180, .4]
-      # - [270, .7]
       - ["End", .19]
     GoToDist:
       - [36, .3]

@@ -8,7 +8,6 @@ class CalibrateTurret(StateMachine):
     compatString = ["greenChassis", "teapot"]
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
-    const_turnAngle = 7
     limitTable = networktable.getTable("SmartDashboard")
 
     def setup(self):
