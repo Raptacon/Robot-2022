@@ -26,7 +26,7 @@ class LoaderLogic(StateMachine):
     automaticHopperMotor1Speed = tunable(.4)
     automaticHopperMotor2Speed = tunable(.4)
     # Other variables
-    isAutomatic = True
+    isAutomatic = False
     loaderStoppingDelay = .16
     ballEjectTime = .3
     eject = False
@@ -47,7 +47,7 @@ class LoaderLogic(StateMachine):
     def stopLoading(self):
         if self.hopperMotor.isHopperForesideRunning() or self.hopperMotor.isHopperBacksideRunning():
             return
-        self.next_state('shooting')
+        self.next_state('nextAction')
 
     def determineNextAction(self):
         self.next_state('nextAction')
@@ -84,6 +84,7 @@ class LoaderLogic(StateMachine):
         Moves the ball forewards, goes back so we can eject if need be
         """
         self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
+        self.hopperMotor.runHopperMotorBackside(self.hopperMotor.movingSpeed, Direction.kForwards)
         self.next_state('checkForBall')
 
     @state
@@ -92,7 +93,7 @@ class LoaderLogic(StateMachine):
         If we're ejecting balls of the other team's color,
         makes sure that the ball is our color
         """
-        self.next_state('checkForBall')
+        self.next_state('nextAction')
 
         opposingColor = ""
         if self.allianceColor == "red":
@@ -102,13 +103,23 @@ class LoaderLogic(StateMachine):
 
         if self.eject and self.colorSensor.displayColor() == opposingColor:
             self.next_state('eject_ball')
+        else:
+            self.next_state('intakeBall')
 
-    @timed_state(duration = ballEjectTime, next_state = 'checkForBall')
+    @timed_state(duration = ballEjectTime, next_state = 'nextAction')
     def eject_ball(self):
         """
         Runs the loader backwards for a set time
         """
         self.hopperMotor.runHopperMotorForeside(self.automaticHopperMotor1Speed, Direction.kBackwards)
+
+    @timed_state(duration = ballEjectTime, next_state = 'nextAction')
+    def intakeBall(self):
+        """
+        Runs the backside loader forwards for a set time
+        (alleviates issues with intake deadzones)
+        """
+        self.hopperMotor.runHopperMotorBackside(self.automaticHopperMotor1Speed, Direction.kBackwards)
 
     @state(first = True)
     def nextAction(self):

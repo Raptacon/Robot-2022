@@ -1,6 +1,6 @@
 
 class Winch:
-    compatString = []
+    compatString = ["teapot"]
     motors_winch: dict
 
     def on_enable(self):
@@ -17,6 +17,9 @@ class Winch:
         Sets the motor speed to .5 in order to reel in the winch
         """
         self.upSpeed = .5
+
+    def setLower(self):
+        self.upSpeed = -.5
 
     def stop(self):
         """

@@ -131,12 +131,22 @@ intakeMotors:
     intakeMotor:
       channel: 51
       type: "CANTalonSRX"
-      inverted: True
+      inverted: False
       pid: Null
       currentLimits:
         absMax: 60
         absMaxTimeMs: 50
         maxNominal: 40
+
+winchMotors:
+  subsystem: "winch"
+  winchMotors:
+    groups: "motors"
+    winchMotor:
+      channel: 10
+      type: "SparkMax"
+      inverted: False
+      motorType: "kBrushless"
 
 shooterMotors:
   subsystem: "shooter"
@@ -193,12 +203,11 @@ speedSections:
   speedSections:
     groups: "configuredValues"
     TurretTurn:
-      - [10, .1]
-      - [45, .2]
-      - [90, .3]
-      - [180, .4]
-      - [270, .7]
-      - ["End", .8]
+      - [10, .05]
+      - [30, .08]
+      - [90, .13]
+      - [180, .17]
+      - ["End", .19]
     GoToDist:
       - [36, .3]
       - [12, .25]
@@ -206,8 +215,8 @@ speedSections:
       - [5, .15]
     PID:
       TurretTurn:
-        P: 0
-        I: 0
+        P: 0.0015
+        I: 0.001
         D: 0
         SpeedFloor: 0.01
 
@@ -221,7 +230,7 @@ TurretMotor:
       channel: 12
       type: "SparkMax"
       IdleBrake: True
-      inverted: False
+      inverted: True
       motorType: "kBrushless"
 
 pneumatics:

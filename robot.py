@@ -18,6 +18,7 @@ from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.elevator import Elevator
 from components.Actuators.LowLevel.driveTrain import ControlMode
 from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
+from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
@@ -32,6 +33,7 @@ from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.turretScan import TurretScan
 from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret
 
 # Other imports:
@@ -76,12 +78,13 @@ class MyRobot(MagicRobot):
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
     turretTurn: TurretTurn
+    turretScan: TurretScan
     breakSensors: Sensors
     turretCalibrate: CalibrateTurret
+    limelight: Limelight
 
     # Test code:
     testBoard: TestBoard
-    turretTurnAngle = tunable(180)
 
     # If controller input is below this value, it will be set to zero.
     # This avoids accidental input, as we are now overriding autonomous
@@ -127,7 +130,7 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
-        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold, Limelight,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
@@ -149,12 +152,11 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnPress, self.elevator.setRaise)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnRelease, self.elevator.stop)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.elevator.setLower)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnRelease, self.elevator.stop)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnPress, self.limelight.LEDOff)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kRightBumper, ButtonEvent.kOnRelease, self.limelight.LEDOn)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.autoShoot.startAutoShoot)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnRelease, self.autoShoot.stop)
@@ -163,6 +165,8 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.goToDist.start)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnRelease, self.goToDist.stop)
 
+
+        self.limelight.LEDOn()
 
         self.driveTrain.setBraking(True)
         self.driveTrain.resetDistTraveled()
@@ -187,9 +191,15 @@ class MyRobot(MagicRobot):
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
 
-        self.turretTurn.engage()
-        self.turretTurn.setRelAngle(0)
+        if self.xboxMap.getMechDPad() == 180:
+            self.winch.setRaise()
+        elif self.xboxMap.getMechDPad() == 0:
+            self.winch.setLower()
+        else:
+            self.winch.stop()
 
+        self.turretTurn.engage()
+        self.turretScan.engage()
         # deadzone clamping
         if abs(driveLeftY) < self.controllerDeadzone:
             driveLeftY = 0
@@ -197,12 +207,9 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
-
-        self.turretTurn.engage()
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
-        self.turretCalibrate.engage()
         self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 
@@ -265,6 +272,7 @@ class MyRobot(MagicRobot):
         What the robot runs on disabled start
         NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
         """
+        self.limelight.resetLED()
         self.driveTrain.setBraking(False)
 
     def disabledPeriodic(self):

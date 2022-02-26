@@ -22,7 +22,7 @@ class FeederMap:
     hopperMotor: HopperMotor
     xboxMap: XboxMap
 
-    loaderMotorSpeed = tunable(.4)
+    loaderMotorSpeed = tunable(.2)
     intakeMotorSpeed = tunable(.5)
 
     def on_enable(self):

@@ -87,7 +87,7 @@ class DriveTrainHandler():
         elif self.controlMode == ControlMode.kDisabled:
             self.driveTrain.setTank(0, 0)
         else:
-            log.error("Unknown control mode")
+            log.debug("Unknown control mode")
             self.driveTrain.setTank(0, 0)
 
         self.input1 = 0

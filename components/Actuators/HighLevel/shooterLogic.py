@@ -18,8 +18,8 @@ class ShooterLogic(StateMachine):
 
     # Tunables
     shootingLoaderSpeed = tunable(.4)
-    autoShootingSpeed1 = tunable(2200)
-    autoShootingSpeed2 = tunable(2200)
+    autoShootingSpeed1 = tunable(1400)
+    autoShootingSpeed2 = tunable(2900)
     teleShootingSpeed1 = tunable(2350)
     teleShootingSpeed2 = tunable(1900)
 

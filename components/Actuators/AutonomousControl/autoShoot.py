@@ -3,7 +3,6 @@ from magicbot import StateMachine
 from magicbot.state_machine import state
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
-from components.Actuators.LowLevel.driveTrain import ControlMode
 from utils.guessDistance import guessDistanceTrig
 
 import logging as log
@@ -46,6 +45,10 @@ def findRPM(configName):
 
     return configPath
 
+def linearInterp(longRPM, shortRPM, dist, lowdist):
+    diff = longRPM - shortRPM
+    rpm = (dist - lowdist) * diff + shortRPM
+    return rpm
 
 def calculateRPM(dist, dir, filename):
     """
@@ -55,15 +58,15 @@ def calculateRPM(dist, dir, filename):
     """
 
     # default value in case nothing is calculated
-    rpm = ShooterLogic.teleShootingSpeed
+    rpm = [ShooterLogic.teleShootingSpeed1, ShooterLogic.teleShootingSpeed2]
 
     values = yaml.load(open(dir+filename))
     minDist_x = 9
-    maxRPM = 5750
+    maxRPM = 5000
     if dist < minDist_x:
         log.error("Dist is too low")
         # default rpm for low distances
-        rpm = 5500
+        rpm = [5000, 5000]
         return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
@@ -71,32 +74,33 @@ def calculateRPM(dist, dir, filename):
         distFound = False
         for i, distance in enumerate(distances):
             # truncate distance to integer (dist will likely be a float)
-            if distance == int(dist):
+            if distance >= int(dist):
                 lowdist = distance
                 if i < len(distances) - 1:
                     highdist = distances[i+1]
-                    highRPM = DtoRPM[highdist]
+                    highRPM1 = DtoRPM[highdist][0]
+                    highRPM2 = DtoRPM[highdist][1]
                 else:
                     highdist = -1
-                    highRPM = 5700
+                    highRPM1 = maxRPM
+                    highRPM2 = maxRPM
                 distFound = True
-                lowRPM = DtoRPM[lowdist]
+                lowRPM1 = DtoRPM[lowdist][0]
+                lowRPM2 = DtoRPM[lowdist][1]
                 break
         if distFound:
-            #             4000               3500 = 500
-            diff = highRPM - lowRPM
-            #      5.2        5       500         3500
-            rpm = (dist - lowdist) * diff + DtoRPM[lowdist]
+            rpm = [linearInterp(highRPM1, lowRPM1, dist, lowdist),
+            linearInterp(highRPM2, lowRPM2, dist, lowdist)]
         else:
             log.error("Dist outside of range")
-            rpm = maxRPM
+            rpm = [maxRPM, maxRPM]
 
     else:
         log.error("Given file did not have values at base, using default RPM")
 
     if rpm > maxRPM:
         log.error("RPM too high. Using max of "+str(maxRPM))
-        return maxRPM
+        return [maxRPM, maxRPM]
     else:
         return rpm
 
@@ -110,7 +114,7 @@ class AutoShoot(StateMachine):
     MAKE SURE THAT THE ROBOT IS ALIGNED BEFORE ENGAGING.
     """
 
-    compatString = ["doof"]
+    compatString = ["doof", "teapot"]
     dist = int(0)
     angle = int(0)
     smartTable = networktable.getTable('SmartDashboard')
@@ -127,12 +131,12 @@ class AutoShoot(StateMachine):
 
     # height of the middle of the limelight target in feet.
     # So this is the middle of the lower half of the hexagon
-    targetHeight = 82/12
+    targetHeight = 104/12
     # height of the limelight on the robot in feet.
     # Used to calculate distance from the target.
-    limeHeight = 35/12
+    limeHeight = 31/12
     # Could also be changed using the crosshair in limelight settings
-    limeLightAngleOffset = 7.81
+    limeLightAngleOffset = 32.08235
 
     # IF "limeLightAngleOffset" is 0,
     # CROSSHAIR MUST BE ON HORIZONTAL IN LIMELIGHT
@@ -173,7 +177,9 @@ class AutoShoot(StateMachine):
                                         self.limeLightAngleOffset, self.ty)
         self.dist = self.dist_x
         self.angle = self.ty + self.limeLightAngleOffset
-        self.rpm = calculateRPM(self.dist_x, self.RPMdir, self.RPMfilename)
+        rpms = calculateRPM(self.dist_x, self.RPMdir, self.RPMfilename)
+        self.rpm1 = rpms[0]
+        self.rpm2 = rpms[1]
 
         # Update variables on network tables,
         # accessable through Smart Dashboard.
@@ -185,10 +191,8 @@ class AutoShoot(StateMachine):
 
     @state
     def stop_shoot(self):
-        # stop
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
         # set rpm
-        self.shooter.setRPM(self.rpm)
+        self.shooter.setRPM(self.rpm1, self.rpm2)
         # shoot
         if not self.stopping:
             self.shooter.startShooting()

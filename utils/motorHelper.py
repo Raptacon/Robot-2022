@@ -300,6 +300,11 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.setInverted(self.motorDescription['inverted'])
         self.motors = motors
         self.coasting = False
+        #Generally just a way to overwrite previous settings on any motor controller - We don't brake often.
+        if 'IdleBrake' in self.motorDescription.keys() and self.motorDescription['IdleBrake'] == True:
+            self.setIdleMode(rev.CANSparkMax.IdleMode.kBrake)
+        else:
+            self.setIdleMode(rev.CANSparkMax.IdleMode.kCoast)
 
     def setupPid(self):
         '''Sets up the PIDF values and a pidcontroller to use to control the motor using pid.'''
@@ -336,12 +341,6 @@ class SparkMaxFeedback(rev.CANSparkMax):
         self.PIDController.setI(pid['kI'], pid['feedbackDevice'])
         self.PIDController.setD(pid['kD'], pid['feedbackDevice'])
         self.PIDController.setFF(pid['kF'], pid['feedbackDevice'])
-
-        #Generally just a way to overwrite previous settings on any motor controller - We don't brake often.
-        if 'IdleBrake' in self.motorDescription.keys() and self.motorDescription['IdleBrake'] == True:
-            self.setIdleMode(rev.CANSparkMax.IdleMode.kBrake)
-        else:
-            self.setIdleMode(rev.CANSparkMax.IdleMode.kCoast)
 
         #Configures output range - that's what Spark Maxes accept
         self.PIDController.setOutputRange(-1, 1, pid['feedbackDevice'])

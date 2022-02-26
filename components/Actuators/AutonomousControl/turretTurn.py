@@ -17,6 +17,16 @@ class TurretTurn(StateMachine):
     def setup(self):
         self.pos = self.turretThreshold.getPosition()
 
+    @feedback
+    def getTurning(self):
+        """
+        If the turret is within tolerance, return True
+        """
+        offset = self.getOffset()
+        if offset != None and abs(self.getOffset()) > self.tolerance:
+            return True
+        return False
+
     def setAngle(self, angle):
         """sets angle turret is turning to"""
         if self.turretThreshold.angleCheck(angle) != angle:
@@ -32,6 +42,7 @@ class TurretTurn(StateMachine):
         """Determines if turret is using encoder input."""
         self.controlMode = "Encoder"
 
+    @feedback
     def getOffset(self):
         """
         Gives difference between current position and target angle.
@@ -46,6 +57,8 @@ class TurretTurn(StateMachine):
                 log.error("Limelight missing target")
                 return None
         elif self.controlMode == "Encoder":
+            if self.turnAngle == None:
+                return 0
             return self.turnAngle - self.pos
 
 
@@ -59,15 +72,8 @@ class TurretTurn(StateMachine):
     def getTargetAngle(self):
         return self.turnAngle
 
-    @state(first = True)
-    def idling(self):
-        """Stays in this state until started"""
-        pass
-
-    def setSpeed(self):
-        """
-        Sets speed of turret based on what angle we are turning to
-        """
+    @feedback
+    def getSpeed(self):
         offset = self.getOffset()
         if offset == None:
             self.setEncoderControl()
@@ -75,12 +81,20 @@ class TurretTurn(StateMachine):
         speed = self.speedSections.getSpeed(offset, "TurretTurn")
         if abs(offset) < self.tolerance:
             speed = 0
+        return speed
+
+    def setSpeed(self):
+        """
+        Sets speed of turret based on what angle we are turning to
+        """
+        speed = self.getSpeed()
         self.turretThreshold.setTurretspeed(speed)
 
-    @state
+    @state(first = True)
     def turn(self):
         """
         Starts turning process, if in tolerance it will stop
         """
+        self.pos = self.turretThreshold.getPosition()
         self.setSpeed()
         self.next_state("turn")

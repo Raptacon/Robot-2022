@@ -3,6 +3,7 @@ import logging as log
 from magicbot import feedback, tunable
 from utils.DirectionEnums import Direction
 from components.Input.breakSensors import Sensors, State
+from components.Input.ballCounter import BallCounter
 
 class HopperMotor:
     """
@@ -12,8 +13,9 @@ class HopperMotor:
 
     motors_hopper: dict
     sensors: Sensors
-    intakeSpeed = tunable(.1)
-    movingSpeed = tunable(.08)
+    ballCounter: BallCounter
+    intakeSpeed = tunable(.15)
+    movingSpeed = tunable(.11)
 
     def setup(self):
         """
@@ -111,7 +113,10 @@ class HopperMotor:
         If either of the break sensors is broken,
         set its corresponding motor speed
         """
-        if self.sensors.loadingSensor(State.kTripped):
+        if self.sensors.loadingSensor(State.kTripped) and self.ballCounter.getBallCount()[1] == None:
+            self.runHopperMotorForeside(self.intakeSpeed, Direction.kForwards)
+            self.runHopperMotorBackside(self.movingSpeed, Direction.kForwards)
+        elif self.sensors.loadingSensor(State.kTripped):
             self.runHopperMotorForeside(self.intakeSpeed, Direction.kForwards)
         else:
             self.stopHopperMotorForeside()
