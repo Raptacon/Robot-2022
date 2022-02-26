@@ -62,7 +62,7 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Check to see if intake is deployed"
         pass
 
-    @timed_state(duration = time, next_state = "runShooterMotors")
+    @timed_state(first=True, duration = time, next_state = "runShooterMotors")
     def runIntakeMotor(self):
         """Runs the intake motor for 2 seconds"""
         self.toDo = "Check to see if the intake motor is running"
