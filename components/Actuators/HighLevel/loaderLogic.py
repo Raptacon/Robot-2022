@@ -32,7 +32,7 @@ class LoaderLogic(StateMachine):
     eject = False
 
     def on_enable(self):
-        self.isAutomatic = True
+        self.isAutomatic = False
 
     def setAutoLoading(self):
         """Runs sensor-based loading."""
@@ -119,6 +119,7 @@ class LoaderLogic(StateMachine):
         Runs the backside loader forwards for a set time
         (alleviates issues with intake deadzones)
         """
+        self.hopperMotor.runHopperMotorForeside(self.automaticHopperMotor1Speed, Direction.kBackwards)
         self.hopperMotor.runHopperMotorBackside(self.automaticHopperMotor1Speed, Direction.kBackwards)
 
     @state(first = True)

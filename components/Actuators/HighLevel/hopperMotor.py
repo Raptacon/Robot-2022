@@ -139,4 +139,4 @@ class HopperMotor:
         elif self.hopperBack == False:
             self.hopperMotorBackside.set(0)
 
-        self.checkSensors()
+        # self.checkSensors()
