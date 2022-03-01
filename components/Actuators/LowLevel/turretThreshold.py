@@ -1,8 +1,11 @@
 from magicbot import feedback
 from networktables import NetworkTables as networktable
 import logging as log
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+
 class TurretThreshold:
     compatString = ["teapot"]
+    turretTurn: TurretTurn
     motors_turret: dict
     speed = 0
     pos = 0
@@ -33,10 +36,10 @@ class TurretThreshold:
         self.leftLim = self.limitSwitchTable.getNumber("Left Limit", None)
         self.rightLim = self.limitSwitchTable.getNumber("Right Limit", None)
 
-        if self.leftLim == None or self.rightLim == None:
+        if self.leftLim == None and self.rightLim == None:
             log.error("MUST CALIBRATE TURRET")
             self.calibrated = False
-        else:
+        elif self.turretTurn.controlMode == "Manual" or (self.LeftLim != None and self.RightLim != None):
             self.calibrated = True
         self.pos = self.encoder.getPosition()
         self.speed = 0

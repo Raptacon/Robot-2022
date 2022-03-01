@@ -205,14 +205,13 @@ class MyRobot(MagicRobot):
         else:
             self.winch.stop()
 
-        if self.xboxMap.getMechLeftHoriz != 0:
+        if self.xboxMap.getMechX():
+            logging.error("Engaging turr")
+            self.turretScan.engage()
+        else:
             self.turretScan.done()
             self.turretTurn.setManualControl()
             self.turretTurn.setManualSpeed(mechLeftX)
-        else:
-            logging.error("Engaging turr")
-            self.turretScan.engage()
-        logging.error(mechLeftX)
 
 
         self.turretTurn.engage()

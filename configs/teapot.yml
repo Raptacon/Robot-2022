@@ -131,7 +131,7 @@ intakeMotors:
     intakeMotor:
       channel: 51
       type: "CANTalonSRX"
-      inverted: False
+      inverted: True
       pid: Null
       currentLimits:
         absMax: 60

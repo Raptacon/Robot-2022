@@ -62,7 +62,7 @@ class SmokeTest(AutonomousStateMachine):
         self.toDo = "Check to see if intake is deployed"
         pass
 
-    @timed_state(first=True, duration = time, next_state = "runShooterMotors")
+    @timed_state(duration = time, next_state = "runShooterMotors")
     def runIntakeMotor(self):
         """Runs the intake motor for 2 seconds"""
         self.toDo = "Check to see if the intake motor is running"
@@ -104,7 +104,7 @@ class SmokeTest(AutonomousStateMachine):
         self.next_state("calibrateTurret")
 
 
-    @state
+    @state(first=True)
     def calibrateTurret(self):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
@@ -113,7 +113,7 @@ class SmokeTest(AutonomousStateMachine):
         if self.turretThreshold.calibrated == True:
             self.turretTurn.done()
             self.turretThreshold.setTurretspeed(0)
-            self.next_state("finishCalibration")
+
 
     @state
     def finishCalibration(self):
