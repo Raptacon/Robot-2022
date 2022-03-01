@@ -21,6 +21,10 @@ class TurretThreshold:
 
     calibrating = False
     calibSpeed = .11
+    manual = False
+
+    def setManual(self, manual:bool):
+        self.manual = manual
 
     def setup(self):
         #connects moters and gets position
@@ -39,8 +43,10 @@ class TurretThreshold:
         if self.leftLim == None and self.rightLim == None:
             log.error("MUST CALIBRATE TURRET")
             self.calibrated = False
-        elif self.turretTurn.controlMode == "Manual" or (self.LeftLim != None and self.RightLim != None):
+        elif self.LeftLim != None and self.RightLim != None:
             self.calibrated = True
+        else:
+            log.error("Half calibrated turret")
         self.pos = self.encoder.getPosition()
         self.speed = 0
 
@@ -136,6 +142,8 @@ class TurretThreshold:
                 else:
                     self.speed = -1*self.calibSpeed
             self.turretMotor.set(self.speed)
+        elif self.manual:
+            self.turretMotor.set(self.speed)
         else:
             self.turretMotor.set(0)
-            log.error("Calibrate the turret bud.")
+            log.debug("Calibrate the turret bud.")

@@ -211,6 +211,7 @@ class MyRobot(MagicRobot):
         else:
             self.turretScan.done()
             self.turretTurn.setManualControl()
+            self.turretThreshold.setManual()
             self.turretTurn.setManualSpeed(mechLeftX)
 
 
