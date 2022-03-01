@@ -21,7 +21,6 @@ def findRPM(configName, basePath):
     """
     configPath = os.path.join(basePath,"configs")
 
-    home = str(Path.home()) + os.path.sep
     try:
 
         if os.path.isfile(os.path.join(configPath,configName)):
