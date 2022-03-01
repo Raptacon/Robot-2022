@@ -14,7 +14,7 @@ class Autonomous(AutonomousStateMachine):
     time = 1.4
     shootTime = 4
     DEFAULT = True
-    MODE_NAME = "Basic Autonomous"
+    MODE_NAME = "Big Brain Autonomous"
     driveTrain: DriveTrain
     goToDist: GoToDist
     shooter: ShooterLogic

@@ -120,7 +120,7 @@ class GoToDist(StateMachine):
             self.stop()
             self.next_state("idling")
             # Motor stop goes here
- 
+
     @state
     def adjust_drive(self):
         """
