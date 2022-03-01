@@ -1,5 +1,5 @@
 from magicbot import StateMachine, state, tunable
-from components.Actuators.LowLevel.driveTrain import ControlMode
+from components.Actuators.LowLevel.driveTrain import ControlMode, DriveTrain
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import logging as log
 
@@ -8,6 +8,7 @@ class GoToDist(StateMachine):
     compatString = ["doof"]
 
     driveTrainHandler: DriveTrainHandler
+    driveTrain: DriveTrain
     dumbTolerance = tunable(.25)
     tolerance = tunable(.25)
     starting = False
@@ -27,8 +28,12 @@ class GoToDist(StateMachine):
     def setTargetDist(self, distance):
         """
         Call this to set the target distance
+        in feet, and start
+        does not change target dist if currently running
         """
-        self.targetDist = distance
+        if not self.running:
+            self.targetDist = distance
+            self.start(self.targetDist)
 
     def start(self, distance=0):
         """
@@ -55,6 +60,7 @@ class GoToDist(StateMachine):
         Base state, kicks into
         statemachine if starting.
         """
+        self.running = False
         self.initDist = 0
         if self.starting:
             if self.targetDist != 0:

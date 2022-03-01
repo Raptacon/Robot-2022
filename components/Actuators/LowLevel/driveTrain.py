@@ -118,11 +118,11 @@ class DriveTrain():
 
     def getLeftSideDistTraveled(self):
         """
-        Returns the left motor's distance traveled in inches
+        Returns the left motor's distance traveled in feet
         """
         self.leftDistInch = (self.leftMotor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
         if self.leftSideSensorInverted:
-            return -1 * self.leftDistInch# / 12
+            return -1 * self.leftDistInch
         else:
             return self.leftDistInch
 
