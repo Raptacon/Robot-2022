@@ -7,7 +7,6 @@ from utils.guessDistance import guessDistanceTrig
 
 import logging as log
 import os
-from pathlib import Path
 
 from utils import yaml
 
