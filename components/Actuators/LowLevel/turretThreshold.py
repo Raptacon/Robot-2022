@@ -1,11 +1,9 @@
 from magicbot import feedback
 from networktables import NetworkTables as networktable
 import logging as log
-from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 
 class TurretThreshold:
     compatString = ["teapot"]
-    turretTurn: TurretTurn
     motors_turret: dict
     speed = 0
     pos = 0
