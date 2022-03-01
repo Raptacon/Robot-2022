@@ -3,6 +3,8 @@ from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
+from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret, TurretThreshold
 
 class Autonomous(AutonomousStateMachine):
     """Creates the autonomous code"""
@@ -14,6 +16,9 @@ class Autonomous(AutonomousStateMachine):
     shooter: ShooterLogic
     pneumatics: Pneumatics
     turnToAngle: TurnToAngle
+    turretCalibrate: CalibrateTurret
+    turretTurn: TurretTurn
+    turretThreshold: TurretThreshold
     drive_speed = tunable(.25)
 
     @state(first = True)
@@ -24,7 +29,7 @@ class Autonomous(AutonomousStateMachine):
         self.shooter.startShooting()
         self.next_state('shooter_wait')
 
-    @timed_state(duration = shootTime, next_state="turn")
+    @timed_state(duration = shootTime, next_state="calibrateTurret")
     def shooter_wait(self):
         """Waits for shooter to finish, then next state"""
         pass
@@ -32,6 +37,35 @@ class Autonomous(AutonomousStateMachine):
     @state
     def turn(self):
         self.turnToAngle.setAngle(angle = -90)
+        self.turnToAngle.engage()
+        self.firstCall = True
+        self.next_state("turnWait")
+
+    @state
+    def turnWait(self):
+        self.turnToAngle.engage()
+        if self.firstCall:
+            self.firstCall = False
+            self.next_state('turnWait')
+        elif self.turnToAngle.running:
+            self.next_state('turnWait')
+        else:
+            self.next_state("calibrateTurret")
+
+    @state
+    def calibrateTurret(self):
+        """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
+        self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
+        self.turretCalibrate.engage()
+        self.next_state("calibrateTurret")
+        if self.turretThreshold.calibrated == True:
+            self.turretTurn.done()
+            self.turretThreshold.setTurretspeed(0)
+            self.next_state("finishCalibration")
+
+    @state
+    def finishCalibration(self):
+        self.turretThreshold.setTurretspeed(0)
         self.next_state("stop")
 
     @timed_state(duration = time, next_state = 'stop')
@@ -45,25 +79,3 @@ class Autonomous(AutonomousStateMachine):
         """Stops driving bot"""
         self.driveTrain.setTank(0, 0)
         self.done()
-
-# class AutonomousAutoShoot(AutonomousStateMachine):
-#     """Creates the autonomous code"""
-#     time = 1.4
-#     MODE_NAME = "AutoShoot Autonomous"
-#     DEFAULT = False
-#     driveTrain: DriveTrain
-#     shooter: ShooterLogic
-#     pneumatics: Pneumatics
-#     autoAlign: AutoAlign
-#     autoShoot: AutoShoot
-#     shooter: ShooterLogic
-#     drive_speed = tunable(.25)
-
-#     @state(first = True)
-#     def engage_shooter(self):
-#         """Starts shooter and fires"""
-#         self.autoAlign.setShootAfterComplete(True)
-#         self.autoAlign.engage()
-#         self.autoShoot.engage()
-#         self.shooter.engage()
-#         self.next_state("engage_shooter")
