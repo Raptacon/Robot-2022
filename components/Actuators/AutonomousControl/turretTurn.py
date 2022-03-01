@@ -14,6 +14,7 @@ class TurretTurn(StateMachine):
     controlMode = "Encoder"
     tolerance = tunable(3)
     manualSpeed = 0
+    maxManualSpeed = .2
 
     def setup(self):
         self.pos = self.turretThreshold.getPosition()
@@ -103,11 +104,11 @@ class TurretTurn(StateMachine):
         self.turretThreshold.setTurretspeed(speed)
 
     def setManualSpeed(self, speed):
-        if abs(speed) > .08:
+        if abs(speed) > self.maxManualSpeed:
             if speed > 0:
-                self.manualSpeed = .08
+                self.manualSpeed = self.maxManualSpeed
             if speed < 0:
-                self.manualSpeed = -.08
+                self.manualSpeed = -1*self.maxManualSpeed
         else:
             self.manualSpeed = speed
 
