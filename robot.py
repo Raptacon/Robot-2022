@@ -207,11 +207,12 @@ class MyRobot(MagicRobot):
 
         if self.xboxMap.getMechX():
             logging.error("Engaging turr")
+            self.turretThreshold.setManual(False)
             self.turretScan.engage()
         else:
             self.turretScan.done()
             self.turretTurn.setManualControl()
-            self.turretThreshold.setManual()
+            self.turretThreshold.setManual(True)
             self.turretTurn.setManualSpeed(mechLeftX)
 
 
