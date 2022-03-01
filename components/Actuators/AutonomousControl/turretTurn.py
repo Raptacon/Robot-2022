@@ -13,9 +13,20 @@ class TurretTurn(StateMachine):
     turnAngle = None
     controlMode = "Encoder"
     tolerance = tunable(3)
+    manualSpeed = 0
 
     def setup(self):
         self.pos = self.turretThreshold.getPosition()
+
+    @feedback
+    def getTurning(self):
+        """
+        If the turret is within tolerance, return True
+        """
+        offset = self.getOffset()
+        if offset != None and type(offset) != str and abs(self.getOffset()) > self.tolerance:
+            return True
+        return False
 
     def setAngle(self, angle):
         """sets angle turret is turning to"""
@@ -32,6 +43,11 @@ class TurretTurn(StateMachine):
         """Determines if turret is using encoder input."""
         self.controlMode = "Encoder"
 
+    def setManualControl(self):
+        """Sets turret to manual input."""
+        self.controlMode = "Manual"
+
+    @feedback
     def getOffset(self):
         """
         Gives difference between current position and target angle.
@@ -46,8 +62,11 @@ class TurretTurn(StateMachine):
                 log.error("Limelight missing target")
                 return None
         elif self.controlMode == "Encoder":
+            if self.turnAngle == None:
+                return 0
             return self.turnAngle - self.pos
-
+        elif self.controlMode == "Manual":
+            return "Manual"
 
     def setRelAngle(self, relangle):
         """
@@ -59,28 +78,45 @@ class TurretTurn(StateMachine):
     def getTargetAngle(self):
         return self.turnAngle
 
-    @state(first = True)
-    def idling(self):
-        """Stays in this state until started"""
-        pass
+    @feedback
+    def getSpeed(self):
+        offset = self.getOffset()
+        if offset == None:
+            self.setEncoderControl()
+            offset = self.getOffset()
+        elif offset == "Manual":
+            return self.manualSpeed
+        speed = self.speedSections.getSpeed(offset, "TurretTurn")
+        if abs(offset) < self.tolerance:
+            speed = 0
+        return speed
+
+    @feedback
+    def getControlMode(self):
+        return self.controlMode
 
     def setSpeed(self):
         """
         Sets speed of turret based on what angle we are turning to
         """
-        offset = self.getOffset()
-        if offset == None:
-            self.setEncoderControl()
-            offset = self.getOffset()
-        speed = self.speedSections.getSpeed(offset, "TurretTurn")
-        if abs(offset) < self.tolerance:
-            speed = 0
+        speed = self.getSpeed()
         self.turretThreshold.setTurretspeed(speed)
 
-    @state
+    def setManualSpeed(self, speed):
+        if abs(speed) > .08:
+            if speed > 0:
+                self.manualSpeed = .08
+            if speed < 0:
+                self.manualSpeed = -.08
+        else:
+            self.manualSpeed = speed
+
+
+    @state(first = True)
     def turn(self):
         """
         Starts turning process, if in tolerance it will stop
         """
+        self.pos = self.turretThreshold.getPosition()
         self.setSpeed()
         self.next_state("turn")

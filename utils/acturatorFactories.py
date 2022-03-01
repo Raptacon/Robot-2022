@@ -13,7 +13,7 @@ def compressorFactory(descp):
     """
     try:
         if descp["type"] == "compressor":
-            return wpilib.Compressor()
+            return wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
     except Exception as e:
         logging.error("Failed to create compressor for %s err %s", descp, e)
     return None

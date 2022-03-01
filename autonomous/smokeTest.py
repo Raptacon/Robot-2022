@@ -87,7 +87,7 @@ class SmokeTest(AutonomousStateMachine):
         log.error("Running hopper motor 2")
         pass
 
-    @timed_state(duration = time, next_state = "calibrateTurret")
+    @timed_state(duration = time, next_state = "finishShooting")
     def runShooterMotors(self):
         """Stops the second hopper motor and runs both shooter motors for 2 seconds"""
         self.toDo = "Check to see if the shooter motors are running"
@@ -98,21 +98,34 @@ class SmokeTest(AutonomousStateMachine):
         log.error("Running both shooter motors")
 
     @state
+    def finishShooting(self):
+        self.shooterMotors.stopShooter()
+        self.shooterMotors.execute()
+        self.next_state("calibrateTurret")
+
+
+    @state
     def calibrateTurret(self):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
-        self.shooterMotors.stopShooter()
         self.turretCalibrate.engage()
-        self.turretTurn.engage()
-        self.turretThreshold.execute()
         self.next_state("calibrateTurret")
         if self.turretThreshold.calibrated == True:
-            self.next_state("colorSensorCheckRed")
+            self.turretTurn.done()
+            self.turretThreshold.setTurretspeed(0)
+            self.next_state("finishCalibration")
+
+    @state
+    def finishCalibration(self):
+        self.turretThreshold.setTurretspeed(0)
+        self.next_state("colorSensorCheckRed")
 
     @state
     def colorSensorCheckRed(self):
         """Has the user put up a red ball to the color sensor. Will not move on until the ball is red."""
         self.toDo = "Put up a red ball to the color sensor"
+        self.hopperMotor.stopHopperMotorBackside()
+        self.hopperMotor.stopHopperMotorForeside()
         self.colorSensor.execute()
         if self.colorSensor.colorMatched == "red":
             log.error("The ball is red")
@@ -127,6 +140,8 @@ class SmokeTest(AutonomousStateMachine):
     @state
     def colorSensorCheckBlue(self):
         self.toDo = "Put up a blue ball to the color sensor"
+        self.hopperMotor.stopHopperMotorBackside()
+        self.hopperMotor.stopHopperMotorForeside()
         self.colorSensor.execute()
         if self.colorSensor.colorMatched == "blue":
             log.error("The ball is blue")
@@ -153,6 +168,8 @@ class SmokeTest(AutonomousStateMachine):
     def checkIntakeSensor(self):
         """Checks to see if the intake break sensor is broken"""
         self.toDo = "Break the break sensor on the intake"
+        self.hopperMotor.stopHopperMotorBackside()
+        self.hopperMotor.stopHopperMotorForeside()
         if self.sensors.loadingSensor(State.kTripped):
             log.error("Tripped")
             self.next_state("checkHopperSensor")
@@ -164,6 +181,8 @@ class SmokeTest(AutonomousStateMachine):
     def checkHopperSensor(self):
         """Checks to see if the hopper break sensor is broken"""
         self.toDo = "Break the break sensor on the hopper"
+        self.hopperMotor.stopHopperMotorBackside()
+        self.hopperMotor.stopHopperMotorForeside()
         if self.sensors.hopperSensor(State.kTripped):
             log.error("Tripped")
             self.next_state("checkShooterSensor")
@@ -175,6 +194,8 @@ class SmokeTest(AutonomousStateMachine):
     def checkShooterSensor(self):
         """Checks to see if the shooter break sensor is broken"""
         self.toDo = "Break the break sensor on the shooter"
+        self.hopperMotor.stopHopperMotorBackside()
+        self.hopperMotor.stopHopperMotorForeside()
         if self.sensors.shootingSensor(State.kTripped):
             log.error("Tripped")
             log.error("Done")

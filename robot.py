@@ -2,6 +2,7 @@
 Team 3200 Robot base class
 """
 # Module imports:
+import logging
 import wpilib
 from wpilib import XboxController, DriverStation, SerialPort
 from magicbot import MagicRobot, tunable
@@ -18,11 +19,12 @@ from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.elevator import Elevator
 from components.Actuators.LowLevel.driveTrain import ControlMode
 from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
+from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
-from components.Actuators.AutonomousControl.autoShoot import AutoShoot
+from components.Actuators.AutonomousControl.autoShoot import AutoShoot, findRPM
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Input.breakSensors import Sensors
@@ -32,7 +34,10 @@ from components.Input.ballCounter import BallCounter
 from components.Input.colorSensor import ColorSensor
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
+from components.Actuators.HighLevel.turretScan import TurretScan
 from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret
+
+import os
 
 # Other imports:
 from robotMap import RobotMap, XboxMap
@@ -76,12 +81,13 @@ class MyRobot(MagicRobot):
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
     turretTurn: TurretTurn
+    turretScan: TurretScan
     breakSensors: Sensors
     turretCalibrate: CalibrateTurret
+    limelight: Limelight
 
     # Test code:
     testBoard: TestBoard
-    turretTurnAngle = tunable(180)
 
     # If controller input is below this value, it will be set to zero.
     # This avoids accidental input, as we are now overriding autonomous
@@ -89,6 +95,8 @@ class MyRobot(MagicRobot):
     controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
     arcadeMode = tunable(True)
+
+    robotDir = os.path.dirname(os.path.abspath(__file__))
 
     def createObjects(self):
         """
@@ -127,7 +135,7 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
-        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold,
+        componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold, Limelight,
                          ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
@@ -166,13 +174,13 @@ class MyRobot(MagicRobot):
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kLeftBumper, ButtonEvent.kOnRelease, self.goToDist.stop)
         """
 
+        self.limelight.LEDOn()
+
         self.driveTrain.setBraking(True)
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
         self.prevAState = False
-
-        self.turnToAngle.engage()
 
     def teleopPeriodic(self):
         """
@@ -188,10 +196,26 @@ class MyRobot(MagicRobot):
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), self.sensitivityExponent)
+
+        if self.xboxMap.getMechDPad() == 180:
+            self.winch.setRaise()
+        elif self.xboxMap.getMechDPad() == 0:
+            self.winch.setLower()
+        else:
+            self.winch.stop()
+
+        if self.xboxMap.getMechLeftHoriz != 0:
+            self.turretScan.done()
+            self.turretTurn.setManualControl()
+            self.turretTurn.setManualSpeed(mechLeftX)
+        else:
+            logging.error("Engaging turr")
+            self.turretScan.engage()
+        logging.error(mechLeftX)
+
 
         self.turretTurn.engage()
-        self.turretTurn.setRelAngle(0)
-
         # deadzone clamping
         if abs(driveLeftY) < self.controllerDeadzone:
             driveLeftY = 0
@@ -199,12 +223,9 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
-
-        self.turretTurn.engage()
         self.goToDist.engage()
         self.autoShoot.engage()
         self.turnToAngle.engage()
-        self.turretCalibrate.engage()
         self.shooter.engage()
         self.prevAState = self.xboxMap.getDriveA()
 
@@ -229,7 +250,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        pass
+        logging.error(findRPM("rpmToDist.yml", self.robotDir))
         #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
@@ -267,6 +288,7 @@ class MyRobot(MagicRobot):
         What the robot runs on disabled start
         NEVER RUN ANYTHING THAT MOVES ANYTHING HERE
         """
+        self.limelight.resetLED()
         self.driveTrain.setBraking(False)
 
     def disabledPeriodic(self):

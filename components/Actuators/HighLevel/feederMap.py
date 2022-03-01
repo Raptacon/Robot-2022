@@ -22,7 +22,7 @@ class FeederMap:
     hopperMotor: HopperMotor
     xboxMap: XboxMap
 
-    loaderMotorSpeed = tunable(.4)
+    loaderMotorSpeed = tunable(.2)
     intakeMotorSpeed = tunable(.5)
 
     def on_enable(self):
@@ -53,6 +53,10 @@ class FeederMap:
                 self.hopperMotor.runHopperMotorForeside(self.loaderMotorSpeed, Direction.kBackwards)
                 self.hopperMotor.runHopperMotorBackside(self.loaderMotorSpeed, Direction.kBackwards)
                 log.debug("left trig manual", self.xboxMap.getMechLeftTrig())
+
+            else:
+                self.hopperMotor.stopHopperMotorBackside()
+                self.hopperMotor.stopHopperMotorForeside()
 
     def execute(self):
         pass
