@@ -5,6 +5,7 @@ pneumatics:
     groups: "compressors"
     compressor:
       type: "compressor"
+      pcm: 1
 
   solenoids:
     groups: "solenoids"

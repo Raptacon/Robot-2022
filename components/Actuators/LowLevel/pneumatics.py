@@ -3,7 +3,7 @@ dsPos = DoubleSolenoid.Value
 import logging as log
 
 class Pneumatics:
-    compatString = []
+    compatString = ["teapot"]
     compressors_pneumatics: dict
     solenoids_pneumatics: dict
 
