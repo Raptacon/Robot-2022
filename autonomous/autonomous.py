@@ -93,8 +93,8 @@ class Autonomous(AutonomousStateMachine):
             elif move[0] == "drive":
                 self.goToDist.setTargetDist(move[1])
                 self.goToDist.engage()
-                if ((not self.goToDist.running and self.goToDistPrevRunning) or
-                self.ballCounter.getBallCount()[0] != None):
+                if ((not self.goToDist.running and self.goToDistPrevRunning)
+                or self.ballCounter.getBallCount()[0] != None):
                     self.currentMove += 1
 
             if self.currentMove == len(self.moveSequence):
