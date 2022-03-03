@@ -9,7 +9,7 @@ class TurretThreshold:
     pos = 0
     exitSpeed = .05
     safetySpeed = .07
-    gearRatio = 5
+    gearRatio = 10
     sprocketRatio = 175/18
     turretMotor = None
     DegreeToAngle = 0
@@ -41,7 +41,7 @@ class TurretThreshold:
         if self.leftLim == None and self.rightLim == None:
             log.error("MUST CALIBRATE TURRET")
             self.calibrated = False
-        elif self.LeftLim != None and self.RightLim != None:
+        elif self.leftLim != None and self.rightLim != None:
             self.calibrated = True
         else:
             log.error("Half calibrated turret")
