@@ -213,6 +213,11 @@ speedSections:
       - [12, .25]
       - [8, .2]
       - [5, .15]
+    TurnToAngle:
+      - [10, .08]
+      - [20, .15]
+      - [40, .2]
+      - ["End", .3]
     PID:
       TurretTurn:
         P: 0.0015
