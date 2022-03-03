@@ -1,5 +1,5 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
-from components.Input.ballCounter import Ball, BallCounter
+from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
