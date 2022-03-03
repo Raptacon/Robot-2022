@@ -1,5 +1,5 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
-from components.Input.ballCounter import Ball, BallCounter
+from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
@@ -93,8 +93,8 @@ class Autonomous(AutonomousStateMachine):
             elif move[0] == "drive":
                 self.goToDist.setTargetDist(move[1])
                 self.goToDist.engage()
-                if ((not self.goToDist.running and self.goToDistPrevRunning) or
-                self.ballCounter.getBallCount()[0] != None):
+                if ((not self.goToDist.running and self.goToDistPrevRunning)
+                or self.ballCounter.getBallCount()[0] != None):
                     self.currentMove += 1
 
             if self.currentMove == len(self.moveSequence):
