@@ -24,15 +24,15 @@ class LoaderLogic(StateMachine):
 
     # Tunable
     automaticHopperMotor1Speed = tunable(.4)
-    automaticHopperMotor2Speed = tunable(.4)
+    automaticHopperMotor2Speed = tunable(.6)
     # Other variables
-    isAutomatic = False
+    isAutomatic = True
     loaderStoppingDelay = .16
     ballEjectTime = .3
     eject = False
 
     def on_enable(self):
-        self.isAutomatic = False
+        self.isAutomatic = True
 
     def setAutoLoading(self):
         """Runs sensor-based loading."""
