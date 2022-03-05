@@ -11,8 +11,8 @@ pneumatics:
     groups: "solenoids"
     loader:
       type: "doubleSolenoid"
+      pcm: 1
       channel:
         forward: 0
         reverse: 1
-        pcm: 1
       default: "kReverse"

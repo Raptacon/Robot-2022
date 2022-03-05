@@ -25,7 +25,7 @@ def solenoidFactory(descp):
     """
     # try:
     pcm = 0
-    if pcm in descp:
+    if 'pcm' in descp:
         pcm = descp["pcm"]
     if descp["type"] == "solenoid":
         return wpilib.Solenoid(pcm, wpilib.PneumaticsModuleType.CTREPCM, descp["channel"])
