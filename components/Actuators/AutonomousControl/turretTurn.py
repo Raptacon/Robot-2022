@@ -1,7 +1,5 @@
 from magicbot import StateMachine, feedback, state, tunable
-from components.Actuators.LowLevel import pneumatics
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
-from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.SoftwareControl.speedSections import SpeedSections
 from networktables import NetworkTables as networktable
 import logging as log
@@ -24,7 +22,6 @@ class TurretTurn(StateMachine):
     limeTable = networktable.getTable("limelight")
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
-    pneumatics: Pneumatics
     turnAngle = None
     controlMode = TurretControlMode.kManual
     tolerance = tunable(3)
@@ -97,16 +94,13 @@ class TurretTurn(StateMachine):
     @feedback
     def getSpeed(self):
         offset = self.getOffset()
-        if self.pneumatics.getLoaderDeployed():
-            if offset == None:
-                self.setEncoderControl()
-                offset = self.getOffset()
-            elif offset == "Manual":
-                return self.manualSpeed
-            speed = self.speedSections.getSpeed(offset, "TurretTurn")
-            if abs(offset) < self.tolerance:
-                speed = 0
-        else:
+        if offset == None:
+            self.setEncoderControl()
+            offset = self.getOffset()
+        elif offset == "Manual":
+            return self.manualSpeed
+        speed = self.speedSections.getSpeed(offset, "TurretTurn")
+        if abs(offset) < self.tolerance:
             speed = 0
         return speed
 
@@ -126,16 +120,13 @@ class TurretTurn(StateMachine):
         self.turretThreshold.setTurretspeed(speed)
 
     def setManualSpeed(self, speed):
-        if self.pneumatics.getLoaderDeployed():
-            if abs(speed) > self.maxManualSpeed:
-                if speed > 0:
-                    self.manualSpeed = self.maxManualSpeed
-                if speed < 0:
-                    self.manualSpeed = -1*self.maxManualSpeed
-            else:
-                self.manualSpeed = speed
+        if abs(speed) > self.maxManualSpeed:
+            if speed > 0:
+                self.manualSpeed = self.maxManualSpeed
+            if speed < 0:
+                self.manualSpeed = -1*self.maxManualSpeed
         else:
-            speed = 0
+            self.manualSpeed = speed
 
     @state(first = True)
     def turn(self):
@@ -143,5 +134,4 @@ class TurretTurn(StateMachine):
         Starts turning process, if in tolerance it will stop
         """
         self.pos = self.turretThreshold.getPosition()
-        self.setSpeed()
         self.next_state("turn")
