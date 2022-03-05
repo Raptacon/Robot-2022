@@ -22,7 +22,7 @@ class TurnToAngle(StateMachine):
     farMultiplier = tunable(1)
     midMultiplier = tunable(.75)
     closeMultiplier = tunable(.5)
-    tolerance = tunable(.5)
+    tolerance = tunable(2)
     change = 0
 
     def setup(self):
@@ -74,7 +74,7 @@ class TurnToAngle(StateMachine):
         if self.change > 0:
             self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
         else:
-            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, -1 * self.speed, self.speed)
+            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
         self.next_state("turn")
 
         # Stops the automatic turning if the bot is within the tolerance of the desired angle

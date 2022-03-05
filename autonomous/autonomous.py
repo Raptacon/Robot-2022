@@ -1,6 +1,7 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor, Direction
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
@@ -25,6 +26,7 @@ class Autonomous(AutonomousStateMachine):
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     ballCounter: BallCounter
+    intakeMotor: IntakeMotor
     drive_speed = tunable(.25)
 
     allianceColor: str
