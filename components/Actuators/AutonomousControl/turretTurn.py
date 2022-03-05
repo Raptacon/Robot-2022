@@ -128,12 +128,10 @@ class TurretTurn(StateMachine):
         else:
             self.manualSpeed = speed
 
-
     @state(first = True)
     def turn(self):
         """
         Starts turning process, if in tolerance it will stop
         """
         self.pos = self.turretThreshold.getPosition()
-        self.setSpeed()
         self.next_state("turn")
