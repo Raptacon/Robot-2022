@@ -36,6 +36,7 @@ class SmokeTest(AutonomousStateMachine):
 
     @feedback
     def getToDo(self):
+        """Returns the instructions for the smoke test"""
         return self.toDo
 
     @state

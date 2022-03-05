@@ -4,7 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 import logging
 import wpilib
-from wpilib import XboxController, DriverStation, SerialPort
+from wpilib import XboxController, DriverStation, SerialPort, CameraServer
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -140,6 +140,7 @@ class MyRobot(MagicRobot):
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
         testComponentListCompatibility(self, componentList)
+        CameraServer.launch()
 
 
     def autonomousInit(self):
@@ -151,12 +152,12 @@ class MyRobot(MagicRobot):
     def teleopInit(self):
         # Register button events for doof
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
-        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.loader.setAutoLoading)
-        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kRightBumper, ButtonEvent.kOnPress, self.loader.setManualLoading)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.shooter.startShooting)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.stopLoading)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.shooter.doneShooting)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnRelease, self.loader.determineNextAction)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.setAutoLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kB, ButtonEvent.kOnPress, self.loader.setManualLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.startShooting)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.loader.stopLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnRelease, self.shooter.doneShooting)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnRelease, self.loader.determineNextAction)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kLeftBumper, ButtonEvent.kOnPress, self.driveTrain.enableCreeperMode)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnPress, self.loader.stopLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kB, ButtonEvent.kOnRelease, self.shooter.doneShooting)
@@ -180,7 +181,7 @@ class MyRobot(MagicRobot):
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
-        self.prevAState = False
+        self.prevMechAState = False
 
     def teleopPeriodic(self):
         """
@@ -205,6 +206,13 @@ class MyRobot(MagicRobot):
         else:
             self.winch.stop()
 
+        if self.xboxMap.getMechA():
+            self.autoShoot.engage()
+            self.autoShoot.startAutoShoot()
+        elif self.prevMechAState:
+            self.autoShoot.stop()
+            self.autoShoot.done()
+
         if self.xboxMap.getMechX():
             logging.error("Engaging turr")
             self.turretThreshold.setManual(False)
@@ -228,7 +236,6 @@ class MyRobot(MagicRobot):
         self.autoShoot.engage()
         self.turnToAngle.engage()
         self.shooter.engage()
-        self.prevAState = self.xboxMap.getDriveA()
 
         # If the drivers have any input outside deadzone, take control.
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
@@ -237,6 +244,7 @@ class MyRobot(MagicRobot):
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
 
+        self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()
 
 

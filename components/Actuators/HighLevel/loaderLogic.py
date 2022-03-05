@@ -24,9 +24,9 @@ class LoaderLogic(StateMachine):
 
     # Tunable
     automaticHopperMotor1Speed = tunable(.4)
-    automaticHopperMotor2Speed = tunable(.4)
+    automaticHopperMotor2Speed = tunable(.6)
     # Other variables
-    isAutomatic = False
+    isAutomatic = True
     loaderStoppingDelay = .16
     ballEjectTime = .3
     eject = False

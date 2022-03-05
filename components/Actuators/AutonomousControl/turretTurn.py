@@ -3,6 +3,18 @@ from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from components.SoftwareControl.speedSections import SpeedSections
 from networktables import NetworkTables as networktable
 import logging as log
+from enum import Enum, auto
+
+class TurretControlMode(Enum):
+    """
+    Turret Control Modes
+    Encoder
+    Limelight
+    and Manual
+    """
+    kEncoder = auto()
+    kLimelight = auto()
+    kManual = auto()
 
 class TurretTurn(StateMachine):
     compatString = ["teapot"]
@@ -11,7 +23,7 @@ class TurretTurn(StateMachine):
     turretThreshold: TurretThreshold
     speedSections: SpeedSections
     turnAngle = None
-    controlMode = "Encoder"
+    controlMode = TurretControlMode.kManual
     tolerance = tunable(3)
     manualSpeed = 0
     maxManualSpeed = .2
@@ -38,11 +50,15 @@ class TurretTurn(StateMachine):
 
     def setLimeLightControl(self):
         """Determines if turret is using limelight input."""
-        self.controlMode = "Limelight"
+        self.controlMode = TurretControlMode.kLimelight
 
     def setEncoderControl(self):
         """Determines if turret is using encoder input."""
-        self.controlMode = "Encoder"
+        self.controlMode = TurretControlMode.kEncoder
+
+    def setManualControl(self):
+        """Sets turret to manual input."""
+        self.controlMode = TurretControlMode.kManual
 
     def setManualControl(self):
         """Sets turret to manual input."""
@@ -55,18 +71,18 @@ class TurretTurn(StateMachine):
         Based on self.controlMode - if in limelight control and it doesn't
         have a target returns false
         """
-        if self.controlMode == "Limelight":
+        if self.controlMode == TurretControlMode.kLimelight:
             limePosition = self.limeTable.getNumber("tx", -50)
             if limePosition != -50:
                 return limePosition
             else:
                 log.error("Limelight missing target")
                 return None
-        elif self.controlMode == "Encoder":
+        elif self.controlMode == TurretControlMode.kEncoder:
             if self.turnAngle == None:
                 return 0
             return self.turnAngle - self.pos
-        elif self.controlMode == "Manual":
+        elif self.controlMode == TurretControlMode.kManual:
             return "Manual"
 
     def setRelAngle(self, relangle):
@@ -92,8 +108,12 @@ class TurretTurn(StateMachine):
             speed = 0
         return speed
 
-    @feedback
     def getControlMode(self):
+        """
+        Returns a TurretControlMode enum
+        of Limelight, Manual or Encoder
+        depending on the source that the turret is using for input
+        """
         return self.controlMode
 
     def setSpeed(self):
