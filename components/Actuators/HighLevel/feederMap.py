@@ -32,11 +32,11 @@ class FeederMap:
     def run(self, loaderFunc):
         """Called when execution of a feeder element is desired."""
         if loaderFunc == Type.kIntake:
-            if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
+            if self.xboxMap.getDriveLeftTrig() > 0 and self.xboxMap.getDriveRightTrig() == 0:
                 self.intakeMotor.runIntake(self.intakeMotorSpeed, Direction.kForwards)
                 log.debug("right trig intake", self.xboxMap.getMechRightTrig())
 
-            elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
+            elif self.xboxMap.getDriveRightTrig() > 0 and self.xboxMap.getDriveLeftTrig() == 0:
                 self.intakeMotor.runIntake(self.intakeMotorSpeed, Direction.kBackwards)
                 log.debug("left trig intake", self.xboxMap.getMechLeftTrig())
 
@@ -44,15 +44,19 @@ class FeederMap:
                 self.intakeMotor.runIntake(0, Direction.kForwards)
 
         if loaderFunc == Type.kHopper:
-            if self.xboxMap.getMechRightTrig() > 0 and self.xboxMap.getMechLeftTrig() == 0:
+            if self.xboxMap.getDriveLeftTrig() > 0 and self.xboxMap.getDriveRightTrig() == 0:
                 self.hopperMotor.runHopperMotorForeside(self.loaderMotorSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorBackside(self.loaderMotorSpeed, Direction.kForwards)
                 log.debug("right trig manual", self.xboxMap.getMechRightTrig())
 
-            elif self.xboxMap.getMechLeftTrig() > 0 and self.xboxMap.getMechRightTrig() == 0:
+            elif self.xboxMap.getDriveRightTrig() > 0 and self.xboxMap.getDriveLeftTrig() == 0:
                 self.hopperMotor.runHopperMotorForeside(self.loaderMotorSpeed, Direction.kBackwards)
                 self.hopperMotor.runHopperMotorBackside(self.loaderMotorSpeed, Direction.kBackwards)
                 log.debug("left trig manual", self.xboxMap.getMechLeftTrig())
+
+            else:
+                self.hopperMotor.stopHopperMotorBackside()
+                self.hopperMotor.stopHopperMotorForeside()
 
     def execute(self):
         pass

@@ -1,20 +1,26 @@
 from magicbot import StateMachine, feedback, state, tunable
 from components.Actuators.LowLevel.driveTrain import ControlMode, DriveTrain
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+from components.SoftwareControl.speedSections import SpeedSections
 import logging as log
 
 class GoToDist(StateMachine):
 
+<<<<<<< HEAD
     compatString = ["doof", "teapot"]
+=======
+    compatString = ["teapot"]
+>>>>>>> d108ea9107385b3d015b083655049abf6d858bc5
 
     driveTrainHandler: DriveTrainHandler
     driveTrain: DriveTrain
-    dumbTolerance = tunable(.25)
+    speedSections: SpeedSections
     tolerance = tunable(.25)
     starting = False
     running = False
     targetDist = 0
     nextSpeed = 0
+<<<<<<< HEAD
     # This array determines what speed the robot will use
     # at different distances.
     values = [
@@ -25,6 +31,9 @@ class GoToDist(StateMachine):
              ["End", .2]
              ]  # The array must end with "End" - this will be the value used
     # if the target is really far away.
+=======
+
+>>>>>>> d108ea9107385b3d015b083655049abf6d858bc5
 
     def on_enable(self):
         self.starting = False
@@ -35,7 +44,7 @@ class GoToDist(StateMachine):
     def setTargetDist(self, distance):
         """
         Call this to set the target distance
-        in feet, and start
+        in inches, and start
         does not change target dist if currently running
         """
         if not self.running:

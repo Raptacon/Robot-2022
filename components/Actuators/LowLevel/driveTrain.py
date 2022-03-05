@@ -118,7 +118,7 @@ class DriveTrain():
 
     def getLeftSideDistTraveled(self):
         """
-        Returns the left motor's distance traveled in feet
+        Returns the left motor's distance traveled in inches
         """
         self.leftDistInch = (self.leftMotor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
         if self.leftSideSensorInverted:
@@ -128,6 +128,9 @@ class DriveTrain():
 
     @feedback
     def getEstTotalDistTraveled(self):
+        """"
+        Return an estimate of total distance traveled in inches
+        """
         self.smartDashTable.putNumber("Estimated Encoder Distance since enable", (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2)
         return (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2
 

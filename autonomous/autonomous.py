@@ -1,6 +1,7 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor, Direction
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.LowLevel.driveTrain import DriveTrain
@@ -27,6 +28,7 @@ class Autonomous(AutonomousStateMachine):
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     ballCounter: BallCounter
+    intakeMotor: IntakeMotor
     drive_speed = tunable(.25)
 
     allianceColor: str
@@ -42,8 +44,8 @@ class Autonomous(AutonomousStateMachine):
     # In degrees and feet
     # Positions are left to right 1,2,3 for the spots with balls
 
-    moveSequences = [[["turn", 59.993],
-                    ["drive", 5.62733*12]],
+    moveSequences = [[["drive", -24],
+                    ["turn", 180]],
 
                     [["turn", 59.993],
                     ["drive", 5.62733*12]],
@@ -51,6 +53,10 @@ class Autonomous(AutonomousStateMachine):
                     [["turn", -59.993],
                     ["drive", 5.62733*12]]]
 
+    @state(first=True)
+    def init(self):
+        self.assessPosition()
+        self.next_state("calibrateTurret_move")
 
     def assessPosition(self):
         """
@@ -68,7 +74,6 @@ class Autonomous(AutonomousStateMachine):
     @state
     def engage_shooter(self):
         """Starts shooter and fires"""
-        self.assessPosition()
         self.pneumatics.deployLoader()
         self.shooter.engage()
         self.shooter.startShooting()
@@ -125,7 +130,7 @@ class Autonomous(AutonomousStateMachine):
     @state
     def finishCalibration(self):
         self.turretThreshold.setTurretspeed(0)
-        self.next_state("engage_Shooter2")
+        self.next_state("engage_shooter")
 
     @state
     def engage_Shooter2(self):

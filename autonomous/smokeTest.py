@@ -36,6 +36,7 @@ class SmokeTest(AutonomousStateMachine):
 
     @feedback
     def getToDo(self):
+        """Returns the instructions for the smoke test"""
         return self.toDo
 
     @state
@@ -113,7 +114,7 @@ class SmokeTest(AutonomousStateMachine):
         if self.turretThreshold.calibrated == True:
             self.turretTurn.done()
             self.turretThreshold.setTurretspeed(0)
-            self.next_state("finishCalibration")
+
 
     @state
     def finishCalibration(self):
