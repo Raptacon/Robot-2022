@@ -26,7 +26,6 @@ class CalibrateTurret(StateMachine):
     def getRightClicked(self):
         return self.forwardLimitSwitch.get()
 
-
     @state(first = True)
     def findRightdeadzone(self):
         self.turretThreshold.setCalibrating(True)
@@ -53,8 +52,9 @@ class CalibrateTurret(StateMachine):
             self.limitR = self.turretThreshold.getPosition()
 
     def execute(self):
-        self.checkSwitches()
-        if self.limitL != None and self.limitR != None:
-            self.foundDeadzones()
-            self.limitL = None
-            self.limitR = None
+        # self.checkSwitches()
+        # if self.limitL != None and self.limitR != None:
+        #     self.foundDeadzones()
+        #     self.limitL = None
+        #     self.limitR = None
+        pass
