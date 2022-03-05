@@ -65,7 +65,7 @@ class Autonomous(AutonomousStateMachine):
         else:
             self.moveSequence = self.moveSequences[int(self.robotPosition) - 1]
 
-    @state(first = True)
+    @state
     def engage_shooter(self):
         """Starts shooter and fires"""
         self.assessPosition()
@@ -79,12 +79,13 @@ class Autonomous(AutonomousStateMachine):
         """Waits for shooter to finish, then next state"""
         pass
 
-    @state
+    @state(first = True)
     def calibrateTurret_move(self):
         """
         Calibrates the turret's deadzones
         while moving
         """
+        self.assessPosition()
         self.shooter.shooterMotors.stopShooter()
         self.driveTrain.setBraking(True)
         if not self.moveComplete:

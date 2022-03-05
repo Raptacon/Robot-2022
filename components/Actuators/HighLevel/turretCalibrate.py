@@ -4,11 +4,26 @@ from rev import SparkMaxLimitSwitch
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
+import logging as log
 class CalibrateTurret(StateMachine):
     compatString = ["greenChassis", "teapot"]
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     limitTable = networktable.getTable("SmartDashboard")
+    # @state(first = True)
+    # def testCalibrate(self):
+    #     log.error("its alive")
+
+    @state(first = True)
+    def findRightdeadzone(self):
+        log.error("REEEE")
+        self.turretThreshold.setCalibrating(True)
+        if self.getRightClicked():
+            self.limitR = self.turretThreshold.getPosition()
+            self.next_state('findLeftdeadzone')
+        else:
+            self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
+            self.next_state("findRightdeadzone")
 
     def setup(self):
         turretMotor = self.turretThreshold.turretMotor
@@ -22,17 +37,6 @@ class CalibrateTurret(StateMachine):
     @feedback
     def getRightClicked(self):
         return self.forwardLimitSwitch.get()
-
-
-    @state(first = True)
-    def findRightdeadzone(self):
-        self.turretThreshold.setCalibrating(True)
-        if self.getRightClicked():
-            self.limitR = self.turretThreshold.getPosition()
-            self.next_state('findLeftdeadzone')
-        else:
-            self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
-            self.next_state("findRightdeadzone")
 
 
     @state

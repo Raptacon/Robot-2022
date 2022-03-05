@@ -38,7 +38,7 @@ class SmokeTest(AutonomousStateMachine):
     def getToDo(self):
         return self.toDo
 
-    @state(first=True)
+    @state
     def driveSetup(self):
         self.driveTrain.resetDistTraveled()
         self.next_state("drive")
@@ -104,7 +104,7 @@ class SmokeTest(AutonomousStateMachine):
         self.next_state("calibrateTurret")
 
 
-    @state
+    @state(first=True)
     def calibrateTurret(self):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
