@@ -36,6 +36,7 @@ class Autonomous(AutonomousStateMachine):
 
     @state
     def turn(self):
+        """Turns the robot 90 degrees"""
         self.turnToAngle.setAngle(angle = -90)
         self.turnToAngle.engage()
         self.firstCall = True
@@ -43,6 +44,7 @@ class Autonomous(AutonomousStateMachine):
 
     @state
     def turnWait(self):
+        """Waits for turnToAngle to finish"""
         self.turnToAngle.engage()
         if self.firstCall:
             self.firstCall = False
@@ -60,7 +62,6 @@ class Autonomous(AutonomousStateMachine):
         self.next_state("calibrateTurret")
         if self.turretThreshold.calibrated == True:
             self.turretTurn.done()
-            self.turretThreshold.setTurretspeed(0)
             self.next_state("finishCalibration")
 
     @state
