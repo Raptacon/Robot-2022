@@ -2,6 +2,7 @@ from magicbot import feedback
 from networktables import NetworkTables as networktable
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 import logging as log
+
 class TurretThreshold:
     compatString = ["teapot"]
     motors_turret: dict
@@ -10,7 +11,7 @@ class TurretThreshold:
     pos = 0
     exitSpeed = .05
     safetySpeed = .07
-    gearRatio = 5
+    gearRatio = 10
     sprocketRatio = 175/18
     turretMotor = None
     DegreeToAngle = 0
@@ -39,10 +40,10 @@ class TurretThreshold:
         self.leftLim = self.limitSwitchTable.getNumber("Left Limit", None)
         self.rightLim = self.limitSwitchTable.getNumber("Right Limit", None)
 
-        if self.leftLim == None or self.rightLim == None:
+        if self.leftLim == None and self.rightLim == None:
             log.error("MUST CALIBRATE TURRET")
             self.calibrated = False
-        elif self.LeftLim != None and self.RightLim != None:
+        elif self.leftLim != None and self.rightLim != None:
             self.calibrated = True
         else:
             log.error("Half calibrated turret")

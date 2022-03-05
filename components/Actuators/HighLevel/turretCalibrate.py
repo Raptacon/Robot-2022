@@ -9,6 +9,7 @@ class CalibrateTurret(StateMachine):
     turretTurn: TurretTurn
     turretThreshold: TurretThreshold
     limitTable = networktable.getTable("SmartDashboard")
+    offset = 206
     limitL = None
     limitR = None
 
@@ -31,20 +32,11 @@ class CalibrateTurret(StateMachine):
         self.turretThreshold.setCalibrating(True)
         if self.getRightClicked():
             self.limitR = self.turretThreshold.getPosition()
-            self.next_state('findLeftdeadzone')
+            self.limitL = self.limitR - self.offset
+            self.foundDeadzones()
         else:
             self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
             self.next_state("findRightdeadzone")
-
-
-    @state
-    def findLeftdeadzone(self):
-        if self.getLeftClicked():
-            self.limitL = self.turretThreshold.getPosition()
-            self.foundDeadzones()
-        else:
-            self.turretThreshold.setTurretspeed(-1*self.turretThreshold.calibSpeed)
-            self.next_state("findLeftdeadzone")
 
     def foundDeadzones(self):
         self.turretThreshold.setCalibrating(False)
