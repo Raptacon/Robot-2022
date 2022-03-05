@@ -182,6 +182,8 @@ class MyRobot(MagicRobot):
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
+        self.turretCalibrate.setUseMotor(False)
+        self.turretThreshold.setCalibrating(False)
         self.prevMechAState = False
 
     def teleopPeriodic(self):

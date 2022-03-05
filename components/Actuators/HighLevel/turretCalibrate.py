@@ -12,11 +12,18 @@ class CalibrateTurret(StateMachine):
     offset = 206
     limitL = None
     limitR = None
+    useMotor = False
 
     def setup(self):
         turretMotor = self.turretThreshold.turretMotor
         self.forwardLimitSwitch = turretMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
         self.reverseLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
+
+    def setUseMotor(self, motor:bool):
+        """
+        Determines whether we use motor or not during calibration.
+        """
+        self.useMotor = motor
 
     @feedback
     def getLeftClicked(self):
@@ -26,16 +33,16 @@ class CalibrateTurret(StateMachine):
     def getRightClicked(self):
         return self.forwardLimitSwitch.get()
 
-
     @state(first = True)
     def findRightdeadzone(self):
-        self.turretThreshold.setCalibrating(True)
         if self.getRightClicked():
             self.limitR = self.turretThreshold.getPosition()
             self.limitL = self.limitR - self.offset
             self.foundDeadzones()
         else:
-            self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
+            if self.useMotor:
+                self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
+                self.turretThreshold.setCalibrating(True)
             self.next_state("findRightdeadzone")
 
     def foundDeadzones(self):
@@ -45,16 +52,3 @@ class CalibrateTurret(StateMachine):
         self.limitTable.putNumber("Left Limit", self.limitL)
         self.limitTable.putNumber("Right Limit", self.limitR)
         self.done()
-
-    def checkSwitches(self):
-        if self.getLeftClicked():
-            self.limitL = self.turretThreshold.getPosition()
-        if self.getRightClicked():
-            self.limitR = self.turretThreshold.getPosition()
-
-    def execute(self):
-        self.checkSwitches()
-        if self.limitL != None and self.limitR != None:
-            self.foundDeadzones()
-            self.limitL = None
-            self.limitR = None
