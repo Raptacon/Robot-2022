@@ -3,7 +3,7 @@ Team 3200 Robot base class
 """
 # Module imports:
 import wpilib
-from wpilib import XboxController, DriverStation, SerialPort
+from wpilib import XboxController, DriverStation, SerialPort, CameraServer
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -135,6 +135,7 @@ class MyRobot(MagicRobot):
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
         testComponentListCompatibility(self, componentList)
+        CameraServer.launch()
 
 
     def autonomousInit(self):
