@@ -49,10 +49,10 @@ def calculateRPM(dist, dir, filename):
     rpm = [ShooterLogic.teleShootingSpeed1, ShooterLogic.teleShootingSpeed2]
 
     try:
-            with open(os.path.join(dir,filename), 'r') as yaml_stream:
-                config = yaml.load(yaml_stream, Loader=yaml.SafeLoader)
-        except:
-            log.error("Cannot read yaml config file {}, check formatting.".format(yaml_stream))
+        with open(os.path.join(dir,filename), 'r') as yaml_stream:
+            config = yaml.load(yaml_stream, Loader=yaml.SafeLoader)
+    except:
+        log.error("Cannot read yaml config file {}, check formatting.".format(yaml_stream))
     minDist_x = 9
     maxRPM = 5000
     if dist < minDist_x:
