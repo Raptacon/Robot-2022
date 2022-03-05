@@ -260,7 +260,6 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
-        logging.error(findRPM("rpmToDist.yml", self.robotDir))
         #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
