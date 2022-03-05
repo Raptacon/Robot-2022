@@ -6,11 +6,7 @@ import logging as log
 
 class GoToDist(StateMachine):
 
-<<<<<<< HEAD
-    compatString = ["doof", "teapot"]
-=======
     compatString = ["teapot"]
->>>>>>> d108ea9107385b3d015b083655049abf6d858bc5
 
     driveTrainHandler: DriveTrainHandler
     driveTrain: DriveTrain
@@ -20,20 +16,6 @@ class GoToDist(StateMachine):
     running = False
     targetDist = 0
     nextSpeed = 0
-<<<<<<< HEAD
-    # This array determines what speed the robot will use
-    # at different distances.
-    values = [
-             [1, .2], # The first value is the limit, so it will
-             [2, .2],  # use the included speed if the distance is
-             [3, .2],# under this value and above the last.
-             [4, .2],
-             ["End", .2]
-             ]  # The array must end with "End" - this will be the value used
-    # if the target is really far away.
-=======
-
->>>>>>> d108ea9107385b3d015b083655049abf6d858bc5
 
     def on_enable(self):
         self.starting = False

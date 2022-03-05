@@ -8,7 +8,6 @@ class CalibrateTurret(StateMachine):
     compatString = ["teapot"]
     turretThreshold: TurretThreshold
     limitTable = networktable.getTable("SmartDashboard")
-<<<<<<< HEAD
     # @state(first = True)
     # def testCalibrate(self):
     #     log.error("its alive")
@@ -23,10 +22,6 @@ class CalibrateTurret(StateMachine):
         else:
             self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
             self.next_state("findRightdeadzone")
-=======
-    limitL = None
-    limitR = None
->>>>>>> d108ea9107385b3d015b083655049abf6d858bc5
 
     def setup(self):
         turretMotor = self.turretThreshold.turretMotor
