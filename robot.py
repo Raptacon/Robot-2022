@@ -24,7 +24,7 @@ from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
-from components.Actuators.AutonomousControl.autoShoot import AutoShoot, findRPM
+from components.Actuators.AutonomousControl.autoShoot import AutoShoot
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Input.breakSensors import Sensors
