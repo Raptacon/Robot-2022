@@ -78,11 +78,8 @@ class TurnToAngle(StateMachine):
     def turn(self):
         """Turns the robot based off of the speed determined in setSpeedFunc"""
         self.setSpeedFunc()
-        if self.change > 0:
-            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
-        else:
-            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
-        self.next_state("turn")
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
+
 
         # Stops the automatic turning if the bot is within the tolerance of the desired angle
         if abs(self.navx.getFusedHeading() - self.nextHeading) < self.tolerance:
