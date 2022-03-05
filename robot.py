@@ -245,7 +245,7 @@ class MyRobot(MagicRobot):
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
 
-        self.prevMechAState = self.xboxMap.getDriveA()
+        self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()
 
 
