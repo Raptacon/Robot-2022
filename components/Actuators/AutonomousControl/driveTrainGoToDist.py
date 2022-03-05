@@ -28,7 +28,7 @@ class GoToDist(StateMachine):
     def setTargetDist(self, distance):
         """
         Call this to set the target distance
-        in feet, and start
+        in inches, and start
         does not change target dist if currently running
         """
         if not self.running:

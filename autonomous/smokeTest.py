@@ -36,9 +36,10 @@ class SmokeTest(AutonomousStateMachine):
 
     @feedback
     def getToDo(self):
+        """Returns the instructions for the smoke test"""
         return self.toDo
 
-    @state(first=True)
+    @state
     def driveSetup(self):
         self.driveTrain.resetDistTraveled()
         self.next_state("drive")
@@ -104,7 +105,7 @@ class SmokeTest(AutonomousStateMachine):
         self.next_state("calibrateTurret")
 
 
-    @state
+    @state(first=True)
     def calibrateTurret(self):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
@@ -113,7 +114,7 @@ class SmokeTest(AutonomousStateMachine):
         if self.turretThreshold.calibrated == True:
             self.turretTurn.done()
             self.turretThreshold.setTurretspeed(0)
-            self.next_state("finishCalibration")
+
 
     @state
     def finishCalibration(self):

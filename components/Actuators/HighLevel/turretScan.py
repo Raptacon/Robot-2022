@@ -15,7 +15,7 @@ class TurretScan (StateMachine):
     tv = 0
     turretThreshold: TurretThreshold
     stateTurn = "turnRight"
-     
+
     @state(first=True)
     def check(self):
         """
