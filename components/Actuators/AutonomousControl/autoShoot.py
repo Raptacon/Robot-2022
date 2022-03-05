@@ -86,6 +86,7 @@ def calculateRPM(dist, dir, filename):
     else:
         log.error("Given file did not have values at base, using default RPM")
 
+    # If either of the RPMs are too high, set both to maxRPM
     if rpm[0] > maxRPM or rpm[1] > maxRPM:
         log.error("RPM too high. Using max of "+str(maxRPM))
         return [maxRPM, maxRPM]
