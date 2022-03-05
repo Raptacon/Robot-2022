@@ -3,6 +3,7 @@ from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
@@ -20,6 +21,7 @@ class Autonomous(AutonomousStateMachine):
     goToDist: GoToDist
     shooter: ShooterLogic
     pneumatics: Pneumatics
+    driveTrain: DriveTrain
     turnToAngle: TurnToAngle
     turretCalibrate: CalibrateTurret
     turretTurn: TurretTurn
@@ -33,7 +35,7 @@ class Autonomous(AutonomousStateMachine):
 
     moveComplete = False
     currentMove = 0
-    robotPosition = tunable(0)
+    robotPosition = tunable(2)
     turnToAnglePrevRunning = False
     goToDistPrevRunning = False
 
@@ -41,13 +43,13 @@ class Autonomous(AutonomousStateMachine):
     # Positions are left to right 1,2,3 for the spots with balls
 
     moveSequences = [[["turn", 59.993],
-                    ["drive", 5.62733]],
+                    ["drive", 5.62733*12]],
+
+                    [["turn", 59.993],
+                    ["drive", 5.62733*12]],
 
                     [["turn", -59.993],
-                    ["drive", 5.62733]],
-
-                    [["turn", -59.993],
-                    ["drive", 5.62733]]]
+                    ["drive", 5.62733*12]]]
 
 
     def assessPosition(self):
@@ -83,22 +85,32 @@ class Autonomous(AutonomousStateMachine):
         Calibrates the turret's deadzones
         while moving
         """
+        self.shooter.shooterMotors.stopShooter()
+        self.driveTrain.setBraking(True)
         if not self.moveComplete:
             move = self.moveSequence[self.currentMove]
             if move[0] == "turn":
-                self.turnToAngle.setAngle(move[1])
+                if not self.turnToAngle.running:
+                    self.turnToAngle.setRelAngle(move[1])
+                log.error("Turing")
                 self.turnToAngle.engage()
-                if not self.turnToAngle.running and self.turnToAnglePrevRunning:
+                if (not self.turnToAngle.running) and self.turnToAnglePrevRunning:
+                    log.error("Moving to drive")
                     self.currentMove += 1
             elif move[0] == "drive":
-                self.goToDist.setTargetDist(move[1])
-                self.goToDist.engage()
-                if ((not self.goToDist.running and self.goToDistPrevRunning)
+                if (((not self.goToDist.running) and self.goToDistPrevRunning)
                 or self.ballCounter.getBallCount()[0] != None):
+                    log.error("Finishing")
                     self.currentMove += 1
+                else:
+                    self.goToDist.setTargetDist(move[1])
+                    self.goToDist.engage()
 
             if self.currentMove == len(self.moveSequence):
                 self.moveComplete = True
+
+        self.turnToAnglePrevRunning = self.turnToAngle.running
+        self.goToDistPrevRunning = self.goToDist.running
 
         self.turretCalibrate.engage()
         self.next_state("calibrateTurret_move")
@@ -116,7 +128,7 @@ class Autonomous(AutonomousStateMachine):
 
     @state
     def engage_Shooter2(self):
-        ball1 = self.ballCounter.getBallCount[0]
+        ball1 = self.ballCounter.getBallCount()[0]
         self.afterShootState = "stop"
 
         # We don't need the second condition, but it sounds fun
@@ -124,7 +136,7 @@ class Autonomous(AutonomousStateMachine):
             self.shooter.engage()
             self.shooter.startShooting()
             self.next_state('shooter_wait')
-        elif ball1.getColor() != self.allianceColor:
+        elif ball1 != None and ball1.getColor() != self.allianceColor:
             self.shooter.autoShootingSpeed1 = 1000
             self.shooter.autoShootingSpeed2 = 500
             self.shooter.engage()

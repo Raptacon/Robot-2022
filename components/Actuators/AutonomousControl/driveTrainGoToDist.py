@@ -1,11 +1,11 @@
-from magicbot import StateMachine, state, tunable
+from magicbot import StateMachine, feedback, state, tunable
 from components.Actuators.LowLevel.driveTrain import ControlMode, DriveTrain
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import logging as log
 
 class GoToDist(StateMachine):
 
-    compatString = ["doof"]
+    compatString = ["doof", "teapot"]
 
     driveTrainHandler: DriveTrainHandler
     driveTrain: DriveTrain
@@ -14,16 +14,23 @@ class GoToDist(StateMachine):
     starting = False
     running = False
     targetDist = 0
+    nextSpeed = 0
     # This array determines what speed the robot will use
     # at different distances.
     values = [
-             [5, .15], # The first value is the limit, so it will
-             [8, .2],  # use the included speed if the distance is
-             [12, .25],# under this value and above the last.
-             [36, .3],
-             ["End", .4]
+             [1, .2], # The first value is the limit, so it will
+             [2, .2],  # use the included speed if the distance is
+             [3, .2],# under this value and above the last.
+             [4, .2],
+             ["End", .2]
              ]  # The array must end with "End" - this will be the value used
     # if the target is really far away.
+
+    def on_enable(self):
+        self.starting = False
+        self.running = False
+        self.targetDist = 0
+        self.nextSpeed = 0
 
     def setTargetDist(self, distance):
         """
@@ -32,6 +39,7 @@ class GoToDist(StateMachine):
         does not change target dist if currently running
         """
         if not self.running:
+            log.error("SET TARGET")
             self.targetDist = distance
             self.start(self.targetDist)
 
@@ -51,6 +59,7 @@ class GoToDist(StateMachine):
         GoToDist is doing.
         """
         self.running = False
+        self.targetDist = 0
         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
         self.next_state("idling")
 
@@ -63,6 +72,7 @@ class GoToDist(StateMachine):
         self.running = False
         self.initDist = 0
         if self.starting:
+            log.error("Starting GoToDist")
             if self.targetDist != 0:
                 self.next_state("recordInitDist")
             else:
@@ -91,12 +101,9 @@ class GoToDist(StateMachine):
         a certain distance.
         """
         self.dist = self.driveTrain.getEstTotalDistTraveled()
-        self.dumbSpeed = 0
 
         self.nextSpeed = 0
         totalOffset = self.targetDist - self.dist
-
-        self.nextSpeed = 0
         absTotalOffset = abs(totalOffset)
 
         # Loops through our speed limits in order to find the correct speed.
@@ -108,7 +115,8 @@ class GoToDist(StateMachine):
                 # if speed == "PID":
                 #     self.nextSpeed = self.calc_PID(self.DeviationX)
                 self.nextSpeed = speed
-                self.next_state("adjust_drive")
+                self.next_state("goToDist")
+                self.adjust_drive()
                 break
 
         # This might be triggered if something is wrong with the
@@ -119,9 +127,15 @@ class GoToDist(StateMachine):
         if absTotalOffset < self.tolerance:
             self.stop()
             self.next_state("idling")
-            # Motor stop goes here
 
-    @state
+    @feedback
+    def getSpeed(self):
+        return self.nextSpeed
+
+    @feedback
+    def getTarget(self):
+        return self.targetDist
+
     def adjust_drive(self):
         """
         This state takes the speed set by the goToDist
@@ -129,5 +143,4 @@ class GoToDist(StateMachine):
         backwards at that speed. It then goes back to
         goToDist.
         """
-        self.driveTrain.setArcade(self.nextSpeed, 0)
-        self.next_state("goToDist")
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*self.nextSpeed, 0)
