@@ -182,7 +182,7 @@ class MyRobot(MagicRobot):
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
-        self.prevAState = False
+        self.prevMechAState = False
 
     def teleopPeriodic(self):
         """
