@@ -60,10 +60,6 @@ class TurretTurn(StateMachine):
         """Sets turret to manual input."""
         self.controlMode = TurretControlMode.kManual
 
-    def setManualControl(self):
-        """Sets turret to manual input."""
-        self.controlMode = "Manual"
-
     @feedback
     def getOffset(self):
         """

@@ -32,7 +32,7 @@ class LoaderLogic(StateMachine):
     eject = False
 
     def on_enable(self):
-        self.isAutomatic = False
+        self.isAutomatic = True
 
     def setAutoLoading(self):
         """Runs sensor-based loading."""
