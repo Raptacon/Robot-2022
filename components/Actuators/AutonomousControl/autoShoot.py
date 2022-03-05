@@ -50,9 +50,10 @@ def calculateRPM(dist, dir, filename):
 
     try:
         with open(os.path.join(dir,filename), 'r') as yaml_stream:
-            config = yaml.load(yaml_stream, Loader=yaml.SafeLoader)
+            values = yaml.load(yaml_stream, Loader=yaml.SafeLoader)
     except:
         log.error("Cannot read yaml config file {}, check formatting.".format(yaml_stream))
+        return
     minDist_x = 9
     maxRPM = 5000
     if dist < minDist_x:
