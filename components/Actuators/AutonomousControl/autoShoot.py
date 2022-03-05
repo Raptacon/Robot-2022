@@ -50,7 +50,7 @@ def calculateRPM(dist, dir, filename):
 
     values = yaml.load(open(os.path.join(dir,filename)))
     minDist_x = 9
-    maxRPM = 5000
+    maxRPM = 6000
     if dist < minDist_x:
         log.error("Dist is too low")
         # default rpm for low distances
