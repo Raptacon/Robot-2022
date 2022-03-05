@@ -109,6 +109,7 @@ class SmokeTest(AutonomousStateMachine):
     def calibrateTurret(self):
         """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
         self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
+        self.turretCalibrate.setUseMotor(True)
         self.turretCalibrate.engage()
         self.next_state("calibrateTurret")
         if self.turretThreshold.calibrated == True:
