@@ -104,7 +104,6 @@ class TurretTurn(StateMachine):
             speed = 0
         return speed
 
-    @feedback
     def getControlMode(self):
         """
         Returns a TurretControlMode enum
