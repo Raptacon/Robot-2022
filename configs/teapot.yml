@@ -123,6 +123,14 @@ loaderSensors:
       channel: 2
       description: "Post-shooting sensor"
 
+rampServo:
+  subsystem: "servos"
+  description: "This is the servo to bring the ramp down"
+  rampServo:
+    groups: "digitalServos"
+    servo3:
+      channel: 3
+
 intakeMotors:
   subsystem: "intake"
   intakeMotor:

@@ -20,6 +20,7 @@ from components.Actuators.LowLevel.elevator import Elevator
 from components.Actuators.LowLevel.driveTrain import ControlMode
 from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
 from components.Actuators.LowLevel.limelight import Limelight
+from components.Actuators.LowLevel.servos import Servos
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
@@ -44,7 +45,7 @@ from robotMap import RobotMap, XboxMap
 from networktables import NetworkTables
 from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
-from utils.sensorFactories import gyroFactory, breaksensorFactory
+from utils.sensorFactories import gyroFactory, breaksensorFactory, servoFactory
 from utils.acturatorFactories import compressorFactory, solenoidFactory
 import utils.math
 
@@ -85,6 +86,7 @@ class MyRobot(MagicRobot):
     breakSensors: Sensors
     turretCalibrate: CalibrateTurret
     limelight: Limelight
+    servos: Servos
 
     # Test code:
     testBoard: TestBoard
@@ -130,13 +132,14 @@ class MyRobot(MagicRobot):
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
         self.instantiateSubsystemGroup("digitalInput", breaksensorFactory)
+        self.instantiateSubsystemGroup("digitalOutput", servoFactory)
         self.instantiateSubsystemGroup("compressors", compressorFactory)
         self.instantiateSubsystemGroup("solenoids", solenoidFactory)
         self.instantiateSubsystemGroup("configuredValues", speedFactory)
 
         # Check each component for compatibility
         componentList = [GoToDist, Winch, ShooterLogic, ShooterMotors, DriveTrain, TurretThreshold, Limelight,
-                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn,
+                         ButtonManager, Pneumatics, Elevator, ScorpionLoader, TurnToAngle, TurretTurn, Servos,
                          TestBoard, AutoShoot, FeederMap, Lidar, Sensors, SpeedSections, DriveTrainHandler,
                          LoaderLogic, BallCounter, ColorSensor, HopperMotor, IntakeMotor, CalibrateTurret]
         testComponentListCompatibility(self, componentList)

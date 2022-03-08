@@ -2,7 +2,7 @@
 Contains helpers to create various sensor types
 """
 
-from wpilib import DigitalInput as di
+from wpilib import DigitalInput as di, Servo
 import logging
 import navx
 
@@ -37,4 +37,11 @@ def breaksensorFactory(descp):
 
     except Exception as e:
         logging.error("Failed to create IR Break sensor for %s. Error %s", descp, e)
+    return None
+
+def servoFactory(descp):
+    if "channel" in descp:
+        return Servo(descp["channel"])
+    else:
+        logging.error("Channel not included with servo %s", descp)
     return None
