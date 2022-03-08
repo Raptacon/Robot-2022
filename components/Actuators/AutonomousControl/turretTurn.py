@@ -141,6 +141,6 @@ class TurretTurn(StateMachine):
         """
         returns true if the turret is within tolerance of target
         """
-        if self.getOffset() < self.tolerance:
+        if abs(self.getOffset()) < self.tolerance:
             return True
         return False

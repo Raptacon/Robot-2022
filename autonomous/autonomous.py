@@ -45,7 +45,7 @@ class Autonomous(AutonomousStateMachine):
     # In degrees and feet
     # Positions are left to right 1,2,3 for the spots with balls
 
-    moveSequences = [[["drive", -24]],
+    moveSequences = [[["drive", -36]],
 
                     [["turn", 59.993],
                     ["drive", 5.62733*12]],
@@ -55,6 +55,7 @@ class Autonomous(AutonomousStateMachine):
 
     @state(first=True)
     def init(self):
+        self.driveTrain.resetDistTraveled()
         self.pneumatics.deployLoader()
         self.assessPosition()
         self.next_state("calibrateTurret_move")
