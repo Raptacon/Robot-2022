@@ -12,16 +12,17 @@ class Servos:
     If you want to make it more useful, go ahead.
     """
     compatString = ["teapot"]
-    digitalServos_servos: dict
+    digitalOutput_servos: dict
     complete = False
-    servoName = "rampServo"
+    tolerance = .03
+    servoName = "servo3"
 
     def getServo(self, servoName:str):
         """
         Returns a servo if servoName is included in dict
         """
-        if servoName in self.digitalServos_servos:
-            return self.digitalServos_servos[servoName]
+        if servoName in self.digitalOutput_servos:
+            return self.digitalOutput_servos[servoName]
         else:
             return None
 

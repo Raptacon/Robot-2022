@@ -127,7 +127,7 @@ rampServo:
   subsystem: "servos"
   description: "This is the servo to bring the ramp down"
   rampServo:
-    groups: "digitalServos"
+    groups: "digitalOutput"
     servo3:
       channel: 3
 
