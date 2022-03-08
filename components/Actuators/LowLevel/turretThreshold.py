@@ -1,14 +1,17 @@
 from magicbot import feedback
 from networktables import NetworkTables as networktable
+from components.Actuators.LowLevel.pneumatics import Pneumatics
 import logging as log
+
 class TurretThreshold:
     compatString = ["teapot"]
     motors_turret: dict
+    pneumatics: Pneumatics
     speed = 0
     pos = 0
     exitSpeed = .05
     safetySpeed = .07
-    gearRatio = 5
+    gearRatio = 10
     sprocketRatio = 175/18
     turretMotor = None
     DegreeToAngle = 0
@@ -38,10 +41,10 @@ class TurretThreshold:
         self.leftLim = self.limitSwitchTable.getNumber("Left Limit", None)
         self.rightLim = self.limitSwitchTable.getNumber("Right Limit", None)
 
-        if self.leftLim == None or self.rightLim == None:
+        if self.leftLim == None and self.rightLim == None:
             log.error("MUST CALIBRATE TURRET")
             self.calibrated = False
-        elif self.LeftLim != None and self.RightLim != None:
+        elif self.leftLim != None and self.rightLim != None:
             self.calibrated = True
         else:
             log.error("Half calibrated turret")
@@ -118,30 +121,32 @@ class TurretThreshold:
         gets position, sets speed for every frames
         """
         self.calc_Position()
+        if self.pneumatics.getLoaderDeployed():
+            if self.calibrated:
 
-        if self.calibrated:
-
-            # If we are currently outside of deadzones, re-enter
-            if self.pos < self.leftLim:
-                log.error("Too low")
-                self.speed = self.exitSpeed
-            elif self.pos > self.rightLim:
-                log.error("Too high")
-                self.speed = -1*self.exitSpeed
+                # If we are currently outside of deadzones, re-enter
+                if self.pos < self.leftLim:
+                    log.error("Too low")
+                    self.speed = self.exitSpeed
+                elif self.pos > self.rightLim:
+                    log.error("Too high")
+                    self.speed = -1*self.exitSpeed
 
 
-            self.turretMotor.set(self.speed)
+                self.turretMotor.set(self.speed)
 
-        elif self.calibrating:
-            log.error("Calibrating Turret")
-            if abs(self.speed) > abs(self.calibSpeed):
-                if self.speed > 0:
-                    self.speed = self.calibSpeed
-                else:
-                    self.speed = -1*self.calibSpeed
-            self.turretMotor.set(self.speed)
-        elif self.manual:
-            self.turretMotor.set(self.speed)
+            elif self.calibrating:
+                log.error("Calibrating Turret")
+                if abs(self.speed) > abs(self.calibSpeed):
+                    if self.speed > 0:
+                        self.speed = self.calibSpeed
+                    else:
+                        self.speed = -1*self.calibSpeed
+                self.turretMotor.set(self.speed)
+            elif self.manual:
+                self.turretMotor.set(self.speed)
+            else:
+                self.turretMotor.set(0)
+                log.debug("Calibrate the turret bud.")
         else:
             self.turretMotor.set(0)
-            log.debug("Calibrate the turret bud.")

@@ -128,7 +128,6 @@ class TurretTurn(StateMachine):
         else:
             self.manualSpeed = speed
 
-
     @state(first = True)
     def turn(self):
         """

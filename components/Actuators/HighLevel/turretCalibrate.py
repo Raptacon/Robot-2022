@@ -8,8 +8,10 @@ class CalibrateTurret(StateMachine):
     compatString = ["teapot"]
     turretThreshold: TurretThreshold
     limitTable = networktable.getTable("SmartDashboard")
+    offset = 206
     limitL = None
     limitR = None
+    useMotor = False
 
     @state(first = True)
     def findRightdeadzone(self):
@@ -27,6 +29,12 @@ class CalibrateTurret(StateMachine):
         self.forwardLimitSwitch = turretMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
         self.reverseLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
 
+    def setUseMotor(self, motor:bool):
+        """
+        Determines whether we use motor or not during calibration.
+        """
+        self.useMotor = motor
+
     @feedback
     def getLeftClicked(self):
         return self.reverseLimitSwitch.get()
@@ -35,15 +43,17 @@ class CalibrateTurret(StateMachine):
     def getRightClicked(self):
         return self.forwardLimitSwitch.get()
 
-
-    @state
-    def findLeftdeadzone(self):
-        if self.getLeftClicked():
-            self.limitL = self.turretThreshold.getPosition()
+    @state(first = True)
+    def findRightdeadzone(self):
+        if self.getRightClicked():
+            self.limitR = self.turretThreshold.getPosition()
+            self.limitL = self.limitR - self.offset
             self.foundDeadzones()
         else:
-            self.turretThreshold.setTurretspeed(-1*self.turretThreshold.calibSpeed)
-            self.next_state("findLeftdeadzone")
+            if self.useMotor:
+                self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
+                self.turretThreshold.setCalibrating(True)
+            self.next_state("findRightdeadzone")
 
     def foundDeadzones(self):
         self.turretThreshold.setCalibrating(False)
@@ -52,16 +62,3 @@ class CalibrateTurret(StateMachine):
         self.limitTable.putNumber("Left Limit", self.limitL)
         self.limitTable.putNumber("Right Limit", self.limitR)
         self.done()
-
-    def checkSwitches(self):
-        if self.getLeftClicked():
-            self.limitL = self.turretThreshold.getPosition()
-        if self.getRightClicked():
-            self.limitR = self.turretThreshold.getPosition()
-
-    def execute(self):
-        self.checkSwitches()
-        if self.limitL != None and self.limitR != None:
-            self.foundDeadzones()
-            self.limitL = None
-            self.limitR = None

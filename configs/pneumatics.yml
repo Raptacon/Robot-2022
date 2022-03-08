@@ -5,13 +5,14 @@ pneumatics:
     groups: "compressors"
     compressor:
       type: "compressor"
+      pcm: 1
 
   solenoids:
     groups: "solenoids"
     loader:
       type: "doubleSolenoid"
+      pcm: 1
       channel:
-        forward: 0
-        reverse: 1
-        pcm: 1
+        forward: 1
+        reverse: 0
       default: "kReverse"
