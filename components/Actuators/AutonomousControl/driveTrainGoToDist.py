@@ -97,27 +97,13 @@ class GoToDist(StateMachine):
         totalOffset = self.targetDist - self.dist
         absTotalOffset = abs(totalOffset)
 
-        # Loops through our speed limits in order to find the correct speed.
-        # We aren't using PID, though that would be a good idea for maximum accuracy.
-        for dist, speed in self.values:
-            if (dist == "End"
-                or absTotalOffset < dist):
-                # We don't have this implemented for goToDist yet
-                # if speed == "PID":
-                #     self.nextSpeed = self.calc_PID(self.DeviationX)
-                self.nextSpeed = speed
-                self.next_state("goToDist")
-                self.adjust_drive()
-                break
-
-        # This might be triggered if something is wrong with the
-        # values array.
-        if self.nextSpeed == 0:
-            log.error("Something went wrong with GoToDist!")
+        self.nextSpeed = self.speedSections.getSpeed(totalOffset, "GoToDist")
 
         if absTotalOffset < self.tolerance:
             self.stop()
             self.next_state("idling")
+        else:
+            self.adjust_drive()
 
     @feedback
     def getSpeed(self):

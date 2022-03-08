@@ -1,9 +1,9 @@
 from magicbot import StateMachine, feedback, state
 from rev import SparkMaxLimitSwitch
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
-import logging as log
 from networktables import NetworkTables as networktable
 import logging as log
+
 class CalibrateTurret(StateMachine):
     compatString = ["teapot"]
     turretThreshold: TurretThreshold
@@ -12,17 +12,6 @@ class CalibrateTurret(StateMachine):
     limitL = None
     limitR = None
     useMotor = False
-
-    @state(first = True)
-    def findRightdeadzone(self):
-        log.error("REEEE")
-        self.turretThreshold.setCalibrating(True)
-        if self.getRightClicked():
-            self.limitR = self.turretThreshold.getPosition()
-            self.next_state('findLeftdeadzone')
-        else:
-            self.turretThreshold.setTurretspeed(self.turretThreshold.calibSpeed)
-            self.next_state("findRightdeadzone")
 
     def setup(self):
         turretMotor = self.turretThreshold.turretMotor

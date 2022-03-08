@@ -242,6 +242,6 @@ TurretMotor:
       inverted: True
       motorType: "kBrushless"
 
-# pneumatics:
-#   type: "yaml"
-#   file: "pneumatics.yml"
+pneumatics:
+  type: "yaml"
+  file: "pneumatics.yml"

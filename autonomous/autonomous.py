@@ -37,15 +37,15 @@ class Autonomous(AutonomousStateMachine):
 
     moveComplete = False
     currentMove = 0
-    robotPosition = tunable(2)
+    robotPosition = tunable(1)
     turnToAnglePrevRunning = False
     goToDistPrevRunning = False
+    turretTurnPrev = True
 
     # In degrees and feet
     # Positions are left to right 1,2,3 for the spots with balls
 
-    moveSequences = [[["drive", -24],
-                    ["turn", 180]],
+    moveSequences = [[["drive", -24]],
 
                     [["turn", 59.993],
                     ["drive", 5.62733*12]],
@@ -55,6 +55,7 @@ class Autonomous(AutonomousStateMachine):
 
     @state(first=True)
     def init(self):
+        self.pneumatics.deployLoader()
         self.assessPosition()
         self.next_state("calibrateTurret_move")
 
@@ -74,7 +75,6 @@ class Autonomous(AutonomousStateMachine):
     @state
     def engage_shooter(self):
         """Starts shooter and fires"""
-        self.pneumatics.deployLoader()
         self.shooter.engage()
         self.shooter.startShooting()
         self.next_state('shooter_wait')
@@ -84,7 +84,7 @@ class Autonomous(AutonomousStateMachine):
         """Waits for shooter to finish, then next state"""
         pass
 
-    @state(first = True)
+    @state
     def calibrateTurret_move(self):
         """
         Calibrates the turret's deadzones
@@ -98,19 +98,19 @@ class Autonomous(AutonomousStateMachine):
             if move[0] == "turn":
                 if not self.turnToAngle.running:
                     self.turnToAngle.setRelAngle(move[1])
-                log.error("Turing")
+                log.error("Turning")
                 self.turnToAngle.engage()
                 if (not self.turnToAngle.running) and self.turnToAnglePrevRunning:
                     log.error("Moving to drive")
                     self.currentMove += 1
             elif move[0] == "drive":
+                if not self.goToDist.running:
+                    self.goToDist.setTargetDist(move[1])
                 if (((not self.goToDist.running) and self.goToDistPrevRunning)
                 or self.ballCounter.getBallCount()[0] != None):
                     log.error("Finishing")
                     self.currentMove += 1
-                else:
-                    self.goToDist.setTargetDist(move[1])
-                    self.goToDist.engage()
+                self.goToDist.engage()
 
             if self.currentMove == len(self.moveSequence):
                 self.moveComplete = True
@@ -118,10 +118,6 @@ class Autonomous(AutonomousStateMachine):
         self.turnToAnglePrevRunning = self.turnToAngle.running
         self.goToDistPrevRunning = self.goToDist.running
 
-    @state
-    def calibrateTurret(self):
-        """Calibrates the turret's deadzones and checks to see if the turret motor is working"""
-        self.toDo = "Check to see if the turret is moving and that the deadzones are calibrated"
         self.turretCalibrate.setUseMotor(True)
         self.turretCalibrate.engage()
         self.next_state("calibrateTurret_move")
@@ -130,12 +126,23 @@ class Autonomous(AutonomousStateMachine):
             self.turretThreshold.setTurretspeed(0)
 
         if self.turretThreshold.calibrated == True and self.moveComplete:
+            self.afterShootState = "stop"
             self.next_state("finishCalibration")
+
+    @state
+    def turn_turret(self):
+        self.turretTurn.setEncoderControl()
+        self.turretTurn.setAngle(self.turretThreshold.leftLim + 103)
+        self.turretTurn.engage()
+        self.next_state("turn_turret")
+        if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
+            self.next_state("engage_shooter")
+        self.turretTurnPrev = self.turretTurn.withinTolerance()
 
     @state
     def finishCalibration(self):
         self.turretThreshold.setTurretspeed(0)
-        self.next_state("engage_shooter")
+        self.next_state("turn_turret")
 
     @state
     def engage_Shooter2(self):
