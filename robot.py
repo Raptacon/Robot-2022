@@ -4,7 +4,7 @@ Team 3200 Robot base class
 # Module imports:
 import logging
 import wpilib
-from wpilib import XboxController, DriverStation, SerialPort, CameraServer
+from wpilib import Servo, XboxController, DriverStation, SerialPort, CameraServer
 from magicbot import MagicRobot, tunable
 
 # Component imports:
@@ -265,6 +265,8 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
+        servo = Servo(4)
+        servo.set(1)
         #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
