@@ -1,10 +1,9 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
-from components.Actuators.LowLevel.intakeMotor import IntakeMotor, Direction
+from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.LowLevel.pneumatics import Pneumatics
-from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist

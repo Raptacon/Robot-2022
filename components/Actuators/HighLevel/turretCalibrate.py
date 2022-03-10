@@ -2,7 +2,6 @@ from magicbot import StateMachine, feedback, state
 from rev import SparkMaxLimitSwitch
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
-import logging as log
 
 class CalibrateTurret(StateMachine):
     compatString = ["teapot"]
