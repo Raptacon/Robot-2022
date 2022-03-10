@@ -1,5 +1,6 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.Input.ballCounter import BallCounter
+from components.Input.breakSensors import Sensors, State
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor, Direction
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
@@ -29,6 +30,7 @@ class Autonomous(AutonomousStateMachine):
     turretThreshold: TurretThreshold
     ballCounter: BallCounter
     intakeMotor: IntakeMotor
+    breakSensors: Sensors
     drive_speed = tunable(.25)
 
     allianceColor: str
@@ -86,10 +88,11 @@ class Autonomous(AutonomousStateMachine):
         self.shooter.startShooting()
         self.next_state('shooter_wait')
 
-    @timed_state(duration = shootTime, next_state=afterShootState)
+    @state
     def shooter_wait(self):
         """Waits for shooter to finish, then next state"""
-        pass
+        if self.breakSensors.shootingSensor(State.kTripped):
+            self.next_state(self.afterShootState)
 
     @state
     def calibrateTurret_move(self):
