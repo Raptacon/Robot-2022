@@ -53,6 +53,11 @@ class Autonomous(AutonomousStateMachine):
                     [["turn", -59.993],
                     ["drive", 5.62733*12]]]
 
+    # Quick Hack (tm)
+    moveSequence2 = [["turn", 180],
+                    ["drive", 24],
+                    ["turn", 90]]
+
     @state(first=True)
     def init(self):
         self.driveTrain.resetDistTraveled()
@@ -76,6 +81,7 @@ class Autonomous(AutonomousStateMachine):
     @state
     def engage_shooter(self):
         """Starts shooter and fires"""
+        self.moveComplete = False
         self.shooter.engage()
         self.shooter.startShooting()
         self.next_state('shooter_wait')
@@ -127,7 +133,7 @@ class Autonomous(AutonomousStateMachine):
             self.turretThreshold.setTurretspeed(0)
 
         if self.turretThreshold.calibrated == True and self.moveComplete:
-            self.afterShootState = "stop"
+            self.afterShootState = "move2"
             self.next_state("finishCalibration")
 
     @state
@@ -146,23 +152,39 @@ class Autonomous(AutonomousStateMachine):
         self.next_state("turn_turret")
 
     @state
-    def engage_Shooter2(self):
-        ball1 = self.ballCounter.getBallCount()[0]
-        self.afterShootState = "stop"
+    def move2(self):
+        self.moveSequence = self.moveSequence2
+        self.intakeMotor.runIntake(.4, Direction.kForwards)
+        self.shooter.shooterMotors.stopShooter()
+        self.driveTrain.setBraking(True)
+        if not self.moveComplete:
+            move = self.moveSequence[self.currentMove]
+            if move[0] == "turn":
+                if not self.turnToAngle.running:
+                    self.turnToAngle.setRelAngle(move[1])
+                log.error("Turning")
+                self.turnToAngle.engage()
+                if (not self.turnToAngle.running) and self.turnToAnglePrevRunning:
+                    log.error("Moving to drive")
+                    self.currentMove += 1
+            elif move[0] == "drive":
+                if not self.goToDist.running:
+                    self.goToDist.setTargetDist(move[1])
+                if (((not self.goToDist.running) and self.goToDistPrevRunning)
+                or self.ballCounter.getBallCount()[0] != None):
+                    log.error("Finishing")
+                    self.currentMove += 1
+                self.goToDist.engage()
 
-        # We don't need the second condition, but it sounds fun
-        if ball1 != None and ball1.getColor() == self.allianceColor:
-            self.shooter.engage()
-            self.shooter.startShooting()
-            self.next_state('shooter_wait')
-        elif ball1 != None and ball1.getColor() != self.allianceColor:
-            self.shooter.autoShootingSpeed1 = 1000
-            self.shooter.autoShootingSpeed2 = 500
-            self.shooter.engage()
-            self.shooter.startShooting()
-            self.next_state('shooter_wait')
-        else:
-            self.next_state("stop")
+            if self.currentMove == len(self.moveSequence):
+                self.moveComplete = True
+
+        self.turnToAnglePrevRunning = self.turnToAngle.running
+        self.goToDistPrevRunning = self.goToDist.running
+        if self.moveComplete:
+            self.afterShootState = "stop"
+            self.next_state("engage_shooter")
+
 
 
     @state(must_finish = True)

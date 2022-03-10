@@ -27,9 +27,17 @@ class LoaderLogic(StateMachine):
     automaticHopperMotor2Speed = tunable(.6)
     # Other variables
     isAutomatic = True
+    isAutonomous = False
     loaderStoppingDelay = .16
     ballEjectTime = .3
     eject = False
+
+    def setAutonomous(self, isAutonomous:bool):
+        """
+        Sets a variable that determines whether
+        certain functions run or not
+        """
+        self.isAutonomous = isAutonomous
 
     def on_enable(self):
         self.isAutomatic = True
@@ -61,7 +69,8 @@ class LoaderLogic(StateMachine):
 
     def runIntake(self):
         """Universal function for running the intake. Used in both manual and automatic."""
-        self.feeder.run(Type.kIntake)
+        if not self.isAutonomous:
+            self.feeder.run(Type.kIntake)
 
     @state
     def runHopperManually(self):
