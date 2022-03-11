@@ -16,10 +16,10 @@ class Winch:
         """
         Sets the motor speed to .5 in order to reel in the winch
         """
-        self.upSpeed = .5
+        self.upSpeed = -1
 
     def setLower(self):
-        self.upSpeed = -.5
+        self.upSpeed = .5
 
     def stop(self):
         """

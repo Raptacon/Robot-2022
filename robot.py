@@ -208,9 +208,9 @@ class MyRobot(MagicRobot):
         mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), self.sensitivityExponent)
 
         if self.xboxMap.getMechDPad() == 180:
-            self.winch.setRaise()
-        elif self.xboxMap.getMechDPad() == 0:
             self.winch.setLower()
+        elif self.xboxMap.getMechDPad() == 0:
+            self.winch.setRaise()
         else:
             self.winch.stop()
 
