@@ -57,6 +57,6 @@ class ShooterMotors:
         if self.shooter:
             self.shooterMotor1.set(self.shooterSpeed1)
             self.shooterMotor2.set(self.shooterSpeed2)
-        elif self.shooter == False:
+        else:
             self.shooterMotor1.set(0)
             self.shooterMotor2.set(0)

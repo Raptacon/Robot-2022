@@ -20,8 +20,8 @@ class ShooterLogic(StateMachine):
     shootingLoaderSpeed = tunable(.4)
     autoShootingSpeed1 = tunable(1150)
     autoShootingSpeed2 = tunable(3400)
-    teleShootingSpeed1 = tunable(1500)
-    teleShootingSpeed2 = tunable(3350)
+    teleShootingSpeed1 = tunable(2350)
+    teleShootingSpeed2 = tunable(1900)
 
     # Other variables
     isSetup = False
@@ -46,7 +46,9 @@ class ShooterLogic(StateMachine):
     def autonomousDisabled(self):
         """Indicates if the robot is not in autonomous mode."""
         self.isAutonomous = False
-
+        
+    # TODO What is rpm1 and rpm2? 
+    # If rpm2 is not supplied or is set to 0? then we set rpms equal to whatever was supplied in rpm1
     def setRPM(self, rpm1, rpm2=0):
         self.teleShootingSpeed1 = rpm1
         if rpm2 != 0:
@@ -78,11 +80,13 @@ class ShooterLogic(StateMachine):
         elif not self.isAutonomous:
             shootSpeed1 = self.teleShootingSpeed1 - self.speedTolerance
             shootSpeed2 = self.teleShootingSpeed2 - self.speedTolerance
+        # TODO what IS this?    
         if not self.isSetup:
             return False
         atSpeed = (bool(self.shooterMotor1Encoder.getVelocity() >= shootSpeed1)
                 and bool(self.shooterMotor2Encoder.getVelocity() >= shootSpeed2))
         rumble  = 0
+        # TODO  Why do we care about only rumbling while autonomous? Just rumble!
         if atSpeed and not self.isAutonomous:
             rumble = .3
         self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
@@ -95,19 +99,26 @@ class ShooterLogic(StateMachine):
         Runs shooter to a certain speed, then lets drivers control loading if in teleop.
         If in autonomous, run shooter automatically.
         """
+        
+        # Ensure that we can't stop shooting once we've started
         self.shooting = True
-        if not self.isAutonomous:
-            self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
-            if self.isShooterUpToSpeed():
-                self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
-            else:
-                self.next_state('runShooter')
-
-        elif self.isAutonomous:
+        
+        if self.isAutonomous:
             self.shooterMotors.runShooter(self.autoShootingSpeed1, self.autoShootingSpeed2)
             if self.isShooterUpToSpeed():
                 self.next_state('autonomousShoot')
 
+        # We're in teleop mode
+        else:
+            self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
+            if self.isShooterUpToSpeed():
+                self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
+                # TODO what IS our next state?
+            else:
+                # Loop until we're at speed
+                self.next_state('runShooter')
+
+        
     @timed_state(duration = shooterStoppingDelay, next_state = 'finishShooting')
     def autonomousShoot(self):
         """Shoot balls when shooter is up to speed. Strictly for autonomous use."""
