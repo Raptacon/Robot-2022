@@ -108,6 +108,7 @@ class MyRobot(MagicRobot):
 
         self.driverStation = DriverStation.getInstance()
 
+
         self.allianceColor = self.driverStation.getAlliance()
         if self.allianceColor == self.driverStation.Alliance.kBlue:
             self.allianceColor = "blue"
