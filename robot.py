@@ -190,6 +190,8 @@ class MyRobot(MagicRobot):
         """
         Must include. Called repeatedly while running teleop.
         """
+        self.turretCalibrate.engage()
+
         self.xboxMap.controllerInput()
 
         #This variable determines whether to use controller input for the drivetrain or not.
