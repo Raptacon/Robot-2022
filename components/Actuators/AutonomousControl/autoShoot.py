@@ -59,7 +59,7 @@ def calculateRPM(dist, dir, filename):
     if dist < minDist_x:
         log.error("Dist is too low")
         # default rpm for low distances
-        rpm = [5000, 5000]
+        rpm = [1000, 1000]
         return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]

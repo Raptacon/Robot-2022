@@ -20,6 +20,7 @@ class TurretThreshold:
     rightLim = None
 
     calibrating = False
+    calibrated = False
     calibSpeed = .11
     manual = False
 
