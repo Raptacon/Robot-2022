@@ -134,7 +134,7 @@ class Autonomous(AutonomousStateMachine):
 
     @timed_state(duration=.3, next_state="calibrateTurret_move")
     def winchUp(self):
-        self.winch.setLower()
+        self.winch.setRaise()
     @state
     def turn_turret(self):
         self.turretTurn.setEncoderControl()
