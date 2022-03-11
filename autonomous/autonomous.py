@@ -44,7 +44,7 @@ class Autonomous(AutonomousStateMachine):
     # In degrees and feet
     # Positions are left to right 1,2,3 for the spots with balls
 
-    moveSequences = [[["drive", -36]],
+    moveSequences = [[["drive", -42]],
 
                     [["turn", 59.993],
                     ["drive", 5.62733*12]],
@@ -105,7 +105,7 @@ class Autonomous(AutonomousStateMachine):
                     self.currentMove += 1
             elif move[0] == "drive":
                 if not self.goToDist.running:
-                    self.goToDist.setTargetDist(move[1.5])
+                    self.goToDist.setTargetDist(move[1])
                 if (((not self.goToDist.running) and self.goToDistPrevRunning)
                 or self.ballCounter.getBallCount()[0] != None):
                     log.error("Finishing")
