@@ -9,7 +9,6 @@ from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret, TurretThreshold
 from components.Actuators.LowLevel.winch import Winch
-import time
 
 import logging as log
 
