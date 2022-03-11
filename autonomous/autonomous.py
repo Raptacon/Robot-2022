@@ -44,7 +44,7 @@ class Autonomous(AutonomousStateMachine):
     # In degrees and feet
     # Positions are left to right 1,2,3 for the spots with balls
 
-    moveSequences = [[["drive", -36]],
+    moveSequences = [[["drive", -42]],
 
                     [["turn", 59.993],
                     ["drive", 5.62733*12]],
