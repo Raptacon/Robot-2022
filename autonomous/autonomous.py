@@ -105,7 +105,7 @@ class Autonomous(AutonomousStateMachine):
                     self.currentMove += 1
             elif move[0] == "drive":
                 if not self.goToDist.running:
-                    self.goToDist.setTargetDist(move[1])
+                    self.goToDist.setTargetDist(move[1.5])
                 if (((not self.goToDist.running) and self.goToDistPrevRunning)
                 or self.ballCounter.getBallCount()[0] != None):
                     log.error("Finishing")
