@@ -54,6 +54,14 @@ class Autonomous(AutonomousStateMachine):
                     [["turn", -59.993],
                     ["drive", 5.62733*12]]]
 
+    def setup(self):
+        self.moveComplete = False
+        self.currentMove = 0
+        self.robotPosition = tunable(1)
+        self.turnToAnglePrevRunning = False
+        self.goToDistPrevRunning = False
+        self.turretTurnPrev = True
+
     @state(first=True)
     def init(self):
         self.driveTrain.resetDistTraveled()
