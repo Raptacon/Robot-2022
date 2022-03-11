@@ -89,6 +89,8 @@ class MyRobot(MagicRobot):
     # Test code:
     testBoard: TestBoard
 
+    smartDashboardTable = NetworkTables.getTable("SmartDashboard")
+
     # If controller input is below this value, it will be set to zero.
     # This avoids accidental input, as we are now overriding autonomous
     # components on controller input.
@@ -107,6 +109,9 @@ class MyRobot(MagicRobot):
         self.currentRobot = self.map.configMapper.getCompatibility()
 
         self.driverStation = DriverStation.getInstance()
+
+        # Make sure default autonomous is big brain
+        self.smartDashboardTable.putString("Autonomous Mode", "Big Brain Autonomous")
 
         self.allianceColor = self.driverStation.getAlliance()
         if self.allianceColor == self.driverStation.Alliance.kBlue:
