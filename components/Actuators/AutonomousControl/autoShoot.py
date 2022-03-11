@@ -54,32 +54,26 @@ def calculateRPM(dist, dir, filename):
     except:
         log.error("Cannot read yaml config file {}, check formatting.".format(yaml_stream))
         return
-    minDist_x = 9
     maxRPM = 6000
-    if dist < minDist_x:
-        log.error("Dist is too low")
-        # default rpm for low distances
-        rpm = [1000, 1000]
-        return rpm
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
         distances = list(DtoRPM.keys())
         distFound = False
         for i, distance in enumerate(distances):
-            # truncate distance to integer (dist will likely be a float)
-            if distance >= int(dist):
-                lowdist = distance
-                if i < len(distances) - 1:
-                    highdist = distances[i+1]
-                    highRPM1 = DtoRPM[highdist][0]
-                    highRPM2 = DtoRPM[highdist][1]
+            if distance >= dist:
+                highdist = distance
+                if i == 0:
+                    lowdist = -1
+                    lowRPM1 = 1000
+                    lowRPM2 = 1000
                 else:
-                    highdist = -1
-                    highRPM1 = maxRPM
-                    highRPM2 = maxRPM
+                    lowdist = distances[i-1]
+                    lowRPM1 = DtoRPM[lowdist][0]
+                    lowRPM2 = DtoRPM[lowdist][1]
+                highRPM1 = DtoRPM[highdist][0]
+                highRPM2 = DtoRPM[highdist][1]
                 distFound = True
-                lowRPM1 = DtoRPM[lowdist][0]
-                lowRPM2 = DtoRPM[lowdist][1]
+
                 break
         if distFound:
             rpm = [linearInterp(highRPM1, lowRPM1, dist, lowdist),
