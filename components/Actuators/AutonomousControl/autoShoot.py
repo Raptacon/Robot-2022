@@ -64,8 +64,8 @@ def calculateRPM(dist, dir, filename):
                 highdist = distance
                 if i == 0:
                     lowdist = -1
-                    lowRPM1 = 1000
-                    lowRPM2 = 1000
+                    lowRPM1 = 1500
+                    lowRPM2 = -500
                 else:
                     lowdist = distances[i-1]
                     lowRPM1 = DtoRPM[lowdist][0]
