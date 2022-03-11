@@ -23,7 +23,7 @@ class FeederMap:
     xboxMap: XboxMap
 
     loaderMotorSpeed = tunable(.2)
-    intakeMotorSpeed = tunable(.5)
+    intakeMotorSpeed = tunable(.375)
 
     def on_enable(self):
         pass
