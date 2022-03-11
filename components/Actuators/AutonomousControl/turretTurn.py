@@ -134,4 +134,13 @@ class TurretTurn(StateMachine):
         Starts turning process, if in tolerance it will stop
         """
         self.pos = self.turretThreshold.getPosition()
+        self.setSpeed()
         self.next_state("turn")
+
+    def withinTolerance(self):
+        """
+        returns true if the turret is within tolerance of target
+        """
+        if abs(self.getOffset()) < self.tolerance:
+            return True
+        return False
