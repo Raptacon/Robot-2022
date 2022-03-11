@@ -60,7 +60,7 @@ class Autonomous(AutonomousStateMachine):
         self.driveTrain.resetDistTraveled()
         self.pneumatics.deployLoader()
         self.assessPosition()
-        self.next_state("calibrateTurret_move")
+        self.next_state("winchUp")
 
     def assessPosition(self):
         """
@@ -96,7 +96,6 @@ class Autonomous(AutonomousStateMachine):
         self.assessPosition()
         self.shooter.shooterMotors.stopShooter()
         self.driveTrain.setBraking(True)
-        self.next_state("winchUp")
         if not self.moveComplete:
             move = self.moveSequence[self.currentMove]
             if move[0] == "turn":
@@ -133,12 +132,10 @@ class Autonomous(AutonomousStateMachine):
             self.afterShootState = "stop"
             self.next_state("finishCalibration")
 
-    @state
+    @timed_state(duration=.1, next_state="calibrateTurret_move")
     def winchUp(self):
         self.winch.setRaise()
-        time.sleep(100)
         self.winch.stop()
-        self.next_state("calibrateTurret_move")
     @state
     def turn_turret(self):
         self.turretTurn.setEncoderControl()
