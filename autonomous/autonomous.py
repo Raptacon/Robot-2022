@@ -93,6 +93,7 @@ class Autonomous(AutonomousStateMachine):
         Calibrates the turret's deadzones
         while moving
         """
+        self.winch.stop()
         self.assessPosition()
         self.shooter.shooterMotors.stopShooter()
         self.driveTrain.setBraking(True)
@@ -132,10 +133,9 @@ class Autonomous(AutonomousStateMachine):
             self.afterShootState = "stop"
             self.next_state("finishCalibration")
 
-    @timed_state(duration=.1, next_state="calibrateTurret_move")
+    @timed_state(duration=.3, next_state="calibrateTurret_move")
     def winchUp(self):
-        self.winch.setRaise()
-        self.winch.stop()
+        self.winch.setLower()
     @state
     def turn_turret(self):
         self.turretTurn.setEncoderControl()
