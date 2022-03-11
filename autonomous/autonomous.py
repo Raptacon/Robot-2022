@@ -8,6 +8,7 @@ from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret, TurretThreshold
+from components.Actuators.LowLevel.winch import Winch
 
 import logging as log
 
@@ -28,6 +29,7 @@ class Autonomous(AutonomousStateMachine):
     turretThreshold: TurretThreshold
     ballCounter: BallCounter
     intakeMotor: IntakeMotor
+    winch:Winch
     drive_speed = tunable(.25)
 
     allianceColor: str
@@ -44,7 +46,7 @@ class Autonomous(AutonomousStateMachine):
     # In degrees and feet
     # Positions are left to right 1,2,3 for the spots with balls
 
-    moveSequences = [[["drive", -36]],
+    moveSequences = [[["drive", -42]],
 
                     [["turn", 59.993],
                     ["drive", 5.62733*12]],
@@ -57,7 +59,7 @@ class Autonomous(AutonomousStateMachine):
         self.driveTrain.resetDistTraveled()
         self.pneumatics.deployLoader()
         self.assessPosition()
-        self.next_state("calibrateTurret_move")
+        self.next_state("winchUp")
 
     def assessPosition(self):
         """
@@ -90,6 +92,7 @@ class Autonomous(AutonomousStateMachine):
         Calibrates the turret's deadzones
         while moving
         """
+        self.winch.stop()
         self.assessPosition()
         self.shooter.shooterMotors.stopShooter()
         self.driveTrain.setBraking(True)
@@ -129,6 +132,9 @@ class Autonomous(AutonomousStateMachine):
             self.afterShootState = "stop"
             self.next_state("finishCalibration")
 
+    @timed_state(duration=.3, next_state="calibrateTurret_move")
+    def winchUp(self):
+        self.winch.setLower()
     @state
     def turn_turret(self):
         self.turretTurn.setEncoderControl()
