@@ -20,8 +20,8 @@ class ShooterLogic(StateMachine):
     shootingLoaderSpeed = tunable(.4)
     autoShootingSpeed1 = tunable(1150)
     autoShootingSpeed2 = tunable(3400)
-    teleShootingSpeed1 = tunable(2350)
-    teleShootingSpeed2 = tunable(1900)
+    teleShootingSpeed1 = tunable(1500)
+    teleShootingSpeed2 = tunable(3350)
 
     # Other variables
     isSetup = False
