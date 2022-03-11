@@ -191,6 +191,7 @@ class MyRobot(MagicRobot):
         Must include. Called repeatedly while running teleop.
         """
         self.turretCalibrate.engage()
+        self.turretCalibrate.setUseMotor(False)
 
         self.xboxMap.controllerInput()
 
