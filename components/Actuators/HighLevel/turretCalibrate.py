@@ -1,12 +1,10 @@
 from magicbot import StateMachine, feedback, state
 from rev import SparkMaxLimitSwitch
-
-from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.LowLevel.turretThreshold import TurretThreshold
 from networktables import NetworkTables as networktable
+
 class CalibrateTurret(StateMachine):
-    compatString = ["greenChassis", "teapot"]
-    turretTurn: TurretTurn
+    compatString = ["teapot"]
     turretThreshold: TurretThreshold
     limitTable = networktable.getTable("SmartDashboard")
     offset = 206
