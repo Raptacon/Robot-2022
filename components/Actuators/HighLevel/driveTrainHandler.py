@@ -1,5 +1,5 @@
 import logging as log
-from magicbot import MagicRobot
+from magicbot import AutonomousStateMachine, MagicRobot
 from components.Actuators.LowLevel.driveTrain import DriveTrain, ControlMode
 
 class DriveTrainHandler():
@@ -41,6 +41,9 @@ class DriveTrainHandler():
         # (If the request comes from robot.py)
         # give it control
         if issubclass(type(requestSource), MagicRobot):
+            self.currentSource = requestSource
+            return True
+        if issubclass(type(requestSource), AutonomousStateMachine):
             self.currentSource = requestSource
             return True
 
