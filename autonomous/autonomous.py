@@ -172,7 +172,7 @@ class Autonomous(AutonomousStateMachine):
             self.next_state("stop")
 
 
-    @timed_state(duration=5, next_state="stop")
+    @timed_state(duration=2, next_state="stop")
     def moveBack(self):
         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
 
