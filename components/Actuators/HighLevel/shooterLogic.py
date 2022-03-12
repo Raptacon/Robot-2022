@@ -88,6 +88,8 @@ class ShooterLogic(StateMachine):
             rumble = .3
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
+        self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
+        self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
         return atSpeed
 
     @state
