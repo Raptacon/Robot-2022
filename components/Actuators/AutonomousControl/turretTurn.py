@@ -27,7 +27,7 @@ class TurretTurn(StateMachine):
     tolerance = tunable(3)
     manualSpeed = 0
     maxManualSpeed = .3
-    minManualSpeed = .05
+    minManualSpeed = .04
 
     def setup(self):
         self.pos = self.turretThreshold.getPosition()
