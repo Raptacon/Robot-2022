@@ -23,6 +23,7 @@ class ShooterLogic(StateMachine):
     autoShootingSpeed2 = tunable(3400)
     teleShootingSpeed1 = tunable(1500)
     teleShootingSpeed2 = tunable(3350)
+    shootTolerance = 50
 
     # Other variables
     isSetup = False
@@ -81,8 +82,8 @@ class ShooterLogic(StateMachine):
             shootSpeed2 = self.teleShootingSpeed2 - self.speedTolerance
         if not self.isSetup:
             return False
-        atSpeed = (bool(self.shooterMotor1Encoder.getVelocity() >= shootSpeed1)
-                and bool(self.shooterMotor2Encoder.getVelocity() >= shootSpeed2))
+        atSpeed = (bool(abs(self.shooterMotor1Encoder.getVelocity()) >= abs(shootSpeed1)-self.shootTolerance)
+                and bool(abs(self.shooterMotor2Encoder.getVelocity()) >= abs(shootSpeed2)-self.shootTolerance))
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
@@ -105,8 +106,8 @@ class ShooterLogic(StateMachine):
                 self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.runHopperMotorBackside(.07, Direction.kBackwards)
-                self.hopperMotor.runHopperMotorForeside(.07, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorBackside(.04, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorForeside(.04, Direction.kBackwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
