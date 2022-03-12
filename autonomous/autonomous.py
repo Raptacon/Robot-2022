@@ -142,11 +142,15 @@ class Autonomous(AutonomousStateMachine):
         self.turretTurn.setEncoderControl()
         self.turretTurn.setAngle(self.turretThreshold.leftLim + 97)
         self.turretTurn.engage()
-        self.next_state("turn_turret")
+        self.next_state("turret_test")
+
+    @timed_state(duration= 1)
+    def turret_test(self):
         if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
             self.next_state("engage_shooter")
+        else:
+            self.next_state("turn_turret")
         self.turretTurnPrev = self.turretTurn.withinTolerance()
-
     @state
     def finishCalibration(self):
         self.turretThreshold.setTurretspeed(0)
