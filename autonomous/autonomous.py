@@ -3,6 +3,7 @@ from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler, ControlMode
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
@@ -30,6 +31,7 @@ class Autonomous(AutonomousStateMachine):
     ballCounter: BallCounter
     intakeMotor: IntakeMotor
     winch:Winch
+    driveTrainHandler: DriveTrainHandler
     drive_speed = tunable(.25)
 
     allianceColor: str
@@ -129,7 +131,7 @@ class Autonomous(AutonomousStateMachine):
             self.turretThreshold.setTurretspeed(0)
 
         if self.turretThreshold.calibrated == True and self.moveComplete:
-            self.afterShootState = "stop"
+            self.afterShootState = "moveBack"
             self.next_state("finishCalibration")
 
     @timed_state(duration=.3, next_state="calibrateTurret_move")
@@ -169,6 +171,11 @@ class Autonomous(AutonomousStateMachine):
         else:
             self.next_state("stop")
 
+
+    @state
+    def moveBack(self):
+        self.driveTrainHandler.setDriveTrain(self, -.1, -.1, ControlMode.kTankDrive)
+        self.next_state("moveBack")
 
     @state(must_finish = True)
     def stop(self):
