@@ -9,6 +9,7 @@ from components.Actuators.AutonomousControl.turretTurn import TurretTurn
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
 from components.Actuators.HighLevel.turretCalibrate import CalibrateTurret, TurretThreshold
 from components.Actuators.LowLevel.winch import Winch
+from utils.DirectionEnums import Direction
 
 import logging as log
 
@@ -46,7 +47,8 @@ class Autonomous(AutonomousStateMachine):
     # In degrees and feet
     # Positions are left to right 1,2,3 for the spots with balls
 
-    moveSequences = [[["drive", -46]],
+    moveSequences = [[["drive", 46],
+                    ["turn", 180]],
 
                     [["turn", 59.993],
                     ["drive", 5.62733*12]],
@@ -113,6 +115,7 @@ class Autonomous(AutonomousStateMachine):
                 or self.ballCounter.getBallCount()[0] != None):
                     log.error("Finishing")
                     self.currentMove += 1
+                self.intakeMotor.runIntake(.4, Direction.kForwards)
                 self.goToDist.engage()
 
             if self.currentMove == len(self.moveSequence):
