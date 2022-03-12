@@ -17,7 +17,7 @@ class ShooterLogic(StateMachine):
     speedTolerance = tunable(75)
 
     # Tunables
-    shootingLoaderSpeed = tunable(.4)
+    shootingLoaderSpeed = tunable(.7)
     autoShootingSpeed1 = tunable(1150)
     autoShootingSpeed2 = tunable(3400)
     teleShootingSpeed1 = tunable(1500)
@@ -85,8 +85,8 @@ class ShooterLogic(StateMachine):
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
-        self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
-        self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
+        self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
+        self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
         return atSpeed
 
     @state
@@ -100,6 +100,7 @@ class ShooterLogic(StateMachine):
             self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
             if self.isShooterUpToSpeed():
                 self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
+                self.hopperMotor.runHopperMotorForeside(self.shootingLoaderSpeed, Direction.kForwards)
             else:
                 self.next_state('runShooter')
 
