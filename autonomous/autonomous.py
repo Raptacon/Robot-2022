@@ -32,11 +32,11 @@ class Autonomous(AutonomousStateMachine):
     intakeMotor: IntakeMotor
     winch:Winch
     driveTrainHandler: DriveTrainHandler
-    drive_speed = tunable(.25)
+    drive_speed = tunable(.1)
 
     allianceColor: str
 
-    afterShootState = "calibrateTurret_move"
+    afterShootState = "moveBack"
 
     moveComplete = False
     currentMove = 0
@@ -140,7 +140,7 @@ class Autonomous(AutonomousStateMachine):
     @state
     def turn_turret(self):
         self.turretTurn.setEncoderControl()
-        self.turretTurn.setAngle(self.turretThreshold.leftLim + 95)
+        self.turretTurn.setAngle(self.turretThreshold.leftLim + 97)
         self.turretTurn.engage()
         self.next_state("turn_turret")
         if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
@@ -172,10 +172,9 @@ class Autonomous(AutonomousStateMachine):
             self.next_state("stop")
 
 
-    @state
+    @timed_state(duration=5, next_state="stop")
     def moveBack(self):
-        self.driveTrainHandler.setDriveTrain(self, -.1, -.1, ControlMode.kTankDrive)
-        self.next_state("moveBack")
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
 
     @state(must_finish = True)
     def stop(self):
