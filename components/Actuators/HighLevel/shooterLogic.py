@@ -5,6 +5,8 @@ from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
+import logging
+
 class ShooterLogic(StateMachine):
     """StateMachine-based shooter. Has both manual and automatic modes."""
     compatString = ["teapot"]
@@ -14,7 +16,6 @@ class ShooterLogic(StateMachine):
     hopperMotor: HopperMotor
     intakeMotor: IntakeMotor
     xboxMap: XboxMap
-    speedTolerance = tunable(75)
 
     # Tunables
     backsideShootingLoaderSpeed = tunable(.5)
@@ -76,15 +77,15 @@ class ShooterLogic(StateMachine):
     def isShooterUpToSpeed(self):
         """Determines if the shooter is up to speed, then rumbles controller and publishes to NetworkTables."""
         if self.isAutonomous:
-            shootSpeed1 = self.autoShootingSpeed1 - self.speedTolerance
-            shootSpeed2 = self.autoShootingSpeed2 - self.speedTolerance
+            shootSpeed1 = self.autoShootingSpeed1
+            shootSpeed2 = self.autoShootingSpeed2
         elif not self.isAutonomous:
-            shootSpeed1 = self.teleShootingSpeed1 - self.speedTolerance
-            shootSpeed2 = self.teleShootingSpeed2 - self.speedTolerance
+            shootSpeed1 = self.teleShootingSpeed1
+            shootSpeed2 = self.teleShootingSpeed2
         if not self.isSetup:
             return False
-        atSpeed = (bool(abs(self.shooterMotor1Encoder.getVelocity() - shootSpeed1) <= abs(self.shootTolerance))
-                and bool(abs(self.shooterMotor2Encoder.getVelocity() - shootSpeed2) <= abs(self.shootTolerance)))
+        atSpeed = (abs(self.shooterMotor1Encoder.getVelocity() - shootSpeed1) <= abs(self.shootTolerance)
+                and abs(self.shooterMotor2Encoder.getVelocity() - shootSpeed2) <= abs(self.shootTolerance))
         rumble  = 0
         if atSpeed and not self.isAutonomous:
             rumble = .3
@@ -92,6 +93,8 @@ class ShooterLogic(StateMachine):
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
         self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
         self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
+        # logging.error("1: %s vs %s 2: %s vs %s", self.shooterMotor1Encoder.getVelocity(), shootSpeed1, self.shooterMotor2Encoder.getVelocity(), shootSpeed2)
+        logging.error("1: %s vs 2: %s", abs(self.shooterMotor1Encoder.getVelocity() - shootSpeed1), abs(self.shooterMotor2Encoder.getVelocity() - shootSpeed2))
         return atSpeed
 
     @state

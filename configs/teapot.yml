@@ -162,9 +162,9 @@ shooterMotors:
       pid:
         controlType: "Velocity"
         kP: 0.0004
-        kI: 0
+        kI: 0.0000001
         kD: 0
-        kF: 0.000175
+        kF: 0.00015
         feedbackDevice: 1
         kPreScale: 1
         coastOnZero: True
@@ -184,9 +184,9 @@ shooterMotors:
       pid:
         controlType: "Velocity"
         kP: 0.0004
-        kI: 0
+        kI: 0.0000001
         kD: 0
-        kF: 0.000175
+        kF: 0.00015
         feedbackDevice: 1
         kPreScale: 1
         coastOnZero: True
