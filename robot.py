@@ -42,6 +42,7 @@ import os
 # Other imports:
 from robotMap import RobotMap, XboxMap
 from networktables import NetworkTables
+from utils.DirectionEnums import Direction
 from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -183,6 +184,7 @@ class MyRobot(MagicRobot):
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
+        self.loader.setIsAutonomous(False)
         self.turretCalibrate.setUseMotor(False)
         self.turretThreshold.setCalibrating(False)
         self.prevMechAState = False
@@ -239,9 +241,7 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
-        self.goToDist.engage()
         self.autoShoot.engage()
-        self.turnToAngle.engage()
         self.shooter.engage()
 
         # If the drivers have any input outside deadzone, take control.

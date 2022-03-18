@@ -19,9 +19,6 @@ class TurnToAngle(StateMachine):
     originalHeading = 0
     turnAngle = 0
     dumbSpeed = .25
-    farMultiplier = tunable(1)
-    midMultiplier = tunable(.75)
-    closeMultiplier = tunable(.5)
     tolerance = tunable(2)
     change = 0
 
@@ -82,7 +79,7 @@ class TurnToAngle(StateMachine):
 
 
         # Stops the automatic turning if the bot is within the tolerance of the desired angle
-        if abs(self.navx.getFusedHeading() - self.nextHeading) < self.tolerance:
+        if abs(self.change) < self.tolerance:
             self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
             self.stop()
         else:

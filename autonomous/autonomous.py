@@ -3,6 +3,7 @@ from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler, ControlMode
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
@@ -31,6 +32,7 @@ class Autonomous(AutonomousStateMachine):
     turretThreshold: TurretThreshold
     ballCounter: BallCounter
     intakeMotor: IntakeMotor
+    loader: LoaderLogic
     winch:Winch
     driveTrainHandler: DriveTrainHandler
     drive_speed = tunable(.1)
@@ -60,6 +62,7 @@ class Autonomous(AutonomousStateMachine):
 
     @state(first=True)
     def init(self):
+        self.loader.setIsAutonomous(True)
         self.driveTrain.resetDistTraveled()
         self.pneumatics.deployLoader()
         self.assessPosition()
@@ -103,13 +106,14 @@ class Autonomous(AutonomousStateMachine):
         if not self.moveComplete:
             move = self.moveSequence[self.currentMove]
             if move[0] == "turn":
-                if not self.turnToAngle.running:
-                    self.turnToAngle.setRelAngle(move[1])
+                self.intakeMotor.runIntake(0, Direction.kForwards)
                 log.error("Turning")
-                self.turnToAngle.engage()
                 if (not self.turnToAngle.running) and self.turnToAnglePrevRunning:
                     log.error("Moving to drive")
                     self.currentMove += 1
+                elif not self.turnToAngle.running:
+                    self.turnToAngle.setRelAngle(move[1])
+                self.turnToAngle.engage()
             elif move[0] == "drive":
                 if not self.goToDist.running:
                     self.goToDist.setTargetDist(move[1])
@@ -118,6 +122,7 @@ class Autonomous(AutonomousStateMachine):
                     log.error("Finishing")
                     self.currentMove += 1
                 self.intakeMotor.runIntake(.4, Direction.kForwards)
+                self.intakeMotor.execute()
                 self.goToDist.engage()
 
             if self.currentMove == len(self.moveSequence):
@@ -143,7 +148,7 @@ class Autonomous(AutonomousStateMachine):
     @state
     def turn_turret(self):
         self.turretTurn.setEncoderControl()
-        self.turretTurn.setAngle(self.turretThreshold.leftLim + 97)
+        self.turretTurn.setAngle(self.turretThreshold.rightLim - 103)
         self.turretTurn.engage()
         self.next_state("turn_turret")
         if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
