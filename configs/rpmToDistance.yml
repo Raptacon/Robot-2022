@@ -1,6 +1,5 @@
 #This dictionary provides a conversion between RPM and distance (in feet).
 DISTtoRPM:
-    # 0: [1500, -500]
     8: [1100, 3350]
     10: [1200, 3400]
     12: [1400, 3450]
