@@ -19,6 +19,7 @@ class ShooterLogic(StateMachine):
     # Tunables
     backsideShootingLoaderSpeed = tunable(.5)
     foresideShootingLoaderSpeed = tunable(.7)
+    backDownSpeed = .04
     autoShootingSpeed1 = tunable(1150)
     autoShootingSpeed2 = tunable(3400)
     teleShootingSpeed1 = tunable(1500)
@@ -106,8 +107,8 @@ class ShooterLogic(StateMachine):
                 self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.runHopperMotorBackside(.04, Direction.kBackwards)
-                self.hopperMotor.runHopperMotorForeside(.04, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorBackside(self.backDownSpeed, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorForeside(self.backDownSpeed, Direction.kBackwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
