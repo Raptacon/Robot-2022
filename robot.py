@@ -201,7 +201,7 @@ class MyRobot(MagicRobot):
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), self.sensitivityExponent)
+        mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), 2.3)
 
         if self.xboxMap.getMechDPad() == 180:
             self.winch.setRaise()
@@ -225,7 +225,10 @@ class MyRobot(MagicRobot):
             self.turretScan.done()
             self.turretTurn.setManualControl()
             self.turretThreshold.setManual(True)
-            self.turretTurn.setManualSpeed(mechLeftX)
+            if abs(mechLeftX) > self.controllerDeadzone:
+                self.turretTurn.setManualSpeed(mechLeftX)
+            else:
+                self.turretTurn.setManualSpeed(0)
 
 
         self.turretTurn.engage()

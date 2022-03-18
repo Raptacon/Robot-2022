@@ -3,6 +3,7 @@ from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler, ControlMode
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
@@ -31,11 +32,12 @@ class Autonomous(AutonomousStateMachine):
     ballCounter: BallCounter
     intakeMotor: IntakeMotor
     winch:Winch
-    drive_speed = tunable(.25)
+    driveTrainHandler: DriveTrainHandler
+    drive_speed = tunable(.1)
 
     allianceColor: str
 
-    afterShootState = "calibrateTurret_move"
+    afterShootState = "moveBack"
 
     moveComplete = False
     currentMove = 0
@@ -132,7 +134,7 @@ class Autonomous(AutonomousStateMachine):
             self.turretThreshold.setTurretspeed(0)
 
         if self.turretThreshold.calibrated == True and self.moveComplete:
-            self.afterShootState = "stop"
+            self.afterShootState = "moveBack"
             self.next_state("finishCalibration")
 
     @timed_state(duration=.3, next_state="calibrateTurret_move")
@@ -141,7 +143,7 @@ class Autonomous(AutonomousStateMachine):
     @state
     def turn_turret(self):
         self.turretTurn.setEncoderControl()
-        self.turretTurn.setAngle(self.turretThreshold.leftLim + 95)
+        self.turretTurn.setAngle(self.turretThreshold.leftLim + 97)
         self.turretTurn.engage()
         self.next_state("turn_turret")
         if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
@@ -172,6 +174,10 @@ class Autonomous(AutonomousStateMachine):
         else:
             self.next_state("stop")
 
+
+    @timed_state(duration=2, next_state="stop")
+    def moveBack(self):
+        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
 
     @state(must_finish = True)
     def stop(self):
