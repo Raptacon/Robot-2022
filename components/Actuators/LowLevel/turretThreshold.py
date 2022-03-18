@@ -11,7 +11,7 @@ class TurretThreshold:
     pos = 0
     exitSpeed = .05
     safetySpeed = .07
-    gearRatio = 10
+    gearRatio = 40
     sprocketRatio = 175/18
     turretMotor = None
     DegreeToAngle = 0
