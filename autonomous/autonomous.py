@@ -6,6 +6,7 @@ from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler, ControlMode
+from components.Actuators.HighLevel.turretScan import TurretScan
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.turretTurn import TurretTurn
@@ -21,6 +22,7 @@ class Autonomous(AutonomousStateMachine):
     shootTime = 4
     DEFAULT = True
     MODE_NAME = "Big Brain Autonomous"
+    turretScan: TurretScan
     driveTrain: DriveTrain
     goToDist: GoToDist
     shooter: ShooterLogic
@@ -87,10 +89,9 @@ class Autonomous(AutonomousStateMachine):
     @state
     def engage_shooter(self):
         """Starts shooter and fires"""
-        # self.shooter.engage()
-        # self.shooter.startShooting()
-        # self.next_state('shooter_wait')
-        self.shooter.shooterMotors.set(5000, 5000)
+        self.shooter.engage()
+        self.shooter.startShooting()
+        self.next_state('shooter_wait')
 
     @timed_state(duration = shootTime, next_state=afterShootState)
     def shooter_wait(self):
@@ -165,9 +166,10 @@ class Autonomous(AutonomousStateMachine):
         self.turretTurn.setLimeLightControl()
         self.turretTurn.engage()
         self.next_state("turn_turret_smart")
-        if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
+        if self.turretScan.hasTarget() and self.turretTurn.withinTolerance():
             self.next_state("engage_shooter")
-        self.turretTurnPrev = self.turretTurn.withinTolerance()
+        elif not self.turretScan.hasTarget():
+            self.turretScan.engage()
 
     @state
     def finishCalibration(self):
