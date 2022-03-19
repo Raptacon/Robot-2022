@@ -18,8 +18,9 @@ class ShooterLogic(StateMachine):
 
     # Tunables
     shootingLoaderSpeed = tunable(.4)
-    autoShootingSpeed1 = tunable(1150)
-    autoShootingSpeed2 = tunable(3400)
+    backDownLoaderSpeed = tunable(.02)
+    autoShootingSpeed1 = tunable(1225)
+    autoShootingSpeed2 = tunable(340)
     teleShootingSpeed1 = tunable(1500)
     teleShootingSpeed2 = tunable(3350)
 
@@ -105,16 +106,17 @@ class ShooterLogic(StateMachine):
 
         elif self.isAutonomous:
             self.shooterMotors.runShooter(self.autoShootingSpeed1, self.autoShootingSpeed2)
-            if self.isShooterUpToSpeed():
-                self.next_state('autonomousShoot')
+            self.next_state('autonomousShoot')
 
     @timed_state(duration = shooterStoppingDelay, next_state = 'finishShooting')
     def autonomousShoot(self):
         """Shoot balls when shooter is up to speed. Strictly for autonomous use."""
         if self.isShooterUpToSpeed():
             self.hopperMotor.runHopperMotorBackside(self.shootingLoaderSpeed, Direction.kForwards)
-            self.hopperMotor.runHopperMotorForeside(self.shootingLoaderSpeed, Direction.kForwards)
+            self.hopperMotor.runHopperMotorForeside(self.shootingLoaderSpeed + .1, Direction.kForwards)
         else:
+            self.hopperMotor.runHopperMotorBackside(self.backDownLoaderSpeed, Direction.kBackwards)
+            self.hopperMotor.runHopperMotorForeside(self.backDownLoaderSpeed, Direction.kBackwards)
             self.next_state('autonomousShoot')
 
     @state

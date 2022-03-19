@@ -2,6 +2,7 @@ from magicbot import AutonomousStateMachine, tunable, timed_state, state
 from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
+from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler, ControlMode
@@ -17,7 +18,6 @@ import logging as log
 
 class Autonomous(AutonomousStateMachine):
     """Creates the autonomous code"""
-    time = 1.4
     shootTime = 4
     DEFAULT = True
     MODE_NAME = "Big Brain Autonomous"
@@ -34,6 +34,7 @@ class Autonomous(AutonomousStateMachine):
     intakeMotor: IntakeMotor
     loader: LoaderLogic
     winch:Winch
+    limelight: Limelight
     driveTrainHandler: DriveTrainHandler
     drive_speed = tunable(.1)
 
@@ -62,7 +63,9 @@ class Autonomous(AutonomousStateMachine):
 
     @state(first=True)
     def init(self):
+        self.ballCounter.addBall(2, self.allianceColor.lower())
         self.loader.setIsAutonomous(True)
+        self.shooter.autonomousEnabled()
         self.driveTrain.resetDistTraveled()
         self.pneumatics.deployLoader()
         self.assessPosition()
@@ -84,9 +87,10 @@ class Autonomous(AutonomousStateMachine):
     @state
     def engage_shooter(self):
         """Starts shooter and fires"""
-        self.shooter.engage()
-        self.shooter.startShooting()
-        self.next_state('shooter_wait')
+        # self.shooter.engage()
+        # self.shooter.startShooting()
+        # self.next_state('shooter_wait')
+        self.shooter.shooterMotors.set(5000, 5000)
 
     @timed_state(duration = shootTime, next_state=afterShootState)
     def shooter_wait(self):
@@ -146,11 +150,21 @@ class Autonomous(AutonomousStateMachine):
     def winchUp(self):
         self.winch.setLower()
     @state
-    def turn_turret(self):
+    def turn_turret_rough(self):
         self.turretTurn.setEncoderControl()
         self.turretTurn.setAngle(self.turretThreshold.rightLim - 103)
         self.turretTurn.engage()
-        self.next_state("turn_turret")
+        self.next_state("turn_turret_rough")
+        if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
+            self.next_state("turn_turret_smart")
+        self.turretTurnPrev = self.turretTurn.withinTolerance()
+
+    @state
+    def turn_turret_smart(self):
+        self.limelight.LEDOn()
+        self.turretTurn.setLimeLightControl()
+        self.turretTurn.engage()
+        self.next_state("turn_turret_smart")
         if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
             self.next_state("engage_shooter")
         self.turretTurnPrev = self.turretTurn.withinTolerance()
@@ -158,7 +172,7 @@ class Autonomous(AutonomousStateMachine):
     @state
     def finishCalibration(self):
         self.turretThreshold.setTurretspeed(0)
-        self.next_state("turn_turret")
+        self.next_state("turn_turret_rough")
 
     @state
     def engage_Shooter2(self):
