@@ -93,8 +93,6 @@ class ShooterLogic(StateMachine):
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
         self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
         self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
-        # logging.error("1: %s vs %s 2: %s vs %s", self.shooterMotor1Encoder.getVelocity(), shootSpeed1, self.shooterMotor2Encoder.getVelocity(), shootSpeed2)
-        logging.error("1: %s vs 2: %s", abs(self.shooterMotor1Encoder.getVelocity() - shootSpeed1), abs(self.shooterMotor2Encoder.getVelocity() - shootSpeed2))
         return atSpeed
 
     @state
