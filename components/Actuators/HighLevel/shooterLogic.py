@@ -5,8 +5,6 @@ from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from utils.DirectionEnums import Direction
 from magicbot import StateMachine, state, timed_state, tunable, feedback
 
-import logging
-
 class ShooterLogic(StateMachine):
     """StateMachine-based shooter. Has both manual and automatic modes."""
     compatString = ["teapot"]
