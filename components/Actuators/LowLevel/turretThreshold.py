@@ -11,7 +11,7 @@ class TurretThreshold:
     pos = 0
     exitSpeed = .05
     safetySpeed = .07
-    gearRatio = 10
+    gearRatio = 40
     sprocketRatio = 175/18
     turretMotor = None
     DegreeToAngle = 0
@@ -122,7 +122,9 @@ class TurretThreshold:
         """
         self.calc_Position()
         if self.pneumatics.getLoaderDeployed():
-            if self.calibrated:
+            if self.manual:
+                self.turretMotor.set(self.speed)
+            elif self.calibrated:
 
                 # If we are currently outside of deadzones, re-enter
                 if self.pos < self.leftLim:
@@ -143,8 +145,7 @@ class TurretThreshold:
                     else:
                         self.speed = -1*self.calibSpeed
                 self.turretMotor.set(self.speed)
-            elif self.manual:
-                self.turretMotor.set(self.speed)
+
             else:
                 self.turretMotor.set(0)
                 log.debug("Calibrate the turret bud.")
