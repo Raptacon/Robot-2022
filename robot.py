@@ -42,7 +42,6 @@ import os
 # Other imports:
 from robotMap import RobotMap, XboxMap
 from networktables import NetworkTables
-from utils.DirectionEnums import Direction
 from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -266,6 +265,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
+        pass
         #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
