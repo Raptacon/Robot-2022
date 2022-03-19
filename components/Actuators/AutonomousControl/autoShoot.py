@@ -54,7 +54,7 @@ def calculateRPM(dist, dir, filename):
     except:
         log.error("Cannot read yaml config file {}, check formatting.".format(yaml_stream))
         return
-    maxRPM = 6000
+    maxRPM = 5000
     lowRPMs = [1500, -500]
     if "DISTtoRPM" in values:
         DtoRPM = values["DISTtoRPM"]
