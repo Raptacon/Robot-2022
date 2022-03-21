@@ -120,7 +120,6 @@ class AutoShoot(StateMachine):
     # Distance estimate variables
 
     # height of the middle of the limelight target in feet.
-    # So this is the middle of the lower half of the hexagon
     targetHeight = 104/12
     # height of the limelight on the robot in feet.
     # Used to calculate distance from the target.
