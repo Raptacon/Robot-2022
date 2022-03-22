@@ -1,9 +1,9 @@
 #This dictionary provides a conversion between RPM and distance (in feet).
 DISTtoRPM:
     # 0 - 8.9 are values for shooting into the low goal as a funny joke
-    0: [1100, 2000]
-    5: [1100, 2000]
-    8.99: [1200, 2300]
+    0: [-500, 2700]
+    5: [-500, 2700]
+    8.99: [-500, 3400]
     9: [1200, 3000]
     10: [1200, 3100]
     11: [1200, 3200]
