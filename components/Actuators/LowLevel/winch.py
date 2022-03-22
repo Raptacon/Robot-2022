@@ -19,7 +19,7 @@ class Winch:
         self.upSpeed = .5
 
     def setLower(self):
-        self.upSpeed = -.5
+        self.upSpeed = -1
 
     def stop(self):
         """
