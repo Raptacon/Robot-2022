@@ -23,11 +23,14 @@ class ShooterLogic(StateMachine):
     autoShootingSpeed2 = tunable(3400)
     teleShootingSpeed1 = tunable(1500)
     teleShootingSpeed2 = tunable(3350)
+    manualShootingSpeed1 = 1400
+    manualShootingSpeed2 = 3300
     shootTolerance = 50
 
     # Other variables
     isSetup = False
     isAutonomous = False
+    isManual = False
     shooting = False
     shooterStoppingDelay = 3
 
@@ -36,6 +39,7 @@ class ShooterLogic(StateMachine):
         self.running = False
         self.start = False
         self.isAutonomous = False
+        self.isManual = False
         self.isSetup = True
 
         self.shooterMotor1Encoder = self.shooterMotors.shooterMotor1Encoder
@@ -48,6 +52,10 @@ class ShooterLogic(StateMachine):
     def autonomousDisabled(self):
         """Indicates if the robot is not in autonomous mode."""
         self.isAutonomous = False
+
+    def setManualShooting(self):
+        """Indicates if the bot will be set to a dumb speed"""
+        self.isManual = True
 
     def setRPM(self, rpm1, rpm2=0):
         self.teleShootingSpeed1 = rpm1
@@ -77,6 +85,9 @@ class ShooterLogic(StateMachine):
         if self.isAutonomous:
             shootSpeed1 = self.autoShootingSpeed1
             shootSpeed2 = self.autoShootingSpeed2
+        elif self.isManual:
+            shootSpeed1 = self.manualShootingSpeed1
+            shootSpeed2 = self.manualShootingSpeed2
         elif not self.isAutonomous:
             shootSpeed1 = self.teleShootingSpeed1
             shootSpeed2 = self.teleShootingSpeed2
@@ -101,7 +112,10 @@ class ShooterLogic(StateMachine):
         """
         self.shooting = True
         if not self.isAutonomous:
-            self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
+            if self.isManual:
+                self.shooterMotors.runShooter(self.manualShootingSpeed1, self.manualShootingSpeed2)
+            else:
+                self.shooterMotors.runShooter(self.teleShootingSpeed1, self.teleShootingSpeed2)
             if self.isShooterUpToSpeed():
                 self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
@@ -128,6 +142,7 @@ class ShooterLogic(StateMachine):
     def finishShooting(self):
         """Stops shooter-related motors and moves to idle state."""
         self.running = False
+        self.isManual = False
         self.shooterMotors.stopShooter()
         self.next_state('idling')
 
