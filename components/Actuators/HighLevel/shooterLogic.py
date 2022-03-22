@@ -16,11 +16,11 @@ class ShooterLogic(StateMachine):
     xboxMap: XboxMap
 
     # Tunables
+    backDownLoaderSpeed = tunable(.02)
     backsideShootingLoaderSpeed = tunable(.5)
     foresideShootingLoaderSpeed = tunable(.7)
-    backDownSpeed = .04
-    autoShootingSpeed1 = tunable(1150)
-    autoShootingSpeed2 = tunable(3400)
+    autoShootingSpeed1 = tunable(1200)
+    autoShootingSpeed2 = tunable(3150)
     teleShootingSpeed1 = tunable(1500)
     teleShootingSpeed2 = tunable(3350)
     manualShootingSpeed1 = 1400
@@ -120,14 +120,13 @@ class ShooterLogic(StateMachine):
                 self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.runHopperMotorBackside(self.backDownSpeed, Direction.kBackwards)
-                self.hopperMotor.runHopperMotorForeside(self.backDownSpeed, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorBackside(self.backDownLoaderSpeed, Direction.kBackwards)
+                self.hopperMotor.runHopperMotorForeside(self.backDownLoaderSpeed, Direction.kBackwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
             self.shooterMotors.runShooter(self.autoShootingSpeed1, self.autoShootingSpeed2)
-            if self.isShooterUpToSpeed():
-                self.next_state('autonomousShoot')
+            self.next_state('autonomousShoot')
 
     @timed_state(duration = shooterStoppingDelay, next_state = 'finishShooting')
     def autonomousShoot(self):
@@ -136,6 +135,8 @@ class ShooterLogic(StateMachine):
             self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
             self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
         else:
+            self.hopperMotor.runHopperMotorBackside(self.backDownLoaderSpeed, Direction.kBackwards)
+            self.hopperMotor.runHopperMotorForeside(self.backDownLoaderSpeed, Direction.kBackwards)
             self.next_state('autonomousShoot')
 
     @state

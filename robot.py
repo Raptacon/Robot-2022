@@ -184,6 +184,7 @@ class MyRobot(MagicRobot):
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
+        self.loader.setIsAutonomous(False)
         self.turretCalibrate.setUseMotor(False)
         self.turretThreshold.setCalibrating(False)
         self.prevMechAState = False
@@ -243,9 +244,7 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
-        self.goToDist.engage()
         self.autoShoot.engage()
-        self.turnToAngle.engage()
         self.shooter.engage()
 
         # If the drivers have any input outside deadzone, take control.
@@ -270,6 +269,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
+        pass
         #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):

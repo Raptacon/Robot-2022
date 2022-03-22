@@ -27,6 +27,7 @@ class LoaderLogic(StateMachine):
     automaticHopperMotor2Speed = tunable(.6)
     # Other variables
     isAutomatic = True
+    isAutonomous = False
     loaderStoppingDelay = .16
     ballEjectTime = .3
     eject = False
@@ -38,6 +39,12 @@ class LoaderLogic(StateMachine):
         """Runs sensor-based loading."""
         self.isAutomatic = True
         self.next_state('checkForBall')
+
+    def setIsAutonomous(self, isAutono:bool):
+        """
+        Sets whether the loader acts as if it's autonomous or not
+        """
+        self.isAutonomous = isAutono
 
     def setManualLoading(self):
         """Runs trigger-based loading."""
@@ -124,5 +131,6 @@ class LoaderLogic(StateMachine):
     def execute(self):
         """Constantly runs state machine and intake. Necessary for function."""
         self.engage()
-        self.runIntake()
+        if not self.isAutonomous:
+            self.runIntake()
         super().execute()

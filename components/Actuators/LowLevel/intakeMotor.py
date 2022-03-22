@@ -7,7 +7,7 @@ class IntakeMotor:
     """
     compatString = ["doof", "teapot"]
 
-    def on_enable(self):
+    def setup(self):
         """
         Sets up shooter motors
         """

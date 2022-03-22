@@ -37,8 +37,7 @@ class TurretTurn(StateMachine):
         """
         If the turret is within tolerance, return True
         """
-        offset = self.getOffset()
-        if offset != None and type(offset) != str and abs(self.getOffset()) > self.tolerance:
+        if self.getSpeed() != 0:
             return True
         return False
 
@@ -142,6 +141,7 @@ class TurretTurn(StateMachine):
         """
         returns true if the turret is within tolerance of target
         """
-        if abs(self.getOffset()) < self.tolerance:
+        offset = self.getOffset()
+        if offset != None and abs(offset) < self.tolerance:
             return True
         return False
