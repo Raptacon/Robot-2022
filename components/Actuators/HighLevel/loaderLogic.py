@@ -81,9 +81,9 @@ class LoaderLogic(StateMachine):
         ballCount = self.ballCounter.getBallCount()
         if self.sensors.loadingSensor(State.kTripped):
             self.next_state('checkEject')
-        if type(ballCount[0]) == Ball and ballCount[1] == None:
-            self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
-            self.next_state('move_ball')
+        #if type(ballCount[0]) == Ball and ballCount[1] == None:
+        #    self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
+        #    self.next_state('move_ball')
 
     @state
     def move_ball(self):
