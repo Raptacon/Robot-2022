@@ -13,6 +13,6 @@ pneumatics:
       type: "doubleSolenoid"
       pcm: 1
       channel:
-        forward: 1
-        reverse: 0
+        forward: 0
+        reverse: 1
       default: "kReverse"
