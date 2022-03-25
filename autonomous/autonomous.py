@@ -211,7 +211,7 @@ class ThreeBallAutonomous(AutonomousStateMachine):
         self.driveTrain.setBraking(True)
         if not self.moveComplete:
             self.moveSequence = [["turn", -55],
-                                [ "drive", 60]]
+                                [ "drive", 64]]
             #55 degrees to the left
             move = self.moveSequence[self.currentMove]
             if move[0] == "turn":
