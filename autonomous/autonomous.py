@@ -46,6 +46,7 @@ class ThreeBallAutonomous(AutonomousStateMachine):
 
     moveComplete = False
     currentMove = 0
+    turnTurretOffset = 103
     robotPosition = tunable(1)
     turnToAnglePrevRunning = False
     goToDistPrevRunning = False
@@ -146,7 +147,9 @@ class ThreeBallAutonomous(AutonomousStateMachine):
             self.turretThreshold.setTurretspeed(0)
 
         if self.turretThreshold.calibrated == True and self.moveComplete:
-            self.afterShootState = "moveBack"
+            self.afterShootState = "ThirdBall"
+            self.turnTurretOffset = 103
+            self.ThirdBallInit()
             self.next_state("finishCalibration")
 
     @timed_state(duration=.3, next_state="calibrateTurret_move")
@@ -155,7 +158,7 @@ class ThreeBallAutonomous(AutonomousStateMachine):
     @state
     def turn_turret_rough(self):
         self.turretTurn.setEncoderControl()
-        self.turretTurn.setAngle(self.turretThreshold.rightLim - 103)
+        self.turretTurn.setAngle(self.turretThreshold.rightLim - self.turnTurretOffset)
         self.turretTurn.engage()
         self.next_state("turn_turret_rough")
         if self.turretTurn.withinTolerance() and not self.turretTurnPrev:
@@ -197,22 +200,19 @@ class ThreeBallAutonomous(AutonomousStateMachine):
         else:
             self.next_state("stop")
 
-
-    @timed_state(duration=2, next_state="ThirdBall")
-    def moveBack(self):
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
+    def ThirdBallInit(self):
+        self.currentMove = 0
 
     #outline
     @state
     def ThirdBall(self):
-        self.currentMove = 0
         self.winch.stop()
-        self.assessPosition()
         self.shooter.shooterMotors.stopShooter()
         self.driveTrain.setBraking(True)
         if not self.moveComplete:
-            self.moveSequence = [["turn", -60]]
-            #60 degrees to the left, 30 degrees relative to the wall/"horizontal"
+            self.moveSequence = [["turn", -55],
+                                [ "drive", 60]]
+            #55 degrees to the left
             move = self.moveSequence[self.currentMove]
             if move[0] == "turn":
                 self.intakeMotor.runIntake(0, Direction.kForwards)
@@ -242,19 +242,14 @@ class ThreeBallAutonomous(AutonomousStateMachine):
         self.turnToAnglePrevRunning = self.turnToAngle.running
         self.goToDistPrevRunning = self.goToDist.running
 
-        #get rid of calibrate stuff, unless it's vital
-        self.turretCalibrate.setUseMotor(True)
-        self.turretCalibrate.engage()
-        self.next_state("calibrateTurret_move")
-        if self.turretThreshold.calibrated == True:
-            self.turretTurn.done()
-            self.turretThreshold.setTurretspeed(0)
+        self.next_state("ThirdBall")
 
-        if self.turretThreshold.calibrated == True and self.moveComplete:
+        if self.moveComplete:
+            self.turnTurretOffset = 30
             self.afterShootState = "stop"
-            self.next_state("finishCalibration")
-        #turn to desired angle after 1st move ~60-ish degrees to left
-        #move orward until distance reached
+            self.next_state("turnTurret_rough")
+        #turn to desired angle after 1st move 
+        #move forward until distance reached
         #turn turret towars goal, shoot if ball is in position
         #Review for better method, it may work for now
         #Urgent: refactor this code, if it works. it's messy and we can be more efficient
