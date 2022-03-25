@@ -162,7 +162,7 @@ shooterMotors:
       pid:
         controlType: "Velocity"
         kP: 0.0004
-        kI: 0.00000003
+        kI: 0.000000028
         kD: 0
         kF: 0.000175
         feedbackDevice: 1
@@ -184,7 +184,7 @@ shooterMotors:
       pid:
         controlType: "Velocity"
         kP: 0.0004
-        kI: 0.00000003
+        kI: 0.000000028
         kD: 0
         kF: 0.000175
         feedbackDevice: 1
