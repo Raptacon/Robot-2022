@@ -1,3 +1,4 @@
+import logging
 from robotMap import XboxMap
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
@@ -97,7 +98,8 @@ class ShooterLogic(StateMachine):
                 and abs(self.shooterMotor2Encoder.getVelocity() - shootSpeed2) <= abs(self.shootTolerance))
         rumble  = 0
         if atSpeed and not self.isAutonomous:
-            rumble = .3
+            rumble = 1
+        logging.error("1: %s vs %s, 2: %s vs %s", shootSpeed1, self.shooterMotor1Encoder.getVelocity(), shootSpeed2, self.shooterMotor2Encoder.getVelocity())
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
         self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
