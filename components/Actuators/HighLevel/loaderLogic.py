@@ -2,7 +2,7 @@ from robotMap import XboxMap
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Input.breakSensors import Sensors, State
-from components.Input.ballCounter import BallCounter, Ball
+from components.Input.ballCounter import BallCounter
 from components.Actuators.HighLevel.feederMap import FeederMap, Type
 from components.Input.colorSensor import ColorSensor
 from utils.DirectionEnums import Direction
