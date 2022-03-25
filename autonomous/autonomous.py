@@ -1,4 +1,5 @@
 from magicbot import AutonomousStateMachine, tunable, timed_state, state
+from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Input.ballCounter import BallCounter
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
@@ -35,6 +36,7 @@ class Autonomous(AutonomousStateMachine):
     ballCounter: BallCounter
     intakeMotor: IntakeMotor
     loader: LoaderLogic
+    hopperMotor: HopperMotor
     winch:Winch
     limelight: Limelight
     driveTrainHandler: DriveTrainHandler
@@ -90,13 +92,14 @@ class Autonomous(AutonomousStateMachine):
     def engage_shooter(self):
         """Starts shooter and fires"""
         self.shooter.engage()
+        self.turretThreshold.setTurretspeed(0)
         self.shooter.startShooting()
         self.next_state('shooter_wait')
 
     @timed_state(duration = shootTime, next_state=afterShootState)
     def shooter_wait(self):
         """Waits for shooter to finish, then next state"""
-        pass
+        self.turretThreshold.setTurretspeed(0)
 
     @state
     def calibrateTurret_move(self):
@@ -152,6 +155,8 @@ class Autonomous(AutonomousStateMachine):
         self.winch.setLower()
     @state
     def turn_turret_rough(self):
+        self.hopperMotor.stopHopperMotorBackside()
+        self.hopperMotor.stopHopperMotorForeside()
         self.turretTurn.setEncoderControl()
         self.turretTurn.setAngle(self.turretThreshold.rightLim - 103)
         self.turretTurn.engage()
@@ -162,6 +167,8 @@ class Autonomous(AutonomousStateMachine):
 
     @state
     def turn_turret_smart(self):
+        self.hopperMotor.stopHopperMotorBackside()
+        self.hopperMotor.stopHopperMotorForeside()
         self.limelight.LEDOn()
         self.turretTurn.setLimeLightControl()
         self.turretTurn.engage()
