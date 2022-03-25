@@ -120,8 +120,8 @@ class ShooterLogic(StateMachine):
                 self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.runHopperMotorBackside(self.backDownLoaderSpeed, Direction.kBackwards)
-                self.hopperMotor.runHopperMotorForeside(self.backDownLoaderSpeed, Direction.kBackwards)
+                # self.hopperMotor.runHopperMotorBackside(self.backDownLoaderSpeed, Direction.kBackwards)
+                # self.hopperMotor.runHopperMotorForeside(self.backDownLoaderSpeed, Direction.kBackwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:
