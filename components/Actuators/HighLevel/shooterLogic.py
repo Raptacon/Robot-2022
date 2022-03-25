@@ -17,15 +17,15 @@ class ShooterLogic(StateMachine):
 
     # Tunables
     backDownLoaderSpeed = tunable(.02)
-    backsideShootingLoaderSpeed = tunable(.5)
-    foresideShootingLoaderSpeed = tunable(.7)
+    backsideShootingLoaderSpeed = tunable(.4)
+    foresideShootingLoaderSpeed = tunable(.5)
     autoShootingSpeed1 = tunable(1200)
     autoShootingSpeed2 = tunable(3150)
     teleShootingSpeed1 = tunable(1500)
     teleShootingSpeed2 = tunable(3350)
     manualShootingSpeed1 = 1400
     manualShootingSpeed2 = 3300
-    shootTolerance = 50
+    shootTolerance = 25
 
     # Other variables
     isSetup = False
