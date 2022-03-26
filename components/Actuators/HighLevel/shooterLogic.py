@@ -1,4 +1,3 @@
-import logging
 from robotMap import XboxMap
 from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
