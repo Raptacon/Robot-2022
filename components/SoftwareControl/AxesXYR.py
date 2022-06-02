@@ -5,7 +5,11 @@ class transform:
     def transform(self, Axes):
         return XYRVector(0, 0, 0)
 class transformTank(transform):
-    pass
+    def transform(self, Axes):
+        X = Axes[0]
+        Y = Axes[1]
+
+        return XYRVector(X, Y, 0)
 
 class transformArcade(transform):
     pass
