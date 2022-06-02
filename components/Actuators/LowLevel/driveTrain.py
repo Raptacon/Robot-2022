@@ -14,6 +14,7 @@ class ControlMode(Enum):
     kArcadeDrive = auto()
     kTankDrive = auto()
     kDisabled = auto()
+    kSwerveDrive = auto()
 
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
