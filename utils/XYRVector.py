@@ -36,8 +36,3 @@ class XYRVector:
 
     def getR(self):
         return self.R
-
-class TranslationSet:
-    """
-    Defines a set of translations to apply to an XYR vector
-    """
