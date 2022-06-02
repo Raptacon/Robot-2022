@@ -2,20 +2,21 @@ from SoftwareControl import AxesXYR
 from components.Actuators.LowLevel.driveTrain import ControlMode
 
 class XYRDrive:
-    mode = ControlMode
+    mode = 0
+    transformDict = {"Tank", "Arcade", "Swerve"}
     def xyrdrive(self):
-        if self.mode == 'kTankDrive':
-            self.tank()
-        elif self.mode == 'kArcadeDrive':
-            self.arcade()
-        elif self.mode == 'kSwerveDrive':
-            self.swerve()
+        if self.transformDict[self.mode] == 'Tank':
+            tank
+        elif self.transformDict[self.mode] == 'Arcade':
+            arcade
+        elif self.transformDict[self.mode] == 'Swerve':
+            swerve
             
-    def tank(self):
-        pass
+class tank:
+    pass
     
-    def arcade(self):
-        pass
+class arcade:
+    pass
     
-    def swerve(self):
-        pass
+class swerve:
+    pass
