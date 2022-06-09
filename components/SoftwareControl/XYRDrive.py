@@ -2,26 +2,41 @@ from components.SoftwareControl.AxesXYR import AxesXYR
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
-            
-class tank:
+class motorGroup:
+    TL = 0
+    BL = 0
+    TR = 0
+    BR = 0
+    def motorgroup(self):
+        motors = {{self.TL,self.BL},{self.TR,self.BR}}
+        return motors
+class tank(motorGroup):
     driveTrainHandler: DriveTrainHandler
-    lmotor = 0
-    rmotor = 0
+    lmotor = motorGroup[0]
+    rmotor = motorGroup[1]
     def tankdrive(self,x,y,r):
         if y >= 0:
             if r >= 0:  # I quadrant
-                self.lmotor = y
-                self.rmotor = r
+                for z in self.lmotor:
+                    z = y
+                for w in self.rmotor:
+                    w = r
             else:            # II quadrant
-                self.lmotor = r
-                self.rmotor = y
+                for z in self.lmotor:
+                    z = r
+                for w in self.rmotor:
+                    w = y
         else:
             if r >= 0:  # IV quadrant
-                self.lmotor = 1 + y
-                self.rmotor = r
+                for z in self.lmotor:
+                    z = y + 1
+                for w in self.rmotor:
+                    w = r
             else:            # III quadrant
-                self.lmotor = r
-                self.rmotor = 1 + y
+                for z in self.lmotor:
+                    z = r
+                for w in self.rmotor:
+                    w = 1 + y
 
 class arcade:
     driveTrainHandler: DriveTrainHandler
