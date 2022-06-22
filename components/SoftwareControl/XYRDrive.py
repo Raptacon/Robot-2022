@@ -2,10 +2,11 @@ from components.SoftwareControl.AxesXYR import AxesXYR
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
+MotorSpeed = []
 class transform:
-    def transform(self, XYRVector):
-        return AxesXYR(0, 0, 0)
-class TankDrive:
+    def transform(self,x, y, r):
+        return MotorSpeed()
+class TankDrive(transform):
     driveTrainHandler: DriveTrainHandler
     lmotor = 0
     rmotor = 0
@@ -28,7 +29,7 @@ class TankDrive:
         self.rmotor2 = self.rmotor
         return MotorSpeed(self.lmotor, self.rmotor, self.lmotor2, self.rmotor2)
     
-class SwerveDrive:
+class SwerveDrive(transform):
     L = 30
     W = 30
 
@@ -55,8 +56,8 @@ class SwerveDrive:
 
 class XYRDrive:
     transformDict = {"Tank":TankDrive, "Swerve":SwerveDrive}
-    def xyrdrive(self, transformKey:str, XYRVector:list):
+    def xyrdrive(self, transformKey:str, x, y, r):
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
-            return transformer.MotorDrive(XYRVector)
+            return transformer.transform(x,y,r)
