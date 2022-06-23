@@ -1,5 +1,3 @@
-from re import X
-from tkinter import Y
 from utils.XYRVector import XYRVector
 from utils.AxesEnums import AxesTransforms
 
