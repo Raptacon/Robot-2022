@@ -8,7 +8,7 @@ class GoToDist(StateMachine):
 
     compatString = ["teapot"]
 
-
+    driveTrainHandler:DriveTrainHandler
     driveTrain: DriveTrain
     speedSections: SpeedSections
     tolerance = tunable(.25)
