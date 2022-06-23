@@ -1,10 +1,17 @@
+from typing import List
+from venv import create
+from components.SoftwareControl.AxesXYR import transform
+from components.SoftwareControl.XYRDrive import MotorSpeed
 from utils.UnitEnums import positionUnits
+from utils.motorHelper import dict
 from enum import Enum, auto
 import ctre
 import math
 import wpilib.drive
 import logging as log
 from networktables import NetworkTables
+from SoftwareControl.XYRDrive import SwerveDrive
+
 
 from magicbot import tunable, feedback
 class ControlMode(Enum):
@@ -24,6 +31,7 @@ class DriveTrain():
     creeperMotorsMultiplier = tunable(.25)
     gearRatio = 10
     wheelCircumference = 6 * math.pi
+    swervedrive = SwerveDrive
 
     smartDashTable = NetworkTables.getTable("SmartDashboard")
 
@@ -44,6 +52,22 @@ class DriveTrain():
         self.rightFollower = self.motors_driveTrain["rightFollower"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
         log.info("DriveTrain setup completed")
+
+    def callMotors(self, x, y, r):
+        self.motor = self.swervedrive.MotorDrive(x,y,r)
+        value = [MotorSpeed]
+        self.motor = self.motors_driveTrain["frontLeftSpeed", "frontRightSpeed", "backLetSpeed", "backRightSpeed", "frontLeftAngle", "frontRightAngle", "backLeftAngle", "backRightAngle"]
+        self.motor1 = self.motors_driveTrain(0)
+        self.motor2 = self.motors_driveTrain(1)
+        self.motor3 = self.motors_driveTrain(2)
+        self.motor4 = self.motors_driveTrain(3)
+        self.motor5 = self.motors_driveTrain(4)
+        self.motor6 = self.motors_driveTrain(5)
+        self.motor7 = self.motors_driveTrain(6)
+        self.motor8 = self.motors_driveTrain(7)
+
+
+
 
     def setBraking(self, braking:bool):
         """
@@ -86,8 +110,8 @@ class DriveTrain():
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation
 
-    def enableCreeperMode(self):
-        """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
+        def enableCreeperMode(self):
+            """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
         if self.creeperMode:
             return
         self.prevMultiplier = self.driveMotorsMultiplier
