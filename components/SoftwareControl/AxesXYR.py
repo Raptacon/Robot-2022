@@ -28,12 +28,12 @@ class transformTank(transform):
         Y2= .5*(r-((r**2)-4*l+4)**.5)+1
 
         # When r>0 and y<0:
-        R3= .5(r-((r**2)+4*l+4)**.5)+1
-        Y3= .5(r+((r**2)+4*l+4)**.5)-1
+        R3= .5*(r-((r**2)+4*l+4)**.5)+1
+        Y3= .5*(r+((r**2)+4*l+4)**.5)-1
 
         # When r>0 and y>0:
-        R4= 1-.5*(l+((l**2)-4*r+4))
-        Y4= 1+.5*(l-((l**2)-4*r+4))
+        R4= 1-.5*(l+((l**2)-4*r+4)**.5)
+        Y4= 1+.5*(l-((l**2)-4*r+4)**.5)
 
         # You can verify this logic with the graph
         # https://www.desmos.com/calculator/b9ig0ymtvq
