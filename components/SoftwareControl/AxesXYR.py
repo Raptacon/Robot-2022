@@ -13,8 +13,24 @@ class transformTank(transform):
         Axes[2] # Axis 3
         Axes[3] # Axis 4
 
+        l = Axes[1]
+        r = Axes[2]
+
+        # I'm so sorry
+        # https://www.desmos.com/calculator/aedmycj0py
+
+        # When r<0 and y<0:
+        # R= .5*((l**2+4*r+4)**.5 - l)-1
+        # Y= .5*((l**2+4*r+4)**.5 + l)-1
+
+        # When r>0 and y<0:
+        # R= r/2 + 1 - .5*(r**2+4*l+4)**.5
+        # Y=
+        if
+
+
         Y = max(Axes[3], Axes[1])
-        R = (0.5*Axes[3]) - (0.5*Axes[1])
+        R = (Axes[3]-Axes[1])/(2-abs(Y))
 
 
 
