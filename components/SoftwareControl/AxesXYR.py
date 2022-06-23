@@ -18,6 +18,9 @@ class transformTank(transform):
         # I'm so sorry
         # https://www.desmos.com/calculator/dw1hoo9lnp
 
+        # Input/Output graph:
+        # https://www.desmos.com/calculator/eu9sruirci
+
         # When r<0 and y<0:
         R1= .5*(((l**2)+4*r+4)**.5 - l)-1
         Y1= .5*(((l**2)+4*r+4)**.5 + l)-1
