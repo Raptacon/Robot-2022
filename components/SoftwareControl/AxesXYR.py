@@ -1,11 +1,12 @@
 from re import X
 from tkinter import Y
 from utils.XYRVector import XYRVector
-from robotMap import XboxMap
+from utils.AxesEnums import AxesTransforms
 
 class transform:
     def transform(self, Axes):
         return XYRVector(0, 0, 0)
+
 class transformTank(transform):
     def transform(self, Axes):
         Axes[0] # Axis 1
@@ -60,11 +61,6 @@ class transformArcade(transform):
 
         return XYRVector(0, Y, R)
 
-
-
-
-
-
 class transformSwerve(transform):
     def transform(self, Axes):
         Axes[0] # Axis 1
@@ -77,11 +73,12 @@ class transformSwerve(transform):
 
         return XYRVector(X, Y, R)
 
-
 class AxesXYR:
-    transformDict = {"tank":transformTank, "arcade":transformArcade, "swerve":transformSwerve}
+    transformDict = {AxesTransforms.kTank:transformTank,
+                    AxesTransforms.kArcade:transformArcade,
+                    AxesTransforms.kSwerve:transformSwerve}
 
-    def transform(self, transformKey:str, Axes:list):
+    def transform(self, transformKey:AxesTransforms, Axes:list):
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
