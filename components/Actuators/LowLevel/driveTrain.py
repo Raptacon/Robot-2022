@@ -1,4 +1,3 @@
-from components.SoftwareControl.XYRDrive import MotorSpeed
 from utils.UnitEnums import positionUnits
 from enum import Enum, auto
 import ctre
