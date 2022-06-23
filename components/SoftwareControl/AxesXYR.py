@@ -48,12 +48,6 @@ class transformTank(transform):
         else:
             R = min(R1, R2)
 
-
-        Y = max(Axes[3], Axes[1])
-        R = (Axes[3]-Axes[1])/(2-abs(Y))
-
-
-
         return XYRVector(0, Y, R)
 
 class transformArcade(transform):
