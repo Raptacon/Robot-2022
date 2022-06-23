@@ -1,9 +1,5 @@
-from typing import List
-from venv import create
-from components.SoftwareControl.AxesXYR import transform
 from components.SoftwareControl.XYRDrive import MotorSpeed
 from utils.UnitEnums import positionUnits
-from utils.motorHelper import dict
 from enum import Enum, auto
 import ctre
 import math
@@ -52,7 +48,6 @@ class DriveTrain():
 
     def callMotors(self, x, y, r):
         self.motor = self.swervedrive.MotorDrive(x,y,r)
-        value = [MotorSpeed]
         self.motor = self.motors_driveTrain["frontLeftSpeed", "frontRightSpeed", "backLetSpeed", "backRightSpeed", "frontLeftAngle", "frontRightAngle", "backLeftAngle", "backRightAngle"]
         self.motor1 = self.motors_driveTrain(0)
         self.motor2 = self.motors_driveTrain(1)
@@ -111,8 +106,8 @@ class DriveTrain():
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation
 
-        def enableCreeperMode(self):
-            """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
+    def enableCreeperMode(self):
+        """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
         if self.creeperMode:
             return
         self.prevMultiplier = self.driveMotorsMultiplier
