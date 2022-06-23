@@ -7,7 +7,7 @@ class transform:
     def transform(self, Axes):
         return XYRVector(0, 0, 0)
 class transformTank(transform):
-    def transform(self, Axes, tank):
+    def transform(self, Axes):
         Axes[0] # Axis 1
         Axes[1] # Axis 2
         Axes[2] # Axis 3
@@ -17,16 +17,36 @@ class transformTank(transform):
         r = Axes[2]
 
         # I'm so sorry
-        # https://www.desmos.com/calculator/aedmycj0py
+        # https://www.desmos.com/calculator/dw1hoo9lnp
 
         # When r<0 and y<0:
-        # R= .5*((l**2+4*r+4)**.5 - l)-1
-        # Y= .5*((l**2+4*r+4)**.5 + l)-1
+        R1= .5*(((l**2)+4*r+4)**.5 - l)-1
+        Y1= .5*(((l**2)+4*r+4)**.5 + l)-1
+
+        # When r<0 and y>0:
+        R2= .5*(r+((r**2)-4*l+4)**.5)-1
+        Y2= .5*(r-((r**2)-4*l+4)**.5)+1
 
         # When r>0 and y<0:
-        # R= r/2 + 1 - .5*(r**2+4*l+4)**.5
-        # Y=
-        if
+        R3= .5(r-((r**2)+4*l+4)**.5)+1
+        Y3= .5(r+((r**2)+4*l+4)**.5)-1
+
+        # When r>0 and y>0:
+        R4= 1-.5*(l+((l**2)-4*r+4))
+        Y4= 1+.5*(l-((l**2)-4*r+4))
+
+        # You can verify this logic with the graph
+        # https://www.desmos.com/calculator/b9ig0ymtvq
+        if Y2>0 or Y4>0:
+            Y = max(Y2, Y4)
+        else:
+            Y = min(Y1, Y3)
+
+        # https://www.desmos.com/calculator/uoddoiynu6
+        if R3>0 or R4>0:
+            R = max(R3, R4)
+        else:
+            R = min(R1, R2)
 
 
         Y = max(Axes[3], Axes[1])
@@ -37,7 +57,7 @@ class transformTank(transform):
         return XYRVector(0, Y, R)
 
 class transformArcade(transform):
-    def transform(self, Axes, arcade):
+    def transform(self, Axes):
         Axes[0] # Axis 1
         Axes[3] # Axis 4
 
@@ -52,7 +72,7 @@ class transformArcade(transform):
 
 
 class transformSwerve(transform):
-    def transform(self, Axes, swerve):
+    def transform(self, Axes):
         Axes[0] # Axis 1
         Axes[2] # Axis 3
         Axes[3] # Axia 4
