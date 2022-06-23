@@ -26,7 +26,8 @@ class ControlMode(Enum):
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
-    motors_driveTrain: dict
+    motors_driveTrain: list
+    motorSpeeds:list
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
     gearRatio = 10
@@ -46,10 +47,6 @@ class DriveTrain():
         self.arcadeRotation = 0
         self.creeperMode = False
         self.controlMode = ControlMode.kDisabled
-        self.leftMotor = self.motors_driveTrain["leftMotor"]
-        self.rightMotor = self.motors_driveTrain["rightMotor"]
-        self.leftFollower = self.motors_driveTrain["leftFollower"]
-        self.rightFollower = self.motors_driveTrain["rightFollower"]
         self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
         log.info("DriveTrain setup completed")
 
@@ -74,14 +71,18 @@ class DriveTrain():
         This isn't incorporated into the handler
         (I'm not sure if it should be)
         """
-        self.leftMotor.setBraking(braking)
-        self.rightMotor.setBraking(braking)
         if braking:
-            self.leftFollower.setNeutralMode(ctre.NeutralMode.Brake)
-            self.rightFollower.setNeutralMode(ctre.NeutralMode.Brake)
+            for motor in self.motors_driveTrain:
+                motor.setNeutralMode(ctre.NeutralMode.Brake)
         else:
-            self.leftFollower.setNeutralMode(ctre.NeutralMode.Coast)
-            self.rightFollower.setNeutralMode(ctre.NeutralMode.Coast)
+            for motor in self.motors_driveTrain:
+                motor.setNeutralMode(ctre.NeutralMode.Coast)
+
+
+    def setSpeeds(self):
+        for i in range(len(self.motors_driveTrain)):
+            self.motors_driveTrain[i-1].setspeed(self.motorSpeeds[i-1])
+
 
     def getLeft(self):
         return self.leftMotor.get()
