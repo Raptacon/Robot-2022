@@ -2,57 +2,15 @@ from components.SoftwareControl.AxesXYR import AxesXYR
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
-class speedmotorGroup:
-    TL = 0
-    BL = 0
-    TR = 0
-    BR = 0
-    def speedmotorGroup(self):
-        motors = {{self.TL,self.BL},{self.TR,self.BR}}
-        return motors
-class anglemotorGroup:
-    TR = 0
-    TL = 0
-    BR = 0
-    BL = 0
-    def anglemotorGroup(self):
-        motors = {self.TL,self.BL,self.TR,self.BR}
-        return motors
-class tank(speedmotorGroup,anglemotorGroup):
-    driveTrainHandler: DriveTrainHandler
-    lmotor = speedmotorGroup[0]
-    rmotor = speedmotorGroup[1]
-    def tankdrive(self,x,y,r):
-        if y >= 0:
-            if r >= 0:  # I quadrant
-                for z in self.lmotor:
-                    z = y
-                for w in self.rmotor:
-                    w = r
-            else:            # II quadrant
-                for z in self.lmotor:
-                    z = r
-                for w in self.rmotor:
-                    w = y
-        else:
-            if r >= 0:  # IV quadrant
-                for z in self.lmotor:
-                    z = y + 1
-                for w in self.rmotor:
-                    w = r
-            else:            # III quadrant
-                for z in self.lmotor:
-                    z = r
-                for w in self.rmotor:
-                    w = 1 + y
-    if anglemotorGroup.count > 0:
-        for v in anglemotorGroup:
-            v = 0
-class arcade:
+MotorSpeed = []
+class transform:
+    def transform(self,x, y, r):
+        return MotorSpeed()
+class TankDrive(transform):
     driveTrainHandler: DriveTrainHandler
     lmotor = 0
     rmotor = 0
-    def tankdrive(self,x,y,r):
+    def MotorDrive(self,x,y,r):
         if y >= 0:
             if r >= 0:  # I quadrant
                 self.lmotor = y
@@ -67,12 +25,15 @@ class arcade:
             else:            # III quadrant
                 self.lmotor = r
                 self.rmotor = 1 + y
+        self.lmotor2 = self.lmotor
+        self.rmotor2 = self.rmotor
+        return MotorSpeed(self.lmotor, self.rmotor, self.lmotor2, self.rmotor2)
     
-class swerve:
+class SwerveDrive(transform):
     L = 30
     W = 30
 
-    def rec (self, x, y, r):
+    def MotorDrive (self, x, y, r):
         ratio = math.sqrt ((self.L * self.L) + (self.W * self.W))
         y *= -1
 
@@ -90,11 +51,13 @@ class swerve:
         backLeftAngle = math.atan2 (a, c) / math.pi
         frontRightAngle = math.atan2 (b, d) / math.pi
         frontLeftAngle = math.atan2 (b, c) / math.pi
+        return MotorSpeed(backRightSpeed, backLeftSpeed, frontRightSpeed, frontLeftSpeed,
+                          backRightAngle, backLeftAngle, frontRightAngle, frontLeftAngle)
 
 class XYRDrive:
-    mode = 0
-    transformDict = {"Tank":tank, "Arcade":arcade, "Swerve":swerve}
+    transformDict = {"Tank":TankDrive, "Swerve":SwerveDrive}
+    def xyrdrive(self, transformKey:str, x, y, r):
 
-    def xyrdrive(self, transformKey:str):
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
+            return transformer.transform(x,y,r)

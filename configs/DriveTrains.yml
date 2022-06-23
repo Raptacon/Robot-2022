@@ -1,0 +1,17 @@
+
+DriveTrains:
+  Tank:
+    backRightSpeed:
+    backLeftSpeed:
+    frontRightSpeed:
+    frontLeftSpeed:
+
+  Swerve:
+    backRightSpeed:
+    backLeftSpeed:
+    frontRightSpeed:
+    frontLeftSpeed:
+    backRightAngle:
+    backLeftAngle:
+    frontRightAngle:
+    frontLeftAngle:
