@@ -96,7 +96,7 @@ class ShooterLogic(StateMachine):
         atSpeed = (abs(self.shooterMotor1Encoder.getVelocity() - shootSpeed1) <= abs(self.shootTolerance)
                 and abs(self.shooterMotor2Encoder.getVelocity() - shootSpeed2) <= abs(self.shootTolerance))
         rumble  = 0
-        if atSpeed and not self.isAutonomous:
+        if atSpeed:
             rumble = .3
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
@@ -119,6 +119,7 @@ class ShooterLogic(StateMachine):
             if self.isShooterUpToSpeed():
                 self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
+                self.next_state('idling')
             else:
                 self.hopperMotor.runHopperMotorBackside(self.backDownLoaderSpeed, Direction.kBackwards)
                 self.hopperMotor.runHopperMotorForeside(self.backDownLoaderSpeed, Direction.kBackwards)
