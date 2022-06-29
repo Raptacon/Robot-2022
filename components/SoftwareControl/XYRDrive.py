@@ -27,7 +27,7 @@ class TankDrive(transform):
                 self.rmotor = 1 + y
         self.lmotor2 = self.lmotor
         self.rmotor2 = self.rmotor
-        return MotorSpeed(self.lmotor, self.rmotor, self.lmotor2, self.rmotor2)
+        return MotorSpeed(self.lmotor, self.rmotor)
     
 class SwerveDrive(transform):
     L = 30
