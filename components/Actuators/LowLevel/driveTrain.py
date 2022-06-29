@@ -42,7 +42,7 @@ class DriveTrain():
         self.arcadeRotation = 0
         self.creeperMode = False
         self.controlMode = ControlMode.kDisabled
-        self.driveTrain = wpilib.drive.DifferentialDrive(self.leftMotor, self.rightMotor)
+        self.driveTrain = wpilib.drive.DifferentialDrive(self.motors_driveTrain[0], self.motors_driveTrain[1])
         log.info("DriveTrain setup completed")
 
     def callMotors(self, x, y, r):
@@ -81,6 +81,9 @@ class DriveTrain():
     def getMotors(self):
         for motor in self.motors_driveTrain:
             return motor.get()
+
+    def getSpecificMotor(self, motorPosition):
+        return self.motors_driveTrain[motorPosition].get()
 
     def isStopping(self):
         pass
