@@ -78,11 +78,9 @@ class DriveTrain():
             self.motors_driveTrain[i-1].setspeed(self.motorSpeeds[i-1])
 
 
-    def getLeft(self):
-        return self.leftMotor.get()
-
-    def getRight(self):
-        return self.rightMotor.get()
+    def getMotors(self):
+        for motor in self.motors_driveTrain:
+            return motor.get()
 
     def isStopping(self):
         pass
