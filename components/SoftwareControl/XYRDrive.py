@@ -56,8 +56,8 @@ class SwerveDrive(transform):
 
 class XYRDrive:
     transformDict = {"Tank":TankDrive, "Swerve":SwerveDrive}
-    def xyrdrive(self, transformKey:str, x, y, r):
+    def xyrdrive(self, transformKey:str, AxesXYR):
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
-            return transformer.transform(x,y,r)
+            return transformer.transform(AxesXYR)

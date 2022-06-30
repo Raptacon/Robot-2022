@@ -129,6 +129,7 @@ class DriveTrain():
     def getMeasuredSpeed(self):
         pass
 
+<<<<<<< HEAD
     def getRightSideDistTraveled(self, motors_drivetrain):
         """
         Returns the right motor's distance traveled in inches
@@ -138,12 +139,25 @@ class DriveTrain():
             return -1 * self.rightDistInch# / 12
         else:
             return self.rightDistInch
+=======
+    def getMotorsDistTraveled(self):
+        """
+        Returns the right motor's distance traveled in inches
+        """
+        for motor in self.motors_driveTrain:
+            self.rightDistInch = (motor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
+            if self.rightSideSensorInverted:
+                return -1 * self.rightDistInch# / 12
+            else:
+                return self.rightDistInch
 
-    def getLeftSideDistTraveled(self):
+>>>>>>> 32779d442ef26bc4ebc18595ae5f817df3e49c38
+
+    def getSpecificMotorDistTraveled(self, motorPosition):
         """
         Returns the left motor's distance traveled in inches
         """
-        self.leftDistInch = (self.leftMotor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
+        self.leftDistInch = (self.motors_driveTrain[motorPosition].getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
         if self.leftSideSensorInverted:
             return -1 * self.leftDistInch
         else:
@@ -154,18 +168,15 @@ class DriveTrain():
         """"
         Return an estimate of total distance traveled in inches
         """
-        self.smartDashTable.putNumber("Estimated Encoder Distance since enable", (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2)
-        return (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2
+        self.smartDashTable.putNumber("Estimated Encoder Distance since enable", self.getMotorsDistTraveled() / self.motors_driveTrain.__len__)
+        return self.getMotorsDistTraveled() / self.motors_driveTrain.__len__
 
-    def resetDistTraveled(self):
-        self.leftMotor.resetPosition()
-        self.rightMotor.resetPosition()
+    def resetMotorsDistTraveled(self):
+        for motor in self.motors_driveTrain:
+            motor.resetPosition()
 
-    def resetLeftDistTraveled(self):
-        self.leftMotor.resetPosition()
-
-    def resetRightDistTraveled(self):
-        self.rightMotor.resetPosition()
+    def resetSpecificMotorDistTraveled(self, motorPosition):
+        self.motors_driveTrain[motorPosition].resetPosition()
 
     def execute(self):
         if self.controlMode == ControlMode.kTankDrive:
