@@ -1,6 +1,7 @@
 import logging as log
 from magicbot import AutonomousStateMachine, MagicRobot
 from components.Actuators.LowLevel.driveTrain import DriveTrain, ControlMode
+from components.SoftwareControl.XYRDrive import XYRDrive
 
 class DriveTrainHandler():
     """
@@ -86,7 +87,9 @@ class DriveTrainHandler():
         if self.controlMode == ControlMode.kArcadeDrive:
             self.driveTrain.setArcade(self.input1, self.input2)
         elif self.controlMode == ControlMode.kTankDrive:
-            self.driveTrain.setTank(self.input1, self.input2)
+            self.driveTrain.setTank(self.xyrDrive(self, "Tank"))
+        elif self.controlMode == ControlMode.kSwerveDrive:
+            self.driveTrain.setSwerve(self.xyrDrive(self, "Swerve"))
         elif self.controlMode == ControlMode.kDisabled:
             self.driveTrain.setTank(0, 0)
         else:

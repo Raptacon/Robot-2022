@@ -106,6 +106,8 @@ class DriveTrain():
         self.arcadeSpeed = speed
         self.arcadeRotation = rotation
 
+    def setSwerve(self, )
+
     def enableCreeperMode(self):
         """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
         if self.creeperMode:
@@ -127,11 +129,11 @@ class DriveTrain():
     def getMeasuredSpeed(self):
         pass
 
-    def getRightSideDistTraveled(self):
+    def getRightSideDistTraveled(self, motors_drivetrain):
         """
         Returns the right motor's distance traveled in inches
         """
-        self.rightDistInch = (self.rightMotor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
+        self.rightDistInch = (self.motors_drivetrain[0], positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
         if self.rightSideSensorInverted:
             return -1 * self.rightDistInch# / 12
         else:
