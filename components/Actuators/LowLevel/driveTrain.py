@@ -1,7 +1,6 @@
 import enum
 from utils.UnitEnums import positionUnits
 from utils.motorHelper import WPI_TalonFXFeedback
-from enum import Enum, auto
 import ctre
 import math
 import wpilib.drive
@@ -11,44 +10,7 @@ from SoftwareControl.XYRDrive import SwerveDrive
 
 
 from magicbot import tunable, feedback
-class ControlMode(Enum):
-    """
-    Drive Train Control Modes
-    """
-    kArcadeDrive = auto()
-    kTankDrive = auto()
-    kDisabled = auto()
-    kSwerveDrive = auto()
-    MotorEnum = auto()
 
-class findMotorEnum(enum):
-    motorListEnum = ["leftFrontSwerve", "rightFrontSwerve", "leftBackSwerve", "rightBackSwerve"]
-
-
-
-class Tank(Enum):
-    """
-    Tank Motors Keys
-    """
-    numMotors = 4
-    FrontLeft = "FrontLeftTankMotor"
-    FrontRight = "FrontRightTankMotor"
-    BackLeft = "BackLeftTankMotor"
-    BackRight = "BackLeftTankMotor"
-
-class Swerve(Enum):
-    """
-    Swerve Motors Keys
-    """
-    numMotors = 8
-    FrontLeft = "FrontLeftSwerveMotor"
-    FrontRight = "FrontRightSwerveMotor"
-    BackLeft = "BackLeftSwerveMotor"
-    BackRight = "BackLeftSwerveMotor"
-    FrontLeftRotation = "FrontLeftRotationMotor"
-    FrontRightRotation = "FrontRightRotationMotor"
-    BackLeftRotation = "BackLeftRotationMotor"
-    BackRightRotation = "BackLeftRotationMotor"
 
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
@@ -73,7 +35,6 @@ class DriveTrain():
         self.arcadeSpeed = 0
         self.arcadeRotation = 0
         self.creeperMode = False
-        self.controlMode = ControlMode.kDisabled
         self.driveTrain = wpilib.drive.DifferentialDrive(self.motors_driveTrain[0], self.motors_driveTrain[1])
         log.info("DriveTrain setup completed")
 
@@ -146,7 +107,9 @@ class DriveTrain():
         self.creeperMode = False
 
     def stop(self):
-        self.controlMode = ControlMode.kDisabled
+        self.motorSpeedInfo = {}
+        for key in self.motors_driveTrain.keys():
+            self.motorSpeedInfo[key] = 0
 
     def getMeasuredSpeed(self):
         pass
