@@ -74,11 +74,6 @@ class DriveTrain():
                 motor.setNeutralMode(ctre.NeutralMode.Coast)
 
 
-    def setSpeeds(self):
-        for i in range(len(self.motors_driveTrain)):
-            self.motors_driveTrain[i-1].setspeed(self.motorSpeeds[i-1])
-
-
     def getMotors(self):
         for motor in self.motors_driveTrain:
             return motor.get()
@@ -173,8 +168,11 @@ class DriveTrain():
             self.motors_driveTrain[motorPosition].resetPosition()
 
     def execute(self):
-        # if self.controlMode == ControlMode.kTankDrive:
-        #     self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
 
-        # elif self.controlMode == ControlMode.kArcadeDrive:
-        #     self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
+        # Make sure motors are the same between parameter information and drivetrain
+        # then set motors
+        speedInfoKeys = sorted(dict(self.motorSpeedInfo).keys())
+        driveTrainKeys = sorted(self.motors_driveTrain.keys())
+        if speedInfoKeys == driveTrainKeys:
+            for key in speedInfoKeys:
+                self.motors_driveTrain[key].set(self.motorSpeedInfo[key])
