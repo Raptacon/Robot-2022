@@ -1,3 +1,4 @@
+import enum
 from utils.UnitEnums import positionUnits
 from utils.motorHelper import WPI_TalonFXFeedback
 from enum import Enum, auto
@@ -18,6 +19,12 @@ class ControlMode(Enum):
     kTankDrive = auto()
     kDisabled = auto()
     kSwerveDrive = auto()
+    MotorEnum = auto()
+
+class findMotorEnum(enum):
+    motorListEnum = ["leftFrontSwerve", "rightFrontSwerve", "leftBackSwerve", "rightBackSwerve"]
+
+
 
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
@@ -65,7 +72,9 @@ class DriveTrain():
         for i in range(len(self.motors_driveTrain)):
             self.motors_driveTrain[i-1].setspeed(self.motorSpeeds[i-1])
 
-    def setMotors(self)
+    def setMotors(self, motorSpeedInfo:dict):
+        self.motorSpeedInfo = motorSpeedInfo
+
 
     def getMotors(self):
         for motor in self.motors_driveTrain:
