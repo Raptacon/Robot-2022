@@ -19,15 +19,9 @@ class DriveTrain():
     motorSpeeds:list
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
-    # gearRatio = 10
-    # wheelCircumference = 6 * math.pi
     swervedrive = SwerveDrive
 
     smartDashTable = NetworkTables.getTable("SmartDashboard")
-
-    # Encoder variables
-    # leftSideSensorInverted = True
-    # rightSideSensorInverted = False
 
     def setup(self):
         self.tankLeftSpeed = 0
@@ -38,52 +32,32 @@ class DriveTrain():
         self.driveTrain = wpilib.drive.DifferentialDrive(self.motors_driveTrain[0], self.motors_driveTrain[1])
         log.info("DriveTrain setup completed")
 
-
-
     def setBraking(self, braking:bool):
         """
         This isn't incorporated into the handler
         (I'm not sure if it should be)
         """
         if braking:
-            for motor in self.motors_driveTrain:
-                motor.setNeutralMode(ctre.NeutralMode.Brake)
+            for motor in self.motors_driveTrain.keys():
+                if type(self.motors_driveTrain[motor]) == WPI_TalonFXFeedback:
+                    self.motors_driveTrain[motor].setNeutralMode(ctre.NeutralMode.Brake)
         else:
-            for motor in self.motors_driveTrain:
-                motor.setNeutralMode(ctre.NeutralMode.Coast)
+            for motor in self.motors_driveTrain.keys():
+                if type(self.motors_driveTrain[motor]) == WPI_TalonFXFeedback:
+                    self.motors_driveTrain[motor].setNeutralMode(ctre.NeutralMode.Coast)
 
     def setMotors(self, motorSpeedInfo:dict):
         self.motorSpeedInfo = motorSpeedInfo
 
-    def getMotors(self):
-        for motor in self.motors_driveTrain:
-            return motor.get()
-
-    def getSpecificMotor(self, motorPosition):
-        return self.motors_driveTrain[motorPosition].get()
-
-    def isStopping(self):
-        pass
-
-    # def setTank(self, leftSpeed, rightSpeed):
-    #     """
-    #     THIS IS CONTROLLED BY THE HANDLER
-    #     DO NOT CALL THIS
-    #     """
-    #     self.controlMode = ControlMode.kTankDrive
-    #     self.tankLeftSpeed = leftSpeed
-    #     self.tankRightSpeed = rightSpeed
-
-    # def setArcade(self, speed, rotation):
-    #     """
-    #     THIS IS CONTROLLED BY THE HANDLER
-    #     DO NOT CALL THIS
-    #     """
-    #     self.controlMode = ControlMode.kArcadeDrive
-    #     self.arcadeSpeed = speed
-    #     self.arcadeRotation = rotation
-
-    # def setSwerve(self, )
+    def getSpecificMotor(self, motorName):
+        """
+        returns object for motorName
+        if no object exists, returns nothing
+        """
+        try:
+            return self.motors_driveTrain[motorName].get()
+        except:
+            return
 
     def enableCreeperMode(self):
         """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
@@ -105,21 +79,6 @@ class DriveTrain():
         for key in self.motors_driveTrain.keys():
             self.motorSpeedInfo[key] = 0
 
-    def getMeasuredSpeed(self):
-        pass
-
-    # def getMotorsDistTraveled(self):
-    #     """
-    #     Returns the right motor's distance traveled in inches
-    #     """
-    #     for motor in self.motors_driveTrain:
-    #         self.rightDistInch = (motor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
-    #         if self.rightSideSensorInverted:
-    #             return -1 * self.rightDistInch# / 12
-    #         else:
-    #             return self.rightDistInch
-
-
     def getSpecificMotorDistTraveled(self, motorName):
         """
         Returns a specific motor's distance traveled
@@ -133,22 +92,14 @@ class DriveTrain():
                 return self.leftDistInch
         return 0
 
-    # @feedback
-    # def getEstTotalDistTraveled(self):
-    #     """"
-    #     Return an estimate of total distance traveled in inches
-    #     """
-    #     self.smartDashTable.putNumber("Estimated Encoder Distance since enable", self.getMotorsDistTraveled() / self.motors_driveTrain.__len__)
-    #     return self.getMotorsDistTraveled() / self.motors_driveTrain.__len__
-
     def resetMotorsDistTraveled(self):
-        for motor in self.motors_driveTrain:
-            if type(motor) == WPI_TalonFXFeedback:
+        for motor in self.motors_driveTrain.keys():
+            if type(self.motors_driveTrain[motor]) == WPI_TalonFXFeedback:
                 motor.resetPosition()
 
-    def resetSpecificMotorDistTraveled(self, motorPosition):
-        if type(motor) == WPI_TalonFXFeedback:
-            self.motors_driveTrain[motorPosition].resetPosition()
+    def resetSpecificMotorDistTraveled(self, motorName):
+        if type(self.motors_driveTrain[motorName]) == WPI_TalonFXFeedback:
+            self.motors_driveTrain[motorName].resetPosition()
 
     def execute(self):
 
