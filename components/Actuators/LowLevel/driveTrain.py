@@ -129,17 +129,6 @@ class DriveTrain():
     def getMeasuredSpeed(self):
         pass
 
-<<<<<<< HEAD
-    def getRightSideDistTraveled(self, motors_drivetrain):
-        """
-        Returns the right motor's distance traveled in inches
-        """
-        self.rightDistInch = (self.motors_drivetrain[0], positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
-        if self.rightSideSensorInverted:
-            return -1 * self.rightDistInch# / 12
-        else:
-            return self.rightDistInch
-=======
     def getMotorsDistTraveled(self):
         """
         Returns the right motor's distance traveled in inches
@@ -151,7 +140,6 @@ class DriveTrain():
             else:
                 return self.rightDistInch
 
->>>>>>> 32779d442ef26bc4ebc18595ae5f817df3e49c38
 
     def getSpecificMotorDistTraveled(self, motorPosition):
         """
