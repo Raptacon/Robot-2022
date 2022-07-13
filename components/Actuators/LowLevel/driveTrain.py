@@ -1,4 +1,5 @@
 from utils.UnitEnums import positionUnits
+from utils.motorHelper import WPI_TalonFXFeedback
 from enum import Enum, auto
 import ctre
 import math
@@ -25,15 +26,15 @@ class DriveTrain():
     motorSpeeds:list
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
-    gearRatio = 10
-    wheelCircumference = 6 * math.pi
+    # gearRatio = 10
+    # wheelCircumference = 6 * math.pi
     swervedrive = SwerveDrive
 
     smartDashTable = NetworkTables.getTable("SmartDashboard")
 
     # Encoder variables
-    leftSideSensorInverted = True
-    rightSideSensorInverted = False
+    # leftSideSensorInverted = True
+    # rightSideSensorInverted = False
 
     def setup(self):
         self.tankLeftSpeed = 0
@@ -88,25 +89,25 @@ class DriveTrain():
     def isStopping(self):
         pass
 
-    def setTank(self, leftSpeed, rightSpeed):
-        """
-        THIS IS CONTROLLED BY THE HANDLER
-        DO NOT CALL THIS
-        """
-        self.controlMode = ControlMode.kTankDrive
-        self.tankLeftSpeed = leftSpeed
-        self.tankRightSpeed = rightSpeed
+    # def setTank(self, leftSpeed, rightSpeed):
+    #     """
+    #     THIS IS CONTROLLED BY THE HANDLER
+    #     DO NOT CALL THIS
+    #     """
+    #     self.controlMode = ControlMode.kTankDrive
+    #     self.tankLeftSpeed = leftSpeed
+    #     self.tankRightSpeed = rightSpeed
 
-    def setArcade(self, speed, rotation):
-        """
-        THIS IS CONTROLLED BY THE HANDLER
-        DO NOT CALL THIS
-        """
-        self.controlMode = ControlMode.kArcadeDrive
-        self.arcadeSpeed = speed
-        self.arcadeRotation = rotation
+    # def setArcade(self, speed, rotation):
+    #     """
+    #     THIS IS CONTROLLED BY THE HANDLER
+    #     DO NOT CALL THIS
+    #     """
+    #     self.controlMode = ControlMode.kArcadeDrive
+    #     self.arcadeSpeed = speed
+    #     self.arcadeRotation = rotation
 
-    def setSwerve(self, )
+    # def setSwerve(self, )
 
     def enableCreeperMode(self):
         """when left bumper is pressed, it sets the driveMotorsMultiplier to .25"""
@@ -129,46 +130,51 @@ class DriveTrain():
     def getMeasuredSpeed(self):
         pass
 
-    def getMotorsDistTraveled(self):
+    # def getMotorsDistTraveled(self):
+    #     """
+    #     Returns the right motor's distance traveled in inches
+    #     """
+    #     for motor in self.motors_driveTrain:
+    #         self.rightDistInch = (motor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
+    #         if self.rightSideSensorInverted:
+    #             return -1 * self.rightDistInch# / 12
+    #         else:
+    #             return self.rightDistInch
+
+
+    def getSpecificMotorDistTraveled(self, motorName):
         """
-        Returns the right motor's distance traveled in inches
+        Returns a specific motor's distance traveled
+        (Only works with Falcon 500s)
         """
-        for motor in self.motors_driveTrain:
-            self.rightDistInch = (motor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
-            if self.rightSideSensorInverted:
-                return -1 * self.rightDistInch# / 12
+        if type(self.motors_driveTrain[motorName]) == WPI_TalonFXFeedback:
+            # self.leftDistInch = (self.motors_driveTrain[motorName].getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
+            if self.leftSideSensorInverted:
+                return -1 * self.leftDistInch
             else:
-                return self.rightDistInch
+                return self.leftDistInch
+        return 0
 
-
-    def getSpecificMotorDistTraveled(self, motorPosition):
-        """
-        Returns the left motor's distance traveled in inches
-        """
-        self.leftDistInch = (self.motors_driveTrain[motorPosition].getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
-        if self.leftSideSensorInverted:
-            return -1 * self.leftDistInch
-        else:
-            return self.leftDistInch
-
-    @feedback
-    def getEstTotalDistTraveled(self):
-        """"
-        Return an estimate of total distance traveled in inches
-        """
-        self.smartDashTable.putNumber("Estimated Encoder Distance since enable", self.getMotorsDistTraveled() / self.motors_driveTrain.__len__)
-        return self.getMotorsDistTraveled() / self.motors_driveTrain.__len__
+    # @feedback
+    # def getEstTotalDistTraveled(self):
+    #     """"
+    #     Return an estimate of total distance traveled in inches
+    #     """
+    #     self.smartDashTable.putNumber("Estimated Encoder Distance since enable", self.getMotorsDistTraveled() / self.motors_driveTrain.__len__)
+    #     return self.getMotorsDistTraveled() / self.motors_driveTrain.__len__
 
     def resetMotorsDistTraveled(self):
         for motor in self.motors_driveTrain:
-            motor.resetPosition()
+            if type(motor) == WPI_TalonFXFeedback:
+                motor.resetPosition()
 
     def resetSpecificMotorDistTraveled(self, motorPosition):
-        self.motors_driveTrain[motorPosition].resetPosition()
+        if type(motor) == WPI_TalonFXFeedback:
+            self.motors_driveTrain[motorPosition].resetPosition()
 
     def execute(self):
-        if self.controlMode == ControlMode.kTankDrive:
-            self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
+        # if self.controlMode == ControlMode.kTankDrive:
+        #     self.driveTrain.tankDrive(self.tankLeftSpeed, self.tankRightSpeed, False)
 
-        elif self.controlMode == ControlMode.kArcadeDrive:
-            self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
+        # elif self.controlMode == ControlMode.kArcadeDrive:
+        #     self.driveTrain.arcadeDrive(self.arcadeSpeed, self.arcadeRotation, False)
