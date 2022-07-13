@@ -1,12 +1,7 @@
-import enum
-from utils.UnitEnums import positionUnits
 from utils.motorHelper import WPI_TalonFXFeedback
 import ctre
-import math
-import wpilib.drive
 import logging as log
 from networktables import NetworkTables
-from SoftwareControl.XYRDrive import SwerveDrive
 
 
 from magicbot import tunable, feedback
@@ -16,7 +11,6 @@ class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
-    motorSpeeds:list
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
 
