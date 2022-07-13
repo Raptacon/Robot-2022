@@ -19,6 +19,30 @@ class ControlMode(Enum):
     kDisabled = auto()
     kSwerveDrive = auto()
 
+class Tank(Enum):
+    """
+    Tank Motors Keys
+    """
+    numMotors = 4
+    FrontLeft = "FrontLeftTankMotor"
+    FrontRight = "FrontRightTankMotor"
+    BackLeft = "BackLeftTankMotor"
+    BackRight = "BackLeftTankMotor"
+
+class Swerve(Enum):
+    """
+    Swerve Motors Keys
+    """
+    numMotors = 8
+    FrontLeft = "FrontLeftSwerveMotor"
+    FrontRight = "FrontRightSwerveMotor"
+    BackLeft = "BackLeftSwerveMotor"
+    BackRight = "BackLeftSwerveMotor"
+    FrontLeftRotation = "FrontLeftRotationMotor"
+    FrontRightRotation = "FrontRightRotationMotor"
+    BackLeftRotation = "BackLeftRotationMotor"
+    BackRightRotation = "BackLeftRotationMotor"
+
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
