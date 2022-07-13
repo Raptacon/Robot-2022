@@ -2,7 +2,7 @@ from robotMap import XboxMap
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Input.breakSensors import Sensors, State
-from components.Input.ballCounter import BallCounter, Ball
+from components.Input.ballCounter import BallCounter
 from components.Actuators.HighLevel.feederMap import FeederMap, Type
 from components.Input.colorSensor import ColorSensor
 from utils.DirectionEnums import Direction
@@ -78,12 +78,8 @@ class LoaderLogic(StateMachine):
     @state
     def checkForBall(self):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
-        ballCount = self.ballCounter.getBallCount()
         if self.sensors.loadingSensor(State.kTripped):
             self.next_state('checkEject')
-        if type(ballCount[0]) == Ball and ballCount[1] == None:
-            self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
-            self.next_state('move_ball')
 
     @state
     def move_ball(self):
