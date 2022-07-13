@@ -3,13 +3,11 @@ from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
 MotorSpeed = []
-class transform:
-    def transform(self,x, y, r):
-        return MotorSpeed()
-class TankDrive(transform):
-    driveTrainHandler: DriveTrainHandler
+
+class TankDrive:
     lmotor = 0
     rmotor = 0
+
     def MotorDrive(self,x,y,r):
         if y >= 0:
             if r >= 0:  # I quadrant
@@ -29,11 +27,11 @@ class TankDrive(transform):
         self.rmotor2 = self.rmotor
         return MotorSpeed(self.lmotor, self.rmotor)
     
-class SwerveDrive(transform):
+class SwerveDrive:
     L = 30
     W = 30
 
-    def MotorDrive (self, x, y, r):
+    def MotorDrive (self, x,y,r):
         ratio = math.sqrt ((self.L * self.L) + (self.W * self.W))
         y *= -1
 
@@ -56,8 +54,8 @@ class SwerveDrive(transform):
 
 class XYRDrive:
     transformDict = {"Tank":TankDrive, "Swerve":SwerveDrive}
-    def xyrdrive(self, transformKey:str, AxesXYR):
+    def xyrdrive(self, transformKey:str):
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
-            return transformer.transform(AxesXYR)
+            return transformer.transform()

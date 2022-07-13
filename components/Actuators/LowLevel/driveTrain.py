@@ -1,6 +1,6 @@
+import enum
 from utils.UnitEnums import positionUnits
 from utils.motorHelper import WPI_TalonFXFeedback
-from enum import Enum, auto
 import ctre
 import math
 import wpilib.drive
@@ -10,19 +10,12 @@ from SoftwareControl.XYRDrive import SwerveDrive
 
 
 from magicbot import tunable, feedback
-class ControlMode(Enum):
-    """
-    Drive Train Control Modes
-    """
-    kArcadeDrive = auto()
-    kTankDrive = auto()
-    kDisabled = auto()
-    kSwerveDrive = auto()
+
 
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
-    motors_driveTrain: list
+    motors_driveTrain: dict
     motorSpeeds:list
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
@@ -42,22 +35,8 @@ class DriveTrain():
         self.arcadeSpeed = 0
         self.arcadeRotation = 0
         self.creeperMode = False
-        self.controlMode = ControlMode.kDisabled
         self.driveTrain = wpilib.drive.DifferentialDrive(self.motors_driveTrain[0], self.motors_driveTrain[1])
         log.info("DriveTrain setup completed")
-
-    def callMotors(self, x, y, r):
-        self.motor = self.swervedrive.MotorDrive(x,y,r)
-        self.motor = self.motors_driveTrain["frontLeftSpeed", "frontRightSpeed", "backLetSpeed", "backRightSpeed", "frontLeftAngle", "frontRightAngle", "backLeftAngle", "backRightAngle"]
-        self.motor1 = self.motors_driveTrain(0)
-        self.motor2 = self.motors_driveTrain(1)
-        self.motor3 = self.motors_driveTrain(2)
-        self.motor4 = self.motors_driveTrain(3)
-        self.motor5 = self.motors_driveTrain(4)
-        self.motor6 = self.motors_driveTrain(5)
-        self.motor7 = self.motors_driveTrain(6)
-        self.motor8 = self.motors_driveTrain(7)
-
 
 
 
@@ -73,6 +52,8 @@ class DriveTrain():
             for motor in self.motors_driveTrain:
                 motor.setNeutralMode(ctre.NeutralMode.Coast)
 
+    def setMotors(self, motorSpeedInfo:dict):
+        self.motorSpeedInfo = motorSpeedInfo
 
     def getMotors(self):
         for motor in self.motors_driveTrain:
@@ -120,7 +101,9 @@ class DriveTrain():
         self.creeperMode = False
 
     def stop(self):
-        self.controlMode = ControlMode.kDisabled
+        self.motorSpeedInfo = {}
+        for key in self.motors_driveTrain.keys():
+            self.motorSpeedInfo[key] = 0
 
     def getMeasuredSpeed(self):
         pass
