@@ -19,17 +19,12 @@ class DriveTrain():
     motorSpeeds:list
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
-    swervedrive = SwerveDrive
 
     smartDashTable = NetworkTables.getTable("SmartDashboard")
 
     def setup(self):
-        self.tankLeftSpeed = 0
-        self.tankRightSpeed = 0
-        self.arcadeSpeed = 0
-        self.arcadeRotation = 0
+        self.motorSpeedInfo = {}
         self.creeperMode = False
-        self.driveTrain = wpilib.drive.DifferentialDrive(self.motors_driveTrain[0], self.motors_driveTrain[1])
         log.info("DriveTrain setup completed")
 
     def setBraking(self, braking:bool):
@@ -47,6 +42,11 @@ class DriveTrain():
                     self.motors_driveTrain[motor].setNeutralMode(ctre.NeutralMode.Coast)
 
     def setMotors(self, motorSpeedInfo:dict):
+        """
+        DO NOT CALL THIS, ONLY THE HANDLER SHOULD HAVE CONTROL
+
+        Accepts motorSpeedInfo, a dictionary of motor names and speeds.
+        """
         self.motorSpeedInfo = motorSpeedInfo
 
     def getSpecificMotor(self, motorName):
