@@ -3,14 +3,8 @@ from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
 MotorSpeed = []
-class transform:
-    axesXYR:AxesXYR
-    x = axesXYR[0]
-    y = axesXYR[1]
-    r = axesXYR[2]
-    def transform(self,x, y, r):
-        return MotorSpeed(),x,y,r
-class TankDrive(transform):
+
+class TankDrive:
     lmotor = 0
     rmotor = 0
 
@@ -33,7 +27,7 @@ class TankDrive(transform):
         self.rmotor2 = self.rmotor
         return MotorSpeed(self.lmotor, self.rmotor)
     
-class SwerveDrive(transform):
+class SwerveDrive:
     L = 30
     W = 30
 
