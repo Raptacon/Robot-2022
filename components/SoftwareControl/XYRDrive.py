@@ -4,12 +4,16 @@ import math
 
 MotorSpeed = []
 class transform:
+    axesXYR:AxesXYR
+    x = axesXYR[0]
+    y = axesXYR[1]
+    r = axesXYR[2]
     def transform(self,x, y, r):
-        return MotorSpeed()
+        return MotorSpeed(),x,y,r
 class TankDrive(transform):
-    driveTrainHandler: DriveTrainHandler
     lmotor = 0
     rmotor = 0
+
     def MotorDrive(self,x,y,r):
         if y >= 0:
             if r >= 0:  # I quadrant
@@ -33,7 +37,7 @@ class SwerveDrive(transform):
     L = 30
     W = 30
 
-    def MotorDrive (self, x, y, r):
+    def MotorDrive (self, x,y,r):
         ratio = math.sqrt ((self.L * self.L) + (self.W * self.W))
         y *= -1
 
@@ -56,8 +60,8 @@ class SwerveDrive(transform):
 
 class XYRDrive:
     transformDict = {"Tank":TankDrive, "Swerve":SwerveDrive}
-    def xyrdrive(self, transformKey:str, AxesXYR):
+    def xyrdrive(self, transformKey:str):
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
-            return transformer.transform(AxesXYR)
+            return transformer.transform()

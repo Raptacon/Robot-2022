@@ -46,7 +46,7 @@ class Swerve(Enum):
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
-    motors_driveTrain: list
+    motors_driveTrain: dict
     motorSpeeds:list
     driveMotorsMultiplier = tunable(.5)
     creeperMotorsMultiplier = tunable(.25)
@@ -70,19 +70,6 @@ class DriveTrain():
         self.driveTrain = wpilib.drive.DifferentialDrive(self.motors_driveTrain[0], self.motors_driveTrain[1])
         log.info("DriveTrain setup completed")
 
-    def callMotors(self, x, y, r):
-        self.motor = self.swervedrive.MotorDrive(x,y,r)
-        self.motor = self.motors_driveTrain["frontLeftSpeed", "frontRightSpeed", "backLetSpeed", "backRightSpeed", "frontLeftAngle", "frontRightAngle", "backLeftAngle", "backRightAngle"]
-        self.motor1 = self.motors_driveTrain(0)
-        self.motor2 = self.motors_driveTrain(1)
-        self.motor3 = self.motors_driveTrain(2)
-        self.motor4 = self.motors_driveTrain(3)
-        self.motor5 = self.motors_driveTrain(4)
-        self.motor6 = self.motors_driveTrain(5)
-        self.motor7 = self.motors_driveTrain(6)
-        self.motor8 = self.motors_driveTrain(7)
-
-
 
 
     def setBraking(self, braking:bool):
@@ -102,6 +89,7 @@ class DriveTrain():
         for i in range(len(self.motors_driveTrain)):
             self.motors_driveTrain[i-1].setspeed(self.motorSpeeds[i-1])
 
+    def setMotors(self)
 
     def getMotors(self):
         for motor in self.motors_driveTrain:
