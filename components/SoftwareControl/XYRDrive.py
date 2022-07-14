@@ -27,7 +27,10 @@ class TankDrive:
                 lmotor = r
                 rmotor = 1 + y
 
-        return {Tank.FrontLeft:lmotor, Tank.BackLeft:lmotor, Tank.FrontRight:rmotor, Tank.BackRight:rmotor}
+        return {Tank.FrontLeft.value : lmotor,
+                Tank.BackLeft.value : lmotor,
+                Tank.BackRight.value : rmotor,
+                Tank.FrontRight.value : rmotor}
 
 class SwerveDrive:
     L = 30
@@ -51,11 +54,18 @@ class SwerveDrive:
         backLeftAngle = math.atan2 (a, c) / math.pi
         frontRightAngle = math.atan2 (b, d) / math.pi
         frontLeftAngle = math.atan2 (b, c) / math.pi
-        return {Swerve.BackRight:backRightSpeed, Swerve.BackLeft:backLeftSpeed, Swerve.FrontRight:frontRightSpeed, Swerve.FrontLeft:frontLeftSpeed,
-                Swerve.BackRightRotation:backRightAngle, Swerve.BackLeftRotation:backLeftAngle, Swerve.FrontRightRotation:frontRightAngle, Swerve.FrontLeftRotation:frontLeftAngle}
+        return {Swerve.BackRight.value:backRightSpeed,
+                Swerve.BackLeft.value:backLeftSpeed,
+                Swerve.FrontRight.value:frontRightSpeed,
+                Swerve.FrontLeft.value:frontLeftSpeed,
+                Swerve.BackRightRotation.value:backRightAngle,
+                Swerve.BackLeftRotation.value:backLeftAngle,
+                Swerve.FrontRightRotation.value:frontRightAngle,
+                Swerve.FrontLeftRotation.value:frontLeftAngle}
 
 class XYRDrive:
     driveTrainType: str
+    driveTrainHandler: DriveTrainHandler
     TankDrive = TankDrive()
     SwerveDrive = SwerveDrive()
 
@@ -66,13 +76,13 @@ class XYRDrive:
         Pass in self as requestSource
         """
 
-        transformKey = self.DriveTrainType
+        transformKey = self.driveTrainType
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
-            DriveTrainHandler.setDriveTrain(requestSource, transformer.MotorDrive(vector.getX(), vector.getY(), vector.getR()))
+            self.driveTrainHandler.setDriveTrain(requestSource, transformer.MotorDrive(vector.getX(), vector.getY(), vector.getR()))
         else:
-            log.error("Unrecognized drivetrain type "+str(self.DriveTrainType))
+            log.error("Unrecognized drivetrain type "+str(self.driveTrainType))
 
     def execute(self):
         pass

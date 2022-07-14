@@ -90,6 +90,8 @@ class AxesXYR:
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
             return transformer.transform(Axes)
+        else:
+            return XYRVector(0, 0, 0)
 
     def execute(self):
         pass

@@ -101,7 +101,7 @@ class MyRobot(MagicRobot):
     controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
     # Eventually have a way to change this based on dropdown menu
-    controlmode = "swerve"
+    controlmode = AxesTransforms.kSwerve
 
     robotDir = os.path.dirname(os.path.abspath(__file__))
 
@@ -113,7 +113,8 @@ class MyRobot(MagicRobot):
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
         self.currentRobot = self.map.configMapper.getCompatibility()
 
-        driveTrainSubsystem = self.map.configMapper.getSubsystem("driveTrain")
+        driveTrainSubsystem = self.map.configMapper.getSubsystem("driveTrain")['driveTrain']
+
         if driveTrainSubsystem != None and "type" in driveTrainSubsystem:
             self.driveTrainType = str(driveTrainSubsystem["type"])
         else:
