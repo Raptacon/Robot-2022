@@ -12,6 +12,14 @@ class Tank(Enum):
     BackLeft = "BackLeftTankMotor"
     BackRight = "BackRightTankMotor"
 
+class TwoMotorTank(Enum):
+    """
+    Tank Motors Keys
+    """
+    numMotors = 2
+    Left = "LeftTankTwoMotor"
+    Right = "RightTankTwoMotor"
+
 class Swerve(Enum):
     """
     Swerve Motors Keys

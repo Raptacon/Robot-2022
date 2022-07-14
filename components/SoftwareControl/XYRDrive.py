@@ -1,6 +1,5 @@
 from utils.XYRVector import XYRVector
-from utils.motorEnums import Tank, Swerve
-from utils.configMapper import ConfigMapper
+from utils.motorEnums import Tank, Swerve, TwoMotorTank
 import logging as log
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
@@ -8,8 +7,6 @@ import math
 MotorSpeed = []
 
 class TankDrive:
-    lmotor = 0
-    rmotor = 0
 
     def MotorDrive(self, x,y,r):
         if y >= 0:
@@ -31,6 +28,12 @@ class TankDrive:
                 Tank.BackLeft.value : lmotor,
                 Tank.BackRight.value : rmotor,
                 Tank.FrontRight.value : rmotor}
+
+class TwoMotorTankDrive(TankDrive):
+    def MotorDrive(self, x, y ,r):
+        superOutput = TankDrive.MotorDrive(self, x, y, r)
+        return {TwoMotorTank.Left.value:superOutput[Tank.FrontLeft.value],
+                TwoMotorTank.Right.value:superOutput[Tank.FrontRight.value]}
 
 class SwerveDrive:
     L = 30
@@ -68,9 +71,10 @@ class XYRDrive:
     driveTrainHandler: DriveTrainHandler
     TankDrive = TankDrive()
     SwerveDrive = SwerveDrive()
+    TwoMotorTankDrive = TwoMotorTankDrive()
 
     def __init__(self):
-        self.transformDict = {"Tank":self.TankDrive, "Swerve":self.SwerveDrive}
+        self.transformDict = {"Tank":self.TankDrive, "Swerve":self.SwerveDrive, "TwoMotorTank":self.TwoMotorTankDrive}
     def xyrdrive(self, requestSource, vector:XYRVector):
         """
         Pass in self as requestSource
