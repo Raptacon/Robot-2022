@@ -101,6 +101,8 @@ class DriveTrain():
         # then set motors
         speedInfoKeys = sorted(dict(self.motorSpeedInfo).keys())
         driveTrainKeys = sorted(self.motors_driveTrain.keys())
-        if speedInfoKeys == driveTrainKeys:
-            for key in speedInfoKeys:
+        if speedInfoKeys != driveTrainKeys:
+            self.stop()
+            speedInfoKeys = sorted(dict(self.motorSpeedInfo).keys())
+        for key in speedInfoKeys:
                 self.motors_driveTrain[key].set(self.motorSpeedInfo[key])
