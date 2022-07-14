@@ -20,7 +20,6 @@ from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.elevator import Elevator
-from components.Actuators.LowLevel.driveTrain import ControlMode
 from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
 from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
@@ -111,6 +110,12 @@ class MyRobot(MagicRobot):
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
         self.currentRobot = self.map.configMapper.getCompatibility()
 
+        driveTrainSubsystem = self.map.configMapper.getSubsystem("driveTrain")
+        if driveTrainSubsystem != None and "type" in driveTrainSubsystem:
+            self.driveTrainType = str(driveTrainSubsystem["type"])
+        else:
+            self.driveTrainType = "Unknown"
+
         self.driverStation = DriverStation.getInstance()
 
 
@@ -186,7 +191,6 @@ class MyRobot(MagicRobot):
         self.limelight.LEDOn()
 
         self.driveTrain.setBraking(True)
-        self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
         self.loader.setIsAutonomous(False)
@@ -266,6 +270,11 @@ class MyRobot(MagicRobot):
 
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
+        # if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
+        #     if self.arcadeMode:
+        #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
+        #     else:
+        #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
 
         self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()

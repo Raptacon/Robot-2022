@@ -1,7 +1,6 @@
 import logging as log
 from magicbot import AutonomousStateMachine, MagicRobot
-from components.Actuators.LowLevel.driveTrain import DriveTrain, ControlMode
-from components.SoftwareControl.XYRDrive import XYRDrive
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 
 class DriveTrainHandler():
     """

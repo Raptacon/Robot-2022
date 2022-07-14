@@ -75,9 +75,15 @@ class transformSwerve(transform):
         return XYRVector(X, Y, R)
 
 class AxesXYR:
-    transformDict = {AxesTransforms.kTank:transformTank,
-                    AxesTransforms.kArcade:transformArcade,
-                    AxesTransforms.kSwerve:transformSwerve}
+    transTank = transformTank()
+    transArcade = transformArcade()
+    transSwerve = transformSwerve()
+
+
+    def __init__(self):
+        self.transformDict = {AxesTransforms.kTank: self.transTank,
+                        AxesTransforms.kArcade: self.transArcade,
+                        AxesTransforms.kSwerve: self.transSwerve}
 
     def transform(self, transformKey:AxesTransforms, Axes:list):
 
