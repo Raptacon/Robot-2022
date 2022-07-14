@@ -84,21 +84,7 @@ class DriveTrainHandler():
             return False
 
     def execute(self):
-        # Pass through inputs to drivetrain
-        if self.controlMode == ControlMode.kArcadeDrive:
-            self.driveTrain.setArcade(self.input1, self.input2)
-        elif self.controlMode == ControlMode.kTankDrive:
-            self.driveTrain.setTank(self.xyrDrive(self, "Tank"))
-        elif self.controlMode == ControlMode.kSwerveDrive:
-            self.driveTrain.setSwerve(self.xyrDrive(self, "Swerve"))
-        elif self.controlMode == ControlMode.kDisabled:
-            self.driveTrain.setTank(0, 0)
-        else:
-            log.debug("Unknown control mode")
-            self.driveTrain.setTank(0, 0)
-
-        self.input1 = 0
-        self.input2 = 0
+        self.driveTrain.setMotors(self.Motorspeeds)
 
         # You must request control every frame.
         self.prevSource = self.currentSource
