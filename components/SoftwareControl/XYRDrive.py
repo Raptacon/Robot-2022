@@ -1,5 +1,7 @@
 from utils.XYRVector import XYRVector
 from utils.motorEnums import Tank, Swerve
+from utils.configMapper import ConfigMapper
+import logging as log
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
@@ -53,16 +55,21 @@ class SwerveDrive:
                 Swerve.BackRightRotation:backRightAngle, Swerve.BackLeftRotation:backLeftAngle, Swerve.FrontRightRotation:frontRightAngle, Swerve.FrontLeftRotation:frontLeftAngle}
 
 class XYRDrive:
+    DriveTrainType: str
     TankDrive = TankDrive()
     SwerveDrive = SwerveDrive()
 
     def __init__(self):
         self.transformDict = {"Tank":self.TankDrive, "Swerve":self.SwerveDrive}
-    def xyrdrive(self, requestSource, transformKey:str, vector:XYRVector):
+    def xyrdrive(self, requestSource, vector:XYRVector):
         """
         Pass in self as requestSource
         """
 
+        transformKey = self.DriveTrainType
+
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
             DriveTrainHandler.setDriveTrain(requestSource, transformer.MotorDrive(vector.getX(), vector.getY(), vector.getR()))
+        else:
+            log.error("Unrecognized drivetrain type "+str(self.DriveTrainType))

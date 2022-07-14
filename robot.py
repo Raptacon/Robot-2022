@@ -105,6 +105,12 @@ class MyRobot(MagicRobot):
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
         self.currentRobot = self.map.configMapper.getCompatibility()
 
+        driveTrainSubsystem = self.map.configMapper.getSubsystem("driveTrain")
+        if driveTrainSubsystem != None and "type" in driveTrainSubsystem:
+            self.driveTrainType = str(driveTrainSubsystem["type"])
+        else:
+            self.driveTrainType = "Unknown"
+
         self.driverStation = DriverStation.getInstance()
 
 
