@@ -1,5 +1,5 @@
-from components.SoftwareControl.AxesXYR import AxesXYR
-from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+from utils.XYRVector import XYRVector
+from utils.motorEnums import Tank, Swerve
 import math
 
 MotorSpeed = []
@@ -8,30 +8,29 @@ class TankDrive:
     lmotor = 0
     rmotor = 0
 
-    def MotorDrive(self,x,y,r):
+    def MotorDrive(self, x,y,r):
         if y >= 0:
             if r >= 0:  # I quadrant
-                self.lmotor = y
-                self.rmotor = r
+                lmotor = y
+                rmotor = r
             else:            # II quadrant
-                self.lmotor = r
-                self.rmotor = y
+                lmotor = r
+                rmotor = y
         else:
             if r >= 0:  # IV quadrant
-                self.lmotor = 1 + y
-                self.rmotor = r
+                lmotor = 1 + y
+                rmotor = r
             else:            # III quadrant
-                self.lmotor = r
-                self.rmotor = 1 + y
-        self.lmotor2 = self.lmotor
-        self.rmotor2 = self.rmotor
-        return MotorSpeed(self.lmotor, self.rmotor)
+                lmotor = r
+                rmotor = 1 + y
+
+        return {Tank.FrontLeft:lmotor, Tank.BackLeft:lmotor, Tank.FrontRight:rmotor, Tank.BackRight:rmotor}
     
 class SwerveDrive:
     L = 30
     W = 30
 
-    def MotorDrive (self, x,y,r):
+    def MotorDrive(self, x,y,r):
         ratio = math.sqrt ((self.L * self.L) + (self.W * self.W))
         y *= -1
 
@@ -49,13 +48,17 @@ class SwerveDrive:
         backLeftAngle = math.atan2 (a, c) / math.pi
         frontRightAngle = math.atan2 (b, d) / math.pi
         frontLeftAngle = math.atan2 (b, c) / math.pi
-        return MotorSpeed(backRightSpeed, backLeftSpeed, frontRightSpeed, frontLeftSpeed,
-                          backRightAngle, backLeftAngle, frontRightAngle, frontLeftAngle)
+        return {Swerve.BackRight:backRightSpeed, Swerve.BackLeft:backLeftSpeed, Swerve.FrontRight:frontRightSpeed, Swerve.FrontLeft:frontLeftSpeed,
+                Swerve.BackRightRotation:backRightAngle, Swerve.BackLeftRotation:backLeftAngle, Swerve.FrontRightRotation:frontRightAngle, Swerve.FrontLeftRotation:frontLeftAngle}
 
 class XYRDrive:
-    transformDict = {"Tank":TankDrive, "Swerve":SwerveDrive}
-    def xyrdrive(self, transformKey:str):
+    TankDrive = TankDrive()
+    SwerveDrive = SwerveDrive()
+
+    def __init__(self):
+        self.transformDict = {"Tank":self.TankDrive, "Swerve":self.SwerveDrive}
+    def xyrdrive(self, transformKey:str, vector:XYRVector):
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
-            return transformer.transform()
+            return transformer.MotorDrive(vector.getX(), vector.getY(), vector.getR())
