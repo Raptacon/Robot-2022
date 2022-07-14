@@ -28,7 +28,7 @@ class TankDrive:
                 rmotor = 1 + y
 
         return {Tank.FrontLeft:lmotor, Tank.BackLeft:lmotor, Tank.FrontRight:rmotor, Tank.BackRight:rmotor}
-    
+
 class SwerveDrive:
     L = 30
     W = 30
