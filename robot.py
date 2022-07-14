@@ -17,7 +17,6 @@ from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.elevator import Elevator
-from components.Actuators.LowLevel.driveTrain import ControlMode
 from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
 from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
@@ -250,12 +249,20 @@ class MyRobot(MagicRobot):
         self.shooter.engage()
 
         # If the drivers have any input outside deadzone, take control.
+<<<<<<< HEAD
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
             if self.arcadeMode:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
             else:
                 self.xyrDrive.xyrdrive(self, "Tank", Vector)
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
+=======
+        # if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
+        #     if self.arcadeMode:
+        #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
+        #     else:
+        #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
+>>>>>>> 2647eecb70e5656506154ce8dc6938ceaa71e052
 
         self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()

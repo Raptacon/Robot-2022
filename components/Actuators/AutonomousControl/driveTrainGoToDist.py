@@ -1,5 +1,5 @@
 from magicbot import StateMachine, feedback, state, tunable
-from components.Actuators.LowLevel.driveTrain import ControlMode, DriveTrain
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.SoftwareControl.speedSections import SpeedSections
 import logging as log
@@ -51,7 +51,8 @@ class GoToDist(StateMachine):
         """
         self.running = False
         self.targetDist = 0
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
+        # Convert to XYR
+        # self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
         self.next_state("idling")
 
     @state(first=True)
@@ -120,4 +121,5 @@ class GoToDist(StateMachine):
         backwards at that speed. It then goes back to
         goToDist.
         """
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*self.nextSpeed, 0)
+        # Convert to XYR
+        # self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*self.nextSpeed, 0)
