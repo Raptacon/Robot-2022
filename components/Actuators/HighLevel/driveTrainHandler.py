@@ -86,6 +86,8 @@ class DriveTrainHandler():
     def execute(self):
         self.driveTrain.setMotors(self.Motorspeeds)
 
+        self.Motorspeeds = {}
+
         # You must request control every frame.
         self.prevSource = self.currentSource
         self.currentSource = None
