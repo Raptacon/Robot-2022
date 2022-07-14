@@ -186,7 +186,6 @@ class MyRobot(MagicRobot):
         self.limelight.LEDOn()
 
         self.driveTrain.setBraking(True)
-        self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
         self.loader.setIsAutonomous(False)
