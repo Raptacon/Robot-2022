@@ -271,7 +271,7 @@ class MyRobot(MagicRobot):
                 self.xyrDrive.xyrdrive(self, self.controlmode ,Vector)
             elif self.controlmode:
                 Vector = self.axesXYR.transform(AxesTransforms.kTank, Axes)
-                self.xyrDrive.xyrdrive(self, self.controlmode ,Vector)
+                self.xyrDrive.xyrdrive(self, self.controlmode, Vector)
 
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
