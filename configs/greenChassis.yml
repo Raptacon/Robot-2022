@@ -7,7 +7,7 @@ driveTrain:
   motors:
     groups:
       - "motors"
-    rightMotor:
+    FrontRightTankMotor:
       channel: 30
       type: "CANTalonFX"
       inverted: False
@@ -25,7 +25,7 @@ driveTrain:
         triggerThresholdTime: 50
         currentLimit: 40
 
-    rightFollower:
+    BackRightTankMotor:
       channel: 31
       masterChannel: 30
       type: "CANTalonFXFollower"
@@ -35,7 +35,7 @@ driveTrain:
         triggerThresholdTime: 50
         currentLimit: 40
 
-    leftMotor:
+    FrontLeftTankMotor:
       channel: 20
       type: "CANTalonFX"
       inverted: False
@@ -53,7 +53,7 @@ driveTrain:
         triggerThresholdTime: 50
         currentLimit: 40
 
-    leftFollower:
+    BackLeftTankMotor:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"
