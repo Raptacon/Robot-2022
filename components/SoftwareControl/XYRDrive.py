@@ -1,5 +1,6 @@
 from utils.XYRVector import XYRVector
 from utils.motorEnums import Tank, Swerve
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
 MotorSpeed = []
@@ -57,8 +58,11 @@ class XYRDrive:
 
     def __init__(self):
         self.transformDict = {"Tank":self.TankDrive, "Swerve":self.SwerveDrive}
-    def xyrdrive(self, transformKey:str, vector:XYRVector):
+    def xyrdrive(self, requestSource, transformKey:str, vector:XYRVector):
+        """
+        Pass in self as requestSource
+        """
 
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
-            return transformer.MotorDrive(vector.getX(), vector.getY(), vector.getR())
+            DriveTrainHandler.setDriveTrain(requestSource, transformer.MotorDrive(vector.getX(), vector.getY(), vector.getR()))

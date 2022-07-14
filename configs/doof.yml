@@ -12,6 +12,7 @@ system:
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
+  type: "Tank"
   motors:
     groups:
       - "motors"
