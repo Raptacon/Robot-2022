@@ -66,7 +66,7 @@ class transformSwerve(transform):
     def transform(self, Axes):
         Axes[0] # Axis 1
         Axes[2] # Axis 3
-        Axes[3] # Axia 4
+        Axes[3] # Axis 4
 
         Y = (Axes[3])
         R = (Axes[0])

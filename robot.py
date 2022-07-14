@@ -3,12 +3,15 @@ Team 3200 Robot base class
 """
 # Module imports:
 import logging
+from re import X
+from tkinter import Y
 import wpilib
 from wpilib import XboxController, DriverStation, SerialPort, CameraServer
 from magicbot import MagicRobot, tunable
 
 # Component imports:
 from components.SoftwareControl.speedSections import SpeedSections, speedFactory
+from components.SoftwareControl.AxesXYR import AxesXYR, AxesTransforms
 from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
@@ -42,6 +45,7 @@ import os
 # Other imports:
 from robotMap import RobotMap, XboxMap
 from networktables import NetworkTables
+from utils import XYRVector
 from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory
@@ -85,6 +89,7 @@ class MyRobot(MagicRobot):
     breakSensors: Sensors
     turretCalibrate: CalibrateTurret
     limelight: Limelight
+    axesXYR: AxesXYR
 
     # Test code:
     testBoard: TestBoard
@@ -204,7 +209,7 @@ class MyRobot(MagicRobot):
 
         driveLeftY = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), 2.3)
 
@@ -244,13 +249,21 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
+
+        Axes = [driveLeftX, driveLeftY, driveRightX, driveRightY]
+
         self.autoShoot.engage()
         self.shooter.engage()
-
+        self.controlmode = "Swerve", "Arcade", "Tank"
         # If the drivers have any input outside deadzone, take control.
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
-            if self.arcadeMode:
-                self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
+            if self.controlmode:
+                Vector = self.axesXYR.transform(AxesTransforms.kArcade, Axes)
+            elif self.controlmode:
+                Vector = self.axesXYR.transform(AxesTransforms.kSwerve, Axes)
+            elif self.controlmode:
+                Vector = self.axesXYR.transform(AxesTransforms.kTank, Axes)
+
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
 
