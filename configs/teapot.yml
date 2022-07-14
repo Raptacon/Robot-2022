@@ -145,7 +145,7 @@ winchMotors:
     winchMotor:
       channel: 10
       type: "SparkMax"
-      inverted: False
+      inverted: True
       motorType: "kBrushless"
 
 shooterMotors:
