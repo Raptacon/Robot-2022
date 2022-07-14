@@ -55,7 +55,7 @@ class SwerveDrive:
                 Swerve.BackRightRotation:backRightAngle, Swerve.BackLeftRotation:backLeftAngle, Swerve.FrontRightRotation:frontRightAngle, Swerve.FrontLeftRotation:frontLeftAngle}
 
 class XYRDrive:
-    DriveTrainType: str
+    driveTrainType: str
     TankDrive = TankDrive()
     SwerveDrive = SwerveDrive()
 
@@ -73,3 +73,6 @@ class XYRDrive:
             DriveTrainHandler.setDriveTrain(requestSource, transformer.MotorDrive(vector.getX(), vector.getY(), vector.getR()))
         else:
             log.error("Unrecognized drivetrain type "+str(self.DriveTrainType))
+
+    def execute(self):
+        pass

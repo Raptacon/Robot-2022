@@ -100,7 +100,8 @@ class MyRobot(MagicRobot):
     # components on controller input.
     controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
-    arcadeMode = tunable(True)
+    # Eventually have a way to change this based on dropdown menu
+    controlmode = "swerve"
 
     robotDir = os.path.dirname(os.path.abspath(__file__))
 
@@ -260,26 +261,11 @@ class MyRobot(MagicRobot):
 
         self.autoShoot.engage()
         self.shooter.engage()
-        self.controlmode = "Swerve", "Arcade", "Tank"
+
         # If the drivers have any input outside deadzone, take control.
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
-            if self.controlmode:
-                Vector = self.axesXYR.transform(AxesTransforms.kArcade, Axes)
-                self.xyrDrive.xyrdrive(self, self.controlmode ,Vector)
-            elif self.controlmode:
-                Vector = self.axesXYR.transform(AxesTransforms.kSwerve, Axes)
-                self.xyrDrive.xyrdrive(self, self.controlmode ,Vector)
-            elif self.controlmode:
-                Vector = self.axesXYR.transform(AxesTransforms.kTank, Axes)
-                self.xyrDrive.xyrdrive(self, self.controlmode, Vector)
-
-            else:
-                self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
-        # if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
-        #     if self.arcadeMode:
-        #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
-        #     else:
-        #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
+            vector = self.axesXYR.transform(self.controlmode, Axes)
+            self.xyrDrive.xyrdrive(self, vector)
 
         self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()
