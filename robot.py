@@ -24,6 +24,7 @@ from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+from components.SoftwareControl.XYRDrive import XYRDrive
 from components.Actuators.AutonomousControl.autoShoot import AutoShoot
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
@@ -64,6 +65,7 @@ class MyRobot(MagicRobot):
     intakeMotor: IntakeMotor
     hopperMotor: HopperMotor
     driveTrain: DriveTrain
+    xyrDrive: XYRDrive
     winch: Winch
     buttonManager: ButtonManager
     pneumatics: Pneumatics
@@ -252,6 +254,7 @@ class MyRobot(MagicRobot):
             if self.arcadeMode:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
             else:
+                self.xyrDrive.xyrdrive(self, "Tank", Vector)
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
 
         self.prevMechAState = self.xboxMap.getMechA()
