@@ -26,6 +26,7 @@ from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+from components.SoftwareControl.XYRDrive import XYRDrive
 from components.Actuators.AutonomousControl.autoShoot import AutoShoot
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
@@ -80,6 +81,7 @@ class MyRobot(MagicRobot):
     ballCounter: BallCounter
     colorSensor: ColorSensor
     driveTrainHandler: DriveTrainHandler
+    xyrDrive: XYRDrive
     speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
@@ -263,10 +265,13 @@ class MyRobot(MagicRobot):
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
             if self.controlmode:
                 Vector = self.axesXYR.transform(AxesTransforms.kArcade, Axes)
+                self.xyrDrive.xyrdrive(self, self.controlmode ,Vector)
             elif self.controlmode:
                 Vector = self.axesXYR.transform(AxesTransforms.kSwerve, Axes)
+                self.xyrDrive.xyrdrive(self, self.controlmode ,Vector)
             elif self.controlmode:
                 Vector = self.axesXYR.transform(AxesTransforms.kTank, Axes)
+                self.xyrDrive.xyrdrive(self, self.controlmode ,Vector)
 
             else:
                 self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
