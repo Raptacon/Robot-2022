@@ -250,15 +250,13 @@ class MyRobot(MagicRobot):
 
 
         self.turretTurn.engage()
-        # deadzone clamping
-        if abs(driveLeftY) < self.controllerDeadzone:
-            driveLeftY = 0
-        if abs(driveRightY) < self.controllerDeadzone:
-            driveRightY = 0
-        if abs(driveRightX) < self.controllerDeadzone:
-            driveRightX = 0
 
         Axes = [driveLeftX, driveLeftY, driveRightX, driveRightY]
+
+        # deadzone clamping
+        for i, axis in enumerate(Axes):
+            if abs(axis) < self.controllerDeadzone:
+                Axes[i] = 0
 
         self.autoShoot.engage()
         self.shooter.engage()

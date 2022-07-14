@@ -9,20 +9,24 @@ MotorSpeed = []
 class TankDrive:
 
     def MotorDrive(self, x,y,r):
+        maximum = max(abs(y),abs(r))
+        total = y+r
+        dif = y-r
         if y >= 0:
             if r >= 0:  # I quadrant
-                lmotor = y
-                rmotor = r
+                lmotor = maximum
+                rmotor = dif
             else:            # II quadrant
-                lmotor = r
-                rmotor = y
+                lmotor = total
+                rmotor = maximum
         else:
             if r >= 0:  # IV quadrant
-                lmotor = 1 + y
-                rmotor = r
+                lmotor = total
+                rmotor = -1*maximum
             else:            # III quadrant
-                lmotor = r
-                rmotor = 1 + y
+                lmotor = -1*maximum
+                rmotor = dif
+
 
         return {Tank.FrontLeft.value : lmotor,
                 Tank.BackLeft.value : lmotor,
