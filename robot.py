@@ -3,8 +3,6 @@ Team 3200 Robot base class
 """
 # Module imports:
 import logging
-from re import X
-from tkinter import Y
 import wpilib
 from wpilib import XboxController, DriverStation, SerialPort, CameraServer
 from magicbot import MagicRobot, tunable
@@ -45,7 +43,6 @@ import os
 # Other imports:
 from robotMap import RobotMap, XboxMap
 from networktables import NetworkTables
-from utils import XYRVector
 from utils.componentUtils import testComponentListCompatibility
 from utils.motorHelper import createMotor
 from utils.sensorFactories import gyroFactory, breaksensorFactory

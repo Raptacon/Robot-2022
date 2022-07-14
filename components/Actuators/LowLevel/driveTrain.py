@@ -4,7 +4,7 @@ import logging as log
 from networktables import NetworkTables
 
 
-from magicbot import tunable, feedback
+from magicbot import tunable
 
 
 class DriveTrain():
@@ -105,4 +105,4 @@ class DriveTrain():
             self.stop()
             speedInfoKeys = sorted(dict(self.motorSpeedInfo).keys())
         for key in speedInfoKeys:
-                self.motors_driveTrain[key].set(self.motorSpeedInfo[key])
+            self.motors_driveTrain[key].set(self.motorSpeedInfo[key])

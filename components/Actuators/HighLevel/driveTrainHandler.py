@@ -1,4 +1,3 @@
-import logging as log
 from magicbot import AutonomousStateMachine, MagicRobot
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 
