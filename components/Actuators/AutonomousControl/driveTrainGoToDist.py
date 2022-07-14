@@ -4,6 +4,9 @@ from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.SoftwareControl.speedSections import SpeedSections
 import logging as log
 
+# This will likely all become far less useful upon implementation of odometry - already it relies on features from a tank-only drivetrain
+# So it's basically functionless right now
+
 class GoToDist(StateMachine):
 
     compatString = ["teapot"]
@@ -81,7 +84,7 @@ class GoToDist(StateMachine):
         """
         self.running = True
         self.starting = False
-        self.initDist = self.driveTrain.getEstTotalDistTraveled()
+        self.initDist = 0
         self.targetDist = self.initDist + self.targetDist
         self.next_state("goToDist")
 
@@ -92,7 +95,8 @@ class GoToDist(StateMachine):
         drivetrain in order to travel
         a certain distance.
         """
-        self.dist = self.driveTrain.getEstTotalDistTraveled()
+        # Replaced outdated method
+        self.dist = 0
 
         self.nextSpeed = 0
         totalOffset = self.targetDist - self.dist

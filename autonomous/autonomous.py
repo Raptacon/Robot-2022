@@ -68,7 +68,6 @@ class Autonomous(AutonomousStateMachine):
         self.ballCounter.addBall(2, self.allianceColor.lower())
         self.loader.setIsAutonomous(True)
         self.shooter.autonomousEnabled()
-        self.driveTrain.resetDistTraveled()
         self.pneumatics.deployLoader()
         self.assessPosition()
         self.next_state("winchUp")
