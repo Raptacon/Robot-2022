@@ -19,7 +19,7 @@ class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
-    driveMotorsMultiplier = tunable(.5)
+    driveMotorsMultiplier = tunable(.7)
     creeperMotorsMultiplier = tunable(.25)
     gearRatio = 10
     wheelCircumference = 6 * math.pi
@@ -122,12 +122,15 @@ class DriveTrain():
         """
         self.leftDistInch = (self.leftMotor.getPosition(0, positionUnits.kRotations) / self.gearRatio) * self.wheelCircumference
         if self.leftSideSensorInverted:
-            return -1 * self.leftDistInch# / 12
+            return -1 * self.leftDistInch
         else:
             return self.leftDistInch
 
     @feedback
     def getEstTotalDistTraveled(self):
+        """"
+        Return an estimate of total distance traveled in inches
+        """
         self.smartDashTable.putNumber("Estimated Encoder Distance since enable", (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2)
         return (self.getLeftSideDistTraveled() + self.getRightSideDistTraveled()) / 2
 

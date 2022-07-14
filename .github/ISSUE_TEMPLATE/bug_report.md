@@ -22,12 +22,14 @@ assignees: ''
 
 **Actual behavior:** [What actually happened]
 
+
 ### Required Information
 
 - What tag/branch/release of Robot code are you using?
   [ Do a git log -1 --format=format:"%H"]
 
+
+
 ### Useful Information
 
 - What version of Python are you using? Which OS?
-

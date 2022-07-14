@@ -2,7 +2,7 @@ from robotMap import XboxMap
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Input.breakSensors import Sensors, State
-from components.Input.ballCounter import BallCounter, Ball
+from components.Input.ballCounter import BallCounter
 from components.Actuators.HighLevel.feederMap import FeederMap, Type
 from components.Input.colorSensor import ColorSensor
 from utils.DirectionEnums import Direction
@@ -27,6 +27,7 @@ class LoaderLogic(StateMachine):
     automaticHopperMotor2Speed = tunable(.6)
     # Other variables
     isAutomatic = True
+    isAutonomous = False
     loaderStoppingDelay = .16
     ballEjectTime = .3
     eject = False
@@ -38,6 +39,12 @@ class LoaderLogic(StateMachine):
         """Runs sensor-based loading."""
         self.isAutomatic = True
         self.next_state('checkForBall')
+
+    def setIsAutonomous(self, isAutono:bool):
+        """
+        Sets whether the loader acts as if it's autonomous or not
+        """
+        self.isAutonomous = isAutono
 
     def setManualLoading(self):
         """Runs trigger-based loading."""
@@ -71,12 +78,8 @@ class LoaderLogic(StateMachine):
     @state
     def checkForBall(self):
         """Checks for ball to enter the loader, runs the loader if entry sensor is broken."""
-        ballCount = self.ballCounter.getBallCount()
         if self.sensors.loadingSensor(State.kTripped):
             self.next_state('checkEject')
-        if type(ballCount[0]) == Ball and ballCount[1] == None:
-            self.hopperMotor.runHopperMotorForeside(self.hopperMotor.movingSpeed, Direction.kForwards)
-            self.next_state('move_ball')
 
     @state
     def move_ball(self):
@@ -124,5 +127,6 @@ class LoaderLogic(StateMachine):
     def execute(self):
         """Constantly runs state machine and intake. Necessary for function."""
         self.engage()
-        self.runIntake()
+        if not self.isAutonomous:
+            self.runIntake()
         super().execute()

@@ -108,6 +108,7 @@ class MyRobot(MagicRobot):
 
         self.driverStation = DriverStation.getInstance()
 
+
         self.allianceColor = self.driverStation.getAlliance()
         if self.allianceColor == self.driverStation.Alliance.kBlue:
             self.allianceColor = "blue"
@@ -152,9 +153,10 @@ class MyRobot(MagicRobot):
     def teleopInit(self):
         # Register button events for doof
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kX, ButtonEvent.kOnPress, self.pneumatics.toggleLoader)
-        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.setAutoLoading)
+        self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kA, ButtonEvent.kOnPress, self.loader.setAutoLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.drive, XboxController.Button.kB, ButtonEvent.kOnPress, self.loader.setManualLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.startShooting)
+        self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.shooter.setManualShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnPress, self.loader.stopLoading)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnRelease, self.shooter.doneShooting)
         self.buttonManager.registerButtonEvent(self.xboxMap.mech, XboxController.Button.kY, ButtonEvent.kOnRelease, self.loader.determineNextAction)
@@ -182,6 +184,7 @@ class MyRobot(MagicRobot):
         self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
+        self.loader.setIsAutonomous(False)
         self.turretCalibrate.setUseMotor(False)
         self.turretThreshold.setCalibrating(False)
         self.prevMechAState = False
@@ -190,6 +193,9 @@ class MyRobot(MagicRobot):
         """
         Must include. Called repeatedly while running teleop.
         """
+        self.turretCalibrate.engage()
+        self.turretCalibrate.setUseMotor(False)
+
         self.xboxMap.controllerInput()
 
         #This variable determines whether to use controller input for the drivetrain or not.
@@ -200,7 +206,7 @@ class MyRobot(MagicRobot):
         driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
         driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), self.sensitivityExponent)
+        mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), 2.3)
 
         if self.xboxMap.getMechDPad() == 180:
             self.winch.setRaise()
@@ -224,7 +230,10 @@ class MyRobot(MagicRobot):
             self.turretScan.done()
             self.turretTurn.setManualControl()
             self.turretThreshold.setManual(True)
-            self.turretTurn.setManualSpeed(mechLeftX)
+            if abs(mechLeftX) > self.controllerDeadzone:
+                self.turretTurn.setManualSpeed(mechLeftX)
+            else:
+                self.turretTurn.setManualSpeed(0)
 
 
         self.turretTurn.engage()
@@ -235,9 +244,7 @@ class MyRobot(MagicRobot):
             driveRightY = 0
         if abs(driveRightX) < self.controllerDeadzone:
             driveRightX = 0
-        self.goToDist.engage()
         self.autoShoot.engage()
-        self.turnToAngle.engage()
         self.shooter.engage()
 
         # If the drivers have any input outside deadzone, take control.
@@ -262,6 +269,7 @@ class MyRobot(MagicRobot):
         """
         Called during test mode alot
         """
+        pass
         #pos counterclockwise, neg clockwise
 
     def instantiateSubsystemGroup(self, groupName, factory):
