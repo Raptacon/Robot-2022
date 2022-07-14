@@ -66,6 +66,9 @@ class DriveTrainHandler():
         """
         If you do not have control, this will request it for you.
         Sets drivetrain values and returns true if your control is valid.
+
+        pass in self as requestSource
+
         If not, returns false. You must request control (through this method) every frame.
         (Yes this is wide open to abuse, but I trust you)
         """
