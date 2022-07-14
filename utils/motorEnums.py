@@ -10,7 +10,7 @@ class Tank(Enum):
     FrontLeft = "FrontLeftTankMotor"
     FrontRight = "FrontRightTankMotor"
     BackLeft = "BackLeftTankMotor"
-    BackRight = "BackLeftTankMotor"
+    BackRight = "BackRightTankMotor"
 
 class Swerve(Enum):
     """
@@ -20,8 +20,8 @@ class Swerve(Enum):
     FrontLeft = "FrontLeftSwerveMotor"
     FrontRight = "FrontRightSwerveMotor"
     BackLeft = "BackLeftSwerveMotor"
-    BackRight = "BackLeftSwerveMotor"
+    BackRight = "BackRightSwerveMotor"
     FrontLeftRotation = "FrontLeftRotationMotor"
     FrontRightRotation = "FrontRightRotationMotor"
     BackLeftRotation = "BackLeftRotationMotor"
-    BackRightRotation = "BackLeftRotationMotor"
+    BackRightRotation = "BackRightRotationMotor"
