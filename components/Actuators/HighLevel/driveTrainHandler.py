@@ -62,7 +62,7 @@ class DriveTrainHandler():
         else:
             return False
 
-    def setDriveTrain(self, requestSource, controlMode: ControlMode, input1, input2):
+    def setDriveTrain(self, requestSource, Motorspeeds):
         """
         If you do not have control, this will request it for you.
         Sets drivetrain values and returns true if your control is valid.
@@ -75,9 +75,7 @@ class DriveTrainHandler():
             self.requestControl(requestSource)
 
         if self.currentSource == requestSource:
-            self.input1 = input1
-            self.input2 = input2
-            self.controlMode = controlMode
+            self.Motorspeeds = Motorspeeds
             return True
         else:
             return False
