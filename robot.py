@@ -249,20 +249,11 @@ class MyRobot(MagicRobot):
         self.shooter.engage()
 
         # If the drivers have any input outside deadzone, take control.
-<<<<<<< HEAD
-        if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
-            if self.arcadeMode:
-                self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
-            else:
-                self.xyrDrive.xyrdrive(self, "Tank", Vector)
-                self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
-=======
         # if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
         #     if self.arcadeMode:
         #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
         #     else:
         #         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
->>>>>>> 2647eecb70e5656506154ce8dc6938ceaa71e052
 
         self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()
