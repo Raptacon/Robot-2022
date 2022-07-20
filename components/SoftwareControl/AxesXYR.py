@@ -66,7 +66,7 @@ class transformSwerve(transform):
     def transform(self, Axes):
         Axes[0] # Axis 1
         Axes[2] # Axis 3
-        Axes[3] # Axia 4
+        Axes[3] # Axis 4
 
         Y = (Axes[3])
         R = (Axes[0])
@@ -90,3 +90,8 @@ class AxesXYR:
         if transformKey in self.transformDict.keys():
             transformer = self.transformDict[transformKey]
             return transformer.transform(Axes)
+        else:
+            return XYRVector(0, 0, 0)
+
+    def execute(self):
+        pass

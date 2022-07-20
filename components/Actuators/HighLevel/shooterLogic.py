@@ -17,15 +17,15 @@ class ShooterLogic(StateMachine):
 
     # Tunables
     backDownLoaderSpeed = tunable(.02)
-    backsideShootingLoaderSpeed = tunable(.5)
-    foresideShootingLoaderSpeed = tunable(.7)
-    autoShootingSpeed1 = tunable(1200)
-    autoShootingSpeed2 = tunable(3150)
+    backsideShootingLoaderSpeed = tunable(.4)
+    foresideShootingLoaderSpeed = tunable(.5)
+    autoShootingSpeed1 = tunable(1150)
+    autoShootingSpeed2 = tunable(3100)
     teleShootingSpeed1 = tunable(1500)
     teleShootingSpeed2 = tunable(3350)
     manualShootingSpeed1 = 1400
     manualShootingSpeed2 = 3300
-    shootTolerance = 50
+    shootTolerance = 25
 
     # Other variables
     isSetup = False
@@ -97,7 +97,7 @@ class ShooterLogic(StateMachine):
                 and abs(self.shooterMotor2Encoder.getVelocity() - shootSpeed2) <= abs(self.shootTolerance))
         rumble  = 0
         if atSpeed and not self.isAutonomous:
-            rumble = .3
+            rumble = 1
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
         self.xboxMap.drive.setRumble(self.xboxMap.mech.RumbleType.kRightRumble, rumble)
         self.xboxMap.mech.setRumble(self.xboxMap.mech.RumbleType.kLeftRumble, rumble)
@@ -120,8 +120,6 @@ class ShooterLogic(StateMachine):
                 self.hopperMotor.runHopperMotorBackside(self.backsideShootingLoaderSpeed, Direction.kForwards)
                 self.hopperMotor.runHopperMotorForeside(self.foresideShootingLoaderSpeed, Direction.kForwards)
             else:
-                self.hopperMotor.runHopperMotorBackside(self.backDownLoaderSpeed, Direction.kBackwards)
-                self.hopperMotor.runHopperMotorForeside(self.backDownLoaderSpeed, Direction.kBackwards)
                 self.next_state('runShooter')
 
         elif self.isAutonomous:

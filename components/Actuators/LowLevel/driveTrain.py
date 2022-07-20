@@ -4,14 +4,14 @@ import logging as log
 from networktables import NetworkTables
 
 
-from magicbot import tunable, feedback
+from magicbot import tunable
 
 
 class DriveTrain():
     compatString = ["doof","teapot","greenChassis"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
-    driveMotorsMultiplier = tunable(.5)
+    driveMotorsMultiplier = tunable(.7)
     creeperMotorsMultiplier = tunable(.25)
 
     smartDashTable = NetworkTables.getTable("SmartDashboard")
@@ -105,4 +105,4 @@ class DriveTrain():
             self.stop()
             speedInfoKeys = sorted(dict(self.motorSpeedInfo).keys())
         for key in speedInfoKeys:
-                self.motors_driveTrain[key].set(self.motorSpeedInfo[key])
+            self.motors_driveTrain[key].set(self.motorSpeedInfo[key])

@@ -6,22 +6,27 @@ class Tank(Enum):
     """
     Tank Motors Keys
     """
-    numMotors = 4
     FrontLeft = "FrontLeftTankMotor"
     FrontRight = "FrontRightTankMotor"
     BackLeft = "BackLeftTankMotor"
-    BackRight = "BackLeftTankMotor"
+    BackRight = "BackRightTankMotor"
+
+class TwoMotorTank(Enum):
+    """
+    Tank Motors Keys
+    """
+    Left = "LeftTankTwoMotor"
+    Right = "RightTankTwoMotor"
 
 class Swerve(Enum):
     """
     Swerve Motors Keys
     """
-    numMotors = 8
     FrontLeft = "FrontLeftSwerveMotor"
     FrontRight = "FrontRightSwerveMotor"
     BackLeft = "BackLeftSwerveMotor"
-    BackRight = "BackLeftSwerveMotor"
+    BackRight = "BackRightSwerveMotor"
     FrontLeftRotation = "FrontLeftRotationMotor"
     FrontRightRotation = "FrontRightRotationMotor"
     BackLeftRotation = "BackLeftRotationMotor"
-    BackRightRotation = "BackLeftRotationMotor"
+    BackRightRotation = "BackRightRotationMotor"
