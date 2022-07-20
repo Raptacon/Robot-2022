@@ -8,7 +8,7 @@ from magicbot import tunable
 
 
 class DriveTrain():
-    compatString = ["doof","teapot","greenChassis"]
+    compatString = ["doof","teapot","greenChassis", "minibot"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     motors_driveTrain: dict
     driveMotorsMultiplier = tunable(.7)
@@ -99,10 +99,13 @@ class DriveTrain():
 
         # Make sure motors are the same between parameter information and drivetrain
         # then set motors
+        print(self.motorSpeedInfo)
         speedInfoKeys = sorted(dict(self.motorSpeedInfo).keys())
         driveTrainKeys = sorted(self.motors_driveTrain.keys())
         if speedInfoKeys != driveTrainKeys:
+            print("not matching")
             self.stop()
             speedInfoKeys = sorted(dict(self.motorSpeedInfo).keys())
         for key in speedInfoKeys:
+            print("do match")
             self.motors_driveTrain[key].set(self.motorSpeedInfo[key])
