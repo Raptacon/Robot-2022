@@ -99,7 +99,7 @@ class MyRobot(MagicRobot):
     controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
     # Eventually have a way to change this based on dropdown menu
-    controlmode = AxesTransforms.kSwerve
+    controlmode = AxesTransforms.kTank
 
     robotDir = os.path.dirname(os.path.abspath(__file__))
 

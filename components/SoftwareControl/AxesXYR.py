@@ -7,13 +7,11 @@ class transform:
 
 class transformTank(transform):
     def transform(self, Axes):
-        Axes[0] # Axis 1
-        Axes[1] # Axis 2
-        Axes[2] # Axis 3
-        Axes[3] # Axis 4
+        # Axes[1] # Axis 2
+        # Axes[3] # Axis 4
 
         l = Axes[1]
-        r = Axes[2]
+        r = Axes[3]
 
         # I'm so sorry
         # https://www.desmos.com/calculator/dw1hoo9lnp
@@ -54,23 +52,23 @@ class transformTank(transform):
 
 class transformArcade(transform):
     def transform(self, Axes):
-        Axes[0] # Axis 1
-        Axes[3] # Axis 4
+        Axes[1] # Axis 2
+        Axes[2] # Axis 3
 
-        Y = (Axes[3])
-        R = (Axes[0])
+        Y = (Axes[1])
+        R = (Axes[2])
 
         return XYRVector(0, Y, R)
 
 class transformSwerve(transform):
     def transform(self, Axes):
         Axes[0] # Axis 1
+        Axes[1] # Axis 2
         Axes[2] # Axis 3
-        Axes[3] # Axis 4
 
-        Y = (Axes[3])
-        R = (Axes[0])
-        X = (Axes[2])
+        Y = (Axes[1])
+        R = (Axes[2])
+        X = (Axes[0])
 
         return XYRVector(X, Y, R)
 
