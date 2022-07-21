@@ -2,9 +2,10 @@ compatibility: "scorpion"
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
+  type: "Tank"
   motors:
     groups: "motors"
-    rightMotor:
+    FrontRightTankMotor:
       channel: 30
       type: "CANTalonFX"
       inverted: True
@@ -18,13 +19,13 @@ driveTrain:
         kF: 0
         sensorPhase: True
 
-    rightFollower:
+    BackRightTankMotor:
       channel: 31
       masterChannel: 30
       type: "CANTalonFXFollower"
       inverted: True
 
-    leftMotor:
+    FrontLeftTankMotor:
       channel: 20
       type: "CANTalonFX"
       inverted: True
@@ -38,7 +39,7 @@ driveTrain:
         kF: 0
         sensorPhase: True
 
-    leftFollower:
+    BackLeftTankMotor:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"

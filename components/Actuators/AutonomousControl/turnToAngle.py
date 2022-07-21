@@ -1,5 +1,4 @@
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
-from components.Actuators.LowLevel.driveTrain import ControlMode
 from components.SoftwareControl.speedSections import SpeedSections
 from magicbot import tunable, feedback, StateMachine, state
 
@@ -75,16 +74,17 @@ class TurnToAngle(StateMachine):
     def turn(self):
         """Turns the robot based off of the speed determined in setSpeedFunc"""
         self.setSpeedFunc()
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
+        # Need to convert to XYR
+        # self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
 
 
-        # Stops the automatic turning if the bot is within the tolerance of the desired angle
-        if abs(self.change) < self.tolerance:
-            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
-            self.stop()
-        else:
-            self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
-            self.next_state("turn")
+        # # Stops the automatic turning if the bot is within the tolerance of the desired angle
+        # if abs(self.change) < self.tolerance:
+        #     self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
+        #     self.stop()
+        # else:
+        #     self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.speed, -1 * self.speed)
+        #     self.next_state("turn")
 
     def stop(self):
         self.running = False

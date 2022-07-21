@@ -12,7 +12,7 @@ class State:
 
 class Sensors:
 
-    compatString = ["doof", "testBoard", "teapot"]
+    compatString = ["doof", "teapot"]
     digitalInput_breaksensors: dict
     SensorArray = []
 

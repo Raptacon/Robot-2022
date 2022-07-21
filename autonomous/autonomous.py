@@ -5,7 +5,7 @@ from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
-from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler, ControlMode
+from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.Actuators.HighLevel.turretScan import TurretScan
 from components.Actuators.LowLevel.pneumatics import Pneumatics
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
@@ -68,7 +68,6 @@ class Autonomous(AutonomousStateMachine):
         self.ballCounter.addBall(2, self.allianceColor.lower())
         self.loader.setIsAutonomous(True)
         self.shooter.autonomousEnabled()
-        self.driveTrain.resetDistTraveled()
         self.pneumatics.deployLoader()
         self.assessPosition()
         self.next_state("winchUp")
@@ -198,7 +197,9 @@ class Autonomous(AutonomousStateMachine):
 
     @timed_state(duration=2, next_state="stop")
     def moveBack(self):
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
+        # Convert to XYR
+        # self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
+        pass
 
     @state(must_finish = True)
     def stop(self):

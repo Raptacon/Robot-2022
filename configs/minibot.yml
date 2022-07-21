@@ -2,14 +2,15 @@ compatibility: "minibot"
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
+  type: "TwoMotorTank"
   motors:
     groups:
       - "motors"
-    rightMotor:
+    RightTankTwoMotor:
       channel: 30
       type: "CANTalonSRX"
       inverted: False
-    leftMotor:
+    LeftTankTwoMotor:
       channel: 20
       type: "CANTalonSRX"
       inverted: False

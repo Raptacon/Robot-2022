@@ -1,14 +1,17 @@
 from magicbot import StateMachine, feedback, state, tunable
-from components.Actuators.LowLevel.driveTrain import ControlMode, DriveTrain
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.SoftwareControl.speedSections import SpeedSections
 import logging as log
+
+# This will likely all become far less useful upon implementation of odometry - already it relies on features from a tank-only drivetrain
+# So it's basically functionless right now
 
 class GoToDist(StateMachine):
 
     compatString = ["teapot"]
 
-    driveTrainHandler: DriveTrainHandler
+    driveTrainHandler:DriveTrainHandler
     driveTrain: DriveTrain
     speedSections: SpeedSections
     tolerance = tunable(.25)
@@ -51,7 +54,8 @@ class GoToDist(StateMachine):
         """
         self.running = False
         self.targetDist = 0
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
+        # Convert to XYR
+        # self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, 0, 0)
         self.next_state("idling")
 
     @state(first=True)
@@ -80,7 +84,7 @@ class GoToDist(StateMachine):
         """
         self.running = True
         self.starting = False
-        self.initDist = self.driveTrain.getEstTotalDistTraveled()
+        self.initDist = 0
         self.targetDist = self.initDist + self.targetDist
         self.next_state("goToDist")
 
@@ -91,7 +95,8 @@ class GoToDist(StateMachine):
         drivetrain in order to travel
         a certain distance.
         """
-        self.dist = self.driveTrain.getEstTotalDistTraveled()
+        # Replaced outdated method
+        self.dist = 0
 
         self.nextSpeed = 0
         totalOffset = self.targetDist - self.dist
@@ -120,4 +125,5 @@ class GoToDist(StateMachine):
         backwards at that speed. It then goes back to
         goToDist.
         """
-        self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*self.nextSpeed, 0)
+        # Convert to XYR
+        # self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, -1*self.nextSpeed, 0)
