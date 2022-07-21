@@ -129,6 +129,10 @@ class MyRobot(MagicRobot):
         self.ShuffleboardDropDownMenu = ["Tank", "Arcade", "Swerve"]
         if self.controlmode == AxesTransforms.kTank:
             self.ShuffleboardDropDownMenu(0)
+        elif self.controlmode == AxesTransforms.kArcade:
+            self.ShuffleboardDropDownMenu(1)
+        else:
+            self.ShuffleboardDropDownMenu(2)
 
 
 
