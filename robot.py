@@ -101,6 +101,7 @@ class MyRobot(MagicRobot):
     # Eventually have a way to change this based on dropdown menu
     controlmode = AxesTransforms.kTank
 
+
     robotDir = os.path.dirname(os.path.abspath(__file__))
 
     def createObjects(self):
