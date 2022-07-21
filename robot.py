@@ -125,6 +125,15 @@ class MyRobot(MagicRobot):
 
         self.driverStation = DriverStation.getInstance()
 
+        self.ShuffleboardDropDownMenu = array(self.controlmode)
+        self.ShuffleboardDropDownMenu = ["Tank", "Arcade", "Swerve"]
+        if self.controlmode == AxesTransforms.kTank:
+            self.ShuffleboardDropDownMenu(0)
+
+
+
+
+
 
         self.allianceColor = self.driverStation.getAlliance()
         if self.allianceColor == self.driverStation.Alliance.kBlue:
