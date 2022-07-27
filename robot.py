@@ -99,6 +99,9 @@ class MyRobot(MagicRobot):
     controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
     # Eventually have a way to change this based on dropdown menu
+    controlModes = {"Tank": AxesTransforms.kTank,
+                    "Arcade": AxesTransforms.kArcade,
+                    "Swerve": AxesTransforms.kSwerve}
     controlmode = AxesTransforms.kTank
 
     robotDir = os.path.dirname(os.path.abspath(__file__))
@@ -114,8 +117,8 @@ class MyRobot(MagicRobot):
         try:
             driveTrainSubsystem = self.map.configMapper.getSubsystem("driveTrain")['driveTrain']
         except TypeError:
-            print("Robot does not have a drive train - assigining unknown type")
-            driveTrainSubsystem = "Unknown"
+            print("Robot does not have a drive train type")
+            driveTrainSubsystem = None
 
         if driveTrainSubsystem != None and "type" in driveTrainSubsystem:
             self.driveTrainType = str(driveTrainSubsystem["type"])
@@ -143,6 +146,16 @@ class MyRobot(MagicRobot):
         self.MXPserial.setTimeout(.1)
 
         self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
+
+        # Drop down control mode menu
+        chooser = wpilib.SendableChooser()
+
+        for key, item in self.controlModes.items():
+            if item == self.controlmode:
+                chooser.setDefaultOption(key, self.controlmode)
+            chooser.addOption(key, item)
+
+        wpilib.SmartDashboard.putData("Control Mode", chooser)
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
