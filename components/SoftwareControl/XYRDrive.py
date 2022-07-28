@@ -4,8 +4,6 @@ import logging as log
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 import math
 
-MotorSpeed = []
-
 class TankDrive:
 
     def MotorDrive(self, x,y,r):
@@ -26,7 +24,6 @@ class TankDrive:
             else:            # III quadrant
                 lmotor = -1*maximum
                 rmotor = dif
-
 
         return {Tank.FrontLeft.value : lmotor,
                 Tank.BackLeft.value : lmotor,
