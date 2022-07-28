@@ -148,14 +148,14 @@ class MyRobot(MagicRobot):
         self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
 
         # Drop down control mode menu
-        chooser = wpilib.SendableChooser()
+        self.chooser = wpilib.SendableChooser()
 
         for key, item in self.controlModes.items():
             if item == self.controlmode:
-                chooser.setDefaultOption(key, self.controlmode)
-            chooser.addOption(key, item)
+                self.chooser.setDefaultOption(key, self.controlmode)
+            self.chooser.addOption(key, item)
 
-        wpilib.SmartDashboard.putData("Control Mode", chooser)
+        wpilib.SmartDashboard.putData("Control Mode", self.chooser)
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -275,11 +275,12 @@ class MyRobot(MagicRobot):
 
         self.autoShoot.engage()
         self.shooter.engage()
-
+        self.controlmode = self.chooser.getSelected()
         # If the drivers have any input outside deadzone, take control.
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
             vector = self.axesXYR.transform(self.controlmode, Axes)
             self.xyrDrive.xyrdrive(self, vector)
+
 
         self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()
