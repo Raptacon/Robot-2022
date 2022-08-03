@@ -32,7 +32,7 @@ class XboxMap():
         self.driveLeft = self.drive.getRawAxis(XboxController.Axis.kLeftY)
         self.driveRight = self.drive.getRawAxis(XboxController.Axis.kRightY)
         self.driveLeftHoriz = self.drive.getRawAxis(XboxController.Axis.kLeftX)
-        self.driveRightHoriz = self.drive.getRawAxis(XboxController.Axis.kRightY)
+        self.driveRightHoriz = self.drive.getRawAxis(XboxController.Axis.kRightX)
         self.driveRightTrig = self.drive.getRawAxis(XboxController.Axis.kRightTrigger)
         self.driveLeftTrig = self.drive.getRawAxis(XboxController.Axis.kLeftTrigger)
         self.driveDPad = self.drive.getPOV()
