@@ -7,8 +7,6 @@ from components.Actuators.LowLevel.driveTrain import DriveTrain
 from XYRkinematics import movementKinematics
 import math
 
-MotorSpeed = []
-
 class TankDrive:
 
     def MotorDrive(self, x,y,r):

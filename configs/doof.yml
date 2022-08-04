@@ -28,7 +28,7 @@ driveTrain:
         kF: 0
         controlType: "PercentOutput"
         sensorPhase: True
-        kPreScale: 2
+        kPreScale: 1
         feedbackDevice: "IntegratedSensor"
       currentLimits:
         triggerThresholdCurrent: 60
