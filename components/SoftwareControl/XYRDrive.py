@@ -1,7 +1,10 @@
+from shutil import move
 from utils.XYRVector import XYRVector
 from utils.motorEnums import Tank, Swerve, TwoMotorTank
 import logging as log
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+from components.Actuators.LowLevel.driveTrain import DriveTrain
+from XYRkinematics import movementKinematics
 import math
 
 MotorSpeed = []
@@ -27,6 +30,8 @@ class TankDrive:
                 lmotor = -1*maximum
                 rmotor = dif
 
+        lmotor *= DriveTrain.driveMotorsMultiplier
+        rmotor *= DriveTrain.driveMotorsMultiplier
 
         return {Tank.FrontLeft.value : lmotor,
                 Tank.BackLeft.value : lmotor,
@@ -44,18 +49,14 @@ class SwerveDrive:
     W = 30
 
     def MotorDrive(self, x,y,r):
-        ratio = math.sqrt ((self.L * self.L) + (self.W * self.W))
-        y *= -1
+        optimizedStates = movementKinematics.transformations(x,y,r)
 
-        a = x - r * (self.L / ratio)
-        b = x + r * (self.L / ratio)
-        c = y - r * (self.W / ratio)
-        d = y + r * (self.W / ratio)
+        backRightSpeed = optimizedStates[3].speed
+        backLeftSpeed = optimizedStates[2].speed
+        frontRightSpeed = optimizedStates[1].speed
+        frontLeftSpeed = optimizedStates[0].speed
 
-        backRightSpeed = math.sqrt ((a * a) + (d * d))
-        backLeftSpeed = math.sqrt ((a * a) + (c * c))
-        frontRightSpeed = math.sqrt ((b * b) + (d * d))
-        frontLeftSpeed = math.sqrt ((b * b) + (c * c))
+        currentAngle = moduleStates()
 
         backRightAngle = math.atan2 (a, d) / math.pi
         backLeftAngle = math.atan2 (a, c) / math.pi
