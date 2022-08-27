@@ -21,8 +21,8 @@ def testComponentListCompatibility(robot, componentList):
             continue
 
         robot.logger.warn("%s is not compatible. Disabling", component_type)
-
-        for n, inject_type in typing.get_type_hints(component_type).items():
+        data = typing.get_type_hints(component_type).items()
+        for n, inject_type in data:
             # If the variable is private ignore it
             if n.startswith("_"):
                 continue
@@ -39,11 +39,14 @@ def testComponentListCompatibility(robot, componentList):
                 inject_type = origin
 
             # If the type is not actually a type, give a meaningful error
+            #nmb - 8/27/2022 FIXME removed due to crashing on certain componets
+            '''
             if not isinstance(inject_type, type):
                 raise TypeError(
                     "Component %s has a non-type annotation on %s (%r); lone non-injection variable annotations are disallowed, did you want to assign a static variable?"
                     % (inject_type, n, inject_type)
                 )
+            '''
 
             if not hasattr(robot, n):
                 #Create any injectables we need
