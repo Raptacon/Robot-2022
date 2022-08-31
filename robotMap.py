@@ -29,8 +29,8 @@ class XboxMap():
         (Should only be used for axes while buttonManager has no equal for axes)
         """
         #Drive Controller inputs
-        self.driveLeft = self.drive.getRawAxis(XboxController.Axis.kLeftY) * -1
-        self.driveRight = self.drive.getRawAxis(XboxController.Axis.kRightY) * -1
+        self.driveLeft = self.drive.getRawAxis(XboxController.Axis.kLeftY)
+        self.driveRight = self.drive.getRawAxis(XboxController.Axis.kRightY)
         self.driveLeftHoriz = self.drive.getRawAxis(XboxController.Axis.kLeftX)
         self.driveRightHoriz = self.drive.getRawAxis(XboxController.Axis.kRightX)
         self.driveRightTrig = self.drive.getRawAxis(XboxController.Axis.kRightTrigger)
@@ -39,8 +39,8 @@ class XboxMap():
         self.driveA = self.drive.getAButton()
         self.driveX = self.drive.getXButton()
         #Mechanism controller inputs
-        self.mechLeft = self.mech.getRawAxis(XboxController.Axis.kLeftY) * -1
-        self.mechRight = self.mech.getRawAxis(XboxController.Axis.kRightY) * -1
+        self.mechLeft = self.mech.getRawAxis(XboxController.Axis.kLeftY)
+        self.mechRight = self.mech.getRawAxis(XboxController.Axis.kRightY)
         self.mechLeftHoriz = self.mech.getRawAxis(XboxController.Axis.kLeftX)
         self.mechRightHoriz = self.mech.getRawAxis(XboxController.Axis.kRightX)
         self.mechRightTrig = self.mech.getRawAxis(XboxController.Axis.kRightTrigger)
