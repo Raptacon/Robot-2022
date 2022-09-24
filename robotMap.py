@@ -28,11 +28,11 @@ class XboxMap():
         Collects all controller values and puts them in an easily readable format
         (Should only be used for axes while buttonManager has no equal for axes)
         """
-        #Drive Controller inputs
-        self.driveLeft = self.drive.getRawAxis(XboxController.Axis.kLeftY)
-        self.driveRight = self.drive.getRawAxis(XboxController.Axis.kRightY)
-        self.driveLeftHoriz = self.drive.getRawAxis(XboxController.Axis.kLeftX)
-        self.driveRightHoriz = self.drive.getRawAxis(XboxController.Axis.kRightX)
+        #Drive Controller inputsy
+        self.driveLeft = self.drive.getRawAxis(XboxController.Axis.kLeftX)
+        self.driveRight = self.drive.getRawAxis(XboxController.Axis.kRightX)
+        self.driveLeftHoriz = self.drive.getRawAxis(XboxController.Axis.kLeftY)
+        self.driveRightHoriz = self.drive.getRawAxis(XboxController.Axis.kRightY)
         self.driveRightTrig = self.drive.getRawAxis(XboxController.Axis.kRightTrigger)
         self.driveLeftTrig = self.drive.getRawAxis(XboxController.Axis.kLeftTrigger)
         self.driveDPad = self.drive.getPOV()
