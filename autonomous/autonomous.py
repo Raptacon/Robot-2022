@@ -73,7 +73,7 @@ class Autonomous(AutonomousStateMachine):
         self.assessPosition()
         self.next_state("winchUp")
 
-    @timed_state(duration=.3, next_state="calibrateTurret_move")
+    @timed_state(duration=.1, next_state="calibrateTurret_move")
     def winchUp(self):
         self.winch.setLower()
 
@@ -199,7 +199,7 @@ class Autonomous(AutonomousStateMachine):
             self.next_state("moveBack")
 
 
-    @timed_state(duration=2, next_state="stop")
+    @timed_state(duration=3, next_state="stop")
     def moveBack(self):
         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
 
