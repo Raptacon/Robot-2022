@@ -122,7 +122,7 @@ class TurretTurn(StateMachine):
     def setManualSpeed(self, speed):
         if speed !=0:
             diff = (self.maxManualSpeed- self.minManualSpeed)
-            self.manualSpeed = abs(speed) * abs(diff) + abs(self.minManualSpeed)
+            self.manualSpeed = (abs(speed) * abs(diff) + abs(self.minManualSpeed))/1.75
             if speed < 0:
                 self.manualSpeed *= -1
         else:
