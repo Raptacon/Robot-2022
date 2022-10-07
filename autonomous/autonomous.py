@@ -73,6 +73,10 @@ class Autonomous(AutonomousStateMachine):
         self.assessPosition()
         self.next_state("winchUp")
 
+    @timed_state(duration=.1, next_state="calibrateTurret_move")
+    def winchUp(self):
+        self.winch.setLower()
+
     def assessPosition(self):
         """
         Pick a movement sequence based on the tunable robotPosition.
@@ -93,7 +97,7 @@ class Autonomous(AutonomousStateMachine):
         self.shooter.startShooting()
         self.next_state('shooter_wait')
 
-    @timed_state(duration = shootTime, next_state=afterShootState)
+    @timed_state(duration = shootTime, next_state= "engage_Shooter2")
     def shooter_wait(self):
         """Waits for shooter to finish, then next state"""
         pass
@@ -144,12 +148,8 @@ class Autonomous(AutonomousStateMachine):
             self.turretThreshold.setTurretspeed(0)
 
         if self.turretThreshold.calibrated == True and self.moveComplete:
-            self.afterShootState = "moveBack"
             self.next_state("finishCalibration")
 
-    @timed_state(duration=.3, next_state="calibrateTurret_move")
-    def winchUp(self):
-        self.winch.setLower()
     @state
     def turn_turret_rough(self):
         self.turretTurn.setEncoderControl()
@@ -162,6 +162,7 @@ class Autonomous(AutonomousStateMachine):
 
     @state
     def turn_turret_smart(self):
+        '''
         self.limelight.LEDOn()
         self.turretTurn.setLimeLightControl()
         self.turretTurn.engage()
@@ -170,6 +171,8 @@ class Autonomous(AutonomousStateMachine):
             self.next_state("engage_shooter")
         elif not self.turretScan.hasTarget():
             self.turretScan.engage()
+        '''
+        self.next_state("engage_Shooter2")
 
     @state
     def finishCalibration(self):
@@ -178,25 +181,25 @@ class Autonomous(AutonomousStateMachine):
 
     @state
     def engage_Shooter2(self):
+        '''Shoots the  ball'''
         ball1 = self.ballCounter.getBallCount()[0]
         self.afterShootState = "stop"
 
-        # We don't need the second condition, but it sounds fun
-        if ball1 != None and ball1.getColor() == self.allianceColor:
+        if ball1 != None:
             self.shooter.engage()
             self.shooter.startShooting()
             self.next_state('shooter_wait')
-        elif ball1 != None and ball1.getColor() != self.allianceColor:
+        elif ball1 != None:
             self.shooter.autoShootingSpeed1 = 1000
             self.shooter.autoShootingSpeed2 = 500
             self.shooter.engage()
             self.shooter.startShooting()
             self.next_state('shooter_wait')
         else:
-            self.next_state("stop")
+            self.next_state("moveBack")
 
 
-    @timed_state(duration=2, next_state="stop")
+    @timed_state(duration=3, next_state="stop")
     def moveBack(self):
         self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, self.drive_speed, self.drive_speed)
 
