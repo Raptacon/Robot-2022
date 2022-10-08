@@ -21,8 +21,8 @@ def testComponentListCompatibility(robot, componentList):
             continue
 
         robot.logger.warn("%s is not compatible. Disabling", component_type)
-
-        for n, inject_type in typing.get_type_hints(component_type).items():
+        data = typing.get_type_hints(component_type).items()
+        for n, inject_type in data:
             # If the variable is private ignore it
             if n.startswith("_"):
                 continue
