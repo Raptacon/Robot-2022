@@ -4,7 +4,7 @@ from utils.motorEnums import Tank, Swerve, TwoMotorTank
 import logging as log
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
 from components.Actuators.LowLevel.driveTrain import DriveTrain
-from XYRkinematics import movementKinematics
+from components.SoftwareControl.XYRkinematics import movementKinematics
 import math
 
 class TankDrive:
