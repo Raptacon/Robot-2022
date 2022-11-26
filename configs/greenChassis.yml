@@ -3,10 +3,11 @@ compatibility: "greenChassis"
 driveTrain:
   subsystem: "driveTrain"
   description: "All motors used in the drive train live here"
+  type: "Tank"
   motors:
     groups:
       - "motors"
-    rightMotor:
+    FrontRightTankMotor:
       channel: 30
       type: "CANTalonFX"
       inverted: False
@@ -17,14 +18,14 @@ driveTrain:
         kF: 0
         controlType: "PercentOutput"
         sensorPhase: True
-        kPreScale: 2
+        kPreScale: 1
         feedbackDevice: "IntegratedSensor"
       currentLimits:
         triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
 
-    rightFollower:
+    BackRightTankMotor:
       channel: 31
       masterChannel: 30
       type: "CANTalonFXFollower"
@@ -34,7 +35,7 @@ driveTrain:
         triggerThresholdTime: 50
         currentLimit: 40
 
-    leftMotor:
+    FrontLeftTankMotor:
       channel: 20
       type: "CANTalonFX"
       inverted: False
@@ -45,14 +46,14 @@ driveTrain:
         kF: 0
         controlType: "PercentOutput"
         sensorPhase: True
-        kPreScale: 2
+        kPreScale: 1
         feedbackDevice: "IntegratedSensor"
       currentLimits:
         triggerThresholdCurrent: 60
         triggerThresholdTime: 50
         currentLimit: 40
 
-    leftFollower:
+    BackLeftTankMotor:
       channel: 21
       masterChannel: 20
       type: "CANTalonFXFollower"

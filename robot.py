@@ -9,6 +9,7 @@ from magicbot import MagicRobot, tunable
 
 # Component imports:
 from components.SoftwareControl.speedSections import SpeedSections, speedFactory
+from components.SoftwareControl.AxesXYR import AxesXYR, AxesTransforms
 from components.SoftwareControl.buttonManager import ButtonManager, ButtonEvent
 from components.Actuators.LowLevel.driveTrain import DriveTrain
 from components.Actuators.LowLevel.pneumatics import Pneumatics
@@ -17,13 +18,13 @@ from components.Actuators.LowLevel.shooterMotors import ShooterMotors
 from components.Actuators.HighLevel.hopperMotor import HopperMotor
 from components.Actuators.LowLevel.intakeMotor import IntakeMotor
 from components.Actuators.LowLevel.elevator import Elevator
-from components.Actuators.LowLevel.driveTrain import ControlMode
 from components.Actuators.LowLevel.scorpionLoader import ScorpionLoader
 from components.Actuators.LowLevel.limelight import Limelight
 from components.Actuators.HighLevel.shooterLogic import ShooterLogic
 from components.Actuators.HighLevel.loaderLogic import LoaderLogic
 from components.Actuators.HighLevel.feederMap import FeederMap
 from components.Actuators.HighLevel.driveTrainHandler import DriveTrainHandler
+from components.SoftwareControl.XYRDrive import XYRDrive
 from components.Actuators.AutonomousControl.autoShoot import AutoShoot
 from components.Actuators.AutonomousControl.turnToAngle import TurnToAngle
 from components.Actuators.AutonomousControl.driveTrainGoToDist import GoToDist
@@ -64,6 +65,7 @@ class MyRobot(MagicRobot):
     intakeMotor: IntakeMotor
     hopperMotor: HopperMotor
     driveTrain: DriveTrain
+    xyrDrive: XYRDrive
     winch: Winch
     buttonManager: ButtonManager
     pneumatics: Pneumatics
@@ -77,6 +79,7 @@ class MyRobot(MagicRobot):
     ballCounter: BallCounter
     colorSensor: ColorSensor
     driveTrainHandler: DriveTrainHandler
+    xyrDrive: XYRDrive
     speedSections: SpeedSections
     allianceColor: DriverStation.Alliance
     turretThreshold: TurretThreshold
@@ -85,6 +88,7 @@ class MyRobot(MagicRobot):
     breakSensors: Sensors
     turretCalibrate: CalibrateTurret
     limelight: Limelight
+    axesXYR: AxesXYR
 
     # Test code:
     testBoard: TestBoard
@@ -94,7 +98,11 @@ class MyRobot(MagicRobot):
     # components on controller input.
     controllerDeadzone = tunable(.06)
     sensitivityExponent = tunable(1.8)
-    arcadeMode = tunable(True)
+    # Eventually have a way to change this based on dropdown menu
+    controlModes = {"Tank": AxesTransforms.kTank,
+                    "Arcade": AxesTransforms.kArcade,
+                    "Swerve": AxesTransforms.kSwerve}
+    controlmode = AxesTransforms.kTank
 
     robotDir = os.path.dirname(os.path.abspath(__file__))
 
@@ -105,6 +113,17 @@ class MyRobot(MagicRobot):
         self.map = RobotMap()
         self.xboxMap = XboxMap(XboxController(1), XboxController(0))
         self.currentRobot = self.map.configMapper.getCompatibility()
+
+        try:
+            driveTrainSubsystem = self.map.configMapper.getSubsystem("driveTrain")['driveTrain']
+        except TypeError:
+            print("Robot does not have a drive train type")
+            driveTrainSubsystem = None
+
+        if driveTrainSubsystem != None and "type" in driveTrainSubsystem:
+            self.driveTrainType = str(driveTrainSubsystem["type"])
+        else:
+            self.driveTrainType = "Unknown"
 
         self.driverStation = DriverStation.getInstance()
 
@@ -127,6 +146,16 @@ class MyRobot(MagicRobot):
         self.MXPserial.setTimeout(.1)
 
         self.smartDashboardTable = NetworkTables.getTable('SmartDashboard')
+
+        # Drop down control mode menu
+        self.chooser = wpilib.SendableChooser()
+
+        for key, item in self.controlModes.items():
+            if item == self.controlmode:
+                self.chooser.setDefaultOption(key, self.controlmode)
+            self.chooser.addOption(key, item)
+
+        wpilib.SmartDashboard.putData("Control Mode", self.chooser)
 
         self.instantiateSubsystemGroup("motors", createMotor)
         self.instantiateSubsystemGroup("gyros", gyroFactory)
@@ -181,7 +210,6 @@ class MyRobot(MagicRobot):
         self.limelight.LEDOn()
 
         self.driveTrain.setBraking(True)
-        self.driveTrain.resetDistTraveled()
 
         self.shooter.autonomousDisabled()
         self.loader.setIsAutonomous(False)
@@ -202,10 +230,10 @@ class MyRobot(MagicRobot):
         #If we are using a command (such as auto align) that uses the drivetrain, we don't want to use the controller's input because it would overwrite
         #what the component is doing.
 
-        driveLeftY = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        # unused for now # driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
-        driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent) * self.driveTrain.driveMotorsMultiplier
+        driveLeftY = utils.math.expScale(self.xboxMap.getDriveLeft(), self.sensitivityExponent)
+        driveRightY = utils.math.expScale(self.xboxMap.getDriveRight(), self.sensitivityExponent)
+        driveLeftX = utils.math.expScale(self.xboxMap.getDriveLeftHoriz(), self.sensitivityExponent)
+        driveRightX = utils.math.expScale(self.xboxMap.getDriveRightHoriz(), self.sensitivityExponent)
         mechLeftX = utils.math.expScale(self.xboxMap.getMechLeftHoriz(), 2.3)
 
         if self.xboxMap.getMechDPad() == 180:
@@ -237,22 +265,22 @@ class MyRobot(MagicRobot):
 
 
         self.turretTurn.engage()
+
+        Axes = [driveLeftX, driveLeftY, driveRightX, driveRightY]
+
         # deadzone clamping
-        if abs(driveLeftY) < self.controllerDeadzone:
-            driveLeftY = 0
-        if abs(driveRightY) < self.controllerDeadzone:
-            driveRightY = 0
-        if abs(driveRightX) < self.controllerDeadzone:
-            driveRightX = 0
+        for i, axis in enumerate(Axes):
+            if abs(axis) < self.controllerDeadzone:
+                Axes[i] = 0
+
         self.autoShoot.engage()
         self.shooter.engage()
-
+        self.controlmode = self.chooser.getSelected()
         # If the drivers have any input outside deadzone, take control.
         if abs(driveRightY) + abs(driveLeftY) + abs(driveRightX) != 0:
-            if self.arcadeMode:
-                self.driveTrainHandler.setDriveTrain(self, ControlMode.kArcadeDrive, driveRightX, -1*driveLeftY)
-            else:
-                self.driveTrainHandler.setDriveTrain(self, ControlMode.kTankDrive, driveLeftY, driveRightY)
+            vector = self.axesXYR.transform(self.controlmode, Axes)
+            self.xyrDrive.xyrdrive(self, vector)
+
 
         self.prevMechAState = self.xboxMap.getMechA()
         self.scorpionLoader.checkController()

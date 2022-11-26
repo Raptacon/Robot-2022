@@ -1,6 +1,5 @@
-import logging as log
 from magicbot import AutonomousStateMachine, MagicRobot
-from components.Actuators.LowLevel.driveTrain import DriveTrain, ControlMode
+from components.Actuators.LowLevel.driveTrain import DriveTrain
 
 class DriveTrainHandler():
     """
@@ -8,9 +7,10 @@ class DriveTrainHandler():
     during teleop. It gives priority to drivers.
     We shouldn't be calling the drivetrain's control methods directly now.
     """
-    compatString = ["doof","teapot", "greenChassis"]
+    compatString = ["doof","teapot", "greenChassis", "minibot"]
     # Note - The way we will want to do this will be to give this component motor description dictionaries from robotmap and then creating the motors with motorhelper. After that, we simply call wpilib' differential drive
     driveTrain: DriveTrain
+    Motorspeeds = {}
 
     currentSource = None
     prevSource = None
@@ -61,10 +61,13 @@ class DriveTrainHandler():
         else:
             return False
 
-    def setDriveTrain(self, requestSource, controlMode: ControlMode, input1, input2):
+    def setDriveTrain(self, requestSource, Motorspeeds):
         """
         If you do not have control, this will request it for you.
         Sets drivetrain values and returns true if your control is valid.
+
+        pass in self as requestSource
+
         If not, returns false. You must request control (through this method) every frame.
         (Yes this is wide open to abuse, but I trust you)
         """
@@ -74,27 +77,15 @@ class DriveTrainHandler():
             self.requestControl(requestSource)
 
         if self.currentSource == requestSource:
-            self.input1 = input1
-            self.input2 = input2
-            self.controlMode = controlMode
+            self.Motorspeeds = Motorspeeds
             return True
         else:
             return False
 
     def execute(self):
-        # Pass through inputs to drivetrain
-        if self.controlMode == ControlMode.kArcadeDrive:
-            self.driveTrain.setArcade(self.input1, self.input2)
-        elif self.controlMode == ControlMode.kTankDrive:
-            self.driveTrain.setTank(self.input1, self.input2)
-        elif self.controlMode == ControlMode.kDisabled:
-            self.driveTrain.setTank(0, 0)
-        else:
-            log.debug("Unknown control mode")
-            self.driveTrain.setTank(0, 0)
+        self.driveTrain.setMotors(self.Motorspeeds)
 
-        self.input1 = 0
-        self.input2 = 0
+        self.Motorspeeds = {}
 
         # You must request control every frame.
         self.prevSource = self.currentSource
